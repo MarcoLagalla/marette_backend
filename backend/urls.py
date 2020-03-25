@@ -13,16 +13,26 @@ from .api.views import index_view, MessageViewSet
 router = routers.DefaultRouter()
 router.register('messages', MessageViewSet)
 
+# urlpatterns = [
+#
+#     # http://localhost:8000/
+#     path('', index_view, name='index'),
+#
+#     # http://localhost:8000/api/<router-viewsets>
+#     path('api/', include(router.urls)),
+#
+#     # http://localhost:8000/api/admin/
+#     path('api/admin/', admin.site.urls),
+# ]
+
+
+
 urlpatterns = [
-
-    # http://localhost:8000/
-    path('', index_view, name='index'),
-
-    # http://localhost:8000/api/<router-viewsets>
-    path('api/', include(router.urls)),
-
-    # http://localhost:8000/api/admin/
-    path('api/admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('user/', include('backend.account.urls')),
+    path('', include('backend.webapp.urls')),
 ]
 
-
+# debug (Marette -> settings.dev.py) must be set to False to show error page
+handler403 = 'backend.webapp.views.error403'
+handler404 = 'backend.webapp.views.error404'

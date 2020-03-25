@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+#from . import private_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 SETTINGS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +22,7 @@ BASE_DIR = os.path.dirname(SETTINGS_DIR)
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'verybadsecret!!!'
+SECRET_KEY = 'verybadsecret!!!'    # todo SECRET_KEY = private_settings.key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,6 +42,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'backend.api',
     'django_extensions',
+    'backend.webapp.apps.WebappConfig',
+    'backend.account.apps.AccountConfig',
+
+    'crispy_forms', # TODO REMOVE IT
+    'users',  # requirement pip install django-email-users, https://github.com/bennylope/django-email-users
 ]
 
 MIDDLEWARE = [
@@ -60,7 +66,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # Add dist to
-        'DIRS': ['public'],
+        'DIRS': ['public'],    #'DIRS': [os.path.join(BASE_DIR, 'webapp/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,20 +96,27 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
+
+
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = 'webapp:user-login'
+LOGIN_REDIRECT_URL = 'webapp:homepage'
+LOGOUT_REDIRECT_URL = 'webapp:homepage'
 
 
 # Internationalization
@@ -142,3 +155,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Insert Whitenoise Middleware at top but below Security Middleware
 # MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware',)
 # http://whitenoise.evans.io/en/stable/django.html#make-sure-staticfiles-is-configured-correctly
+
+
+
+
+# Static files (CSS, JavaScript, Images)   TODO OLD REMOVE
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+#DATE_INPUT_FORMATS = ['%d/%m/%Y']
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

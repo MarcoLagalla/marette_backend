@@ -7,9 +7,13 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 gunicorn = "*"
-whitenoise = "==4.0"
 dj-database-url = "*"
 psycopg2-binary = "*"
+django-crispy-forms = "*"
+django-email-users = "*"
+unidecode = "*"
+importlib = "*"
+whitenoise = "==5.0.1"
 
 [dev-packages]
 
