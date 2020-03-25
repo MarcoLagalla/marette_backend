@@ -28,6 +28,7 @@ router.register('messages', MessageViewSet)
 
 
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
     path('user/', include('backend.account.urls')),
     path('', include('backend.webapp.urls')),
