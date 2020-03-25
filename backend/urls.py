@@ -28,10 +28,12 @@ router.register('messages', MessageViewSet)
 
 
 urlpatterns = [
+
+    path('api/admin/', admin.site.urls),
+    path('api/user/', include('backend.account.urls')),
+    path('api/webapp', include('backend.webapp.urls')),
     path('api/', include(router.urls)),
-    path('admin/', admin.site.urls),
-    path('user/', include('backend.account.urls')),
-    path('', include('backend.webapp.urls')),
+
 ]
 
 # debug (Marette -> settings.dev.py) must be set to False to show error page
