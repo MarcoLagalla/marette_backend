@@ -40,13 +40,11 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
     'rest_framework',
-    'backend.api',
+    'backend.message',
     'django_extensions',
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
-
-    'crispy_forms', # TODO REMOVE IT
-    'users',  # requirement pip install django-email-users, https://github.com/bennylope/django-email-users
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +57,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -112,8 +117,6 @@ DATABASES = {
 # ]
 
 
-AUTH_USER_MODEL = 'users.User'
-
 LOGIN_URL = 'webapp:user-login'
 LOGIN_REDIRECT_URL = 'webapp:homepage'
 LOGOUT_REDIRECT_URL = 'webapp:homepage'
@@ -123,7 +126,7 @@ LOGOUT_REDIRECT_URL = 'webapp:homepage'
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Rome'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
