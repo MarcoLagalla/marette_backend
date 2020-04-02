@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 class Customer(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     birth_date = models.DateField(null=True, blank=True)
-    cellphone_number = PhoneNumberField(blank=True, help_text='Contact phone number', unique=True)
+    cellphone_number = PhoneNumberField(null=True, blank=True, help_text='Contact phone number', unique=True)
 
     def __str__(self):
         return self.user.username
@@ -41,7 +41,7 @@ class Business(models.Model):
         verbose_name_plural = "Businesses"
 
 
-@receiver(post_save, sender=User)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)

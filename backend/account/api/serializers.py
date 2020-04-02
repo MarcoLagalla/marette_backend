@@ -12,11 +12,12 @@ class CustomerSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
+    is_superuser = serializers.BooleanField(source='user.is_superuser')
 
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                  'birth_date', 'cellphone_number']
+                  'birth_date', 'cellphone_number', 'is_superuser']
 
 
 class CustomerRegistationSerializer(serializers.ModelSerializer):
@@ -24,8 +25,8 @@ class CustomerRegistationSerializer(serializers.ModelSerializer):
                                      validators=[UniqueValidator(queryset=User.objects.all())])
     email = serializers.CharField(source='user.email',
                                   validators=[UniqueValidator(queryset=User.objects.all())])
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
@@ -33,7 +34,6 @@ class CustomerRegistationSerializer(serializers.ModelSerializer):
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
                   'birth_date', 'cellphone_number']
-
 
     def save(self):
         username = self.validated_data['user']['username']

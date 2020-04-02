@@ -154,8 +154,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # http://whitenoise.evans.io/en/stable/django.html#make-sure-staticfiles-is-configured-correctly
 
 
-
-
 # Static files (CSS, JavaScript, Images)   TODO OLD REMOVE
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
