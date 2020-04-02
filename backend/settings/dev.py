@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
@@ -168,3 +170,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'IT'

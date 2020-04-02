@@ -8,7 +8,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Customer(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     birth_date = models.DateField(null=True, blank=True)
-    cellphone_number = PhoneNumberField(blank=True, help_text='Contact phone number')
+    cellphone_number = PhoneNumberField(blank=True, help_text='Contact phone number', unique=True)
 
     def __str__(self):
         return self.user.username
