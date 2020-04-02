@@ -7,12 +7,11 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Customer(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
-    username = models.CharField(max_length=100, blank=False)
     birth_date = models.DateField(null=True, blank=True)
     cellphone_number = PhoneNumberField(blank=True, help_text='Contact phone number')
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 
 class Business(models.Model):
