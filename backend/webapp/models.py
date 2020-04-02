@@ -1,6 +1,17 @@
 from django.core import validators as valids
 from django.db import models
-#from backend.account.models import BusinessUser
+
+from backend.account.models import Business
+
+
+class Restaurant(models.Model):
+    owner = models.ForeignKey(Business, related_name='owner', on_delete=models.CASCADE)
+    # products =
+    # menus =
+    # etc ...
+
+    def __str__(self):
+        return self.owner.activity_name
 
 
 class Product(models.Model):
@@ -11,3 +22,6 @@ class Product(models.Model):
     #food_type = forms.ChoiceField(choices=FOOD_CATEGORY, widget=forms.RadioSelect())
     price = models.DecimalField(decimal_places=2, max_digits=5, validators=[valids.MinValueValidator(0.10)])
     vegetarian = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

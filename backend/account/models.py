@@ -16,7 +16,7 @@ class Customer(models.Model):
 
 
 class Business(models.Model):
-    owner = models.ForeignKey(User, related_name='owner', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='business', on_delete=models.CASCADE)
 
     url = models.CharField(max_length=30, unique=True)
     activity_name = models.CharField(max_length=30, unique=True, blank=False)
