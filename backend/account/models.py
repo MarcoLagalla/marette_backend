@@ -3,6 +3,9 @@ from django.core import validators as valids
 import unidecode, re
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
 class Customer(models.Model):
@@ -36,3 +39,9 @@ class Business(models.Model):
 
     class Meta:
         verbose_name_plural = "Businesses"
+
+
+@receiver(post_save, sender=User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

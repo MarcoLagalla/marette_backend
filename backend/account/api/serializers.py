@@ -53,3 +53,8 @@ class CustomerRegistationSerializer(serializers.ModelSerializer):
                                            birth_date=self.validated_data['birth_date'],
                                            cellphone_number=self.validated_data['cellphone_number'])
         return customer
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()

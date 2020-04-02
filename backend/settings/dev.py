@@ -61,11 +61,10 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
 }
-
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -99,7 +98,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -117,12 +115,6 @@ DATABASES = {
 #         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
 #     },
 # ]
-
-
-LOGIN_URL = 'webapp:user-login'
-LOGIN_REDIRECT_URL = 'webapp:homepage'
-LOGOUT_REDIRECT_URL = 'webapp:homepage'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
