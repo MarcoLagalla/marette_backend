@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -60,10 +61,10 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
-
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -97,7 +98,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -115,12 +115,6 @@ DATABASES = {
 #         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
 #     },
 # ]
-
-
-LOGIN_URL = 'webapp:user-login'
-LOGIN_REDIRECT_URL = 'webapp:homepage'
-LOGOUT_REDIRECT_URL = 'webapp:homepage'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -160,11 +154,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # http://whitenoise.evans.io/en/stable/django.html#make-sure-staticfiles-is-configured-correctly
 
 
-
-
 # Static files (CSS, JavaScript, Images)   TODO OLD REMOVE
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 #DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'IT'
