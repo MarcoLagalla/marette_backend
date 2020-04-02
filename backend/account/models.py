@@ -34,3 +34,6 @@ class Business(models.Model):
         url = re.sub('[^0-9a-zA-Z]', '', url)
         url = ''.join(url.split()).lower()
         return url[:30]
+
+    class Meta:
+        verbose_name_plural = "Businesses"
