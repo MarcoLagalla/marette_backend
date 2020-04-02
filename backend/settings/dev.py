@@ -40,13 +40,10 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
     'rest_framework',
-    'backend.api',
+    'backend.message',
     'django_extensions',
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
-
-    'crispy_forms', # TODO REMOVE IT
-    'users',  # requirement pip install django-email-users, https://github.com/bennylope/django-email-users
 ]
 
 MIDDLEWARE = [
@@ -59,6 +56,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -111,8 +115,6 @@ DATABASES = {
 #     },
 # ]
 
-
-AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = 'webapp:user-login'
 LOGIN_REDIRECT_URL = 'webapp:homepage'

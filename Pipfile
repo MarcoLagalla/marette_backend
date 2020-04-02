@@ -14,6 +14,8 @@ django-email-users = "*"
 unidecode = "*"
 importlib = "*"
 whitenoise = "==5.0.1"
+base = "*"
+utils = "*"
 
 [dev-packages]
 
