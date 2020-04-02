@@ -1,5 +1,5 @@
 from django.contrib import admin
-from backend.account.models import CustomerUser
+from backend.account.models import Customer
 # Register your models here.
 
-admin.site.register(CustomerUser)
+admin.site.register(Customer)
