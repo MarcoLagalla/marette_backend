@@ -78,7 +78,7 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 business = serializer.save()
-                send_welcome_email(business)
+                send_welcome_email(business.user)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email
