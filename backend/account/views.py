@@ -10,7 +10,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_welcome_email(user):
+
+def send_welcome_email(user, activation_token):
 
     msg = MIMEMultipart('alternative')
     password = settings.EMAIL_HOST_PASSWORD
@@ -18,7 +19,10 @@ def send_welcome_email(user):
     msg['To'] = user.email
     msg['Subject'] = "Welcome to Marette"
 
-    html_content = render_to_string('welcome.html', {'username': user.username})  # render with dynamic value
+    html_content = render_to_string('welcome.html', {'username': user.username,
+                                                     'id': user.id,
+                                                     'activation_token': activation_token})
+    # render with dynamic value
     text_content = strip_tags(html_content)  # Strip the html tag. So people can see the pure text at least.
     part1 = MIMEText(text_content, 'plain')
     msg.attach(part1)
@@ -30,34 +34,3 @@ def send_welcome_email(user):
     server.login(msg['From'], password)
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
-
-# def send_welcome_email(user):
-#
-#     gmail_user = settings.EMAIL_HOST_USER
-#     gmail_password = settings.EMAIL_HOST_PASSWORD
-#     gmail_server = settings.EMAIL_HOST
-#     gmail_port = settings.EMAIL_PORT
-#
-#     try:
-#
-#         # # Create message container - the correct MIME type is multipart/alternative.
-#         # msg = MIMEMultipart('alternative')
-#         # msg['Subject'] = "Welcome on Marette"
-#         # msg['From'] = settings.DEFAULT_FROM_EMAIL
-#         # msg['To'] = user.email
-#         #
-#         html_content = render_to_string('welcome.html', {'username': user.username})  # render with dynamic value
-#         text_content = strip_tags(html_content)  # Strip the html tag. So people can see the pure text at least.
-#         # part1 = MIMEText(text_content, 'html')
-#         # msg.attach(part1)
-#
-#         server = smtplib.SMTP(gmail_server, gmail_port)
-#         server.ehlo()
-#         server.starttls()
-#         server.ehlo()
-#         server.login(gmail_user, gmail_password)
-#         server.sendmail(settings.EMAIL_HOST_USER, user.email, "ciaooo")
-#         server.quit()
-#
-#     except Exception as err:
-#         print(err)

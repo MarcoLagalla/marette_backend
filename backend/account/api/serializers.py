@@ -81,6 +81,7 @@ class CustomerRegistationSerializer(serializers.ModelSerializer):
         if password != password2:
             raise serializers.ValidationError({'password': 'Passwords must match!'})
         user.set_password(password)
+        user.is_active = False
         user.save()
 
         customer = Customer.objects.create(user=user,

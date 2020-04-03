@@ -7,9 +7,11 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.authtoken.models import Token
 
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 from ..views import send_welcome_email
 from ..models import Customer, Business
+from ..tokens import account_activation_token
 from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
     BusinessRegistationSerializer, ChangePasswordSerializer
 from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin
@@ -49,7 +51,8 @@ class CustomerAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 customer = serializer.save()
-                send_welcome_email(customer.user)
+                activation_token = account_activation_token.make_token(customer.user)
+                send_welcome_email(customer.user, activation_token)
                 data['response'] = "successfully registered a new customer user"
                 data['username'] = customer.user.username
                 data['email'] = customer.user.email
@@ -78,7 +81,8 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 business = serializer.save()
-                send_welcome_email(business.user)
+                activation_token = account_activation_token.make_token(business.user)
+                send_welcome_email(business.user,activation_token)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email
@@ -186,4 +190,25 @@ class UpdatePassword(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ActivateUserAPIView(APIView):
+    permission_classes = [AllowAny]
 
+    def get(self, request, id, token):
+        try:
+            user = User.objects.get(pk=id)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None:
+            if not user.is_active:
+                if account_activation_token.check_token(user, token):
+                    user.is_active = True
+                    user.save()
+                else:
+                    return Response({'activation': 'invalid token'},
+                                    status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response({'activation':'user has already confirmed the email'},
+                                status=status.HTTP_204_NO_CONTENT)
+            return Response({'activation':'email has been confirmed'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'activation':'invalid token'}, status=status.HTTP_400_BAD_REQUEST)
