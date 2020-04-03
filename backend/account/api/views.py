@@ -6,12 +6,16 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, update_last_login
 
+from django.shortcuts import get_object_or_404
+
+from ..views import send_welcome_email, send_reset_email
 from ..models import Customer, Business
+from ..tokens import account_activation_token, passwordreset_token
 from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
-    BusinessRegistationSerializer
-from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin
+    BusinessRegistationSerializer, ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
+from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin, OwnProfilePermission
 
 
 class ListUsersAPIView(APIView):
@@ -48,6 +52,8 @@ class CustomerAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 customer = serializer.save()
+                activation_token = account_activation_token.make_token(customer.user)
+                send_welcome_email(customer.user, activation_token)
                 data['response'] = "successfully registered a new customer user"
                 data['username'] = customer.user.username
                 data['email'] = customer.user.email
@@ -76,6 +82,8 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 business = serializer.save()
+                activation_token = account_activation_token.make_token(business.user)
+                send_welcome_email(business.user,activation_token)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email
@@ -101,6 +109,7 @@ class LoginGetToken(APIView):
                 if user:
                     if user.check_password(password):
                         # successfully logged in
+                        update_last_login(None, user)
                         if not Token.objects.all().filter(user=user):
                             token = Token.objects.create(user=user).key
                             data['token'] = token
@@ -129,7 +138,6 @@ class LogoutAPI(APIView):
     def logout(self, request):
         data = {}
         try:
-            print(request.user.auth_token)
             request.user.auth_token.delete()
             data['logout'] = 'user successfully logged out'
         except (AttributeError, ObjectDoesNotExist):
@@ -137,3 +145,133 @@ class LogoutAPI(APIView):
             return Response(data, status=status.HTTP_204_NO_CONTENT)
         return Response(data, status=status.HTTP_200_OK)
 
+
+class UpdatePassword(APIView):
+    """
+    An endpoint for changing password.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, id, queryset=None):
+        return User.objects.get(id=id)
+
+    def put(self, request, id):
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            user_to_update = User.objects.get(id=id)
+            # print(user_to_update.username, user_to_update.id, user_to_update.user.id)
+            token = Token.objects.get(user_id=user_to_update.id).key
+
+            if request.user.auth_token.key == token:
+                # Check old password
+                old_password = serializer.data.get("old_password")
+                if not user_to_update.check_password(old_password):
+                    return Response({"old_password": ["Wrong password."]},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                # delete auth token
+                request.user.auth_token.delete()
+
+                # set_password also hashes the password that the user will get
+                user_to_update.set_password(serializer.data.get("new_password"))
+                user_to_update.save()
+
+                data = {}
+                data['password'] = 'password changed'
+                # get new token
+                data['token'] = Token.objects.create(user=user_to_update).key
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+
+                data = {}
+                data['error'] = 'invalid authorization token'
+                return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ActivateUserAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, id, token):
+        try:
+            user = User.objects.get(pk=id)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None:
+            if not user.is_active:
+                if account_activation_token.check_token(user, token):
+                    user.is_active = True
+                    user.save()
+                else:
+                    return Response({'activation': 'invalid token'},
+                                    status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response({'activation':'user has already confirmed the email'},
+                                status=status.HTTP_204_NO_CONTENT)
+            return Response({'activation':'email has been confirmed'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'activation':'invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AskPasswordAPIView(APIView):
+
+    def post(self, request):
+        serializer = AskResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = get_object_or_404(User, email=email)
+            if user:
+                reset_token = passwordreset_token.make_token(user)
+                send_reset_email(user, reset_token)
+                return Response(status.HTTP_200_OK)
+            else:
+                return Response(status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data, many=False)
+        if serializer.is_valid():
+            given_token = serializer.validated_data['token']
+            password = serializer.validated_data['password']
+
+            users = User.objects.all()
+            for user in users:
+
+                if passwordreset_token.check_token(user, given_token):
+                    user.set_password(password)
+                    user.save()
+                    return Response(status=status.HTTP_200_OK)
+
+            return Response({'token':'invalid token'}, status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        user = get_object_or_404(User, id=id)
+        if user:
+            if request.user.auth_token.key == Token.objects.get(user=user).key or request.user.is_superuser:
+                # check if customer
+                customer = Customer.objects.all().get(user=user)
+                if customer:
+                    # è un customer
+                    serializer = CustomerSerializer(customer, many=False)
+                else:
+                    business = Business.objects.all().get(user=user)
+                    serializer = BusinessSerializer(business, many=False)
+                return Response(serializer.data, status.HTTP_200_OK)
+            else:
+                return Response({'error':'user not authorized'}, status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response({'error':'user not found'}, status.HTTP_404_NOT_FOUND)
