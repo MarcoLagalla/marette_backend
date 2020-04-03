@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 
 from django.contrib.auth.models import User
 
+from ..views import send_welcome_email
 from ..models import Customer, Business
 from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
     BusinessRegistationSerializer, ChangePasswordSerializer
@@ -48,6 +49,7 @@ class CustomerAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 customer = serializer.save()
+                send_welcome_email(customer.user)
                 data['response'] = "successfully registered a new customer user"
                 data['username'] = customer.user.username
                 data['email'] = customer.user.email
@@ -76,6 +78,7 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if not request.user.is_authenticated:
                 business = serializer.save()
+                send_welcome_email(business)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email
@@ -181,3 +184,6 @@ class UpdatePassword(APIView):
                 return Response(data, status=status.HTTP_403_FORBIDDEN)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
