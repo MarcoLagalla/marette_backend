@@ -137,6 +137,14 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+    token = serializers.CharField()
+
+class AskResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class ChangePasswordSerializer(serializers.Serializer):
     """
     Serializer for password change endpoint.
