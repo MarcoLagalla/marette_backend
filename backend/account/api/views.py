@@ -8,9 +8,26 @@ from rest_framework.authtoken.models import Token
 
 from django.contrib.auth.models import User
 
-from ..models import Customer
-from .serializers import CustomerSerializer, CustomerRegistationSerializer, LoginSerializer
+from ..models import Customer, Business
+from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
+    BusinessRegistationSerializer
 from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin
+
+
+class ListUsersAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        customers = Customer.objects.all().order_by('user')
+        customers_serializer = CustomerSerializer(customers, many=True)
+
+        businesses = Business.objects.all().order_by('user')
+        businesses_serializer = BusinessSerializer(businesses, many=True)
+
+        serializer = list(customers_serializer.data)
+        serializer += list(businesses_serializer.data)
+        return Response(serializer, status=status.HTTP_200_OK)
 
 
 class CustomerAPIView(APIView):
@@ -20,7 +37,7 @@ class CustomerAPIView(APIView):
 
     # only admin can list all users details
     def get(self, request):
-        customers = Customer.objects.all()
+        customers = Customer.objects.all().order_by('user')
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -29,15 +46,43 @@ class CustomerAPIView(APIView):
         serializer = CustomerRegistationSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            if not request.user.auth_token:
+            if not request.user.is_authenticated:
                 customer = serializer.save()
-                data['response'] = "successfully registered a new user"
+                data['response'] = "successfully registered a new customer user"
                 data['username'] = customer.user.username
                 data['email'] = customer.user.email
-                data['token'] = Token.objects.get(user=customer.user).key
+                data['token'] = Token.objects.create(user=customer.user).key
                 return Response(data, status=status.HTTP_201_CREATED)
-        else:
-            data['error'] = "already registered"
+            else:
+                data['error'] = "already registered"
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BusinessAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsPostOrIsAdmin]
+
+    # only admin can list all users details
+    def get(self, request):
+        businesses = Business.objects.all().order_by('user')
+        serializer = BusinessSerializer(businesses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # non authenticated users can create a new user
+    def post(self, request):
+        serializer = BusinessRegistationSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            if not request.user.is_authenticated:
+                business = serializer.save()
+                data['response'] = "successfully registered a new business user"
+                data['username'] = business.user.username
+                data['email'] = business.user.email
+                data['token'] = Token.objects.create(user=business.user).key
+                return Response(data, status=status.HTTP_201_CREATED)
+            else:
+                data['error'] = "already registered"
             return Response(data, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
