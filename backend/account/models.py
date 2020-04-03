@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 class Customer(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     birth_date = models.CharField(max_length=15, null=True, blank=True)
-    cellphone_number = PhoneNumberField(null=True, blank=True, help_text='Contact phone number', unique=True)
+    cellphone_number = PhoneNumberField(null=False, blank=False, help_text='Contact phone number', unique=True)
 
     def __str__(self):
         return self.user.username
@@ -21,12 +21,12 @@ class Business(models.Model):
     user = models.OneToOneField(User, related_name='business', on_delete=models.CASCADE)
 
     url = models.CharField(max_length=30, unique=True, blank=False)
-    activity_name = models.CharField(max_length=30, unique=True, blank=False)
+    activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
     address = models.CharField(max_length=100, blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
-    business_number = PhoneNumberField(blank=False, help_text='Contact phone number')
+    business_number = PhoneNumberField(null=False, blank=False, help_text='Contact phone number')
 
     def __str__(self):
         return self.activity_name

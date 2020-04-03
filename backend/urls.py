@@ -9,9 +9,11 @@ from django.urls import path, include
 
 urlpatterns = [
 
+    # v1 API
+
     path('admin/', admin.site.urls),
-    path('api/account/', include('backend.account.api.urls', 'account_api')),
-    path('api/webapp/', include('backend.webapp.urls')),
-    path('api/message/', include('backend.message.urls')),
+    path('api/v1/account/', include('backend.account.api.urls', 'account_api')),
+    path('api/v1/webapp/', include('backend.webapp.urls')),
+    path('api/v1/message/', include('backend.message.urls')),
 
 ]
