@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth.password_validation import validate_password
 from backend.account.models import Customer, Business
 
 from ..models import User
@@ -133,3 +134,15 @@ class BusinessRegistationSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializer for password change endpoint.
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value

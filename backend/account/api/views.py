@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 
 from ..models import Customer, Business
 from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
-    BusinessRegistationSerializer
+    BusinessRegistationSerializer, ChangePasswordSerializer
 from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin
 
 
@@ -19,10 +19,10 @@ class ListUsersAPIView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        customers = Customer.objects.all().order_by('user')
+        customers = Customer.objects.all().order_by('id')
         customers_serializer = CustomerSerializer(customers, many=True)
 
-        businesses = Business.objects.all().order_by('user')
+        businesses = Business.objects.all().order_by('id')
         businesses_serializer = BusinessSerializer(businesses, many=True)
 
         serializer = list(customers_serializer.data)
@@ -37,7 +37,7 @@ class CustomerAPIView(APIView):
 
     # only admin can list all users details
     def get(self, request):
-        customers = Customer.objects.all().order_by('user')
+        customers = Customer.objects.all().order_by('id')
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -65,7 +65,7 @@ class BusinessAPIView(APIView):
 
     # only admin can list all users details
     def get(self, request):
-        businesses = Business.objects.all().order_by('user')
+        businesses = Business.objects.all().order_by('id')
         serializer = BusinessSerializer(businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -129,7 +129,6 @@ class LogoutAPI(APIView):
     def logout(self, request):
         data = {}
         try:
-            print(request.user.auth_token)
             request.user.auth_token.delete()
             data['logout'] = 'user successfully logged out'
         except (AttributeError, ObjectDoesNotExist):
@@ -137,3 +136,48 @@ class LogoutAPI(APIView):
             return Response(data, status=status.HTTP_204_NO_CONTENT)
         return Response(data, status=status.HTTP_200_OK)
 
+
+class UpdatePassword(APIView):
+    """
+    An endpoint for changing password.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, id, queryset=None):
+        return User.objects.get(id=id)
+
+    def put(self, request, id):
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            user_to_update = User.objects.get(id=id)
+            # print(user_to_update.username, user_to_update.id, user_to_update.user.id)
+            token = Token.objects.get(user_id=user_to_update.id).key
+
+            if request.user.auth_token.key == token:
+                # Check old password
+                old_password = serializer.data.get("old_password")
+                if not user_to_update.check_password(old_password):
+                    return Response({"old_password": ["Wrong password."]},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                # delete auth token
+                request.user.auth_token.delete()
+
+                # set_password also hashes the password that the user will get
+                user_to_update.set_password(serializer.data.get("new_password"))
+                user_to_update.save()
+
+                data = {}
+                data['password'] = 'password changed'
+                # get new token
+                data['token'] = Token.objects.create(user=user_to_update).key
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+
+                data = {}
+                data['error'] = 'invalid authorization token'
+                return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
