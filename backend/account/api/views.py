@@ -19,10 +19,10 @@ class ListUsersAPIView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        customers = Customer.objects.all().order_by('id')
+        customers = Customer.objects.all().order_by('user')
         customers_serializer = CustomerSerializer(customers, many=True)
 
-        businesses = Business.objects.all().order_by('id')
+        businesses = Business.objects.all().order_by('user')
         businesses_serializer = BusinessSerializer(businesses, many=True)
 
         serializer = list(customers_serializer.data)
@@ -37,7 +37,7 @@ class CustomerAPIView(APIView):
 
     # only admin can list all users details
     def get(self, request):
-        customers = Customer.objects.all().order_by('id')
+        customers = Customer.objects.all().order_by('user')
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -65,7 +65,7 @@ class BusinessAPIView(APIView):
 
     # only admin can list all users details
     def get(self, request):
-        businesses = Business.objects.all().order_by('id')
+        businesses = Business.objects.all().order_by('user')
         serializer = BusinessSerializer(businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
