@@ -1,22 +1,36 @@
 <template>
-  <div id="app">
-    <h1>Porco schifo</h1>
-    <h1>Porco schifo</h1>
-    <div id="nav">
-     <router-link :to="{ name: 'home' }">Vue</router-link> |
-     <router-link :to="{ name: 'messages' }">Django Rest</router-link> |
+    <div id="app">
+        <!-- Navigation -->
+        <navigation></navigation>
+        <!-- Menu -->
+        <app-menu></app-menu>
+        <!-- Header -->
+        <app-header></app-header>
+        <!-- Page Content -->
+        <page-content></page-content>
+
+        <!-- Footer -->
+        <app-footer></app-footer>
     </div>
-    <router-view/>
-  </div>
 </template>
 
+<script>
+    import Navigation from './components/Navigation'
+    import Header from './components/Header'
+    import Footer from './components/Footer'
+    import Menu from './components/Menu'
+    import PageContent from './components/PageContent'
+    export default {
+        components: {
+            'navigation': Navigation,
+            'app-header': Header,
+            'app-footer': Footer,
+            'app-menu': Menu,
+            'pageContent': PageContent,
+        }
+    }
+</script>
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
