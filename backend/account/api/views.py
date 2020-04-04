@@ -1,21 +1,18 @@
+from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from django.contrib.auth.models import User, update_last_login
-
-from django.shortcuts import get_object_or_404
-
-from ..views import send_welcome_email, send_reset_email
+from .serializers import CustomerSerializer, BusinessSerializer, LoginSerializer, \
+    ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
 from ..models import Customer, Business
 from ..tokens import account_activation_token, passwordreset_token
-from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
-    BusinessRegistationSerializer, ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
-from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin, OwnProfilePermission
+from ..views import send_welcome_email, send_reset_email
 
 
 class ListUsersAPIView(APIView):
@@ -41,10 +38,10 @@ class CustomerAPIView(APIView):
 
     # non authenticated users can create a new user
     def post(self, request):
-        serializer = CustomerRegistationSerializer(data=request.data)
+        serializer = CustomerSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            if not request.user.is_authenticated:
+            if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
                 activation_token = account_activation_token.make_token(customer.user)
                 send_welcome_email(customer.user, activation_token)
@@ -61,23 +58,17 @@ class CustomerAPIView(APIView):
 
 class BusinessAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsPostOrIsAdmin]
-
-    # only admin can list all users details
-    def get(self, request):
-        businesses = Business.objects.all().order_by('user')
-        serializer = BusinessSerializer(businesses, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
     def post(self, request):
-        serializer = BusinessRegistationSerializer(data=request.data)
+        serializer = BusinessSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            if not request.user.is_authenticated:
+            if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
                 activation_token = account_activation_token.make_token(business.user)
-                send_welcome_email(business.user,activation_token)
+                send_welcome_email(business.user, activation_token)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email
@@ -244,7 +235,7 @@ class ResetPasswordAPIView(APIView):
                     user.save()
                     return Response(status=status.HTTP_200_OK)
 
-            return Response({'token':'invalid token'}, status.HTTP_404_NOT_FOUND)
+            return Response({'token': 'invalid token'}, status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
@@ -254,18 +245,23 @@ class UserProfileAPIView(APIView):
 
     def get(self, request, id):
         user = get_object_or_404(User, id=id)
-        if user:
-            if request.user.auth_token.key == Token.objects.get(user=user).key or request.user.is_superuser:
+
+        if user and not user.is_superuser:
+            token = get_object_or_404(Token, user=user)
+            if request.user.auth_token.key == token.key:
                 # check if customer
-                customer = Customer.objects.all().get(user=user)
-                if customer:
-                    # è un customer
+                try:
+                    customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
-                else:
-                    business = Business.objects.all().get(user=user)
-                    serializer = BusinessSerializer(business, many=False)
+                except Customer.DoesNotExist:
+                    try:
+                        business = Business.objects.all().get(user=user)
+                        serializer = BusinessSerializer(business, many=False)
+                    except Business.DoesNotExist:
+                        return Response({'error': 'user not found'}, status.HTTP_404_NOT_FOUND)
+
                 return Response(serializer.data, status.HTTP_200_OK)
             else:
-                return Response({'error':'user not authorized'}, status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'user not authorized'}, status.HTTP_401_UNAUTHORIZED)
         else:
-            return Response({'error':'user not found'}, status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'user not found'}, status.HTTP_404_NOT_FOUND)
