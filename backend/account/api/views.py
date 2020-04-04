@@ -13,8 +13,9 @@ from django.shortcuts import get_object_or_404
 from ..views import send_welcome_email, send_reset_email
 from ..models import Customer, Business
 from ..tokens import account_activation_token, passwordreset_token
-from .serializers import CustomerSerializer, BusinessSerializer, CustomerRegistationSerializer, LoginSerializer, \
-    BusinessRegistationSerializer, ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
+from .serializers import CustomerSerializer, BusinessSerializer, LoginSerializer,\
+    ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
+
 from ..permissions import IsOwnerOrReadOnly, IsPostOrIsAdmin, OwnProfilePermission
 
 
@@ -41,10 +42,10 @@ class CustomerAPIView(APIView):
 
     # non authenticated users can create a new user
     def post(self, request):
-        serializer = CustomerRegistationSerializer(data=request.data)
+        serializer = CustomerSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            if not request.user.is_authenticated:
+            if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
                 activation_token = account_activation_token.make_token(customer.user)
                 send_welcome_email(customer.user, activation_token)
@@ -61,23 +62,17 @@ class CustomerAPIView(APIView):
 
 class BusinessAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsPostOrIsAdmin]
-
-    # only admin can list all users details
-    def get(self, request):
-        businesses = Business.objects.all().order_by('user')
-        serializer = BusinessSerializer(businesses, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
     def post(self, request):
-        serializer = BusinessRegistationSerializer(data=request.data)
+        serializer = BusinessSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            if not request.user.is_authenticated:
+            if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
                 activation_token = account_activation_token.make_token(business.user)
-                send_welcome_email(business.user,activation_token)
+                send_welcome_email(business.user, activation_token)
                 data['response'] = "successfully registered a new business user"
                 data['username'] = business.user.username
                 data['email'] = business.user.email

@@ -1,8 +1,3 @@
-from rest_framework import viewsets
-from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
-from rest_framework.permissions import IsAuthenticated
-from django.core.mail import EmailMessage, get_connection
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
