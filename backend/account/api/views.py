@@ -37,13 +37,7 @@ class ListUsersAPIView(APIView):
 class CustomerAPIView(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsPostOrIsAdmin]
-
-    # only admin can list all users details
-    def get(self, request):
-        customers = Customer.objects.all().order_by('user')
-        serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
     def post(self, request):
