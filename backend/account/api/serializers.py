@@ -99,7 +99,6 @@ class BusinessRegistationSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='user.last_name', required=False)
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
-
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2','email', 'first_name', 'last_name',
