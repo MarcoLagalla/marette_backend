@@ -13,8 +13,8 @@ const getters = {
 const actions = {
   registerUser({ commit }, user) {
     userAutentication.postRegisterUser(user)
-    .then(() => {
-      commit('registerUser', user)
+    .then((response) => {
+      commit('registerUser', response);
     })
   }
 }
