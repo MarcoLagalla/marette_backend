@@ -31,6 +31,9 @@
                             <button class="btn btn-outline-secondary btn-sm m-1 mb-0 dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Login
                             </button>
+                            <router-link to="/registration" tag="button" class="btn btn-outline-secondary btn-sm m-1 mb-0 dropdown-toggle text-white" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Registrati
+                            </router-link>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                             </div>
@@ -56,7 +59,8 @@
                     last_name: 'Magalla'
                 }
             }
-        }
+        },
+
 
     }
 </script>
