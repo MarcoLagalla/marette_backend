@@ -1,5 +1,5 @@
 <template>
-     <form>
+     <div>
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
@@ -12,7 +12,7 @@
             <input v-model='user.email' type="text" placeholder="Inserire Email" id="email" name="email" required>
 
             <label for="psw"><b>Password</b></label>
-            <input v-model='user.passowrd' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+            <input v-model='user.password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
 
             <label for="psw-repeat"><b>Ripeti la Password</b></label>
             <input v-model='user.password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required>
@@ -32,13 +32,13 @@
             <hr>
 
             <p>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</p>
-            <button @click="registerUser(user)" class="registerbtn">Registrati</button>
+            <button @click="registerUser({username: user.username, email: user.email, password: user.password, password2: user.password2, cellphone_number: user.cellphone_number})" class="registerbtn">Registrati</button>
         </div>
 
         <div class="container signin">
             <p>Hai già un account? <a href="#">Dillo prima, coglione</a>.</p>
         </div>
-    </form>
+    </div>
 </template>
 
 <script>
@@ -51,7 +51,7 @@
                 user: {
                     username:'',
                     email: '',
-                    passowrd: '',
+                    password: '',
                     password2: '',
                     first_name: '',
                     last_name: '',
