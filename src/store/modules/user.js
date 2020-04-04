@@ -1,4 +1,4 @@
-import messageService from '../../services/userAutentication'
+import userAutentication from '../../services/userAutentication'
 
 const state = {
   user: []
@@ -12,7 +12,7 @@ const getters = {
 
 const actions = {
   registerUser({ commit }, user) {
-    messageService.postRegisterUser(user)
+    userAutentication.postRegisterUser(user)
     .then(() => {
       commit('registerUser', user)
     })
@@ -21,7 +21,7 @@ const actions = {
 
 const mutations = {
   registerUser(state, user) {
-    state.messages.push(user)
+    state.user.push(user)
   }
 }
 

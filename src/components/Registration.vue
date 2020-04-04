@@ -32,7 +32,7 @@
             <hr>
 
             <p>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</p>
-            <button type="submit" class="registerbtn">Registrati</button>
+            <button @click="registerUser(user)" class="registerbtn">Registrati</button>
         </div>
 
         <div class="container signin">
@@ -42,6 +42,8 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
+
     export default {
         name: "Registration",
         data () {
@@ -58,7 +60,12 @@
                 }
 
             }
-        }
+        },
+        methods:
+        {
+            ...mapActions('user', ['registerUser']),
+
+        },
     }
 </script>
 
