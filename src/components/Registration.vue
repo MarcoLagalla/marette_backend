@@ -100,7 +100,7 @@
                     return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
                 },
                 response(){
-                    return this.$store.state.user.user
+                    return this.$store.state.user.result
                 }
             }
     }

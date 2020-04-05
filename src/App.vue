@@ -21,6 +21,7 @@
     import Footer from './components/Footer'
     import Menu from './components/Menu'
     import PageContent from './components/PageContentHome'
+
     export default {
         components: {
             'navigation': Navigation,

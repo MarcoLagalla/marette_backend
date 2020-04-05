@@ -1,28 +1,40 @@
 import userAutentication from '../../services/userAutentication'
 
 const state = {
-  user: []
+  result: {},
 }
 
 const getters = {
-  user: state => {
-    return state.user
+
+  result: state => {
+    return state.result
   }
+
 }
 
 const actions = {
-  registerUser({ commit }, user) {
-    userAutentication.postRegisterUser(user)
+  registerUser({ commit }, result) {
+    userAutentication.postRegisterUser(result)
     .then((response) => {
-      commit('registerUser', response);
+      commit('updateResult', response);
     })
+  },
+
+  signIn({commit}, result) {
+    userAutentication.signUser(result)
+        .then((response) => {
+          commit('updateResult', response);
+        })
   }
 }
 
 const mutations = {
-  registerUser(state, user) {
-    state.user.push(user)
-  }
+
+  updateResult(state, result) {
+    state.result= result
+  },
+
+
 }
 
 export default {
