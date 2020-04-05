@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
     'rest_framework.authtoken',
+    'localflavor',
 ]
 
 MIDDLEWARE = [
@@ -119,7 +120,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'it-it'
 TIME_ZONE = 'Europe/Rome'
 USE_I18N = True
 USE_L10N = True
@@ -135,6 +136,7 @@ USE_TZ = True
 
 MIDDLEWARE_CLASSES = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 STATIC_URL = '/static/'
@@ -163,3 +165,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'IT'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'marette.dev@gmail.com'  # config('EM_ACCOUNT')
+EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
