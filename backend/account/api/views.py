@@ -45,13 +45,13 @@ class CustomerAPIView(APIView):
                 customer = serializer.save()
                 activation_token = account_activation_token.make_token(customer.user)
                 send_welcome_email(customer.user, activation_token)
-                data['response'] = "successfully registered a new customer user"
+                data['response'] = "Utente corretamente registrato."
                 data['username'] = customer.user.username
                 data['email'] = customer.user.email
                 data['token'] = Token.objects.create(user=customer.user).key
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
-                data['error'] = "already registered"
+                data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -69,13 +69,13 @@ class BusinessAPIView(APIView):
                 business = serializer.save()
                 activation_token = account_activation_token.make_token(business.user)
                 send_welcome_email(business.user, activation_token)
-                data['response'] = "successfully registered a new business user"
+                data['response'] = "Utente correttamente registrato."
                 data['username'] = business.user.username
                 data['email'] = business.user.email
                 data['token'] = Token.objects.create(user=business.user).key
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
-                data['error'] = "already registered"
+                data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -103,14 +103,11 @@ class LoginGetToken(APIView):
                             token = Token.objects.get(user=user).key
                             data['token'] = token
                             return Response(data, status=status.HTTP_200_OK)
-                    else:
-                        data['error'] = 'invalid password for this user'
-                        return Response(data, status=status.HTTP_400_BAD_REQUEST)
             except User.DoesNotExist:
-                data['error'] = 'no existing user with this email'
+                data['error'] = ["L'utente non esiste."]
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-        data['error'] = 'invalid login data'
+        data['error'] = ["Credenziali sbagliate."]
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -124,10 +121,10 @@ class LogoutAPI(APIView):
         data = {}
         try:
             request.user.auth_token.delete()
-            data['logout'] = 'user successfully logged out'
+            data['logout'] = 'Logout effettuato.'
         except (AttributeError, ObjectDoesNotExist):
-            data['error'] = 'user not logged in'
-            return Response(data, status=status.HTTP_204_NO_CONTENT)
+            data['error'] = ["L'utente non ha effettuato il login."]
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -164,14 +161,13 @@ class UpdatePassword(APIView):
                 user_to_update.save()
 
                 data = {}
-                data['password'] = 'password changed'
+                data['password'] = 'Cambio password effettuato.'
                 # get new token
                 data['token'] = Token.objects.create(user=user_to_update).key
                 return Response(data, status=status.HTTP_200_OK)
             else:
-
                 data = {}
-                data['error'] = 'invalid authorization token'
+                data['error'] = ['Token di autorizzazione sbagliato.']
                 return Response(data, status=status.HTTP_403_FORBIDDEN)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -191,14 +187,14 @@ class ActivateUserAPIView(APIView):
                     user.is_active = True
                     user.save()
                 else:
-                    return Response({'activation': 'invalid token'},
+                    return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
             else:
-                return Response({'activation':'user has already confirmed the email'},
+                return Response({'error': ["L'utente ha già confermato l'email."]},
                                 status=status.HTTP_204_NO_CONTENT)
-            return Response({'activation':'email has been confirmed'}, status=status.HTTP_200_OK)
+            return Response({'activation': 'Indirizzo email confermato, account attivo.'}, status=status.HTTP_200_OK)
         else:
-            return Response({'activation':'invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': ['Token di autorizzazione non valido.']}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AskPasswordAPIView(APIView):
@@ -235,7 +231,7 @@ class ResetPasswordAPIView(APIView):
                     user.save()
                     return Response(status=status.HTTP_200_OK)
 
-            return Response({'token': 'invalid token'}, status.HTTP_404_NOT_FOUND)
+            return Response({'error':  ['Token di autorizzazione non valido.']}, status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
@@ -258,10 +254,10 @@ class UserProfileAPIView(APIView):
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
                     except Business.DoesNotExist:
-                        return Response({'error': 'user not found'}, status.HTTP_404_NOT_FOUND)
+                        return Response({'error':["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
 
                 return Response(serializer.data, status.HTTP_200_OK)
             else:
-                return Response({'error': 'user not authorized'}, status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': ["Utente non autorizzato."]}, status.HTTP_401_UNAUTHORIZED)
         else:
-            return Response({'error': 'user not found'}, status.HTTP_404_NOT_FOUND)
+            return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
