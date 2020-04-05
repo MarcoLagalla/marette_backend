@@ -1,38 +1,30 @@
 <template>
-    <div id="app">
-        <!-- Navigation -->
-        <navigation></navigation>
-        <!-- Menu -->
-        <app-menu></app-menu>
-        <!-- Header -->
-        <app-header></app-header>
-        <!-- Page Content -->
-        <!--page-content></page-content-->
-        <router-view/>
+  <v-app>
+    <core-toolbar />
 
-        <!-- Footer -->
-        <app-footer></app-footer>
-    </div>
+    <core-drawer />
+
+    <core-view />
+
+    <core-footer />
+
+  </v-app>
 </template>
 
 <script>
-    import Navigation from './components/Navigation'
-    import Header from './components/Header'
-    import Footer from './components/Footer'
-    import Menu from './components/Menu'
-    import PageContent from './components/PageContentHome'
 
-    export default {
-        components: {
-            'navigation': Navigation,
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-menu': Menu,
-            'pageContent': PageContent,
-        }
+  export default {
+    name: 'App',
+    components: {
+      CoreDrawer: () => import('@/components/core/Drawer'),
+      CoreFooter: () => import('@/components/core/Footer'),
+      CoreToolbar: () => import('@/components/core/Toolbar'),
+      CoreView: () => import('@/components/core/View')
+    },
+    data () {
+      return {
+      //
+      }
     }
+  }
 </script>
-
-<style>
-
-</style>

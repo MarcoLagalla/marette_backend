@@ -1,36 +1,22 @@
 <!DOCTYPE html>
-<html lang="it">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+<html lang="en">
+  <head>
     <title>Marette</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
 
-    <!-- Bootstrap core CSS -->
-    <link href="/static/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="/static/css/business-frontpage.css" rel="stylesheet">
-    <link href="/static/css/menu.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-
-<body>
-
+  </head>
+  <body>
     <noscript>
-      <strong>We're sorry but django-vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="/static/jquery/jquery.min.js" ></script>
-    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
+    <!-- built files will be auto injected -->
+  </body>
 </html>
+
