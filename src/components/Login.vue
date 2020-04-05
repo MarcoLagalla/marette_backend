@@ -2,18 +2,19 @@
         <div class="container">
             <h1>Log in</h1>
             <p>Inserire dati per loggare.</p>
+            <h2 v-if="response.status === 200">Utente Collegato!</h2>
             <hr>
 
 
             <label for="email"><b>Email</b></label>
-            <input v-model='user.email' type="text" placeholder="Inserire Email" id="email" name="email" required>
+            <input v-model='email' type="text" placeholder="Inserire Email" id="email" name="email" required>
 
             <label for="psw"><b>Password</b></label>
-            <input v-model='input.password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+            <input v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
 
             <hr>
-            <p>Non sei ancora Registrato ?  <router-link to="/Registration"> Registrati </router-link></p>
-            <button @click="signIn({email: input.email, password: input.password})" class="loginbtn">Collegati</button>
+            <p>Non sei ancora Registrato ?  <router-link to="/registration"> Registrati </router-link></p>
+            <button @click="submit" class="loginbtn">Collegati</button>
         </div>
 
 </template>
@@ -26,20 +27,42 @@
 
         data () {
             return {
-                input:
-                    {
                     email:'',
-                    password: ''
-                }
-
+                    password:''
             }
         },
 
+
         methods:
         {
-            ...mapActions('input', ['signIn']),
+            ...mapActions('user', ['signIn']),
+            submit: function () {
+
+                if (!this.email || !this.password)
+                {
+                    alert("Inserisci tutti i campi obbligatori");
+                }
+
+                else
+                {
+                    this.signIn({
+                    email: this.email,
+                    password: this.password,
+
+                    });
+                }
+
+            }
 
         },
+
+        computed:
+            {
+
+                response(){
+                    return this.$store.state.user.result
+                }
+            }
 
     }
 </script>

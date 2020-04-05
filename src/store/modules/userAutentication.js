@@ -1,4 +1,4 @@
-import userAutentication from '../../services/userAutentication'
+import sendUserAutentication from '../../services/sendUserAutentication'
 
 const state = {
   result: {},
@@ -14,14 +14,14 @@ const getters = {
 
 const actions = {
   registerUser({ commit }, result) {
-    userAutentication.postRegisterUser(result)
+    sendUserAutentication.postRegisterUser(result)
     .then((response) => {
       commit('updateResult', response);
     })
   },
 
   signIn({commit}, result) {
-    userAutentication.signUser(result)
+    sendUserAutentication.signUser(result)
         .then((response) => {
           commit('updateResult', response);
         })
