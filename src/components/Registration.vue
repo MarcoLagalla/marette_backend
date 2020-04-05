@@ -5,34 +5,34 @@
             <p>Dammi dei bei dati per registrare un account.</p>
             <hr>
 
-            <label for="username"><b>Username</b></label>
-            <input v-model='user.username' type="text" placeholder="Inserire Username" id="username" name="username" required>
+            <label for="username"><b>Username*</b></label>
+            <input v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required>
 
-            <label for="email"><b>Email</b></label>
-            <input v-model='user.email' type="text" placeholder="Inserire Email" id="email" name="email" required>
+            <label for="email"><b>Email*</b></label>
+            <input v-model='email' type="text" placeholder="Inserire Email" id="email" name="email" required>
 
-            <label for="psw"><b>Password</b></label>
-            <input v-model='user.password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+            <label for="psw"><b>Password*</b></label>
+            <input v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
 
-            <label for="psw-repeat"><b>Ripeti la Password</b></label>
-            <input v-model='user.password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required>
+            <label for="psw-repeat"><b>Ripeti la Password*</b></label>
+            <input v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required>
 
-            <label for="phone"><b>Numero di Telefono valido</b></label>
-            <input v-model='user.cellphone_number' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
+            <label for="phone"><b>Numero di Telefono valido*</b></label>
+            <input v-model='cellphone_number' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
 
             <label for="first_name"><b>Nome</b></label>
-            <input v-model='user.first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name">
+            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name">
 
             <label for="last_name"><b>Cognome</b></label>
-            <input v-model='user.last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name">
+            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name">
 
             <label for="birth_date"><b>Data di nascita</b></label>
-            <input v-model='user.birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date">
+            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date">
 
             <hr>
 
             <p>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</p>
-            <button @click="registerUser({username: user.username, email: user.email, password: user.password, password2: user.password2, cellphone_number: user.cellphone_number})" class="registerbtn">Registrati</button>
+            <button @click="submit" class="registerbtn" >Registrati</button>
         </div>
 
         <div class="container signin">
@@ -48,24 +48,53 @@
         name: "Registration",
         data () {
             return {
-                user: {
-                    username:'',
-                    email: '',
-                    password: '',
-                    password2: '',
-                    first_name: '',
-                    last_name: '',
-                    birth_date: '',
-                    cellphone_number: ''
-                }
-
+                username:'',
+                email: '',
+                password: '',
+                password2: '',
+                first_name: '',
+                last_name: '',
+                birth_date: '',
+                cellphone_number: ''
             }
         },
         methods:
         {
             ...mapActions('user', ['registerUser']),
+            submit: function () {
+                if (this.disable)
+                    alert("Inserisci tutti i campi obbligatori");
+                else
+                {
+                    if (!this.first_name && !this.last_name)
+                        this.registerUser({
+                            username: this.username,
+                            email: this.email,
+                            password: this.password,
+                            password2: this.password2,
+                            cellphone_number: this.cellphone_number
+                        });
+                    else
+                        this.registerUser({
+                            username: this.username,
+                            email: this.email,
+                            password: this.password,
+                            password2: this.password2,
+                            cellphone_number: this.cellphone_number,
+                            first_name: this.first_name,
+                            last_name: this.last_name,
+                            birth_date: this.birth_date
+                        });
+                }
+            },
 
         },
+        computed:
+            {
+                disable: function() {
+                    return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
+                }
+            }
     }
 </script>
 
