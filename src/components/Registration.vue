@@ -3,6 +3,10 @@
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
+            <h2 v-if="response.status === 201">Utente registrato con successo!</h2>
+            <template v-else v-for="errori in response.data">
+                <h3 v-for="errore in errori">{{errore}}</h3>
+            </template>
             <hr>
 
             <label for="username"><b>Username*</b></label>
@@ -43,6 +47,7 @@
 
 <script>
     import { mapActions } from 'vuex'
+
 
     export default {
         name: "Registration",
@@ -93,6 +98,9 @@
             {
                 disable: function() {
                     return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
+                },
+                response(){
+                    return this.$store.state.user.user
                 }
             }
     }
@@ -101,57 +109,64 @@
 <style scoped>
      {box-sizing: border-box}
 
-/* Add padding to containers */
-.container {
-  padding: 16px;
-}
+    /* Add padding to containers */
+    .container {
+      padding: 16px;
+    }
+     h2{
+         color: #1e7e34;
+     }
 
-/* Full-width input fields */
-input[type=text], input[type=password] , input[type=tel] , input[type=date] {
-  width: 100%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  display: inline-block;
-  border: none;
-  background: #f1f1f1;
-}
+     h3{
+         color: red;
+     }
 
-input[type=text]:focus, input[type=password], input[type=tel] , input[type=date] :focus {
-  background-color: #ddd;
-  outline: none;
-}
+    /* Full-width input fields */
+    input[type=text], input[type=password] , input[type=tel] , input[type=date] {
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      display: inline-block;
+      border: none;
+      background: #f1f1f1;
+    }
 
-/* Overwrite default styles of hr */
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
+    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date] :focus {
+      background-color: #ddd;
+      outline: none;
+    }
 
-/* Set a style for the submit/register button */
-.registerbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
+    /* Overwrite default styles of hr */
+    hr {
+      border: 1px solid #f1f1f1;
+      margin-bottom: 25px;
+    }
 
-.registerbtn:hover {
-  opacity:1;
-}
+    /* Set a style for the submit/register button */
+    .registerbtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      opacity: 0.9;
+    }
 
-/* Add a blue text color to links */
-a {
-  color: dodgerblue;
-}
+    .registerbtn:hover {
+      opacity:1;
+    }
 
-/* Set a grey background color and center the text of the "sign in" section */
-.signin {
-  background-color: #f1f1f1;
-  text-align: center;
-}
+    /* Add a blue text color to links */
+    a {
+      color: dodgerblue;
+    }
+
+    /* Set a grey background color and center the text of the "sign in" section */
+    .signin {
+      background-color: #f1f1f1;
+      text-align: center;
+    }
 
 </style>
