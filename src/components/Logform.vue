@@ -2,6 +2,7 @@
       <v-card width="30vmax"
       class="mx-auto mt-2">
         <v-card-title>Login form</v-card-title>
+                    <h2 v-if="response.status === 200">Utente Collegato!</h2>
         <v-card-text>
           <div>
             <v-text-field

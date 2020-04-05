@@ -2,6 +2,7 @@
       <v-card width="30vmax"
       class="mx-auto mt-2">
         <v-card-title>Registration form</v-card-title>
+        
         <v-card-text>
           <div>
             <v-text-field
@@ -55,7 +56,7 @@
             id="phone"
             name="phone"
             label="Phone number" 
-            v-model="cellphone_number"
+            v-model="phone"
             type="tel"
             ></v-text-field>
           </div>
@@ -84,7 +85,7 @@
                 first_name: '',
                 last_name: '',
                 birth_date: '',
-                cellphone_number: '',
+                phone: '',
             }
         },
         methods:
@@ -101,7 +102,7 @@
                             email: this.email,
                             password: this.password,
                             password2: this.password2,
-                            cellphone_number: this.cellphone_number
+                            phone: this.phone
                         });
                     else
                         this.registerUser({
@@ -109,7 +110,7 @@
                             email: this.email,
                             password: this.password,
                             password2: this.password2,
-                            cellphone_number: this.cellphone_number,
+                            phone: this.phone,
                             first_name: this.first_name,
                             last_name: this.last_name,
                             birth_date: this.birth_date
@@ -120,7 +121,7 @@
         computed:
             {
                 disable: function() {
-                    return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
+                    return !this.username || !this.email || !this.password || !this.password2 || !this.phone
                 },
                 response(){
                     return this.$store.state.user.result
