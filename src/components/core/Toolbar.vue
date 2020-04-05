@@ -22,6 +22,12 @@
           max-width="48"
           @click="$vuetify.goTo(0)"
         />
+        <router-link
+          to="/login">
+        <v-btn
+          class="ma-2"
+          color="success"
+          >Login</v-btn></router-link>
         <v-btn
           v-for="(link, i) in links"
           :key="i"

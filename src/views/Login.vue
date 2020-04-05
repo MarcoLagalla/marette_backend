@@ -1,10 +1,9 @@
 <template>
-  <div id="register">
+  <div id="login">
     <articles>
       <banner />
     </articles>
-    <regform />
-
+    <logform />
 
     <about />
 
@@ -16,10 +15,10 @@
 
 <script>
   export default {
-    name: 'Register',
+    name: 'Login',
 
     components: {
-      Regform: () => import('@/components/Regform'),
+      Logform: () => import('@/components/Logform'),
       About: () => import('@/components/home/About'),
       //Articles: () => import('@/components/home/Articles'),
       //Banner: () => import('@/components/home/Banner'),

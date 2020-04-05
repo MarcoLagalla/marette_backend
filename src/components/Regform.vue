@@ -5,37 +5,65 @@
         <v-card-text>
           <div>
             <v-text-field
+            id="username"
             v-model="username"
-            :counter="10"
-            :rules="nameRules"
              label="Username"
              required
              ></v-text-field>
             <v-text-field 
+            id="email"
             label="Email" 
             v-model="email"
-           :rules="[v => !!v || 'Email is required']"
             required
             ></v-text-field>
             <v-text-field 
-            label="password" 
+            id="password"
+            label="Insert password" 
             v-model="password"
             type="password"
-            :rules="[v => !!v || 'Password is required']"
             required
             ></v-text-field>
-            <v-checkbox
-             v-model="checkbox"
-            :rules="[v => !!v || 'You must agree to continue!']"
-             label="Do you agree?"
+            <v-text-field 
+            id="password2"
+            label="Confirm your password" 
+            v-model="password2"
+            type="password"
             required
-            ></v-checkbox>
+            ></v-text-field>
+            <v-text-field 
+            id="first_name"
+            label="First name" 
+            v-model="first_name"
+            type="name"
+            
+            ></v-text-field>
+            <v-text-field 
+            id="last_name"
+            label="Last name" 
+            v-model="last_name"
+            type="name"
+            
+            ></v-text-field>
+            <v-text-field 
+            id="birth_date"
+            label="Birth date" 
+            v-model="birth_date"
+            type="date"
+            
+            ></v-text-field>
+            <v-text-field
+            id="phone"
+            name="phone"
+            label="Phone number" 
+            v-model="cellphone_number"
+            type="tel"
+            ></v-text-field>
           </div>
         </v-card-text>
         <v-card-actions>
           <v-btn 
           color="success"
-          @click="registerUser({username: user.username, email: user.email, password: user.password})"
+          @click="submit"
           >Register</v-btn>
         </v-card-actions>
       </v-card>
@@ -46,43 +74,58 @@
 
     export default {
         name: "Regform",
+
         data () {
             return {
-                user: {
-                    username:'',
-                    email: '',
-                    password: '',
-                    //password2: '',
-                    //first_name: '',
-                    //last_name: '',
-                    //birth_date: '',
-                    //cellphone_number: ''
-                }
-
+                username:'',
+                email: '',
+                password: '',
+                password2: '',
+                first_name: '',
+                last_name: '',
+                birth_date: '',
+                cellphone_number: '',
             }
         },
-
-        /*data: () => ({
-      valid: true,
-      name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],      
-      checkbox: false,
-    }),*/
         methods:
         {
             ...mapActions('user', ['registerUser']),
-
-                
-        }
-        
-      }
+            submit: function () {
+                if (this.disable)
+                    alert("Inserisci tutti i campi obbligatori");
+                else
+                {
+                    if (!this.first_name && !this.last_name)
+                        this.registerUser({
+                            username: this.username,
+                            email: this.email,
+                            password: this.password,
+                            password2: this.password2,
+                            cellphone_number: this.cellphone_number
+                        });
+                    else
+                        this.registerUser({
+                            username: this.username,
+                            email: this.email,
+                            password: this.password,
+                            password2: this.password2,
+                            cellphone_number: this.cellphone_number,
+                            first_name: this.first_name,
+                            last_name: this.last_name,
+                            birth_date: this.birth_date
+                        });
+                }
+            },
+        },
+        computed:
+            {
+                disable: function() {
+                    return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
+                },
+                response(){
+                    return this.$store.state.user.result
+                }
+            }
+    }
     
 </script>
