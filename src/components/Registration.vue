@@ -1,5 +1,5 @@
 <template>
-     <div>
+     <form @submit.prevent="submit">
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
@@ -22,7 +22,7 @@
             <input v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required>
 
             <label for="phone"><b>Numero di Telefono valido*</b></label>
-            <input v-model='cellphone_number' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
+            <input v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
 
             <label for="first_name"><b>Nome</b></label>
             <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name">
@@ -36,13 +36,13 @@
             <hr>
 
             <p>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</p>
-            <button @click="submit" class="registerbtn" >Registrati</button>
+            <button type="submit" class="registerbtn" >Registrati</button>
         </div>
 
         <div class="container signin">
             <p>Hai già un account? <a href="#">Dillo prima, coglione</a>.</p>
         </div>
-    </div>
+    </form>
 </template>
 
 <script>
@@ -60,7 +60,7 @@
                 first_name: '',
                 last_name: '',
                 birth_date: '',
-                cellphone_number: ''
+                phone: ''
             }
         },
         methods:
@@ -77,7 +77,7 @@
                             email: this.email,
                             password: this.password,
                             password2: this.password2,
-                            cellphone_number: this.cellphone_number
+                            phone: this.phone
                         });
                     else
                         this.registerUser({
@@ -85,7 +85,7 @@
                             email: this.email,
                             password: this.password,
                             password2: this.password2,
-                            cellphone_number: this.cellphone_number,
+                            phone: this.phone,
                             first_name: this.first_name,
                             last_name: this.last_name,
                             birth_date: this.birth_date
@@ -97,7 +97,7 @@
         computed:
             {
                 disable: function() {
-                    return !this.username || !this.email || !this.password || !this.password2 || !this.cellphone_number
+                    return !this.username || !this.email || !this.password || !this.password2 || !this.phone
                 },
                 response(){
                     return this.$store.state.user.result
