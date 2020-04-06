@@ -27,3 +27,19 @@ class IsPostOrIsAdmin(permissions.BasePermission):
         # Otherwise, only allow authenticated requests
         # Post Django 1.10, 'is_authenticated' is a read-only attribute
         return request.user and request.user.is_superuser
+
+
+class OwnProfilePermission(permissions.BasePermission):
+    """
+    Object-level permission to only allow updating his own profile
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+
+        if request.user.id != obj.id:
+            return False
+
+        # obj here is a UserProfile instance
+        return obj.user == request.user

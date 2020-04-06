@@ -4,7 +4,8 @@ db.sqlite3
 /dist
 /venv
 __pycache__
-
+Pipfile
+Pipfile.lock
 # local env files
 .env.local
 .env.*.local
