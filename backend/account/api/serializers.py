@@ -17,8 +17,8 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
                                      validators=[UniqueValidator(queryset=User.objects.all())],)
     email = serializers.EmailField(source='user.email',
                                   validators=[UniqueValidator(queryset=User.objects.all())])
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
