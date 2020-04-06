@@ -18,9 +18,13 @@ export default new Vuex.Store({
         text: 'Home',
         to: '/'
       },
-      {
+      /*{
         text: 'About',
         href: '#about'
+      }*/
+      {
+        text:'SIGN UP',
+        to: '/register'
       }
     ]
   },

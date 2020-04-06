@@ -1,6 +1,7 @@
     <template>
-      <v-card width="30vmax"
-      class="mx-auto mt-2">
+      <v-card 
+      width="30vmax"
+      class="mx-auto mt-0">
         <v-card-title>Registration form</v-card-title>
         
         <v-card-text>
@@ -130,3 +131,7 @@
     }
     
 </script>
+
+
+
+

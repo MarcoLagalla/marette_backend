@@ -1,11 +1,12 @@
 <template>
-  <v-toolbar
+  <v-app-bar
+    fixed
     app
     flat
     dark
   >
-    <v-toolbar-side-icon
-      class="hidden-md-and-up"
+    <v-app-bar-nav-icon
+    absolute
       @click="toggleDrawer"
     />
     <v-container
@@ -28,11 +29,11 @@
           class="ma-2"
           color="success"
           >Login</v-btn></router-link>
-        <v-btn
+        <v-btn rounded
           v-for="(link, i) in links"
           :key="i"
           :to="link.to"
-          class="ml-0 hidden-sm-and-down"
+          class="ma-2 hidden-sm-and-down"
           flat
           @click="onClick($event, item)"
         >
@@ -48,7 +49,7 @@
         />
       </v-layout>
     </v-container>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
@@ -59,6 +60,9 @@
   } from 'vuex'
 
   export default {
+    data: () => ({
+      collapseOnScroll: true,
+    }),
     computed: {
       ...mapGetters(['links'])
     },

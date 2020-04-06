@@ -2,19 +2,46 @@
   <v-navigation-drawer
     v-model="drawer"
     app
-    light
+    color="lime lighten-5"
     temporary
   >
+  <v-system-bar
+      color="blue-grey darken-4"
+      height="65"
+      dark
+    ></v-system-bar>
     <v-list>
-      <v-list-tile
-        v-for="(link, i) in links"
-        :key="i"
-        :to="link.to"
-        :href="link.href"
-        @click="onClick($event, link)"
-      >
-        <v-list-tile-title v-text="link.text" />
-      </v-list-tile>
+      <v-list-item>
+        <v-chip
+      class="ma-2"
+      color="success"
+      outlined
+    >
+      <v-icon left>mdi-server-plus</v-icon>
+      Server Status
+    </v-chip>
+  </v-list-item>
+  <v-list-item>
+    <v-chip
+      class="ma-2"
+      color="primary"
+      outlined
+      pill
+    >
+      <v-icon left>mdi-account-outline</v-icon>
+      User Account
+    </v-chip>
+  </v-list-item>
+  <v-list-item>
+    <v-chip
+      class="ma-2"
+      color="deep-purple accent-4"
+      outlined
+    >
+      <v-icon left>mdi-wrench</v-icon>
+      Update Settings
+    </v-chip>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>

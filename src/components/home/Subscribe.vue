@@ -5,7 +5,7 @@
   >
     <base-card
       color="rgba(203, 170, 92, 0.51)"
-      class="pa-3"
+      class="pa-3 elevation-4"
     >
       <v-container
         grid-list-xl
@@ -50,8 +50,8 @@
           >
             <base-subheading>Contact</base-subheading>
             <v-list class="transparent">
-              <v-list-tile>
-                <v-list-tile-avatar
+              <v-list-item>
+                <v-list-item-avatar
                   color="primary"
                 >
                   <v-icon
@@ -60,14 +60,14 @@
                   >
                     mdi-email-outline
                   </v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-title>EMAIL</v-list-tile-title>
-                <v-list-tile-sub-title>
+                </v-list-item-avatar>
+                <v-list-item-title>EMAIL</v-list-item-title>
+                <v-list-item-subtitle>
                   THEARTOFTRAVEL@GMAIL.COM
-                </v-list-tile-sub-title>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-avatar
+                </v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-avatar
                   color="primary"
                 >
                   <v-icon
@@ -76,14 +76,14 @@
                   >
                     mdi-map-marker
                   </v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-title>ADDRESS</v-list-tile-title>
-                <v-list-tile-sub-title>
+                </v-list-item-avatar>
+                <v-list-item-title>ADDRESS</v-list-item-title>
+                <v-list-item-subtitle>
                   1234 WORLD DR. HERE, TX 76123
-                </v-list-tile-sub-title>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-avatar
+                </v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-avatar
                   color="primary"
                 >
                   <v-icon
@@ -92,12 +92,12 @@
                   >
                     mdi-phone
                   </v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-title>PHONE</v-list-tile-title>
-                <v-list-tile-sub-title>
+                </v-list-item-avatar>
+                <v-list-item-title>PHONE</v-list-item-title>
+                <v-list-item-subtitle>
                   555-789-1234
-                </v-list-tile-sub-title>
-              </v-list-tile>
+                </v-list-item-subtitle>
+              </v-list-item>
             </v-list>
           </v-flex>
         </v-layout>

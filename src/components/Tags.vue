@@ -2,6 +2,7 @@
   <v-container pa-0>
     <base-subheading>Tags</base-subheading>
     <v-chip
+      class="ma-2"
       v-for="(category, i) in categories"
       :key="i"
       tag

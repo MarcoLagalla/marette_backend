@@ -28,3 +28,10 @@
     }
   }
 </script>
+
+<style scoped>
+#register{
+  background-color: rgba(0,0,0, 0.2);
+  padding-top: 4px;
+}
+</style>
