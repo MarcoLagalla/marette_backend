@@ -19,7 +19,10 @@ export default {
   },
   logout() {
     return api.post('v1/account/logout')
-        .then(response => response)
+        .then(response => {
+            delete api.defaults.headers.common['Authorization']
+            return response
+        })
 
   }
 }
