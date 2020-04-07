@@ -3,9 +3,9 @@
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
-            <template v-if="status === 'error'" v-for="errori in errors">
+            <!--template v-if="status === 'error'" v-for="errori in errors">
                 <h3 v-for="errore in errori">{{errore}}</h3>
-            </template>
+            </template-->
             <hr>
 
             <label for="username"><b>Username*</b></label>

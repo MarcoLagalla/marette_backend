@@ -58,7 +58,7 @@ const actions = {
 
   logout: ({commit}) => {
     return new Promise((resolve, reject) => {
-      sendUserAutentication.logout().then(resp => {
+      sendUserAutentication.logout().then( function(){
           commit('AUTH_LOGOUT')
           localStorage.removeItem('user-token') // clear your user's token from localstorage
           resolve()
