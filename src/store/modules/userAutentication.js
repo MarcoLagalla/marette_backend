@@ -23,6 +23,7 @@ const actions = {
         .then(resp => {
           const data = resp.data
           localStorage.setItem('user-token', data.token) // store the token in localstorage
+          data.username = user.username
           commit('AUTH_SUCCESS', data)
 
           resolve(resp)
@@ -57,9 +58,17 @@ const actions = {
 
   logout: ({commit}) => {
     return new Promise((resolve) => {
-      commit('AUTH_LOGOUT')
-      localStorage.removeItem('user-token') // clear your user's token from localstorage
-      resolve()
+      //sendUserAutentication.logout().then(resp => {
+          commit('AUTH_LOGOUT')
+          localStorage.removeItem('user-token') // clear your user's token from localstorage
+          resolve()
+       /* })
+      .catch(err => {
+        commit('AUTH_ERROR', err.response)
+
+        reject(err)
+      })*/
+
     })
   }
 }

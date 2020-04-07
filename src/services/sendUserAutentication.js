@@ -9,5 +9,10 @@ export default {
     return api.post('v1/account/login', payload)
         .then(response => response)
 
+  },
+  logout() {
+    return api.post('v1/account/logout')
+        .then(response => response)
+
   }
 }
