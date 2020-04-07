@@ -57,17 +57,17 @@ const actions = {
   },
 
   logout: ({commit}) => {
-    return new Promise((resolve) => {
-      //sendUserAutentication.logout().then(resp => {
+    return new Promise((resolve, reject) => {
+      sendUserAutentication.logout().then(resp => {
           commit('AUTH_LOGOUT')
           localStorage.removeItem('user-token') // clear your user's token from localstorage
           resolve()
-       /* })
+        })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
 
         reject(err)
-      })*/
+      })
 
     })
   }
