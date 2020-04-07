@@ -55,7 +55,7 @@ const actions = {
     })
   },
 
-  LogOut: ({commit}) => {
+  logout: ({commit}) => {
     return new Promise((resolve) => {
       commit('AUTH_LOGOUT')
       localStorage.removeItem('user-token') // clear your user's token from localstorage
@@ -78,6 +78,9 @@ const mutations = {
     state.status = 'error'
     state.errors = error.data
   },
+  AUTH_LOGOUT: state => {
+    state.token = "";
+  }
 
 
 }
