@@ -4,13 +4,13 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import ugettext_lazy as _
 from backend.account.models import Customer, Business
 from django.db import transaction
 from codicefiscale import isvalid as cf_isvalid
 
 from ..models import User
 from .validators import SetCustomErrorMessagesMixin
+
 
 class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerializer):
     username = serializers.CharField(source='user.username',
@@ -31,9 +31,9 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
                   'birth_date', 'phone', 'is_active', 'is_superuser']
         custom_error_messages_for_validators = {
-            'username': { UniqueValidator: 'Esiste già un utente con questo username.'},
-            'email': {UniqueValidator: 'Esiste già un utente con questa email.', },
-            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.', },
+            'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
+            'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
+            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
         }
 
     @transaction.atomic
@@ -73,10 +73,10 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
                   'cf', 'birth_date', 'city', 'address', 'cap', 'phone']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
-            'email': {UniqueValidator: 'Esiste già un utente con questa email.', },
-            'cf': {UniqueValidator: 'Esiste già un utente con questo codice fiscale.', },
-            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.', },
-            'birth_date' : {RegexValidator: 'prova',}
+            'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
+            'cf': {UniqueValidator: 'Esiste già un utente con questo codice fiscale.'},
+            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
+            'birth_date': {RegexValidator: 'prova'},
         }
 
     @transaction.atomic
