@@ -2,13 +2,15 @@ import sendUserAutentication from '../../services/sendUserAutentication'
 const state = {
   token: localStorage.getItem('user-token') || '',
   status: '',
-  errors: []
+  errors: [],
+  username: ''
 }
 
 const getters = {
   isAuthenticated: state => !!state.token,
   status: state => state.status,
-  errors: state => state.errors
+  errors: state => state.errors,
+  username: state => state.username,
 
 }
 
@@ -19,9 +21,9 @@ const actions = {
       commit('AUTH_REQUEST')
           sendUserAutentication.signUser(user)
         .then(resp => {
-          const token = resp.data.token
-          localStorage.setItem('user-token', token) // store the token in localstorage
-          commit('AUTH_SUCCESS', token)
+          const data = resp.data
+          localStorage.setItem('user-token', data.token) // store the token in localstorage
+          commit('AUTH_SUCCESS', data)
 
           resolve(resp)
         })
@@ -38,9 +40,9 @@ const actions = {
       commit('AUTH_REQUEST')
           sendUserAutentication.postRegisterUser(user)
         .then(resp => {
-          const token = resp.data.token
-          localStorage.setItem('user-token', token) // store the token in localstorage
-          commit('AUTH_SUCCESS', token)
+          const data = resp.data
+          localStorage.setItem('user-token', data.token) // store the token in localstorage
+          commit('AUTH_SUCCESS', data)
 
           resolve(resp)
         })
@@ -67,9 +69,10 @@ const mutations = {
   AUTH_REQUEST: (state) => {
     state.status = 'loading'
   },
-  AUTH_SUCCESS: (state, token) => {
+  AUTH_SUCCESS: (state, data) => {
     state.status = 'success'
-    state.token = token
+    state.token = data.token
+    state.username = data.username
   },
   AUTH_ERROR: (state, error) => {
     state.status = 'error'
