@@ -26,6 +26,7 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     is_active = serializers.BooleanField(source='user.is_active', read_only=True)
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
+    id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
@@ -67,6 +68,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
+    id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
