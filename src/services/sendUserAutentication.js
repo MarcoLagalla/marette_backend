@@ -4,7 +4,7 @@ export default {
   postRegisterUser(payload) {
     return api.post(`v1/account/customer`, payload)
           .then(response => {
-            api.defaults.headers.common['Authorization'] = response.data.token
+            api.defaults.headers.common['Authorization'] = 'Token ' + response.data.token
             return response
           })
 
@@ -12,7 +12,7 @@ export default {
   signUser(payload) {
     return api.post('v1/account/login', payload)
         .then(response => {
-            api.defaults.headers.common['Authorization'] = response.data.token
+            api.defaults.headers.common['Authorization'] =  'Token ' + response.data.token
             return response
           })
 
