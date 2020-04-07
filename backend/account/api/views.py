@@ -42,14 +42,19 @@ class CustomerAPIView(APIView):
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
-                customer = serializer.save()
-                activation_token = account_activation_token.make_token(customer.user)
-                send_welcome_email(customer.user, activation_token)
-                data['response'] = "Utente corretamente registrato."
-                data['username'] = customer.user.username
-                data['email'] = customer.user.email
-                data['token'] = Token.objects.create(user=customer.user).key
-                return Response(data, status=status.HTTP_201_CREATED)
+                try:
+                    customer = serializer.save()
+                    activation_token = account_activation_token.make_token(customer.user)
+                    send_welcome_email(customer.user, activation_token)
+                    data['response'] = "Utente corretamente registrato."
+                    data['username'] = customer.user.username
+                    data['id'] = customer.user.id
+                    data['email'] = customer.user.email
+                    data['token'] = Token.objects.create(user=customer.user).key
+                    return Response(data, status=status.HTTP_201_CREATED)
+                except:
+                    data['error'] = ["Errore generico."]
+                    return Response(data, status=status.HTTP_403_FORBIDDEN)
             else:
                 data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
@@ -66,14 +71,19 @@ class BusinessAPIView(APIView):
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
-                business = serializer.save()
-                activation_token = account_activation_token.make_token(business.user)
-                send_welcome_email(business.user, activation_token)
-                data['response'] = "Utente correttamente registrato."
-                data['username'] = business.user.username
-                data['email'] = business.user.email
-                data['token'] = Token.objects.create(user=business.user).key
-                return Response(data, status=status.HTTP_201_CREATED)
+                try:
+                    business = serializer.save()
+                    activation_token = account_activation_token.make_token(business.user)
+                    send_welcome_email(business.user, activation_token)
+                    data['response'] = "Utente correttamente registrato."
+                    data['username'] = business.user.username
+                    data['id'] = business.user.id
+                    data['email'] = business.user.email
+                    data['token'] = Token.objects.create(user=business.user).key
+                    return Response(data, status=status.HTTP_201_CREATED)
+                except:
+                    data['error'] = ["Errore generico."]
+                    return Response(data, status=status.HTTP_403_FORBIDDEN)
             else:
                 data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
@@ -98,10 +108,12 @@ class LoginGetToken(APIView):
                         if not Token.objects.all().filter(user=user):
                             token = Token.objects.create(user=user).key
                             data['token'] = token
+                            data['id'] = user.id
                             return Response(data, status=status.HTTP_200_OK)
                         else:
                             token = Token.objects.get(user=user).key
                             data['token'] = token
+                            data['id'] = user.id
                             return Response(data, status=status.HTTP_200_OK)
             except User.DoesNotExist:
                 data['error'] = ["L'utente non esiste."]

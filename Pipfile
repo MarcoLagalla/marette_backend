@@ -29,4 +29,3 @@ django-localflavor = "*"
 codicefiscale = "*"
 
 [requires]
-python_version = ">=3.6"

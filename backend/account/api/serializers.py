@@ -4,7 +4,6 @@ from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import ugettext_lazy as _
 from backend.account.models import Customer, Business
 from django.db import transaction
 from codicefiscale import isvalid as cf_isvalid
@@ -12,13 +11,14 @@ from codicefiscale import isvalid as cf_isvalid
 from ..models import User
 from .validators import SetCustomErrorMessagesMixin
 
+
 class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerializer):
     username = serializers.CharField(source='user.username',
                                      validators=[UniqueValidator(queryset=User.objects.all())],)
     email = serializers.EmailField(source='user.email',
                                   validators=[UniqueValidator(queryset=User.objects.all())])
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
@@ -26,14 +26,15 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     is_active = serializers.BooleanField(source='user.is_active', read_only=True)
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
+    id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
                   'birth_date', 'phone', 'is_active', 'is_superuser']
         custom_error_messages_for_validators = {
-            'username': { UniqueValidator: 'Esiste già un utente con questo username.'},
-            'email': {UniqueValidator: 'Esiste già un utente con questa email.', },
-            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.', },
+            'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
+            'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
+            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
         }
 
     @transaction.atomic
@@ -67,16 +68,17 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password = serializers.CharField(source='user.password', write_only=True)
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
+    id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
                   'cf', 'birth_date', 'city', 'address', 'cap', 'phone']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
-            'email': {UniqueValidator: 'Esiste già un utente con questa email.', },
-            'cf': {UniqueValidator: 'Esiste già un utente con questo codice fiscale.', },
-            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.', },
-            'birth_date' : {RegexValidator: 'prova',}
+            'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
+            'cf': {UniqueValidator: 'Esiste già un utente con questo codice fiscale.'},
+            'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
+            'birth_date': {RegexValidator: 'prova'},
         }
 
     @transaction.atomic
