@@ -1,10 +1,9 @@
 <template>
-     <form @submit.prevent="submit">
+     <form @submit.prevent="login">
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
-            <h2 v-if="response.status === 201">Utente registrato con successo!</h2>
-            <template v-else v-for="errori in response.data">
+            <template v-if="status === 'error'" v-for="errori in errors">
                 <h3 v-for="errore in errori">{{errore}}</h3>
             </template>
             <hr>
@@ -25,13 +24,13 @@
             <input v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
 
             <label for="first_name"><b>Nome</b></label>
-            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name">
+            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required>
 
             <label for="last_name"><b>Cognome</b></label>
-            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name">
+            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required>
 
             <label for="birth_date"><b>Data di nascita</b></label>
-            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date">
+            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required>
 
             <hr>
 
@@ -61,27 +60,16 @@
                 last_name: '',
                 birth_date: '',
                 phone: ''
+
             }
         },
         methods:
         {
-            ...mapActions('user', ['registerUser']),
-            submit: function () {
-                if (this.disable)
-                    alert("Inserisci tutti i campi obbligatori");
-                else
-                {
-                    if (!this.first_name && !this.last_name)
-                        this.registerUser({
-                            username: this.username,
-                            email: this.email,
-                            password: this.password,
-                            password2: this.password2,
-                            phone: this.phone
-                        });
-                    else
-                        this.registerUser({
-                            username: this.username,
+            ...mapActions('userAutentication', ['registerUser']),
+
+            login: function () {
+                this.registerUser({
+                    username: this.username,
                             email: this.email,
                             password: this.password,
                             password2: this.password2,
@@ -89,18 +77,19 @@
                             first_name: this.first_name,
                             last_name: this.last_name,
                             birth_date: this.birth_date
-                        });
-                }
-            },
+               }).then(() => {
+                 this.$router.push('/')
+   })
+ }
 
         },
         computed:
             {
-                disable: function() {
-                    return !this.username || !this.email || !this.password || !this.password2 || !this.phone
+                status(){
+                    return this.$store.getters['userAutentication/status']
                 },
-                response(){
-                    return this.$store.state.user.result
+                errors(){
+                    return this.$store.getters['userAutentication/errors']
                 }
             }
     }
