@@ -24,13 +24,13 @@
             <input v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
 
             <label for="first_name"><b>Nome</b></label>
-            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required>
+            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" >
 
             <label for="last_name"><b>Cognome</b></label>
-            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required>
+            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" >
 
             <label for="birth_date"><b>Data di nascita</b></label>
-            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required>
+            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" >
 
             <hr>
 
