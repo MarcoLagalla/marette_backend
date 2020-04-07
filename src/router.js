@@ -3,11 +3,12 @@ import Router from 'vue-router'
 import Registration from "./components/Registration";
 import Login from "./components/Login";
 import PageContentHome from "./components/PageContentHome";
+import store from "./store";
 
 Vue.use(Router)
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters.isAuthenticated) {
+  if (!store.getters['userAutentication/isAuthenticated']) {
     next();
     return;
   }
@@ -15,7 +16,7 @@ const ifNotAuthenticated = (to, from, next) => {
 };
 
 const ifAuthenticated = (to, from, next) => {
-  if (store.getters.isAuthenticated) {
+  if (store.getters['userAutentication/isAuthenticated']) {
     next();
     return;
   }
