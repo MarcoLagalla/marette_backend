@@ -1,5 +1,5 @@
 <template>
-     <form @submit.prevent="login">
+     <form @submit.prevent="register">
         <div class="container">
             <h1>Registrati</h1>
             <p>Dammi dei bei dati per registrare un account.</p>
@@ -67,7 +67,7 @@
         {
             ...mapActions('userAutentication', ['registerUser']),
 
-            login: function () {
+            register: function () {
                 this.registerUser({
                     username: this.username,
                             email: this.email,
@@ -78,9 +78,9 @@
                             last_name: this.last_name,
                             birth_date: this.birth_date
                }).then(() => {
-                 this.$router.push('/')
-   })
- }
+                   this.$router.push('/')
+                })
+            }
 
         },
         computed:
