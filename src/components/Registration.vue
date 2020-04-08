@@ -68,18 +68,31 @@
             ...mapActions('userAutentication', ['registerUser']),
 
             register: function () {
-                this.registerUser({
-                    username: this.username,
-                            email: this.email,
-                            password: this.password,
-                            password2: this.password2,
-                            phone: this.phone,
-                            first_name: this.first_name,
-                            last_name: this.last_name,
-                            birth_date: this.birth_date
-               }).then(() => {
-                   this.$router.push('/')
-                })
+                if ( !this.first_name && !this.last_name) {
+                    this.registerUser({
+                        username: this.username,
+                        email: this.email,
+                        password: this.password,
+                        password2: this.password2,
+                        phone: this.phone
+                    }).then(() => {
+                        this.$router.push('/')
+                    })
+                }
+                else{
+                    this.registerUser({
+                        username: this.username,
+                        email: this.email,
+                        password: this.password,
+                        password2: this.password2,
+                        phone: this.phone,
+                        first_name: this.first_name,
+                        last_name: this.last_name,
+                        birth_date: this.birth_date
+                    }).then(() => {
+                        this.$router.push('/')
+                    })
+                }
             }
 
         },
