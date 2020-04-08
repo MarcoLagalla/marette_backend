@@ -18,7 +18,7 @@ export default new Vuex.Store({
         text: 'Home',
         to: '/'
       },
-      
+
       {
         text:'SIGN UP',
         to: '/register'
