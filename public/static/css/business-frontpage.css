@@ -1,0 +1,58 @@
+/*!
+ * Start Bootstrap - Busines Frontpage (https://startbootstrap.com/template-overviews/business-frontpage)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-business-frontpage/blob/master/LICENSE)
+ */
+body {
+  padding-top: 56px;
+  transition: 0.5s;
+}
+
+.nav-link {
+  transition: 0.5s;
+}
+
+.card:hover {
+  box-shadow: 0px 1px 21px 0px rgba(0,0,0,0.75);
+  transition: 0.5s;
+}
+
+.card {
+  transition: 0.4s;
+}
+
+h1 {
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+  color: #721c24;
+}
+
+.btn-lg {
+  background: #0b2e13;
+  border: #dae0e5;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.75);
+  transition: 0.5s;
+}
+
+.btn-lg:hover {
+  background: #19692c;
+  transition: 0.5s;
+}
+
+.btn-primary {
+  background: #721c24;
+  transition: 0.5s;
+  border: #721c24;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.75);
+}
+
+.col-lg-12 {
+  background: #0b2e13;
+}
+
+.bg-primary {
+  background: #0b2e13;
+}
+
+header {
+  height: 250px;
+}

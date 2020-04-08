@@ -4,14 +4,12 @@ import unidecode, re
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
-from localflavor.it.util import ssn_validation
-
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE,)
 
     birth_date = models.DateField(blank=True, null=True)
-    phone = PhoneNumberField(unique=True)
+    phone = PhoneNumberField(unique=True, error_messages={'unique': 'Esiste già un utente con questo numero.'})
 
     def __str__(self):
         return self.user.username
@@ -20,12 +18,12 @@ class Customer(models.Model):
 class Business(models.Model):
     user = models.OneToOneField(User, related_name='business', on_delete=models.CASCADE)
 
-    cf = models.CharField(max_length=16, validators=[ssn_validation])
-    birth_date = models.DateField(null=True)
+    cf = models.CharField(max_length=16, unique=True)
+    birth_date = models.DateField()
     city = models.CharField(max_length=50, blank=False)
     address = models.CharField(max_length=150, blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
-    phone = PhoneNumberField(unique=True)
+    phone = PhoneNumberField(unique=True, error_messages={'unique': 'Esiste già un utente con questo numero.'})
 
     def __str__(self):
         return self.user.username

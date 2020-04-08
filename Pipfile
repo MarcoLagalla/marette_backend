@@ -26,6 +26,6 @@ Django = "==3.0.4"
 Unidecode = "==1.1.1"
 Werkzeug = "==1.0.0"
 django-localflavor = "*"
+codicefiscale = "*"
 
 [requires]
-python_version = "3.6"

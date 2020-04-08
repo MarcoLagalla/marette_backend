@@ -1,21 +1,28 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import VueDemo from '@/components/VueDemo'
-import Messages from '@/components/Messages'
+import Registration from "./components/Registration";
+import Login from "./components/Login";
+import PageContentHome from "./components/PageContentHome";
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
+      {
       path: '/',
       name: 'home',
-      component: VueDemo
-    },
-    {
-      path: '/messages',
-      name: 'messages',
-      component: Messages
-    }
-  ]
+      component: PageContentHome
+      },
+      {
+      path: '/registration',
+      name: 'registration',
+      component: Registration
+      },
+      {
+          path: '/login',
+          name: 'login',
+          component: Login
+      },
+  ],
+  mode: 'history'
 })
