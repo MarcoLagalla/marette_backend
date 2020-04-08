@@ -42,19 +42,15 @@ class CustomerAPIView(APIView):
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
-                try:
-                    customer = serializer.save()
-                    activation_token = account_activation_token.make_token(customer.user)
-                    send_welcome_email(customer.user, activation_token)
-                    data['response'] = "Utente corretamente registrato."
-                    data['username'] = customer.user.username
-                    data['id'] = customer.user.id
-                    data['email'] = customer.user.email
-                    data['token'] = Token.objects.create(user=customer.user).key
-                    return Response(data, status=status.HTTP_201_CREATED)
-                except:
-                    data['error'] = ["Errore generico."]
-                    return Response(data, status=status.HTTP_403_FORBIDDEN)
+                customer = serializer.save()
+                activation_token = account_activation_token.make_token(customer.user)
+                send_welcome_email(customer.user, activation_token)
+                data['response'] = "Utente corretamente registrato."
+                data['username'] = customer.user.username
+                data['id'] = customer.user.id
+                data['email'] = customer.user.email
+                data['token'] = Token.objects.create(user=customer.user).key
+                return Response(data, status=status.HTTP_201_CREATED)
             else:
                 data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
@@ -70,12 +66,8 @@ class BusinessAPIView(APIView):
         serializer = BusinessSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-
             if (not request.user.is_authenticated) or request.user.is_superuser:
-
                 business = serializer.save()
-                print(serializer.validated_data)
-
                 activation_token = account_activation_token.make_token(business.user)
                 send_welcome_email(business.user, activation_token)
                 data['response'] = "Utente correttamente registrato."
@@ -84,7 +76,6 @@ class BusinessAPIView(APIView):
                 data['email'] = business.user.email
                 data['token'] = Token.objects.create(user=business.user).key
                 return Response(data, status=status.HTTP_201_CREATED)
-
             else:
                 data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)
@@ -195,16 +186,21 @@ class ActivateUserAPIView(APIView):
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None:
-            if not user.is_active:
-                if account_activation_token.check_token(user, token):
-                    user.is_active = True
-                    user.save()
-                else:
+            try:
+                utente = Customer.objects.get(user=user)
+            except ObjectDoesNotExist:
+                try:
+                    utente = Business.objects.get(user=user)
+                except ObjectDoesNotExist:
                     return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
+            if account_activation_token.check_token(user, token) and utente:
+                # se customer o business
+                utente.email_activated = True
+                utente.save()
             else:
-                return Response({'error': ["L'utente ha già confermato l'email."]},
-                                status=status.HTTP_204_NO_CONTENT)
+                return Response({'error': ['Token di autorizzazione non valido.']},
+                                    status=status.HTTP_401_UNAUTHORIZED)
             return Response({'activation': 'Indirizzo email confermato, account attivo.'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': ['Token di autorizzazione non valido.']}, status=status.HTTP_400_BAD_REQUEST)

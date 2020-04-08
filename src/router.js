@@ -3,25 +3,44 @@ import Router from 'vue-router'
 import Registration from "./components/Registration";
 import Login from "./components/Login";
 import PageContentHome from "./components/PageContentHome";
+import store from "./store";
 
 Vue.use(Router)
+
+const ifNotAuthenticated = (to, from, next) => {
+  if (!store.getters['userAutentication/isAuthenticated']) {
+    next();
+    return;
+  }
+  next("/");
+};
+
+const ifAuthenticated = (to, from, next) => {
+  if (store.getters['userAutentication/isAuthenticated']) {
+    next();
+    return;
+  }
+  next("/login");
+};
 
 export default new Router({
   routes: [
       {
-      path: '/',
-      name: 'home',
-      component: PageContentHome
+          path: '/',
+          name: 'home',
+          component: PageContentHome
       },
       {
-      path: '/registration',
-      name: 'registration',
-      component: Registration
+          path: '/registration',
+          name: 'registration',
+          component: Registration,
+          beforeEnter: ifNotAuthenticated
       },
       {
           path: '/login',
           name: 'login',
-          component: Login
+          component: Login,
+          beforeEnter: ifNotAuthenticated
       },
   ],
   mode: 'history'
