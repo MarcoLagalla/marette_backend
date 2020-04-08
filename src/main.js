@@ -8,7 +8,7 @@ import api from '@/services/api'
 const token = localStorage.getItem('user-token')
 
 if (token) {
-  api.defaults.headers.common['Authorization'] = 'Token' + token
+  api.defaults.headers.common['Authorization'] = 'Token ' + token
 }
 
 new Vue({
