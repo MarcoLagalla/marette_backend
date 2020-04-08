@@ -68,6 +68,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
+
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
@@ -84,7 +85,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     def save(self):
         password = self.validated_data['user']['password']
         password2 = self.validated_data['password2']
-        cf = self.validated_data['cf']
+        cf = str(self.validated_data['cf']).upper()
 
         user = User.objects.create(**self.validated_data['user'])
 
