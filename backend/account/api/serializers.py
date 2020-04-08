@@ -47,7 +47,6 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         if password != password2:
             raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
         user.set_password(password)
-        user.is_active = False
         user.save()
         update_last_login(None, user)
 
