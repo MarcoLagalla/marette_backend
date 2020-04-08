@@ -3,12 +3,13 @@ import App from '@/App.vue'
 
 import store from '@/store' 
 import router from '@/router'
+import api from '@/services/api'
 
+const token = localStorage.getItem('user-token')
 
-
-Vue.config.productionTip = false
-
-
+if (token) {
+  api.defaults.headers.common['Authorization'] = 'Token ' + token
+}
 
 new Vue({
     el: '#app',

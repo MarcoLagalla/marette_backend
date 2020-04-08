@@ -1,8 +1,8 @@
 <template>
-        <div class="container">
+        <form @submit.prevent="login" class="container">
             <h1>Log in</h1>
             <p>Inserire dati per loggare.</p>
-            <h2 v-if="response.status === 200">Utente Collegato!</h2>
+            <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
             <hr>
 
 
@@ -14,8 +14,8 @@
 
             <hr>
             <p>Non sei ancora Registrato ?  <router-link to="/registration"> Registrati </router-link></p>
-            <button @click="submit" class="loginbtn">Collegati</button>
-        </div>
+            <button class="loginbtn">Collegati</button>
+        </form>
 
 </template>
 
@@ -35,34 +35,30 @@
 
         methods:
         {
-            ...mapActions('user', ['signIn']),
-            submit: function () {
+            ...mapActions('userAutentication', ['signIn']),
+            login: function () {
+                this.signIn({
+                email: this.email,
+                password: this.password,
 
-                if (!this.email || !this.password)
-                {
-                    alert("Inserisci tutti i campi obbligatori");
-                }
+                }).then(() => {
+                   this.$router.push('/')
+                });
 
-                else
-                {
-                    this.signIn({
-                    email: this.email,
-                    password: this.password,
-
-                    });
-                }
 
             }
 
         },
 
         computed:
-            {
-
-                response(){
-                    return this.$store.state.user.result
-                }
+        {
+            status(){
+                return this.$store.getters['userAutentication/status']
+            },
+            errors(){
+                return this.$store.getters['userAutentication/errors']
             }
+        }
 
     }
 </script>
