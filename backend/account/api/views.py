@@ -194,16 +194,21 @@ class ActivateUserAPIView(APIView):
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None:
-            if not user.is_active:
-                if account_activation_token.check_token(user, token):
-                    user.is_active = True
-                    user.save()
-                else:
+            try:
+                utente = Customer.objects.get(user=user)
+            except ObjectDoesNotExist:
+                try:
+                    utente = Business.objects.get(user=user)
+                except ObjectDoesNotExist:
                     return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
+            if account_activation_token.check_token(user, token) and utente:
+                # se customer o business
+                utente.email_activated = True
+                utente.save()
             else:
-                return Response({'error': ["L'utente ha già confermato l'email."]},
-                                status=status.HTTP_204_NO_CONTENT)
+                return Response({'error': ['Token di autorizzazione non valido.']},
+                                    status=status.HTTP_401_UNAUTHORIZED)
             return Response({'activation': 'Indirizzo email confermato, account attivo.'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': ['Token di autorizzazione non valido.']}, status=status.HTTP_400_BAD_REQUEST)

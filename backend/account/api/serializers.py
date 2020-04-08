@@ -96,7 +96,6 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
             raise serializers.ValidationError({'cf': ['Il codice fiscale non è valido.']})
 
         user.set_password(password)
-        user.is_active = False
         user.save()
         update_last_login(None, user)
 
