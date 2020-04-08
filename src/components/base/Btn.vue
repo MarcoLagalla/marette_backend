@@ -1,9 +1,11 @@
 <template>
   <v-btn
-    fab
-    small
-    color="primary"
-    :style="styles"
+    :color="color"
+    :depressed="depressed"
+    :min-width="minWidth"
+    :tile="tile"
+    class="font-weight-bold"
+    x-large
     v-bind="$attrs"
     v-on="$listeners"
   >
@@ -15,18 +17,23 @@
   export default {
     name: 'BaseBtn',
 
-    inheritAttrs: false,
-
     props: {
-      square: Boolean
+      color: {
+        type: String,
+        default: 'primary',
+      },
+      depressed: {
+        type: Boolean,
+        default: true,
+      },
+      minWidth: {
+        type: [Number, String],
+        default: 164,
+      },
+      tile: {
+        type: Boolean,
+        default: true,
+      },
     },
-
-    computed: {
-      styles () {
-        return {
-          borderRadius: this.square ? '2px' : undefined
-        }
-      }
-    }
   }
 </script>

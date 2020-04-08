@@ -10,7 +10,7 @@ export default new Vuex.Store({
     user
   },
 
-  state: {
+  /*state: {
     articles: require('@/data/articles.json'),
     drawer: false,
     items: [
@@ -18,10 +18,7 @@ export default new Vuex.Store({
         text: 'Home',
         to: '/'
       },
-      /*{
-        text: 'About',
-        href: '#about'
-      }*/
+      
       {
         text:'SIGN UP',
         to: '/register'
@@ -58,5 +55,5 @@ export default new Vuex.Store({
   },
   actions: {
 
-  }
+  }*/
 })

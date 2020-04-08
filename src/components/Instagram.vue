@@ -1,43 +1,24 @@
 <template>
-  <v-container
-    pa-0
-    grid-list-md
-  >
-    <base-subheading>On Instagram</base-subheading>
-    <v-layout wrap>
-      <v-flex
-        v-for="(post, i) in posts"
-        :key="i"
-        xs4
+  <base-info-card title="Instagram">
+    <v-row dense>
+      <v-col
+        v-for="n in 6"
+        :key="n"
+        cols="auto"
       >
-        <base-card
-          tag="a"
-          :href="post.href"
-          height="88"
-          color="grey lighten-2"
-        >
-          <v-img
-            v-if="post.src"
-            height="100%"
-            :src="require(`@/assets/instagram/${post.src}`)"
-          />
-        </base-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        <base-img
+          :src="require(`@/assets/insta-${n}.jpg`)"
+          color="grey lighten-1"
+          width="96"
+          tile
+        />
+      </v-col>
+    </v-row>
+  </base-info-card>
 </template>
 
 <script>
   export default {
-    data: () => ({
-      posts: [
-        { src: 'adventurealtitude.jpg' },
-        { src: 'garden.jpg' },
-        { src: 'pigduck.jpg' },
-        { src: 'rain.jpg' },
-        { src: 'spices.jpg' },
-        { src: 'sunset.jpg' }
-      ]
-    })
+    name: 'Instagram',
   }
 </script>

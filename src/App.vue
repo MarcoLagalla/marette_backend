@@ -1,30 +1,30 @@
 <template>
-  <v-app>
-    <core-toolbar />
-
-    <core-drawer />
-
-    <core-view />
-
-    <core-footer />
-
-  </v-app>
+  <v-fade-transition mode="out-in">
+    <router-view />
+  </v-fade-transition>
 </template>
 
 <script>
-
   export default {
     name: 'App',
-    components: {
-      CoreDrawer: () => import('@/components/core/Drawer'),
-      CoreFooter: () => import('@/components/core/Footer'),
-      CoreToolbar: () => import('@/components/core/Toolbar'),
-      CoreView: () => import('@/components/core/View')
+    metaInfo: {
+      title: 'App',
+      titleTemplate: '%s | Daedal Multi-Purpose Theme',
+      htmlAttrs: { lang: 'en' },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
     },
-    data () {
-      return {
-      //
-      }
-    }
   }
 </script>
+
+<style lang="sass">
+  .extra-padding
+    padding-bottom: 96px !important
+    padding-top: 96px !important
+
+    @media screen and (max-width: 959px)
+      padding-top: 48px !important
+      padding-bottom: 48px !important
+</style>
