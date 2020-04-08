@@ -1,8 +1,25 @@
 // Imports
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from "@/store"
 
 Vue.use(Router)
+
+const ifNotAuthenticated = (to, from, next) => {
+  if (!store.getters['userAutentication/isAuthenticated']) {
+    next();
+    return;
+  }
+  next("/");
+};
+
+/*const ifAuthenticated = (to, from, next) => {
+  if (store.getters['userAutentication/isAuthenticated']) {
+    next();
+    return;
+  }
+  next("/login");
+};*/
 
 const router = new Router({
   mode: 'history',
@@ -40,6 +57,18 @@ const router = new Router({
           name: 'Pro',
           component: () => import('@/views/pro/Index.vue'),
           meta: { src: require('@/assets/pro.jpg') },
+        },
+        {
+          path: 'registration',
+          name: 'Registration',
+          component: () => import('@/views/registration/Index.vue'),
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'login',
+          name: 'Login',
+          component: () => import('@/views/login/Index.vue'),
+          beforeEnter: ifNotAuthenticated,
         },
         {
           path: '*',

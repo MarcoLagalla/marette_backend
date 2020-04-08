@@ -18,6 +18,7 @@
         'about-our-product',
         'theme-features',
         'logform',
+        'regform',
         'affiliates',
         'newsletter',
         'pro-features',
