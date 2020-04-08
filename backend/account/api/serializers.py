@@ -88,7 +88,6 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         cf = self.validated_data['cf']
 
         user = User.objects.create(**self.validated_data['user'])
-
         if password != password2:
             raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
 

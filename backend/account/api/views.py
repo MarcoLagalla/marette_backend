@@ -70,20 +70,21 @@ class BusinessAPIView(APIView):
         serializer = BusinessSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
+
             if (not request.user.is_authenticated) or request.user.is_superuser:
-                try:
-                    business = serializer.save()
-                    activation_token = account_activation_token.make_token(business.user)
-                    send_welcome_email(business.user, activation_token)
-                    data['response'] = "Utente correttamente registrato."
-                    data['username'] = business.user.username
-                    data['id'] = business.user.id
-                    data['email'] = business.user.email
-                    data['token'] = Token.objects.create(user=business.user).key
-                    return Response(data, status=status.HTTP_201_CREATED)
-                except:
-                    data['error'] = ["Errore generico."]
-                    return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+                business = serializer.save()
+                print(serializer.validated_data)
+
+                activation_token = account_activation_token.make_token(business.user)
+                send_welcome_email(business.user, activation_token)
+                data['response'] = "Utente correttamente registrato."
+                data['username'] = business.user.username
+                data['id'] = business.user.id
+                data['email'] = business.user.email
+                data['token'] = Token.objects.create(user=business.user).key
+                return Response(data, status=status.HTTP_201_CREATED)
+
             else:
                 data['error'] = ["L'utente è già registrato."]
             return Response(data, status=status.HTTP_403_FORBIDDEN)

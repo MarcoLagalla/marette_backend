@@ -34,7 +34,7 @@ class CreateRestaurantAPIView(APIView):
         if user:
             serializer = CreateRestaurantSerializer(data=request.data, context={'business_user': user})
             if serializer.is_valid():
-                business = serializer.save()
+                restaurant = serializer.save()
                 data['response'] = "successfully registered a new restaurant"
                 return Response(data, status=status.HTTP_201_CREATED)
             else:

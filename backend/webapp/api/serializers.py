@@ -3,7 +3,7 @@ from rest_framework.validators import UniqueValidator
 from ..models import Restaurant
 from ...account.models import Business
 from ...account.api.serializers import BusinessSerializer
-
+from django.db import transaction
 
 class RestaurantSerializer(serializers.ModelSerializer):
     pass
@@ -21,6 +21,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         fields = ['id', 'url', 'activity_name', 'activity_description', 'city',
                   'address', 'cap', 'restaurant_number', 'p_iva']
 
+    @transaction.atomic
     def save(self):
         business_user = self.context.get("business_user")
 
@@ -32,6 +33,6 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
                                                address=self.validated_data['address'],
                                                cap=self.validated_data['cap'],
                                                restaurant_number=self.validated_data['restaurant_number'],
-                                               p_iva=self.validated_data['p_iva']
+                                               p_iva=self.validated_data['p_iva']  # todo validate p_iva
                                                )
         return restaurant

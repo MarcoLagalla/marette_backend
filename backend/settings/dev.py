@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
     'rest_framework.authtoken',
-    'localflavor',
+
 ]
 
 MIDDLEWARE = [
