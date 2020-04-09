@@ -32,7 +32,7 @@ const router = new Router({
   },
   routes: [
     {
-      path: '/',
+      path: '/home',
       component: () => import('@/layouts/home/Index.vue'),
       children: [
         {
@@ -74,6 +74,17 @@ const router = new Router({
           path: '*',
           name: 'FourOhFour',
           component: () => import('@/views/404/Index.vue'),
+        },
+      ],
+    },
+    {
+      path: '/rest1',
+      component: () => import('@/layouts/rest1/Index.vue'),
+      children: [
+        {
+          path: '',
+          name: 'Home',
+          component: () => import('@/views/rest1/Index.vue'),
         },
       ],
     },

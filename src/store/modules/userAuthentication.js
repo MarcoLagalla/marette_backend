@@ -1,4 +1,4 @@
-import sendUserAutentication from '../../services/sendUserAutentication'
+import sendUserAuthentication from '../../services/sendUserAuthentication'
 const state = {
   token: localStorage.getItem('user-token') || '',
   status: '',
@@ -19,7 +19,7 @@ const actions = {
   signIn: ({commit}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
-          sendUserAutentication.signUser(user)
+          sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
           localStorage.setItem('user-token', data.token) // store the token in localstorage
@@ -40,7 +40,7 @@ const actions = {
   registerUser: ({commit}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
-          sendUserAutentication.postRegisterUser(user)
+          sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
           const data = resp.data
           localStorage.setItem('user-token', data.token) // store the token in localstorage
@@ -59,7 +59,7 @@ const actions = {
 
   logout: ({commit}) => {
     return new Promise((resolve, reject) => {
-      sendUserAutentication.logout().then( function(){
+      sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
           localStorage.removeItem('user-token') // clear your user's token from localstorage
           resolve()
