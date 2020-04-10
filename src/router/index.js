@@ -73,6 +73,7 @@ const router = new Router({
           path: 'registration',
           name: 'Registration',
           component: () => import('@/views/pages/registration.vue'),
+          beforeEnter: ifNotAuthenticated,
           //meta: { src: require('@/assets/.jpg') },
         },
         {
