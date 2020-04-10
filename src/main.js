@@ -1,9 +1,12 @@
 import Vue from 'vue'
-import App from '@/App.vue'
-
-import store from '@/store' 
-import router from '@/router'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+import './plugins'
+import vuetify from './plugins/vuetify';
 import api from '@/services/api'
+
+Vue.config.productionTip = false
 
 const token = localStorage.getItem('user-token')
 
@@ -12,11 +15,8 @@ if (token) {
 }
 
 new Vue({
-    el: '#app',
-    store,
-    router,
-    components: { App },
-    template: '<App/>',
-    render: h => h(App)
-})
-
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+}).$mount('#app')

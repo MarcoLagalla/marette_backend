@@ -1,38 +1,30 @@
 <template>
-    <div id="app">
-        <!-- Navigation -->
-        <navigation></navigation>
-
-        <!-- Menu -->
-        <app-menu></app-menu>
-
-        <!-- Header -->
-        <app-header></app-header>
-
-        <!-- Page Content -->
-        <router-view/>
-
-        <!-- Footer -->
-        <app-footer></app-footer>
-    </div>
+  <v-fade-transition mode="out-in">
+    <router-view />
+  </v-fade-transition>
 </template>
 
 <script>
-    import Navigation from './components/Navigation'
-    import Header from './components/Header'
-    import Footer from './components/Footer'
-    import Menu from './components/Menu'
-
-    export default {
-        components: {
-            'navigation': Navigation,
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-menu': Menu
-        }
-    }
+  export default {
+    name: 'App',
+    metaInfo: {
+      title: 'App',
+      titleTemplate: '%s | Daedal Multi-Purpose Theme',
+      htmlAttrs: { lang: 'en' },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+    },
+  }
 </script>
 
-<style>
+<style lang="sass">
+  .extra-padding
+    padding-bottom: 96px !important
+    padding-top: 96px !important
 
+    @media screen and (max-width: 959px)
+      padding-top: 48px !important
+      padding-bottom: 48px !important
 </style>
