@@ -1,6 +1,6 @@
 import sendUserAuthentication from '../../services/sendUserAuthentication'
 const state = {
-  token: localStorage.getItem('user-token') || '',
+  token: getToken() || '',//localStorage.getItem('user-token') || '',
   status: '',
   errors: [],
   username: ''
@@ -22,8 +22,7 @@ const actions = {
           sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
-          localStorage.setItem('user-token', data.token) // store the token in localstorage
-          setCookie('user-token', data.token, 365)
+          setTokenCookie(data.token)
           data.username = user.username
           commit('AUTH_SUCCESS', data)
 
@@ -31,7 +30,7 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
+        deleteTokenCookie();
 
         reject(err)
       })
@@ -43,15 +42,14 @@ const actions = {
           sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
           const data = resp.data
-          localStorage.setItem('user-token', data.token) // store the token in localstorage
+          setTokenCookie(data.token);
           commit('AUTH_SUCCESS', data)
 
           resolve(resp)
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
-
+        deleteTokenCookie();
         reject(err)
       })
     })
@@ -61,7 +59,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
-          localStorage.removeItem('user-token') // clear your user's token from localstorage
+          deleteTokenCookie();
           resolve()
         })
       .catch(err => {
@@ -103,14 +101,19 @@ export default {
   mutations
 }
 
-function setCookie(cname, cvalue, exdays) {
+function setTokenCookie( cvalue) {
   var d = new Date();
+  var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  document.cookie = "user-token=" + cvalue + ";" + expires + ";path=/";
 }
 
-/*function getToken() {
+function deleteTokenCookie() {
+  document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function getToken() {
   var name = "user-token=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
@@ -124,4 +127,4 @@ function setCookie(cname, cvalue, exdays) {
     }
   }
   return "";
-}*/
+}
