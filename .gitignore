@@ -3,8 +3,10 @@ node_modules
 db.sqlite3
 /dist
 /venv
+src-copy
 __pycache__
-
+Pipfile
+Pipfile.lock
 # local env files
 .env.local
 .env.*.local

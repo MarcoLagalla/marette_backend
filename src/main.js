@@ -1,17 +1,22 @@
 import Vue from 'vue'
-import App from '@/App.vue'
-
-import store from '@/store' 
-import router from '@/router'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+import './plugins'
+import vuetify from './plugins/vuetify';
+import api from '@/services/api'
 
 Vue.config.productionTip = false
 
-// Vue.use(VueRouter)
+const token = localStorage.getItem('user-token')
 
-const vue = new Vue({
+if (token) {
+  api.defaults.headers.common['Authorization'] = 'Token ' + token
+}
+
+new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App)
-})
-
-vue.$mount('#app')
+}).$mount('#app')
