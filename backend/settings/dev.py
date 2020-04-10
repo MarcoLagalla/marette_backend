@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'localflavor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
     'rest_framework.authtoken',
-    'localflavor',
+
 ]
 
 MIDDLEWARE = [
@@ -156,7 +157,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # http://whitenoise.evans.io/en/stable/django.html#make-sure-staticfiles-is-configured-correctly
 
 
-# Static files (CSS, JavaScript, Images)   TODO OLD REMOVE
+# Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 #DATE_INPUT_FORMATS = ['%d/%m/%Y']
