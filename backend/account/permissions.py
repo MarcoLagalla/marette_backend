@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .models import Business
+from .models import Business, Customer
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -50,8 +50,19 @@ class IsBusiness(permissions.BasePermission):
     def has_permission(self, request, view):
 
         try:
-            business = Business.objects.get(id=request.user.id)
+            business = Business.objects.get(user_id=request.user.id)
         except Business.DoesNotExist:
+            return False
+
+        return request.user or request.user.is_superuser
+
+
+class IsCustomer(permissions.BasePermission):
+    def has_permission(self, request, view):
+
+        try:
+            customer = Customer.objects.get(user_id=request.user.id)
+        except Customer.DoesNotExist:
             return False
 
         return request.user or request.user.is_superuser
