@@ -31,7 +31,7 @@
         },
         methods:
         {
-            ...mapActions('userAutentication', ['signIn']),
+            ...mapActions('userAuthentication', ['signIn']),
             login: function () {
                 this.signIn({
                 email: this.email,
@@ -44,10 +44,10 @@
         computed:
         {
             status(){
-                return this.$store.getters['userAutentication/status']
+                return this.$store.getters['userAuthentication/status']
             },
             errors(){
-                return this.$store.getters['userAutentication/errors']
+                return this.$store.getters['userAuthentication/errors']
             }
         }
     }
