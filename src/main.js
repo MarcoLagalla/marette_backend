@@ -9,7 +9,7 @@ import api from '@/services/api'
 Vue.config.productionTip = false
 var token = getToken();
 if (token) {
-  api.defaults.headers.common['Authorization'] = 'Token ' + token
+  api.defaults.headers.common['Authorization'] = 'Token ' + token;
 }
 
 new Vue({

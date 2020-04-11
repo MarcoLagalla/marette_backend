@@ -1,31 +1,33 @@
 import sendUserAuthentication from '../../services/sendUserAuthentication'
+
+
+
 const state = {
   token: getToken() || '',//localStorage.getItem('user-token') || '',
   status: '',
   errors: [],
-  username: ''
+  id: ''
 }
 
 const getters = {
   isAuthenticated: state => !!state.token,
   status: state => state.status,
   errors: state => state.errors,
-  username: state => state.username,
-
+  id: state => state.id,
 }
 
 const actions = {
 
-  signIn: ({commit}, user) => {
+  signIn: ({commit, dispatch}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
           sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
           setTokenCookie(data.token)
-          data.username = user.username
           commit('AUTH_SUCCESS', data)
 
+          dispatch("userProfile/getUserData", data.id,  { root: true });
           resolve(resp)
         })
       .catch(err => {
@@ -36,7 +38,7 @@ const actions = {
       })
     })
   },
-  registerUser: ({commit}, user) => {
+  registerUser: ({commit, dispatch}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
           sendUserAuthentication.postRegisterUser(user)
@@ -45,6 +47,8 @@ const actions = {
           setTokenCookie(data.token);
           commit('AUTH_SUCCESS', data)
 
+          dispatch('getUserData', data.id)
+          this.context.dispatch('getUserData', data.id)
           resolve(resp)
         })
       .catch(err => {
@@ -81,6 +85,7 @@ const mutations = {
     state.status = 'success'
     state.token = data.token
     state.username = data.username
+    state.id = data.id
   },
   AUTH_ERROR: (state, error) => {
     state.status = 'error'
