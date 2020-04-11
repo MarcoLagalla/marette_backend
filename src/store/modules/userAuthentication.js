@@ -3,10 +3,10 @@ import sendUserAuthentication from '../../services/sendUserAuthentication'
 
 
 const state = {
-  token: getToken() || '',//localStorage.getItem('user-token') || '',
+  token: getCookie("user-token") || '',
   status: '',
   errors: [],
-  id: ''
+  id: getCookie("user-id") || ''
 }
 
 const getters = {
@@ -24,7 +24,7 @@ const actions = {
           sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
-          setTokenCookie(data.token)
+          setTokenCookie(data)
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
@@ -107,20 +107,22 @@ export default {
   mutations
 }
 
-function setTokenCookie( cvalue) {
+function setTokenCookie( data) {
   var d = new Date();
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + cvalue + ";" + expires + ";path=/";
+  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";
+  document.cookie = "user-id=" + data.id + ";" + expires + ";path=/";
 }
 
 function deleteTokenCookie() {
   document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "user-id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
-function getToken() {
-  var name = "user-token=";
+function getCookie(name) {
+  name = name + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
@@ -134,3 +136,4 @@ function getToken() {
   }
   return "";
 }
+

@@ -7,8 +7,8 @@ import vuetify from './plugins/vuetify';
 import api from '@/services/api'
 
 Vue.config.productionTip = false
-var token = getToken();
-if (token) {
+var token = getCookie("user-token");
+if (token && getCookie("user-id")) { //voglio caricare il token solo se ho sia il token che l'id dell'utente
   api.defaults.headers.common['Authorization'] = 'Token ' + token;
 }
 
@@ -19,8 +19,8 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-function getToken() {
-  var name = "user-token=";
+function getCookie(name) {
+  name = name + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
