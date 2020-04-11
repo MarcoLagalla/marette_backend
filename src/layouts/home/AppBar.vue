@@ -8,17 +8,9 @@
       height="80"
     >
       <base-img
-        :src="require('@/assets/logo.svg')"
-        class="mr-3 hidden-xs-only"
+        :src="require('@/assets/marette-logo.png')"
         contain
-        max-width="52"
-        width="100%"
-      />
-
-      <base-img
-        :src="require('@/assets/daedal-logo-light.png')"
-        contain
-        max-width="128"
+        max-width="180"
         width="100%"
       />
 
