@@ -29,6 +29,24 @@
           class="hidden-sm-and-down"
           optional
         >
+        <v-tab
+        v-if="(this.isLogged)"
+        @click="snackbar = true; Logout()"
+        active-class="text--primary"
+        class="font-weight-bold"
+        min-width="96"
+        text
+        > Logout
+      </v-tab>
+      <v-tab
+      v-if="(!this.isLogged)"
+        to="Login"
+        active-class="text--primary"
+        class="font-weight-bold"
+        min-width="96"
+        text
+        > Login
+      </v-tab>
           <v-tab
             v-for="(name, i) in items"
             :key="i"
@@ -43,6 +61,14 @@
             {{ name }}
           </v-tab>
         </v-tabs>
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="timeout"
+          color="cyan darken-2"
+        >
+          {{ text }}
+        </v-snackbar>
+
       </div>
 
       <v-app-bar-nav-icon
@@ -59,6 +85,8 @@
 </template>
 
 <script>
+      import { mapActions } from 'vuex'
+
   export default {
     name: 'HomeAppBar',
 
@@ -66,6 +94,26 @@
       HomeDrawer: () => import('./Drawer'),
     },
 
+    /*created(){
+      if (!this.isLogged)
+        this.items.push('Login');
+      else
+        //this.items.push('Login');
+      return;
+    },*/
+
+    computed: {
+      isLogged () {
+        return this.$store.getters['userAuthentication/isAuthenticated']
+      }
+    },
+
+    methods : {
+      ...mapActions('userAuthentication', ['logout']),
+       Logout: function () {
+               return this.logout();
+    },
+  },
     data: () => ({
       drawer: null,
       items: [
@@ -73,6 +121,9 @@
         'About',
         'Contact',
       ],
+      snackbar: false,
+      text: 'Logout eseguito con successo',
+      timeout: 2000,
     }),
   }
 </script>

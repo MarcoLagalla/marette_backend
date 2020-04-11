@@ -15,17 +15,7 @@
 
     mixins: [
       LoadSections([
-        'hero',
-        'theme-features',
-        'features',
-        'hero-alt',
-        'contact-us',
-        'affiliates',
-        'social-media',
-        'keep-in-touch',
-        'newsletter',
-        'map',
-        'info',
+        'ThemeFeatures',
       ]),
     ],
 

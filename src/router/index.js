@@ -6,7 +6,7 @@ import store from "@/store"
 Vue.use(Router)
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters['userAutentication/isAuthenticated']) {
+  if (!store.getters['userAuthentication/isAuthenticated']) {
     next();
     return;
   }
@@ -14,7 +14,7 @@ const ifNotAuthenticated = (to, from, next) => {
 };
 
 /*const ifAuthenticated = (to, from, next) => {
-  if (store.getters['userAutentication/isAuthenticated']) {
+  if (store.getters['userAuthentication/isAuthenticated']) {
     next();
     return;
   }
@@ -64,12 +64,6 @@ const router = new Router({
           meta: { src: require('@/assets/contact.jpg') },
         },
         {
-          path: 'pro',
-          name: 'Pro',
-          component: () => import('@/views/pages/pro.vue'),
-          meta: { src: require('@/assets/pro.jpg') },
-        },
-        {
           path: 'registration',
           name: 'Registration',
           component: () => import('@/views/pages/registration.vue'),
@@ -80,7 +74,7 @@ const router = new Router({
           path: 'login',
           name: 'Login',
           component: () => import('@/views/pages/login.vue'),
-          beforeEnter: ifNotAuthenticated,
+          //beforeEnter: ifNotAuthenticated,
         },
         {
           path: '*',

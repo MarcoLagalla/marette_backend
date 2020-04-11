@@ -62,7 +62,7 @@
         },
         methods:
         {
-            ...mapActions('userAutentication', ['registerUser']),
+            ...mapActions('userAuthentication', ['registerUser']),
             register: function () {
                 if ( !this.first_name && !this.last_name) {
                     this.registerUser({
@@ -94,10 +94,10 @@
         computed:
             {
                 status(){
-                    return this.$store.getters['userAutentication/status']
+                    return this.$store.getters['userAuthentication/status']
                 },
                 errors(){
-                    return this.$store.getters['userAutentication/errors']
+                    return this.$store.getters['userAuthentication/errors']
                 }
             }
     }
