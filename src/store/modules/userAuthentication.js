@@ -86,6 +86,7 @@ const mutations = {
     state.status = 'success'
     state.token = data.token
     state.id = data.id
+    state.errors = []
   },
   AUTH_ERROR: (state, error) => {
     state.status = 'error'
