@@ -28,6 +28,7 @@ const actions = {
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
+
           resolve(resp)
         })
       .catch(err => {
@@ -47,8 +48,8 @@ const actions = {
           setTokenCookie(data.token);
           commit('AUTH_SUCCESS', data)
 
-          dispatch('getUserData', data.id)
-          this.context.dispatch('getUserData', data.id)
+          dispatch("userProfile/getUserData", data.id,  { root: true });
+
           resolve(resp)
         })
       .catch(err => {
@@ -84,7 +85,6 @@ const mutations = {
   AUTH_SUCCESS: (state, data) => {
     state.status = 'success'
     state.token = data.token
-    state.username = data.username
     state.id = data.id
   },
   AUTH_ERROR: (state, error) => {
