@@ -3,7 +3,7 @@ import getUserProfile from "../../services/getUserProfile"
 
 
 const state = {
-  id: getId() || '',
+  id: '',
   username: '',
   email: '',
   first_name: "",
@@ -17,11 +17,12 @@ const state = {
 const getters = {
   isSuperuser: state => state.is_superuser,
   id: state => state.id,
+  username: state => state.username,
 
 }
 
 const actions = {
-  getUserData: ({commit}, id) => {
+  getUserData: ({commit, dispatch}, id) => {
     commit('USER_REQUEST')
     getUserProfile.getUserProfile(id)
     .then(resp => {
@@ -30,7 +31,8 @@ const actions = {
       commit('USER_SUCCESS', data)
     })
     .catch(err => {
-      commit('USER_ERROR', err.response)
+      dispatch("userAuthentication/logout", null,  { root: true });
+      commit('USER_ERROR', err.response);
     })
   },
 
@@ -55,22 +57,6 @@ const mutations = {
   USER_ERROR: (state, error) => {
     state.status = 'error'
   },
-}
-
-function getId() {
-  var name = "user-id=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 export default {

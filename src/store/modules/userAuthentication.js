@@ -24,7 +24,7 @@ const actions = {
           sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
-          setTokenCookie(data)
+          setCookies(data)
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
@@ -33,7 +33,7 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        deleteTokenCookie();
+        deleteCookies();
 
         reject(err)
       })
@@ -45,7 +45,7 @@ const actions = {
           sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
           const data = resp.data
-          setTokenCookie(data.token);
+          setCookies(data.token);
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
@@ -54,7 +54,7 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        deleteTokenCookie();
+        deleteCookies();
         reject(err)
       })
     })
@@ -64,7 +64,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
-          deleteTokenCookie();
+          deleteCookies();
           resolve()
         })
       .catch(err => {
@@ -94,6 +94,7 @@ const mutations = {
   },
   AUTH_LOGOUT: state => {
     state.token = "";
+    state.id = "";
   }
 
 
@@ -107,16 +108,16 @@ export default {
   mutations
 }
 
-function setTokenCookie( data) {
+function setCookies( data) {
   var d = new Date();
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";
+  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
   document.cookie = "user-id=" + data.id + ";" + expires + ";path=/";
 }
 
-function deleteTokenCookie() {
+function deleteCookies() {
   document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie = "user-id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
