@@ -68,6 +68,8 @@ const actions = {
           resolve()
         })
       .catch(err => {
+        commit('AUTH_LOGOUT')
+        deleteCookies();
         commit('AUTH_ERROR', err.response)
 
         reject(err)
