@@ -74,7 +74,7 @@ const router = new Router({
           path: 'login',
           name: 'Login',
           component: () => import('@/views/pages/login.vue'),
-          //beforeEnter: ifNotAuthenticated,
+          beforeEnter: ifNotAuthenticated,
         },
         {
           path: '*',
