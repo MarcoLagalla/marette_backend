@@ -6,5 +6,13 @@ export default {
             .then(response => {
                 return response
             })
-    }
+    },
+
+    getRestaurantList() {
+        return api.post('v1/webapp/restaurant/list')
+            .then(response => {
+                return response
+            })
+    },
+
 }
