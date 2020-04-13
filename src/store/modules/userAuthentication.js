@@ -81,16 +81,18 @@ const actions = {
     })
   },
 
-  logout: ({commit}) => {
+  logout: ({commit, dispatch}) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
           deleteCookies();
+          dispatch("userProfile/logout", null,  { root: true });
           resolve()
         })
       .catch(err => {
         commit('AUTH_LOGOUT')
         deleteCookies();
+        dispatch("userProfile/logout", null,  { root: true });
         commit('AUTH_ERROR', err.response)
 
         reject(err)

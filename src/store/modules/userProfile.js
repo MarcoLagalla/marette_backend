@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import getUserProfile from "../../services/getUserProfile"
+import sendUserAuthentication from "../../services/sendUserAuthentication";
 
 
 const state = {
@@ -32,9 +33,13 @@ const actions = {
     })
     .catch(err => {
       dispatch("userAuthentication/logout", null,  { root: true });
-      commit('USER_ERROR', err.response);
+      commit('USER_ERROR');
     })
   },
+
+  logout: ({commit}) => {
+    commit('USER_PROF_LOGOUT')
+  }
 
 }
 
@@ -54,7 +59,20 @@ const mutations = {
     state.cellphone_number = data.phone
     state.is_superuser = data.is_superuser
   },
-  USER_ERROR: (state, error) => {
+
+  USER_PROF_LOGOUT: (state) => {
+    state.status = ''
+    state.username =  ''
+    state.id =  ''
+    state.email =  ''
+    state.first_name =  ''
+    state.last_name =  ''
+    state.birth_date = ''
+    state.cellphone_number =  ''
+    state.is_superuser =  ''
+  },
+
+  USER_ERROR: (state) => {
     state.status = 'error'
   },
 }
