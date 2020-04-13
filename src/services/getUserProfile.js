@@ -1,4 +1,3 @@
-
 import api from '@/services/api'
 
 export default {
@@ -7,6 +6,5 @@ export default {
             .then(response => {
                 return response
             })
-
     }
 }
