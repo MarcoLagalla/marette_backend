@@ -60,6 +60,27 @@ const actions = {
     })
   },
 
+  registerBusiness: ({commit, dispatch}, user) => {
+    return new Promise((resolve, reject) => { // The Promise used for router redirect in login
+      commit('AUTH_REQUEST')
+          sendUserAuthentication.postRegisterBusiness(user)
+        .then(resp => {
+          const data = resp.data
+          setCookies(data.token);
+          commit('AUTH_SUCCESS', data)
+
+          dispatch("userProfile/getUserData", data.id,  { root: true });
+
+          resolve(resp)
+        })
+      .catch(err => {
+        commit('AUTH_ERROR', err.response)
+        deleteCookies();
+        reject(err)
+      })
+    })
+  },
+
   logout: ({commit}) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
