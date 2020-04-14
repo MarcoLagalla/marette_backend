@@ -123,7 +123,7 @@
          color: red;
      }
     /* Full-width input fields */
-    input[type=text], input[type=password] , input[type=tel] , input[type=date] {
+    input[type=text], input[type=password] , input[type=tel] , input[type=date], input[type=number] {
       width: 100%;
       padding: 15px;
       margin: 5px 0 22px 0;
@@ -131,7 +131,7 @@
       border: none;
       background: #f1f1f1;
     }
-    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date] :focus {
+    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date], input[type=number]:focus {
       background-color: #ddd;
       outline: none;
     }
