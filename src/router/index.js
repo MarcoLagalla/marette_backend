@@ -71,6 +71,13 @@ const router = new Router({
           //meta: { src: require('@/assets/.jpg') },
         },
         {
+          path: 'registrationBusiness',
+          name: 'RegBusiness',
+          component: () => import('@/views/pages/registrationBusiness.vue'),
+          beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
           path: 'login',
           name: 'Login',
           component: () => import('@/views/pages/login.vue'),
