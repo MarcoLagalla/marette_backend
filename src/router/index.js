@@ -78,6 +78,20 @@ const router = new Router({
           //meta: { src: require('@/assets/.jpg') },
         },
         {
+          path: 'newRestaurant',
+          name: 'NewRestaurant',
+          component: () => import('@/views/pages/newRestaurant.vue'),
+          beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: () => import('@/views/pages/profile.vue'),
+          beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
           path: 'login',
           name: 'Login',
           component: () => import('@/views/pages/login.vue'),

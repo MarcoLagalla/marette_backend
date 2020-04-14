@@ -94,7 +94,7 @@
                     city: this.city,
                     cf: this.cf
                 }).then(() => {
-                    this.$router.push('/')
+                    this.$router.push('/profile')
                 })
             }
         },
