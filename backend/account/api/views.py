@@ -265,14 +265,14 @@ class UserProfileAPIView(APIView):
                 try:
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
-                    data.append(serializer.data)
-                    data.append({'type': 'customer'})
+                    data.update(serializer.data)
+                    data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
-                        data.append(serializer.data)
-                        data.append({'type': 'business'})
+                        data.update(serializer.data)
+                        data.update({'type': 'business'})
                     except Business.DoesNotExist:
                         return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
 
