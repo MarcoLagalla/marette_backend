@@ -7,7 +7,7 @@ from backend.account.models import Business
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
-    url = models.SlugField()
+    url = models.SlugField(unique=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
