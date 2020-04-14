@@ -1,6 +1,6 @@
 <template>
     <div>
-        <router-link tag="button" v-if="business">Aggiungi ristorante</router-link>
+        <router-link tag="button" v-if="business" to="newRestaurant">Aggiungi ristorante</router-link>
 
     </div>
 </template>
