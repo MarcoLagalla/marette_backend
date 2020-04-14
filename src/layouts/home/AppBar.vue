@@ -39,6 +39,14 @@
         text
         > Login
       </v-tab>
+      <v-tab
+      v-if="(!this.isLogged)"
+        active-class="text--primary"
+        class="font-weight-bold"
+        min-width="96"
+        text
+        ><base-form-r/>
+      </v-tab>
           <v-tab
             v-for="(name, i) in items"
             :key="i"
