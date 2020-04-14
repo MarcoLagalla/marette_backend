@@ -261,17 +261,22 @@ class UserProfileAPIView(APIView):
             token = get_object_or_404(Token, user=user)
             if request.user.auth_token.key == token.key:
                 # check if customer
+                data = {}
                 try:
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
+                    data.append(seriliazer.data)
+                    data.append({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
+                        data.append(seriliazer.data)
+                        data.append({'type': 'business'})
                     except Business.DoesNotExist:
-                        return Response({'error':["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
+                        return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
 
-                return Response(serializer.data, status.HTTP_200_OK)
+                return Response(data, status.HTTP_200_OK)
             else:
                 return Response({'error': ["Utente non autorizzato."]}, status.HTTP_401_UNAUTHORIZED)
         else:
