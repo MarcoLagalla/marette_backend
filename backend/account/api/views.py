@@ -17,6 +17,7 @@ from ..tokens import account_activation_token, passwordreset_token
 from ..views import send_welcome_email, send_reset_email
 from ..permissions import IsCustomer, IsBusiness
 
+from backend.webapp.models import Restaurant
 
 class ListUsersAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -261,18 +262,31 @@ class UserProfileAPIView(APIView):
             token = get_object_or_404(Token, user=user)
             if request.user.auth_token.key == token.key:
                 # check if customer
-                data = {}
                 try:
+                    data = {}
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
-                    data.append(serializer.data)
-                    data.append({'type': 'customer'})
+                    data.update(serializer.data)
+                    data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
+                        data = {}
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
-                        data.append(serializer.data)
-                        data.append({'type': 'business'})
+                        data.update(serializer.data)
+                        data.update({'type': 'business'})
+
+                        # retrieve the list of restaurants
+                        data_rest = []
+                        try:
+                            restaurants = Restaurant.objects.all().filter(owner=business)
+                            for restaurant in restaurants:
+                                data_rest.append(restaurant.id)
+                        except Restaurant.DoesNotExist:
+                            pass
+                        finally:
+                            data.update({'restaurants': data_rest})
+
                     except Business.DoesNotExist:
                         return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
 
