@@ -13,7 +13,7 @@ const getters = {
 }
 
 const actions = {
-    registerRestaurant: ({commit, dispatch}, restaurant) => {
+    newRestaurant: ({commit, dispatch}, restaurant) => {
         return new Promise((resolve, reject) => { // The Promise used for router redirect in login
             commit('REG_REST_REQUEST')
             postRegisterRestaurant.postRegisterRestaurant(restaurant)
