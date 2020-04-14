@@ -261,14 +261,15 @@ class UserProfileAPIView(APIView):
             token = get_object_or_404(Token, user=user)
             if request.user.auth_token.key == token.key:
                 # check if customer
-                data = {}
                 try:
+                    data = {}
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
                     data.update(serializer.data)
                     data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
+                        data = {}
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
                         data.update(serializer.data)
