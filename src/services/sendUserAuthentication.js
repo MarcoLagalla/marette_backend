@@ -8,8 +8,16 @@ export default {
             api.defaults.headers.common['Authorization'] = 'Token ' + response.data.token
             return response
           })
-
   },
+
+  postRegisterBusiness(payload) {
+    return api.post(`v1/account/business`, payload)
+          .then(response => {
+            api.defaults.headers.common['Authorization'] = 'Token ' + response.data.token
+            return response
+          })
+  },
+
   signUser(payload) {
     return api.post('v1/account/login', payload)
         .then(response => {
@@ -18,6 +26,7 @@ export default {
           })
 
   },
+
   logout() {
     return api.post('v1/account/logout')
         .then(response => {

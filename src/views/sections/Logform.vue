@@ -7,7 +7,7 @@
 
 
             <label for="email"><b>Email</b></label>
-            <input v-model='email' type="text" placeholder="Inserire Email" id="email" name="email" required>
+            <input v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
 
             <label for="psw"><b>Password</b></label>
             <input v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
@@ -37,7 +37,7 @@
                 email: this.email,
                 password: this.password,
                 }).then(() => {
-                   this.$router.push('/')
+                   this.$router.push('/profile')
                 });
             }
         },

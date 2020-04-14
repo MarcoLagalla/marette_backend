@@ -8,8 +8,10 @@ import api from '@/services/api'
 
 Vue.config.productionTip = false
 var token = getCookie("user-token");
-if (token && getCookie("user-id")) { //voglio caricare il token solo se ho sia il token che l'id dell'utente
+var id = getCookie("user-id");
+if (token && id) { //voglio caricarli solo se li ho entrambi
   api.defaults.headers.common['Authorization'] = 'Token ' + token;
+  store.dispatch("userProfile/getUserData", id);
 }
 
 new Vue({

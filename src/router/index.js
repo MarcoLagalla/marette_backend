@@ -13,13 +13,13 @@ const ifNotAuthenticated = (to, from, next) => {
   next("/");
 };
 
-/*const ifAuthenticated = (to, from, next) => {
+const ifAuthenticated = (to, from, next) => {
   if (store.getters['userAuthentication/isAuthenticated']) {
     next();
     return;
   }
   next("/login");
-};*/
+};
 
 const router = new Router({
   mode: 'history',
@@ -71,10 +71,31 @@ const router = new Router({
           //meta: { src: require('@/assets/.jpg') },
         },
         {
+          path: 'registrationBusiness',
+          name: 'RegBusiness',
+          component: () => import('@/views/pages/registrationBusiness.vue'),
+          beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'newRestaurant',
+          name: 'NewRestaurant',
+          component: () => import('@/views/pages/newRestaurant.vue'),
+          beforeEnter: ifAuthenticated, //TODO: solo se è business
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: () => import('@/views/pages/profile.vue'),
+          beforeEnter: ifAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
           path: 'login',
           name: 'Login',
           component: () => import('@/views/pages/login.vue'),
-          //beforeEnter: ifNotAuthenticated,
+          beforeEnter: ifNotAuthenticated,
         },
         {
           path: '*',

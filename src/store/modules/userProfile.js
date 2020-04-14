@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import getUserProfile from "../../services/getUserProfile"
+import sendUserAuthentication from "../../services/sendUserAuthentication";
 
 
 const state = {
-  id: getId() || '',
+  id: '',
   username: '',
   email: '',
   first_name: "",
@@ -17,11 +18,12 @@ const state = {
 const getters = {
   isSuperuser: state => state.is_superuser,
   id: state => state.id,
+  username: state => state.username,
 
 }
 
 const actions = {
-  getUserData: ({commit}, id) => {
+  getUserData: ({commit, dispatch}, id) => {
     commit('USER_REQUEST')
     getUserProfile.getUserProfile(id)
     .then(resp => {
@@ -30,9 +32,14 @@ const actions = {
       commit('USER_SUCCESS', data)
     })
     .catch(err => {
-      commit('USER_ERROR', err.response)
+      dispatch("userAuthentication/logout", null,  { root: true });
+      commit('USER_ERROR');
     })
   },
+
+  logout: ({commit}) => {
+    commit('USER_PROF_LOGOUT')
+  }
 
 }
 
@@ -52,25 +59,22 @@ const mutations = {
     state.cellphone_number = data.phone
     state.is_superuser = data.is_superuser
   },
-  USER_ERROR: (state, error) => {
+
+  USER_PROF_LOGOUT: (state) => {
+    state.status = ''
+    state.username =  ''
+    state.id =  ''
+    state.email =  ''
+    state.first_name =  ''
+    state.last_name =  ''
+    state.birth_date = ''
+    state.cellphone_number =  ''
+    state.is_superuser =  ''
+  },
+
+  USER_ERROR: (state) => {
     state.status = 'error'
   },
-}
-
-function getId() {
-  var name = "user-id=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 export default {

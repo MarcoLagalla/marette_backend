@@ -111,7 +111,7 @@
     methods : {
       ...mapActions('userAuthentication', ['logout']),
        Logout: function () {
-               return this.logout();
+               return this.logout(); //TODO: controlla se ha sloggato e porta alla home
     },
   },
     data: () => ({
