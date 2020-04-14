@@ -12,7 +12,7 @@
             <input v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required>
 
             <label for="email"><b>Email*</b></label>
-            <input v-model='email' type="text" placeholder="Inserire Email" id="email" name="email" required>
+            <input v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
 
             <label for="psw"><b>Password*</b></label>
             <input v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
@@ -123,7 +123,7 @@
          color: red;
      }
     /* Full-width input fields */
-    input[type=text], input[type=password] , input[type=tel] , input[type=date], input[type=number] {
+    input[type=text], input[type=password] , input[type=tel] , input[type=date], input[type=number], input[type=email] {
       width: 100%;
       padding: 15px;
       margin: 5px 0 22px 0;
@@ -131,7 +131,7 @@
       border: none;
       background: #f1f1f1;
     }
-    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date], input[type=number]:focus {
+    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date], input[type=number], input[type=email] :focus {
       background-color: #ddd;
       outline: none;
     }
