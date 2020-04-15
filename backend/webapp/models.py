@@ -25,7 +25,7 @@ class Restaurant(models.Model):
         return self.activity_name
 
     def set_url(self):
-        self.url = str(self.id) + '/' + slugify(self.activity_name)
+        self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
 
 
