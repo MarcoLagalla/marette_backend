@@ -32,14 +32,6 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-        restaurant = Restaurant.objects.create(owner=business_user,
-                                               activity_name=self.validated_data['activity_name'],
-                                               activity_description=self.validated_data['activity_description'],
-                                               url=slugify(self.validated_data['activity_name']),               # todo /ID_BUSINESS/bouvette
-                                               city=self.validated_data['city'],
-                                               address=self.validated_data['address'],
-                                               n_civ=self.validated_data['n_civ'],
-                                               cap=self.validated_data['cap'],
-                                               restaurant_number=self.validated_data['restaurant_number'],
-                                               p_iva=self.validated_data['p_iva'])
+        restaurant = Restaurant.objects.create(owner=business_user, **self.validated_data)
+        restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         return restaurant

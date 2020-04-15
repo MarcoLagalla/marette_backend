@@ -24,6 +24,7 @@ class Business(models.Model):
     birth_date = models.DateField()
     city = models.CharField(max_length=50, blank=False)
     address = models.CharField(max_length=150, blank=False)
+    n_civ = models.IntegerField(blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     phone = PhoneNumberField(unique=True, error_messages={'unique': 'Esiste già un utente con questo numero.'})
     email_activated = models.BooleanField(default=False, auto_created=True)

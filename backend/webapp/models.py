@@ -3,11 +3,12 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 from backend.account.models import Business
+from django.utils.text import slugify
 
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
-    url = models.SlugField(unique=True)
+    url = models.SlugField(unique=True, blank=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
@@ -23,6 +24,9 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.activity_name
 
+    def set_url(self):
+        self.url = str(self.id) + '/' + slugify(self.activity_name)
+        self.save()
 
 
 
