@@ -1,9 +1,8 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog"  max-width="600px">
       <template v-slot:activator="{ on }">
         <v-btn text
-        active-class="text--primary"
         class="font-weight-bold"
         min-width="96"
         v-on="on">SIGNUP</v-btn>
