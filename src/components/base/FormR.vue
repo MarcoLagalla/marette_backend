@@ -121,7 +121,7 @@ export default {
                   password2: this.password2,
                   phone: this.phone
               }).then(() => {
-                  this.$router.push('/')
+                  this.$router.push('/profile')
               })
           }
           else{
@@ -135,7 +135,7 @@ export default {
                   last_name: this.last_name,
                   birth_date: this.birth_date
               }).then(() => {
-                  this.$router.push('/')
+                  this.$router.push('/profile')
               })
           }
       }
