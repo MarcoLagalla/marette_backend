@@ -45,7 +45,7 @@ const actions = {
           sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
           const data = resp.data
-          setCookies(data.token);
+          setCookies(data);
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
