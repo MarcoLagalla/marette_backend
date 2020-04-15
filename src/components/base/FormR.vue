@@ -30,25 +30,36 @@
                        ></v-text-field>
                      </v-col>
                      <v-col cols="12" sm="6" md="4">
-                       <v-text-field solo filed label="Nome*" id="first_name" required></v-text-field>
+                       <v-text-field
+                        solo filed
+                        v-model="first_name"
+                        label="Nome*" id="first_name" required></v-text-field>
                      </v-col>
                      <v-col cols="12" sm="6" md="4">
                        <v-text-field
                        solo filed
+                       v-model="last_name"
                        label="Cognome*"
                        id="last_name"
                        required
                        ></v-text-field>
                      </v-col>
                      <v-col cols="12">
-                       <v-text-field solo filed label="Email*" id="email" type="email" required></v-text-field>
+                       <v-text-field
+                       solo filed
+                       v-model="email"
+                       label="Email*" id="email" type="email" required></v-text-field>
                      </v-col>
                      <v-col cols="12">
-                       <v-text-field solo filed label="Password*" id="password" type="password" required></v-text-field>
+                       <v-text-field
+                       solo filed
+                       v-model="password"
+                       label="Password*" id="password" type="password" required></v-text-field>
                      </v-col>
                      <v-col cols="12" sm="6">
                        <v-text-field
                        solo filed
+                       v-model="password2"
                        label="Repeat password" id="password2" type="password" required></v-text-field>
                      </v-col>
                      <v-col cols="12" sm="6">
