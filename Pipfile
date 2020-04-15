@@ -15,7 +15,6 @@ djangorestframework = "==3.11.0"
 gunicorn = "==20.0.4"
 phonenumbers = "==8.12.1"
 psycopg2-binary = "==2.8.4"
-
 pytz = "==2019.3"
 six = "==1.14.0"
 sqlparse = "==0.3.1"
@@ -27,5 +26,7 @@ Unidecode = "==1.1.1"
 Werkzeug = "==1.0.0"
 django-localflavor = "*"
 codicefiscale = "*"
+pillow = "*"
+django-resized = "*"
 
 [requires]
