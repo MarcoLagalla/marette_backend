@@ -106,3 +106,47 @@ class DeleteProduct(APIView):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UpdateProduct(APIView):
+
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id, p_id):
+
+        # verifico che l'utente sia il proprietario del ristorante
+        try:
+            token = Token.objects.all().get(user=request.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key:
+            # utente loggato con token giusto
+            # cerco un ristorante con l'id richiesto e verifico la paternità
+            try:
+                restaurant = Restaurant.objects.all().get(id=id)
+
+                # verifico che sia proprietario del ristorante
+                if restaurant.owner.user == request.user:
+
+                    # verifico che il prodotto sia un prodotto del mio ristorante
+                    try:
+                        product = Product.objects.all() \
+                            .filter(restaurant=restaurant).get(id=p_id)
+                        if product:
+
+                            # fai update prodotto
+
+
+                            return Response(status=status.HTTP_200_OK)
+                    except Product.DoesNotExist:
+                        return Response(status=status.HTTP_404_NOT_FOUND)
+                else:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            except Restaurant.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
