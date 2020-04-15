@@ -18,7 +18,8 @@
             horizontal
             size="96"
           >
-            {{ restaurant.activity_description}}
+            <h3>{{restaurant.activity_name}}</h3>
+            <p>{{ restaurant.activity_description}}</p>
           </base-avatar-card>
         </v-col>
       </v-row>
