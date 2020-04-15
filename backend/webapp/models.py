@@ -47,15 +47,6 @@ DISCOUNT_TYPES_CHOICES = [
 ]
 
 
-class Menu(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class ProductTag(models.Model):
     name = models.CharField(max_length=100)
     icon = ResizedImageField(size=[32, 32], upload_to=settings.MEDIA, null=True, blank=True, force_format='png')
@@ -90,7 +81,6 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tags = models.ManyToManyField(ProductTag, blank=True)
 
-    menu = models.ManyToManyField(Menu, blank=True)  # menu di appartenenza
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
 
     def __str__(self):
@@ -113,3 +103,16 @@ class Product(models.Model):
         if new_price < 0:
             new_price = 0
         return new_price
+
+
+class Menu(models.Model):
+
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
+
+    products = models.ManyToManyField(Product, blank=True)  # menu di appartenenza
+
+    def __str__(self):
+        return self.name
