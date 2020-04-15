@@ -90,7 +90,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tags = models.ManyToManyField(ProductTag, blank=True)
 
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, null=True, blank=True)  # menu di appartenenza
+    menu = models.ManyToManyField(Menu, blank=True)  # menu di appartenenza
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
 
     def __str__(self):
