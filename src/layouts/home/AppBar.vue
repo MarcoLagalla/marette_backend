@@ -7,12 +7,14 @@
       elevation="1"
       height="80"
     >
-      <base-img
-        :src="require('@/assets/marette-logo.png')"
-        contain
-        max-width="180"
-        width="100%"
-      />
+      <router-link to="/">
+        <base-img
+          :src="require('@/assets/marette-logo.png')"
+          contain
+          max-width="180"
+          width="100%"
+        />
+      </router-link>
 
       <v-spacer />
 
