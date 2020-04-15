@@ -24,7 +24,7 @@
         <v-tab
         v-if="(this.isLogged)"
         @click="snackbar = true; Logout()"
-        active-class="text--primary"
+        
         class="font-weight-bold"
         min-width="96"
         text
@@ -32,7 +32,7 @@
       </v-tab>
       <v-tab
       v-if="(!this.isLogged)"
-        active-class="text--primary"
+
         class="font-weight-bold"
         min-width="96"
         text
@@ -40,7 +40,7 @@
       </v-tab>
       <v-tab
       v-if="(!this.isLogged)"
-        active-class="text--primary"
+
         class="font-weight-bold"
         min-width="96"
         text
