@@ -123,7 +123,10 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    new_password2 = serializers.CharField(required=True)
 
     def validate_new_password(self, value):
+        if not self.new_password == self.new_password2:
+            raise serializers.ValidationError({'password': 'Le password devono combaciare'})
         validate_password(value)
         return value
