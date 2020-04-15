@@ -7,12 +7,14 @@
       elevation="1"
       height="80"
     >
-      <base-img
-        :src="require('@/assets/marette-logo.png')"
-        contain
-        max-width="180"
-        width="100%"
-      />
+      <router-link to="/">
+        <base-img
+          :src="require('@/assets/marette-logo.png')"
+          contain
+          max-width="180"
+          width="100%"
+        />
+      </router-link>
 
       <v-spacer />
 
@@ -23,7 +25,7 @@
         >
         <v-tab
         v-if="(this.isLogged)"
-        @click="snackbar = true; Logout()"
+        @click="Logout()"
         
         class="font-weight-bold"
         min-width="96"
@@ -84,7 +86,7 @@
 </template>
 
 <script>
-      import { mapActions } from 'vuex'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'HomeAppBar',
@@ -92,14 +94,6 @@
     components: {
       HomeDrawer: () => import('./Drawer'),
     },
-
-    /*created(){
-      if (!this.isLogged)
-        this.items.push('Login');
-      else
-        //this.items.push('Login');
-      return;
-    },*/
 
     computed: {
       isLogged () {
@@ -110,9 +104,16 @@
     methods : {
       ...mapActions('userAuthentication', ['logout']),
        Logout: function () {
-               return this.logout(); //TODO: controlla se ha sloggato e porta alla home
+               return this.logout().then(() => {
+                  this.snackbar = true;
+                  this.$router.push('/')
+              }).catch(() => {
+                  this.text = 'Logout eseguito con qualche difficoltà'
+                  this.snackbar = true;
+                  this.$router.push('/')
+               });
+      },
     },
-  },
     data: () => ({
       drawer: null,
       items: [
