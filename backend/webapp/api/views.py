@@ -26,7 +26,6 @@ class CreateRestaurantAPIView(APIView):
     # only authenticated business users can create a new restaurant
     def post(self, request):
         user = get_object_or_404(Business, user=self.request.user)
-
         data = {}
         if user:
             serializer = CreateRestaurantSerializer(data=request.data, context={'business_user': user})

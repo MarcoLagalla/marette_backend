@@ -50,7 +50,7 @@ class IsBusiness(permissions.BasePermission):
     def has_permission(self, request, view):
 
         try:
-            business = Business.objects.get(id=request.user.id)
+            business = Business.objects.get(user=request.user)
         except Business.DoesNotExist:
             return False
 

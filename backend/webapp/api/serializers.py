@@ -8,20 +8,19 @@ from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
 
 
-
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
-        fields = ['business', 'url', 'activity_name', 'activity_description', 'city', 'address', 'cap']
+        fields = ['business', 'url', 'activity_name', 'activity_description', 'city', 'address', 'n_civ', 'cap']
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'activity_name', 'activity_description', 'city',
-                  'address', 'cap', 'restaurant_number', 'p_iva']
+                  'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
     @transaction.atomic
     def save(self):
@@ -39,6 +38,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
                                                url=slugify(self.validated_data['activity_name']),               # todo /ID_BUSINESS/bouvette
                                                city=self.validated_data['city'],
                                                address=self.validated_data['address'],
+                                               n_civ=self.validated_data['n_civ'],
                                                cap=self.validated_data['cap'],
                                                restaurant_number=self.validated_data['restaurant_number'],
                                                p_iva=self.validated_data['p_iva'])

@@ -12,6 +12,7 @@ class Restaurant(models.Model):
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
     address = models.CharField(max_length=100, blank=False)
+    n_civ = models.IntegerField(blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False, help_text='Contact phone number')
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
