@@ -31,11 +31,5 @@ class Business(models.Model):
     def __str__(self):
         return self.user.username
 
-    def get_url(self, name):  # eliminate "'", "^", "-", " ", "_", replace strange character and so
-        url = unidecode.unidecode(name)  # .normalize('NFD', name).encode('ascii', 'ignore').decode("utf-8")
-        url = re.sub('[^0-9a-zA-Z]', '', url)
-        url = ''.join(url.split()).lower()
-        return url[:30]
-
     class Meta:
         verbose_name_plural = "Businesses"

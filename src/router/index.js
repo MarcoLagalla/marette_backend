@@ -6,20 +6,20 @@ import store from "@/store"
 Vue.use(Router)
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters['userAutentication/isAuthenticated']) {
+  if (!store.getters['userAuthentication/isAuthenticated']) {
     next();
     return;
   }
   next("/");
 };
 
-/*const ifAuthenticated = (to, from, next) => {
-  if (store.getters['userAutentication/isAuthenticated']) {
+const ifAuthenticated = (to, from, next) => {
+  if (store.getters['userAuthentication/isAuthenticated']) {
     next();
     return;
   }
   next("/login");
-};*/
+};
 
 const router = new Router({
   mode: 'history',
@@ -64,16 +64,31 @@ const router = new Router({
           meta: { src: require('@/assets/contact.jpg') },
         },
         {
-          path: 'pro',
-          name: 'Pro',
-          component: () => import('@/views/pages/pro.vue'),
-          meta: { src: require('@/assets/pro.jpg') },
-        },
-        {
           path: 'registration',
           name: 'Registration',
           component: () => import('@/views/pages/registration.vue'),
           beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'registrationBusiness',
+          name: 'RegBusiness',
+          component: () => import('@/views/pages/registrationBusiness.vue'),
+          beforeEnter: ifNotAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'newRestaurant',
+          name: 'NewRestaurant',
+          component: () => import('@/views/pages/newRestaurant.vue'),
+          beforeEnter: ifAuthenticated, //TODO: solo se è business
+          //meta: { src: require('@/assets/.jpg') },
+        },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: () => import('@/views/pages/profile.vue'),
+          beforeEnter: ifAuthenticated,
           //meta: { src: require('@/assets/.jpg') },
         },
         {

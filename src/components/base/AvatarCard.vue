@@ -1,8 +1,7 @@
 <template>
   <div
     :class="classes"
-    class="pt-2"
-  >
+    class="pt-2">
     <base-avatar
       v-if="icon"
       :color="color"
@@ -12,7 +11,6 @@
       :size="size"
       class="mb-3"
     />
-
     <div :class="horizontal && title && 'ml-6'">
       <base-title
         :title="title"

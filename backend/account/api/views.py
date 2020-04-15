@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
+import re
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -7,13 +8,16 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.db import transaction
+import phonenumbers
 from .serializers import CustomerSerializer, BusinessSerializer, LoginSerializer, \
     ChangePasswordSerializer, ResetPasswordSerializer, AskResetPasswordSerializer
 from ..models import Customer, Business
 from ..tokens import account_activation_token, passwordreset_token
 from ..views import send_welcome_email, send_reset_email
+from ..permissions import IsCustomer, IsBusiness
 
+from backend.webapp.models import Restaurant
 
 class ListUsersAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -146,9 +150,12 @@ class UpdatePassword(APIView):
 
         if serializer.is_valid():
 
-            user_to_update = User.objects.get(id=id)
-            # print(user_to_update.username, user_to_update.id, user_to_update.user.id)
-            token = Token.objects.get(user_id=user_to_update.id).key
+            user_to_update = get_object_or_404(User, id=id)
+
+            try:
+                token = Token.objects.get(user_id=user_to_update.id).key
+            except Token.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             if request.user.auth_token.key == token:
                 # Check old password
@@ -256,17 +263,135 @@ class UserProfileAPIView(APIView):
             if request.user.auth_token.key == token.key:
                 # check if customer
                 try:
+                    data = {}
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
+                    data.update(serializer.data)
+                    data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
+                        data = {}
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
-                    except Business.DoesNotExist:
-                        return Response({'error':["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
+                        data.update(serializer.data)
+                        data.update({'type': 'business'})
 
-                return Response(serializer.data, status.HTTP_200_OK)
+                        # retrieve the list of restaurants
+                        data_rest = []
+                        try:
+                            restaurants = Restaurant.objects.all().filter(owner=business)
+                            for restaurant in restaurants:
+                                data_rest.append(restaurant.id)
+                        except Restaurant.DoesNotExist:
+                            pass
+                        finally:
+                            data.update({'restaurants': data_rest})
+
+                    except Business.DoesNotExist:
+                        return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
+
+                return Response(data, status.HTTP_200_OK)
             else:
                 return Response({'error': ["Utente non autorizzato."]}, status.HTTP_401_UNAUTHORIZED)
         else:
             return Response({'error': ["Utente non trovato."]}, status.HTTP_404_NOT_FOUND)
+
+
+class UpdateCostumerUserProfile(APIView):
+
+    permission_classes = [IsAuthenticated, IsCustomer]
+    @transaction.atomic()
+    def post(self, request, id):
+        try:
+            user = Customer.objects.get(user_id=id)
+        except Customer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            phone = request.data.pop('phone')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        token = get_object_or_404(Token, user=user.user)
+
+        if request.user.auth_token == token:
+            # campi che possono essere modificati:
+            # numero di telefono
+            if phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
+                user.phone = phone
+                user.save()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response({'phone': 'Il numero di telefono non è valido.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UpdateBusinessUserProfile(APIView):
+    permission_classes = [IsAuthenticated, IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        try:
+            user = Business.objects.get(user_id=id)
+        except Business.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        missing_keys = False
+        value_errors = {}
+
+        try:
+            phone = request.data.pop('phone')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'phone': 'Il campo non può essere vuoto.'})
+
+        try:
+            city = request.data.pop('city')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'city': 'Il campo non può essere vuoto.'})
+
+        try:
+            address = request.data.pop('address')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'address': 'Il campo non può essere vuoto.'})
+
+        try:
+            cap = request.data.pop('cap')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'cap': 'Il campo non può essere vuoto.'})
+
+        if missing_keys:
+            return Response(value_errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validation_errors_ = False
+        validation_errors = {}
+        if not phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
+            validation_errors_ = True
+            validation_errors.update({'phone': 'Il numero di telefono deve essere valido'})
+
+        cap_validator = re.match('^[0-9]{5}$', cap)
+        if not cap_validator:
+            validation_errors_ = True
+            validation_errors.update({'cap': 'Inserire un CAP valido.'})
+
+        if validation_errors_:
+            return Response(validation_errors, status=status.HTTP_400_BAD_REQUEST)
+
+        token = get_object_or_404(Token, user=user.user)
+
+        if request.user.auth_token == token:
+            # campi che possono essere modificati:
+            # numero di telefono, city, address, cap
+            user.city = city
+            user.address = address
+            user.cap = cap
+            user.phone = phone
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
