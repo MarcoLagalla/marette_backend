@@ -7,8 +7,10 @@ import vuetify from './plugins/vuetify';
 import api from '@/services/api'
 
 Vue.config.productionTip = false
+
 var token = getCookie("user-token");
 var id = getCookie("user-id");
+
 if (token && id) { //voglio caricarli solo se li ho entrambi
   api.defaults.headers.common['Authorization'] = 'Token ' + token;
   store.dispatch("userProfile/getUserData", id);
