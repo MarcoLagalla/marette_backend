@@ -1,60 +1,60 @@
 <template>
-        <form @submit.prevent="login" class="container">
-            <h1>Log in</h1>
-            <p>Inserire dati per loggare.</p>
-            <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
-            <hr>
+  <form @submit.prevent="login" class="container">
+    <h1>Log in</h1>
+    <p>Inserire dati per loggare.</p>
+    <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
+    <hr>
 
 
-            <label for="email"><b>Email</b></label>
-            <input v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
-
-            <label for="psw"><b>Password</b></label>
-            <input v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
-
-            <hr>
-            <p>Non sei ancora Registrato ?  <router-link to="/registration"> Registrati </router-link></p>
-            <button class="loginbtn">Collegati</button>
-        </form>
+    <label for="email"><b>Email</b></label>
+    <v-text-field v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
+    </v-text-field>
+    <label for="psw"><b>Password</b></label>
+    <v-text-field v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+    </v-text-field>
+    <hr>
+    <p>Non sei ancora Registrato ?  <router-link to="/registration"> Registrati </router-link></p>
+    <button class="loginbtn">Collegati</button>
+  </form>
 
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
-    export default {
-        name: "Login",
-        data () {
-            return {
-                    email:'',
-                    password:''
-            }
-        },
-        methods:
-        {
-            ...mapActions('userAuthentication', ['signIn']),
-            login: function () {
-                this.signIn({
-                email: this.email,
-                password: this.password,
-                }).then(() => {
-                   this.$router.push('/profile')
-                });
-            }
-        },
-        computed:
-        {
-            status(){
-                return this.$store.getters['userAuthentication/status']
-            },
-            errors(){
-                return this.$store.getters['userAuthentication/errors']
-            }
-        }
+import { mapActions } from 'vuex'
+export default {
+  name: "Login",
+  data () {
+    return {
+      email:'',
+      password:''
     }
+  },
+  methods:
+  {
+    ...mapActions('userAuthentication', ['signIn']),
+    login: function () {
+      this.signIn({
+        email: this.email,
+        password: this.password,
+      }).then(() => {
+        this.$router.push('/profile')
+      });
+    }
+  },
+  computed:
+  {
+    status(){
+      return this.$store.getters['userAuthentication/status']
+    },
+    errors(){
+      return this.$store.getters['userAuthentication/errors']
+    }
+  }
+}
 </script>
 
 <style scoped>
-     {box-sizing: border-box}
+{box-sizing: border-box}
 /* Add padding to containers */
 .container {
   padding: 16px;

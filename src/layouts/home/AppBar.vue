@@ -32,12 +32,11 @@
       </v-tab>
       <v-tab
       v-if="(!this.isLogged)"
-        to="Login"
         active-class="text--primary"
         class="font-weight-bold"
         min-width="96"
         text
-        > Login
+        ><base-form-l/>
       </v-tab>
       <v-tab
       v-if="(!this.isLogged)"
