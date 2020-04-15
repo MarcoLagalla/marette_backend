@@ -1,13 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import userAutentication from './modules/userAuthentication'
+import userAuthentication from './modules/userAuthentication'
+import userProfile from "./modules/userProfile"
+import restaurant from "./modules/restaurant";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+
   modules: {
-    userAutentication
+    userProfile,
+    userAuthentication,
+    restaurant
   },
 
   /*state: {

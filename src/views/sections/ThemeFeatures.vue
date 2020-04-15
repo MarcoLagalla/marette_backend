@@ -1,6 +1,6 @@
 <template>
   <base-section id="theme-features">
-    <base-section-heading title="Theme Features">
+    <base-section-heading title="Ristoranti">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, in! Asperiores, impedit libero. Veniam rerum saepe unde nihil possimus quibusdam esse accusamus mollitia magni fuga.
     </base-section-heading>
 
@@ -16,6 +16,7 @@
             v-bind="feature"
             align="left"
             horizontal
+            size="96"
           >
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis illum veniam cum dolores ratione commodi beatae quas maxime, laboriosam excepturi solut!
           </base-avatar-card>

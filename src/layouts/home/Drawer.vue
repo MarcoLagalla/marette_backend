@@ -14,6 +14,9 @@
       color="white"
       shaped
     >
+    <v-list-item
+      color="primary"
+    ><base-form-r/></v-list-item>
       <v-list-item
         v-for="name in items"
         :key="name"

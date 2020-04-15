@@ -1,34 +1,53 @@
 <template>
-  <form @submit.prevent="login" class="container">
-    <h1>Log in</h1>
-    <p>Inserire dati per loggare.</p>
-    <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
-    <hr>
+  <v-row justify="center">
+    <v-dialog v-model="dialog"  max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn text
+
+        class="font-weight-bold"
+        min-width="96"
+        v-on="on">LOGIN</v-btn>
+      </template>
+      <v-card
+      color="grey"
+      >
+
+      <form @submit.prevent="login" class="container">
+        <h1>Log in</h1>
+        <p>Inserire dati per loggare.</p>
+        <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
 
 
-    <label for="email"><b>Email</b></label>
-    <v-text-field v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
-    </v-text-field>
-    <label for="psw"><b>Password</b></label>
-    <v-text-field v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
-    </v-text-field>
-    <hr>
-    <p>Non sei ancora Registrato ?  <router-link to="/registration"> Registrati </router-link></p>
-    <button class="loginbtn">Collegati</button>
-  </form>
 
+        <label for="email"><b>Email</b></label>
+        <v-text-field solo filled v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
+        </v-text-field>
+        <label for="psw"><b>Password</b></label>
+        <v-text-field solo filled v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+        </v-text-field>
+        
+        <button class="loginbtn">Collegati</button>
+      </form>
+      </v-card>
+    </v-dialog>
+  </v-row>
 </template>
 
 <script>
+// Mixins
+import Heading from '@/mixins/heading'
 import { mapActions } from 'vuex'
 export default {
-  name: "Login",
-  data () {
-    return {
+  name: 'BaseForm',
+
+  mixins: [Heading],
+
+  data: () => ({
+    dialog: false,
       email:'',
       password:''
-    }
-  },
+
+  }),
   methods:
   {
     ...mapActions('userAuthentication', ['signIn']),
@@ -37,7 +56,7 @@ export default {
         email: this.email,
         password: this.password,
       }).then(() => {
-        this.$router.push('/profile')
+        this.$router.push('/')
       });
     }
   },

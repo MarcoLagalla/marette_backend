@@ -27,7 +27,7 @@
             <base-btn
               :block="$vuetify.breakpoint.smAndDown"
               color="white"
-              href="mailto:shop@vuetifyjs.com?subject=Daedal%20Theme%20Question"
+              href="#"
               large
               outlined
               target="_blank"
