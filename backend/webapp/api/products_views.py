@@ -185,7 +185,7 @@ class ProductDetails(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, id, p_id):
-        
+
         restaurant = get_object_or_404(Restaurant, id=id)
         try:
             product = Product.objects.all().filter(restaurant=restaurant).get(id=p_id)

@@ -49,7 +49,7 @@ DISCOUNT_TYPES_CHOICES = [
 
 class ProductTag(models.Model):
     name = models.CharField(max_length=100)
-    icon = ResizedImageField(size=[32, 32], upload_to=settings.MEDIA, null=True, blank=True, force_format='png')
+    icon = ResizedImageField(size=[32, 32], upload_to='tag_icon', null=True, blank=True, force_format='png')
     description = models.TextField()
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
-    image = models.ImageField(upload_to=settings.MEDIA)
+    image = models.ImageField(upload_to='product')
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     tags = models.ManyToManyField(ProductTag, blank=True)
@@ -89,7 +89,6 @@ class Product(models.Model):
         return self.name
 
     def get_all_discounts(self):
-        print(self.discounts.all())
         price = self.price
         for discount in self.discounts.all():
             if discount.type == 'Fisso':
