@@ -4,11 +4,12 @@ import postRegisterRestaurant from  '../../services/manageRestaurant'
 const state = {
     status: '',
     error: '',
-    id_restaurant: ''
+    id_restaurant: '',
+    list: []
 }
 
 const getters = {
-
+    restaurantList: state => state.list,
 
 }
 
@@ -34,7 +35,6 @@ const actions = {
             postRegisterRestaurant.getRestaurantList()
             .then(resp => {
                 const data = resp.data
-                console.log(data)
                 commit('REST_LIST_SUCCESS', data)
                 resolve(resp)
             })

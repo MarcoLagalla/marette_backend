@@ -14,7 +14,7 @@
 
     mixins: [
       LoadSections([
-        'hero-alt',
+        'newsletter',
         'RegBusiForm',
         'info',
       ]),

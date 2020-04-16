@@ -15,7 +15,7 @@
 
     mixins: [
       LoadSections([
-        'ThemeFeatures',
+        'restaurantCards',
         'info',
       ]),
     ],

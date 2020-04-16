@@ -2,7 +2,7 @@
   <v-theme-provider :dark="dark">
     <div>
       <base-img
-        :src="require('@/assets/daedal-logo-dark.png')"
+        :src="require('@/assets/marette-logo.png')"
         contain
         max-width="128"
         min-height="78"
@@ -12,7 +12,7 @@
       <base-title
         size="body-1"
         space="4"
-        title="MULTI-PURPOSE THEME"
+        title="Modernizziamo chi è rimasto nel 1800"
         weight="regular"
       />
 
@@ -23,9 +23,10 @@
       <base-btn
         class="mb-12"
         color="white"
+        :to="'registrationBusiness'"
         outlined
       >
-        More Info
+        Lavora Con Noi
       </base-btn>
     </div>
   </v-theme-provider>

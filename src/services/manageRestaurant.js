@@ -9,7 +9,7 @@ export default {
     },
 
     getRestaurantList() {
-        return api.post('v1/webapp/restaurant/list')
+        return api.get('v1/webapp/restaurant/list')
             .then(response => {
                 return response
             })

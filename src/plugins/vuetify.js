@@ -4,7 +4,10 @@ import Vuetify from 'vuetify/lib';
 Vue.use(Vuetify, {
   theme: {
     primary: '#CBAA5C',
-    secondary: '#083759'
+    secondary: '#083759',
+    options: {
+      customProperties: true,
+    },
   },
   iconfont: 'mdi'
 });
