@@ -13,7 +13,7 @@
 
     class="pa-auto"
     >
-    <form @submit.prevent="register">
+    <v-form @submit.prevent="register">
       <div class="cardtitle">
         <h1
         >REGISTRATI</h1></div>
@@ -119,7 +119,7 @@
     <v-card-text>Hai già un account? <a href="#">Dillo prima, coglione</a>.</v-card-text>
 
 
-  </form>
+  </v-form>
 </v-card>
 </v-dialog>
 </v-row>

@@ -7,7 +7,7 @@
     class="ma-0 pa-8"
     justify="center"
     >
-    <form @submit.prevent="register">
+    <v-form @submit.prevent="register">
       <v-card
       opacity="0.5"
       shaped
@@ -60,7 +60,7 @@
 
   <p>Hai già un account? <a href="#">Dillo prima, coglione</a>.</p>
 </v-card>
-</form>
+</v-form>
 </v-row>
 </div>
 </template>

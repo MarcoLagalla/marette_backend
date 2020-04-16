@@ -11,7 +11,7 @@
 
       >
 
-      <form @submit.prevent="login" class="container">
+      <v-form @submit.prevent="login" class="container">
         <h1>MEMBER LOGIN</h1>
         <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
         <v-divider></v-divider>
@@ -42,7 +42,7 @@
     </div>
   </v-hover>
   <v-card-text><a href="#">Hai dimenticato la password? </a></v-card-text>
-</form>
+</v-form>
 </v-card>
 </v-dialog>
 </v-row>
