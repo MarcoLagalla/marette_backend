@@ -13,18 +13,18 @@
 
       <v-form @submit.prevent="login" class="container">
         <h1>MEMBER LOGIN</h1>
-        <h2 v-if="status === 'error'">Hai ciccato qualcosa!</h2>
+        <p class="error" v-if="errors.error">{{errors.error[0]}}</p>
         <v-divider></v-divider>
 
 
         <div class="regbtn">
           <v-text-field prepend-inner-icon="mdi-account"
-          solo v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required>
+          solo v-model='email' :error-messages="errors.email" @change="errors.email=''" type="email" placeholder="Inserire Email" id="email" name="email" required>
         </v-text-field>
       </div>
       <div class="regbtn">
         <v-text-field prepend-inner-icon="mdi-key"
-        solo v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required>
+        solo v-model='password' :error-messages="errors.password" @change="errors.password=''" type="password" placeholder="Inserire Password" id="psw" name="psw" required>
       </v-text-field>
     </div>
     <v-divider></v-divider>
@@ -36,6 +36,7 @@
 
 
       <v-btn id="login"
+             type="submit"
       :class="`elevation-${hover ? 12 : 4}`"
       class="ma-auto pa-6 transition-swing "
       >LOGIN</v-btn>

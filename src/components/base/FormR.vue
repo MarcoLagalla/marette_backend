@@ -18,85 +18,108 @@
         <h1
         >REGISTRATI</h1></div>
         <v-divider></v-divider>
-        <v-card-subtitle>Dammi dei bei dati per registrare un account.</v-card-subtitle>
-        <!--template v-if="status === 'error'" v-for="errori in errors">
-        <h3 v-for="errore in errori">{{errore}}</h3>
-      </template-->
+        <p class="error" v-if="errors.error">{{errors.error[0]}}</p>
 
       <v-card-text>
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-              prepend-icon="mdi-account"
-              solo filed
-              id="username"
-              v-model="username"
-              label="Username"
-              required
+                :error-messages="errors.username"
+                @change="errors.username=''"
+                prepend-icon="mdi-account"
+                solo filed
+                id="username"
+                v-model="username"
+                label="Username*"
+                required
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-              solo filed
-              v-model="first_name"
-              label="Nome*" id="first_name" required></v-text-field>
+                :error-messages="errors.first_name"
+                @change="errors.first_name=''"
+                solo filed
+                v-model="first_name"
+                label="Nome"
+                id="first_name"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-              solo filed
-              v-model="last_name"
-              label="Cognome*"
-              id="last_name"
-              required
+                :error-messages="errors.last_name"
+                @change="errors.last_name=''"
+                solo filed
+                v-model="last_name"
+                label="Cognome"
+                id="last_name"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
-              prepend-icon="mdi-phone"
-              solo filed
-              id="phone"
-              name="phone"
-              label="Phone number"
-              v-model="phone"
-              type="tel"
+                :error-messages="errors.phone"
+                @change="errors.phone=''"
+                prepend-icon="mdi-phone"
+                solo filed
+                id="phone"
+                name="phone"
+                label="Numero di telefono*"
+                v-model="phone"
+                type="tel"
+                require
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
-              prepend-icon="mdi-calendar-range"
-              solo filed
-              id="birth_date"
-              label="Birth date"
-              v-model="birth_date"
-              type="date"
+                :error-messages="errors.birth_date"
+                @change="errors.birth_date=''"
+                prepend-icon="mdi-calendar-range"
+                solo filed
+                id="birth_date"
+                label="Data di nascita"
+                v-model="birth_date"
+                type="date"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
               <v-text-field
-              prepend-icon="mdi-email"
-              solo filed
-              v-model="email"
-              label="Email*" id="email" type="email" required></v-text-field>
+                :error-messages="errors.email"
+                @change="errors.email=''"
+                prepend-icon="mdi-email"
+                solo filed
+                v-model="email"
+                label="Email*"
+                id="email"
+                type="email"
+                required></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
-              prepend-icon="mdi-key"
-              solo filed
-              v-model="password"
-              label="Password*" id="password" type="password" required></v-text-field>
+                :error-messages="errors.password"
+                @change="errors.password=''"
+                prepend-icon="mdi-key"
+                solo filed
+                v-model="password"
+                label="Password*"
+                id="password"
+                type="password"
+                required></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
-              solo filed
-              v-model="password2"
-              label="Repeat password" id="password2" type="password" required></v-text-field>
+                :error-messages="errors.password2"
+                @change="errors.password2=''"
+                solo filed
+                v-model="password2"
+                label="Repeat password*"
+                id="password2"
+                type="password"
+                required></v-text-field>
             </v-col>
 
 
           </v-row>
         </v-container>
-        <small>*indicates required field</small>
+        <small>*indica i campi obbligatori</small>
       </v-card-text>
         <v-divider></v-divider>
 
@@ -116,7 +139,7 @@
     </v-hover>
 
 
-    <v-card-text>Hai già un account? <a href="#">Dillo prima, coglione</a>.</v-card-text>
+    <v-card-text>Hai già un account? <router-link to="/login">Dillo prima, coglione</router-link>.</v-card-text>
 
 
   </v-form>
