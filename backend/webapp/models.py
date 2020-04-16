@@ -27,6 +27,7 @@ class Restaurant(models.Model):
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
 
+
 FOOD_CATEGORY_CHOICES = [
     ('Altro', 'Altro'),
     ('Antipasto', 'Antipasto'),

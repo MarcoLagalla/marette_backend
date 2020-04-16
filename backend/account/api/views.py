@@ -19,6 +19,7 @@ from ..permissions import IsCustomer, IsBusiness
 
 from backend.webapp.models import Restaurant
 
+
 class ListUsersAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
