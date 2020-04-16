@@ -41,4 +41,18 @@ class CreateRestaurantAPIView(APIView):
 
 
 class ShowRestaurantAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, id, slug):
+        restaurant = get_object_or_404(Restaurant, id=id)
+        try:
+            data = {}
+            serializer = ListRestaurantSerializer(restaurant, many=False)
+            data.update(serializer.data)
+            return Response(data, status.HTTP_200_OK)
+        except Restaurant.DoesNotExist:
+            return Response({'error': ["Ristorante non trovato."]}, status.HTTP_404_NOT_FOUND)
+
+
+class UpdateRestaurantAPI(APIView):
     pass

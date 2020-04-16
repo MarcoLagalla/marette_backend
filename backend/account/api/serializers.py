@@ -26,6 +26,7 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
+
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',

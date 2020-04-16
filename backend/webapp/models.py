@@ -19,9 +19,6 @@ class Restaurant(models.Model):
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False, help_text='Contact phone number')
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
-    # products =               # todo fai in seguito
-    # menus =
-    # etc ...
 
     def __str__(self):
         return self.activity_name
