@@ -47,8 +47,16 @@ class AddProduct(APIView):
                 # verifico che sia proprietario del ristorante
                 if restaurant.owner.user == request.user:
                     # è il proprietario, può aggiungere un prodotto
-                    image = request.data['image']
-                    data = json.loads(request.data['data'])
+                    try:
+                        image = request.data['image']
+                    except KeyError:
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                    try:
+                        data = json.loads(request.data['data'])
+                    except KeyError:
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+                    
                     data.update({'image': image})
                     serializer = WriteProductSerializer(data=data)
                     if serializer.is_valid():
