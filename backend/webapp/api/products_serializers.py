@@ -25,7 +25,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'category', 'price',
+        fields = ('id', 'name', 'description', 'category', 'price',
                   'tags', 'discounts', 'final_price', 'image')
 
     def get_image_url(self, instance):

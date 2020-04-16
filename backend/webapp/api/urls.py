@@ -21,4 +21,5 @@ urlpatterns = [
     path('restaurant/<int:id>/discounts/<int:d_id>/details', DetailsDiscounts.as_view(), name='details_discounts'),
     path('restaurant/<int:id>/discounts/<int:d_id>/edit', EditDiscounts.as_view(), name='edit_discounts'),
     path('restaurant/<int:id>/discounts/<int:d_id>/delete', DeleteDiscounts.as_view(), name='delete_discounts'),
+
 ]
