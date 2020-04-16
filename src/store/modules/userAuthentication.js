@@ -76,7 +76,7 @@ const actions = {
       .catch(err => {
         commit('AUTH_ERROR', err.response)
         deleteCookies();
-        reject(err)
+        reject(err.response.data)
       })
     })
   },
