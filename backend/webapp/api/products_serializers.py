@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 from ..models import Product, ProductDiscount, ProductTag
 
@@ -20,7 +21,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
     tags = ProductTagSerializer(many=True, required=False)
     discounts = ProductDiscountSerializer(many=True, required=False)
     final_price = serializers.SerializerMethodField(read_only=True)
-    image = serializers.ImageField()
+    image = serializers.ImageField(required=False)
 
     class Meta:
         model = Product
@@ -51,7 +52,6 @@ class WriteProductSerializer(serializers.ModelSerializer):
 
     @transaction.atomic()
     def save(self, restaurant):
-
         # i tags e i discounts sono oggetti a parte:
         try:
             tags_data = self.validated_data.pop('tags')
@@ -64,6 +64,8 @@ class WriteProductSerializer(serializers.ModelSerializer):
             discount_data = None
 
         product = Product.objects.create(restaurant=restaurant, **self.validated_data)
+        product.tags.clear()
+        product.discounts.clear()
 
         if tags_data:
             # se ho dei ProductTags inseriti (id)
@@ -85,5 +87,4 @@ class WriteProductSerializer(serializers.ModelSerializer):
 
         # salvo le modifiche
         product.save()
-
         return product

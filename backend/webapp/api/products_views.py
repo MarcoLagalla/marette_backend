@@ -2,7 +2,8 @@ from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
@@ -136,11 +137,30 @@ class UpdateProduct(APIView):
                         product = Product.objects.all() \
                             .filter(restaurant=restaurant).get(id=p_id)
                         if product:
+                            image = request.data['image']
+                            data = json.loads(request.data['data'])
+                            data.update({'image': image})
+                            serializer = WriteProductSerializer(data=data)
+                            if serializer.is_valid():
 
-                            # fai update prodotto
+                                if 'tags' in data:
+                                    product.tags.clear()
+                                    for t in data['tags']:
+                                        product.tags.add(t)
+                                    del data['tags']
+                                if 'discounts' in data:
+                                    product.discounts.clear()
+                                    for d in data['discounts']:
+                                        product.discounts.add(d)
+                                    del data['discounts']
 
-
-                            return Response(status=status.HTTP_200_OK)
+                                for key in data:
+                                    setattr(product, key, data[key])
+                                product.save()
+                                return Response(status=status.HTTP_200_OK)
+                            else:
+                                return Response(serializer.errors,
+                                                status=status.HTTP_400_BAD_REQUEST)
                     except Product.DoesNotExist:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                 else:
@@ -150,3 +170,17 @@ class UpdateProduct(APIView):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ProductDetails(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, id, p_id):
+        try:
+            product = Product.objects.all().filter(restaurant_id=id).get(id=p_id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ReadProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
