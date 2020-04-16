@@ -1,70 +1,98 @@
 import sendUserAuthentication from '../../services/sendUserAuthentication'
+
+
+
 const state = {
-  token: localStorage.getItem('user-token') || '',
+  token: getCookie("user-token") || '',
   status: '',
   errors: [],
-  username: ''
+  id: getCookie("user-id") || ''
 }
 
 const getters = {
   isAuthenticated: state => !!state.token,
   status: state => state.status,
   errors: state => state.errors,
-  username: state => state.username,
-
+  id: state => state.id,
 }
 
 const actions = {
 
-  signIn: ({commit}, user) => {
+  signIn: ({commit, dispatch}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
           sendUserAuthentication.signUser(user)
         .then(resp => {
           const data = resp.data
-          localStorage.setItem('user-token', data.token) // store the token in localstorage
-          setCookie('user-token', data.token, 365)
-          data.username = user.username
+          setCookies(data)
           commit('AUTH_SUCCESS', data)
+
+          dispatch("userProfile/getUserData", data.id,  { root: true });
 
           resolve(resp)
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
+        deleteCookies();
 
         reject(err)
       })
     })
   },
-  registerUser: ({commit}, user) => {
+  registerUser: ({commit, dispatch}, user) => {
     return new Promise((resolve, reject) => { // The Promise used for router redirect in login
       commit('AUTH_REQUEST')
           sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
           const data = resp.data
-          localStorage.setItem('user-token', data.token) // store the token in localstorage
+          setCookies(data);
           commit('AUTH_SUCCESS', data)
+
+          dispatch("userProfile/getUserData", data.id,  { root: true });
 
           resolve(resp)
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
-
+        deleteCookies();
         reject(err)
       })
     })
   },
 
-  logout: ({commit}) => {
+  registerBusiness: ({commit, dispatch}, user) => {
+    return new Promise((resolve, reject) => { // The Promise used for router redirect in login
+      commit('AUTH_REQUEST')
+          sendUserAuthentication.postRegisterBusiness(user)
+        .then(resp => {
+          const data = resp.data
+          setCookies(data.token);
+          commit('AUTH_SUCCESS', data)
+
+          dispatch("userProfile/getUserData", data.id,  { root: true });
+
+          resolve(resp)
+        })
+      .catch(err => {
+        commit('AUTH_ERROR', err.response)
+        deleteCookies();
+        reject(err)
+      })
+    })
+  },
+
+  logout: ({commit, dispatch}) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
-          localStorage.removeItem('user-token') // clear your user's token from localstorage
+          deleteCookies();
+          dispatch("userProfile/logout", null,  { root: true });
           resolve()
         })
       .catch(err => {
+        commit('AUTH_LOGOUT')
+        deleteCookies();
+        dispatch("userProfile/logout", null,  { root: true });
         commit('AUTH_ERROR', err.response)
 
         reject(err)
@@ -82,7 +110,8 @@ const mutations = {
   AUTH_SUCCESS: (state, data) => {
     state.status = 'success'
     state.token = data.token
-    state.username = data.username
+    state.id = data.id
+    state.errors = []
   },
   AUTH_ERROR: (state, error) => {
     state.status = 'error'
@@ -90,6 +119,7 @@ const mutations = {
   },
   AUTH_LOGOUT: state => {
     state.token = "";
+    state.id = "";
   }
 
 
@@ -103,15 +133,22 @@ export default {
   mutations
 }
 
-function setCookie(cname, cvalue, exdays) {
+function setCookies( data) {
   var d = new Date();
+  var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  document.cookie = "user-id=" + data.id + ";" + expires + ";path=/";
 }
 
-/*function getToken() {
-  var name = "user-token=";
+function deleteCookies() {
+  document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "user-id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function getCookie(name) {
+  name = name + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
@@ -124,4 +161,5 @@ function setCookie(cname, cvalue, exdays) {
     }
   }
   return "";
-}*/
+}
+

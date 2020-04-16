@@ -23,14 +23,26 @@
             <label for="phone"><b>Numero di Telefono valido*</b></label>
             <input v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required>
 
-            <label for="first_name"><b>Nome</b></label>
-            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" >
+            <label for="first_name"><b>Nome*</b></label>
+            <input v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required>
 
-            <label for="last_name"><b>Cognome</b></label>
-            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" >
+            <label for="last_name"><b>Cognome*</b></label>
+            <input v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required>
 
-            <label for="birth_date"><b>Data di nascita</b></label>
-            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" >
+            <label for="birth_date"><b>Data di nascita*</b></label>
+            <input v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required>
+
+            <label for="last_name"><b>Codice fiscale*</b></label>
+            <input v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required>
+
+            <label for="last_name"><b>Città di residenza*</b></label>
+            <input v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required>
+
+            <label for="last_name"><b>Indirizzo con numero civico*</b></label>
+            <input v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required>
+
+            <label for="last_name"><b>CAP*</b></label>
+            <input v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required>
 
             <hr>
 
@@ -57,38 +69,33 @@
                 first_name: '',
                 last_name: '',
                 birth_date: '',
-                phone: ''
+                phone: '',
+                cap: '',
+                address: '',
+                city: '',
+                cf: ''
             }
         },
         methods:
         {
-            ...mapActions('userAuthentication', ['registerUser']),
+            ...mapActions('userAuthentication', ['registerBusiness']),
             register: function () {
-                if ( !this.first_name && !this.last_name) {
-                    this.registerUser({
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone
-                    }).then(() => {
-                        this.$router.push('/')
-                    })
-                }
-                else{
-                    this.registerUser({
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone,
-                        first_name: this.first_name,
-                        last_name: this.last_name,
-                        birth_date: this.birth_date
-                    }).then(() => {
-                        this.$router.push('/')
-                    })
-                }
+                this.registerBusiness({
+                    username: this.username,
+                    email: this.email,
+                    password: this.password,
+                    password2: this.password2,
+                    phone: this.phone,
+                    first_name: this.first_name,
+                    last_name: this.last_name,
+                    birth_date: this.birth_date,
+                    cap: this.cap,
+                    address: this.address,
+                    city: this.city,
+                    cf: this.cf
+                }).then(() => {
+                    this.$router.push('/profile')
+                })
             }
         },
         computed:
@@ -116,7 +123,7 @@
          color: red;
      }
     /* Full-width input fields */
-    input[type=text], input[type=password] , input[type=tel] , input[type=date], input[type=email] {
+    input[type=text], input[type=password] , input[type=tel] , input[type=date], input[type=number], input[type=email] {
       width: 100%;
       padding: 15px;
       margin: 5px 0 22px 0;
@@ -124,7 +131,7 @@
       border: none;
       background: #f1f1f1;
     }
-    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date], input[type=email] :focus {
+    input[type=text]:focus, input[type=password], input[type=tel] , input[type=date], input[type=number], input[type=email] :focus {
       background-color: #ddd;
       outline: none;
     }

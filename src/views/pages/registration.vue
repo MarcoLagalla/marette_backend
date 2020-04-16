@@ -16,8 +16,6 @@
       LoadSections([
         'hero-alt',
         'regform',
-        'affiliates',
-        'newsletter',
         'info',
       ]),
     ],
