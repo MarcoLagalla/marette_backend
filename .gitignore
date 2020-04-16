@@ -1,8 +1,12 @@
 .DS_Store
 node_modules
 db.sqlite3
+media/*
+public/media/*
+public/static/*
 /dist
 /venv
+
 src-copy
 __pycache__
 Pipfile

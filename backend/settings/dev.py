@@ -17,7 +17,6 @@ import os
 SETTINGS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(SETTINGS_DIR)
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'backend.account.apps.AccountConfig',
     'phonenumber_field',
     'rest_framework.authtoken',
+    'django_resized',
 
 ]
 
@@ -145,7 +145,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATICFILES_DIRS = []
 
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
+MEDIA_URL = '/media/'
 ##########
 # STATIC #
 ##########
