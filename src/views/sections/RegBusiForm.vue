@@ -7,40 +7,40 @@
             <hr>
 
             <label for="username"><b>Username*</b></label>
-            <v-text-field :error-messages="errors.username" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
+            <v-text-field :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
 
             <label for="email"><b>Email*</b></label>
-            <v-text-field :error-messages="errors.email" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
+            <v-text-field :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
 
             <label for="psw"><b>Password*</b></label>
-            <v-text-field :error-messages="errors.password" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
+            <v-text-field :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
 
             <label for="psw-repeat"><b>Ripeti la Password*</b></label>
-            <v-text-field :error-messages="errors.password2" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
+            <v-text-field :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
 
             <label for="phone"><b>Numero di Telefono valido*</b></label>
-            <v-text-field :error-messages="errors.phone" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
+            <v-text-field :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
 
             <label for="first_name"><b>Nome*</b></label>
-            <v-text-field :error-messages="errors.first_name" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
+            <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
 
             <label for="last_name"><b>Cognome*</b></label>
-            <v-text-field :error-messages="errors.last_name" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
+            <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
 
             <label for="birth_date"><b>Data di nascita*</b></label>
-            <v-text-field :error-messages="errors.birth_date" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
+            <v-text-field :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
 
             <label for="last_name"><b>Codice fiscale*</b></label>
-            <v-text-field :error-messages="errors.cf" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
+            <v-text-field :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
 
             <label for="last_name"><b>Città di residenza*</b></label>
-            <v-text-field :error-messages="errors.city" v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required></v-text-field>
+            <v-text-field :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required></v-text-field>
 
             <label for="last_name"><b>Indirizzo con numero civico*</b></label>
-            <v-text-field :error-messages="errors.address" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
+            <v-text-field :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
 
             <label for="last_name"><b>CAP*</b></label>
-            <v-text-field :error-messages="errors.cap" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
+            <v-text-field :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
 
             <hr>
 
