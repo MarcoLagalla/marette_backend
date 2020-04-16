@@ -14,6 +14,7 @@
 
     mixins: [
       LoadSections([
+        'newsletter',
         'RegBusiForm',
         'info',
       ]),

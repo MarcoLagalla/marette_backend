@@ -26,7 +26,7 @@
         <v-tab
         v-if="(this.isLogged)"
         @click="Logout()"
-        
+
         class="font-weight-bold"
         min-width="96"
         text
