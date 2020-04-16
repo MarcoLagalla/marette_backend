@@ -19,6 +19,7 @@ from ..permissions import IsCustomer, IsBusiness
 
 from backend.webapp.models import Restaurant
 
+
 class ListUsersAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
@@ -360,6 +361,12 @@ class UpdateBusinessUserProfile(APIView):
             value_errors.update({'address': 'Il campo non può essere vuoto.'})
 
         try:
+            n_civ = request.data.pop('n_civ')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
+
+        try:
             cap = request.data.pop('cap')
         except KeyError:
             missing_keys = True
@@ -389,6 +396,7 @@ class UpdateBusinessUserProfile(APIView):
             # numero di telefono, city, address, cap
             user.city = city
             user.address = address
+            user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
             user.save()

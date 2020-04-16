@@ -26,6 +26,7 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
+
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
@@ -71,7 +72,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
-                  'cf', 'birth_date', 'city', 'address', 'cap', 'phone', 'email_activated']
+                  'cf', 'birth_date', 'city', 'address', 'n_civ', 'cap', 'phone', 'email_activated']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
             'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
