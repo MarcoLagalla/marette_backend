@@ -8,7 +8,7 @@ from ..models import Product, ProductDiscount, ProductTag
 class ProductDiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDiscount
-        fields = ('title', )
+        fields = ('id', 'title', 'type', 'value', )
 
 
 class ProductTagSerializer(serializers.ModelSerializer):

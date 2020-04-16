@@ -61,7 +61,7 @@ class ProductDiscount(models.Model):
 
     title = models.CharField(max_length=100)
     type = models.CharField(max_length=30, choices=DISCOUNT_TYPES_CHOICES)
-    value = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    value = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.title
