@@ -16,7 +16,6 @@ import re
 from localflavor.it.util import vat_number_validation
 
 
-
 class ListRestaurantsAPIView(ListAPIView):
     permission_classes = [AllowAny]
     queryset = Restaurant.objects.all()
@@ -133,7 +132,11 @@ class UpdateRestaurantAPIView(APIView):
             validation_errors_ = True
             validation_errors.update({'cap': 'Inserire un CAP valido.'})
 
-        if not vat_number_validation(p_iva):
+        try:
+            if not vat_number_validation(p_iva):
+                validation_errors_ = True
+                validation_errors.update({'p_iva': 'La partita iva non è valida'})
+        except Exception:
             validation_errors_ = True
             validation_errors.update({'p_iva': 'La partita iva non è valida'})
 
