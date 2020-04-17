@@ -12,7 +12,6 @@
       opacity="0.5"
       shaped
       :elevation="8"
-      width="1000px"
       class="pa-4"
       >
       <h1>Registra il tuo business <v-icon>mdi-account-tie</v-icon></h1>
@@ -26,7 +25,7 @@
     class="ma-0"
     justify="center"
     >
-    <v-col cols="12" sm="6" md="4">
+    <v-col cols="12" sm="6" >
       <v-text-field solo :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
 
       <v-text-field solo :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
@@ -39,7 +38,7 @@
 
       <v-text-field solo :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
     </v-col>
-    <v-col cols="12" sm="6" md="4">
+    <v-col cols="12" sm="6" >
       <v-text-field solo :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
 
       <v-text-field solo :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
@@ -55,10 +54,20 @@
   </v-row>
   <hr>
 
-  <p>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</p>
-  <button type="submit" class="registerbtn" >Registrati</button>
+  <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+  <div class="regbtn2">
+      <div class="center">
+          <button class="btn" type="submit">
+            <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
+              <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
+              <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+            </svg>
+            <span>Submit</span>
+          </button>
+        </div>
+    </div>
 
-  <p>Hai già un account? <a href="#">Dillo prima, coglione</a>.</p>
+  <v-card-text>Hai già un account? <a href="#">Dillo prima, coglione</a>.</v-card-text>
 </v-card>
 </v-form>
 </v-row>
@@ -128,11 +137,12 @@ export default {
 .body {
   margin: 0!important;
   background: url("https://images7.alphacoders.com/679/thumb-1920-679641.jpg") no-repeat center center fixed;
-
 }
 .v-card {
   text-align: center;
-
+}
+.v-card-text {
+  margin: 5%;
 }
 h1{
   color: red;
@@ -151,18 +161,60 @@ hr {
   margin-bottom: 25px;
 }
 /* Set a style for the submit/register button */
-.registerbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-
-  opacity: 0.9;
+.regbtn2{
+    padding: 10px;
+    margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.registerbtn:hover {
-  opacity:1;
+
+.center {
+
+  width: 180px;
+  height: 60px;
+  position: absolute;
+}
+
+.btn {
+  width: 180px;
+  height: 60px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #91C9FF;
+  outline: none;
+  transition: 1s ease-in-out;
+}
+
+svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  fill: none;
+  stroke: #fff;
+  stroke-dasharray: 150 480;
+  stroke-dashoffset: 150;
+  transition: 1s ease-in-out;
+}
+
+.btn:hover {
+  transition: 1s ease-in-out;
+  background: dodgerblue;
+  color: white;
+}
+
+.btn:hover svg {
+  stroke-dashoffset: -480;
+}
+
+.btn span {
+  color: grey;
+  font-size: 18px;
+  font-weight: 600;
+}
+.btn:hover span {
+  color: white;
+  transition: 1s ease-in-out;
 }
 /* Add a blue text color to links */
 a {

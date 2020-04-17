@@ -10,13 +10,10 @@
       <v-card
 
       >
-
       <v-form @submit.prevent="login" class="container">
         <h1>MEMBER LOGIN</h1>
         <p class="error" v-if="errors.error">{{errors.error[0]}}</p>
         <v-divider></v-divider>
-
-
         <div class="regbtn">
           <v-text-field prepend-inner-icon="mdi-account"
           solo v-model='email' :error-messages="errors.email" @change="errors.email=''" type="email" placeholder="Inserire Email" id="email" name="email" required>
@@ -28,21 +25,21 @@
       </v-text-field>
     </div>
     <v-divider></v-divider>
-    <v-hover
-    v-slot:default="{ hover }"
-
-    >
-    <div class="regbtn">
 
 
-      <v-btn id="login"
-             type="submit"
-      :class="`elevation-${hover ? 12 : 4}`"
-      class="ma-auto pa-6 transition-swing "
-      >LOGIN</v-btn>
-    </div>
-  </v-hover>
-  <v-card-text><a href="#">Hai dimenticato la password? </a></v-card-text>
+<div class="regbtn2">
+    <div class="center">
+        <button class="btn" type="submit">
+          <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
+            <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
+            <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+          </svg>
+          <span>Login</span>
+        </button>
+      </div>
+  </div>
+
+  <v-card-text><a style="color:white" href="#">Hai dimenticato la password? </a></v-card-text>
 </v-form>
 </v-card>
 </v-dialog>
@@ -91,37 +88,32 @@ export default {
 <style scoped>
 {box-sizing: border-box}
 /* Add padding to containers */
-.container {
-  padding: 16px;
-}
 h1 {
-  font-family: Work Sans;
   text-align: center;
-  margin-bottom: auto;
+  margin-bottom: 5%;
+  color: white;
 }
 .v-text-field {
   max-width: 60%;
   border-radius: 25px;
   background-color: inherit;
 }
-
-/* Overwrite default styles of hr */
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
+a:link {
+  color: red;
 }
 #login {
-  background-image: linear-gradient(to right, red , blue);
-  color: white;
-  padding: 16px 20px;
-  border: none;
   width: 60%;
-  border-radius: 25px;
   cursor: pointer;
   opacity: 0.9;
   text-align: center;
 }
-
+.regbtn2{
+    padding: 10px;
+    margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .regbtn{
   display: flex;
   align-items: center;
@@ -134,7 +126,49 @@ hr {
   border-radius: 10px;
 }
 .v-card {
-  background: rgba(200, 200, 200, 0.9);
+  background: rgba(100, 100, 100, 0.9);
 }
 
+.center {
+
+  width: 180px;
+  height: 60px;
+  position: absolute;
+}
+
+.btn {
+  width: 180px;
+  height: 60px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid white;
+  outline: none;
+  transition: 1s ease-in-out;
+}
+
+svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  fill: none;
+  stroke: #fff;
+  stroke-dasharray: 150 480;
+  stroke-dashoffset: 150;
+  transition: 1s ease-in-out;
+}
+
+.btn:hover {
+  transition: 1s ease-in-out;
+  background: #b20000;
+}
+
+.btn:hover svg {
+  stroke-dashoffset: -480;
+}
+
+.btn span {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
 </style>

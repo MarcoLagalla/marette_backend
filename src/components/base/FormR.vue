@@ -124,20 +124,18 @@
         <v-divider></v-divider>
 
       <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
-      <v-hover
-      v-slot:default="{ hover }"
 
-      >
-      <div class="regbtn">
-
-
-        <v-btn id="register"
-        :class="`elevation-${hover ? 24 : 6}`"
-        class="ma-auto pa-6 transition-swing "
-        type="submit"  >Registrati</v-btn>
-      </div>
-    </v-hover>
-
+      <div class="regbtn2">
+          <div class="center">
+              <button class="btn" type="submit">
+                <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
+                  <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
+                  <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+                </svg>
+                <span>Submit</span>
+              </button>
+            </div>
+        </div>
 
     <v-card-text>Hai già un account? <router-link to="/login">Dillo prima, coglione</router-link>.</v-card-text>
 
@@ -240,9 +238,58 @@ h1 {
   align-items: center;
   justify-content: center;
 }
+.regbtn2{
+    padding: 10px;
+    margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .v-card {
   background: rgba(200, 200, 200, 0.9);
+}
+.center {
+
+  width: 180px;
+  height: 60px;
+  position: absolute;
+}
+
+.btn {
+  width: 180px;
+  height: 60px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #91C9FF;
+  outline: none;
+  transition: 1s ease-in-out;
+}
+
+svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  fill: none;
+  stroke: #fff;
+  stroke-dasharray: 150 480;
+  stroke-dashoffset: 150;
+  transition: 1s ease-in-out;
+}
+
+.btn:hover {
+  transition: 1s ease-in-out;
+  background: dodgerblue;
+}
+
+.btn:hover svg {
+  stroke-dashoffset: -480;
+}
+
+.btn span {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 </style>
