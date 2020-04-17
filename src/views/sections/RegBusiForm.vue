@@ -16,9 +16,7 @@
       >
       <h1>Registra il tuo business <v-icon>mdi-account-tie</v-icon></h1>
 
-      <!--template v-if="status === 'error'" v-for="errori in errors">
-      <h3 v-for="errore in errori">{{errore}}</h3>
-    </template-->
+      <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
     <hr>
     <v-row
     align="center"

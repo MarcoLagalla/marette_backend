@@ -18,7 +18,7 @@
         <h1
         >REGISTRATI</h1></div>
         <v-divider></v-divider>
-        <p class="error" v-if="errors.error">{{errors.error[0]}}</p>
+        <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
 
       <v-card-text>
         <v-container>

@@ -12,7 +12,7 @@
       >
       <v-form @submit.prevent="login" class="container">
         <h1>MEMBER LOGIN</h1>
-        <p class="error" v-if="errors.error">{{errors.error[0]}}</p>
+        <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
         <v-divider></v-divider>
         <div class="regbtn">
           <v-text-field prepend-inner-icon="mdi-account"
