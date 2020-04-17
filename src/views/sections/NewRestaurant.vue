@@ -1,32 +1,30 @@
 <template>
      <form @submit.prevent="register" class="container">
         <h1>Registrati</h1>
-        <p>Dammi dei bei dati per registrare un account.</p>
-        <!--template v-if="status === 'error'" v-for="errori in errors">
-            <h3 v-for="errore in errori">{{errore}}</h3>
-        </template-->
+        <p class="error" v-if="errors" id="detail">{{errors.detail}}</p>
+
         <hr>
 
         <label for="activity_name"><b>Nome del locale*</b></label>
-        <input v-model='activity_name' type="text" placeholder="Inserire nome ristorante" id="activity_name" name="activity_name" required>
+        <v-text-field :error-messages="errors.activity_name" @change="errors.activity_name=''" v-model='activity_name' type="text" placeholder="Inserire nome ristorante" id="activity_name" name="activity_name" required></v-text-field>
 
         <label for="activity_description"><b>Fornisci una breve descrizione del locale*</b></label>
-        <textarea v-model='activity_description' id = "activity_description" rows = "3" cols = "80" name="activity_description" required>Inserire descrizione ristorante</textarea><br>
+        <v-textarea  :error-messages="errors.activity_description" @change="errors.activity_description=''" v-model='activity_description' id = "activity_description" rows = "3" cols = "80" name="activity_description" placeholder="Inserire descrizione ristorante" required></v-textarea>
 
         <label for="city"><b>Città in cui è locata l'attività*</b></label>
-        <input v-model='city' type="text" placeholder="Inserire Città" id="city" name="psw" required>
+        <v-text-field :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire Città" id="city" name="psw" required></v-text-field>
 
         <label for="address"><b>Indirizzo del locale con numero civico*</b></label>
-        <input v-model='address' type="text" placeholder="Inserire Indirizzo" id="address" name="address" required>
+        <v-text-field :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire Indirizzo" id="address" name="address" required></v-text-field>
 
         <label for="cap"><b>CAP del locale*</b></label>
-        <input v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required>
+        <v-text-field :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
 
         <label for="restaurant_number"><b>Numero di Telefono valido del locale*</b></label>
-        <input v-model='restaurant_number' type="tel" placeholder="Inserire Numero di Telefono" id="restaurant_number" name="restaurant_number" required>
+        <v-text-field :error-messages="errors.restaurant_number" @change="errors.restaurant_number=''" v-model='restaurant_number' type="tel" placeholder="Inserire Numero di Telefono" id="restaurant_number" name="restaurant_number" required></v-text-field>
 
-        <label for="p_iva"><b>Partita iva associata al locale</b></label>
-        <input v-model='p_iva' type="number" placeholder="Inserire Partita IVA" id="p_iva" name="p_iva" required>
+        <label for="p_iva"><b>Partita iva associata al locale*</b></label>
+        <v-text-field :error-messages="errors.p_iva" @change="errors.p_iva=''" v-model='p_iva' type="number" placeholder="Inserire Partita IVA" id="p_iva" name="p_iva" required></v-text-field>
 
         <hr>
         <button type="submit" class="registerbtn" >Aggiungi ristorante</button>
@@ -62,17 +60,18 @@
                     p_iva: this.p_iva
                 }).then(() => {
                     this.$router.push('/profile')
+                }).catch(error =>{
+                    var id = Object.keys(error)[0];
+                    document.getElementById(id).scrollIntoView(false)
+                    document.getElementById(id).focus({preventScroll:true});
                 })
 
             }
         },
         computed:
             {
-                status(){
-                    return this.$store.getters['userAuthentication/status']
-                },
                 errors(){
-                    return this.$store.getters['userAuthentication/errors']
+                    return this.$store.getters['restaurant/errors']
                 }
             }
     }
