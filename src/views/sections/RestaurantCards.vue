@@ -1,4 +1,5 @@
 <template>
+    <div class="body">
   <base-section id="theme-features">
   <base-section-heading title="Ristoranti">
   Ecco la nostra scelta di ristoranti
@@ -53,6 +54,8 @@
 </v-row>
 </v-container>
 </base-section>
+</div>
+
 </template>
 
 <script>
@@ -73,3 +76,8 @@
     }
   }
 </script>
+<style scoped>
+  .body {
+    background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;
+  }
+</style>
