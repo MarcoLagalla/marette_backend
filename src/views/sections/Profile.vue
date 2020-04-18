@@ -1,14 +1,12 @@
 <template>
     <div class="container">
-        <router-link tag="button" v-if="business" to="newRestaurant">Aggiungi ristorante</router-link>
+        <router-link tag="button" v-if="user_private.type==='business'" to="newRestaurant">Aggiungi ristorante</router-link>
 
         <hr>
-        <p> Username: {{user.username}}</p>
-        <p> Email: {{user.email}}</p>
-        <p> Nome: {{user.first_name}}</p>
-        <p> Cognome: {{user.last_name}}</p>
-        <p> Numero di Telefono: {{user.phone}}</p>
-        <p> Data di nascita: {{user.birth_date}}</p>
+        <p v-for="(campo, i) in user" :key="i" >{{i.replace(/_/g , ' ')}} : {{campo}}</p>
+
+
+
         <p> Per modificare la password : </p>
 
      <v-form @submit.prevent="change_psw">
@@ -36,7 +34,6 @@
 
         data() {
             return {
-                business: true,
                 old_password: '',
                 new_password: '',
                 new_password2: '',
@@ -60,6 +57,9 @@
                     {
                         user() {
                             return this.$store.getters['userProfile/user']
+                        },
+                        user_private() {
+                            return this.$store.getters['userProfile/user_private']
                         },
                         errors(){
                             return this.$store.getters['userProfile/errors']
