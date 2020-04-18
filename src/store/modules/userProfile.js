@@ -6,19 +6,18 @@ import sendUserAuthentication from "../../services/sendUserAuthentication";
 const state = {
   user:{
 
-    id: '',
-    username: '',
-    email: '',
-    first_name: "",
-    last_name: "",
-    birth_date: "",
-    phone: "",
-    is_superuser: false,
+  },
 
+  user_private : {
+        id: '',
+        is_superuser: false,
+        type:"",
+        restaurants:[],
   },
 
   errors: [],
   status: '',
+
 
 }
 
@@ -29,6 +28,7 @@ const getters = {
 
   user: state => state.user,
   errors: state=> state.errors,
+  user_private: state => state.user_private
 }
 
 const actions = {
@@ -81,14 +81,24 @@ const mutations = {
 
   USER_SUCCESS: (state, data) => {
     state.status = 'success'
-    state.user.username = data.username
-    state.user.id = data.id
-    state.user.email = data.email
-    state.user.first_name = data.first_name
-    state.user.last_name = data.last_name
-    state.user.birth_date = data.birth_date
-    state.user.phone = data.phone
-    state.user.is_superuser = data.is_superuser
+    state.user_private.type = data.type
+    state.user_private.id = data.id
+    state.user_private.is_superuser = data.is_superuser
+
+    state.user.Username = data.username
+    state.user.Email = data.email
+    state.user.Nome = data.first_name
+    state.user.Cognome = data.last_name
+    state.user.Anno_di_Nascita = data.birth_date
+    state.user.Numero_di_Telefono = data.phone
+
+    if (state.user_private.type === 'business')
+    {
+      state.user.Codice_Fiscale = data.cf
+      state.user.Indirizzo = data.address + ', ' + data.city + ', ' + data.cap
+      state.user_private.restaurants = data.restaurants
+    }
+
   },
 
   PSW_CHANGE_SUCCESS: (state) => {
@@ -102,14 +112,9 @@ const mutations = {
 
   USER_PROF_LOGOUT: (state) => {
     state.status = ''
-    state.user.username =  ''
-    state.user.id =  ''
-    state.user.email =  ''
-    state.user.first_name =  ''
-    state.user.last_name =  ''
-    state.user.birth_date = ''
-    state.user.phone =  ''
-    state.user.is_superuser =  ''
+    state.user = { }
+    state.user_private = { }
+
   },
 
   USER_ERROR: (state) => {
