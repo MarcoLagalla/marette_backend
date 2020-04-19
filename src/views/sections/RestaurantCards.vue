@@ -78,6 +78,7 @@
 </script>
 <style scoped>
   .body {
-    background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;
+    /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
+    background:#f1f1f1;
   }
 </style>

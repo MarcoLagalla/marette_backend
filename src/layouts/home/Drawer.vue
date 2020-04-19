@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    bottom
+    right
     color="transparent"
     fixed
     height="auto"
@@ -14,7 +14,20 @@
       color="white"
       shaped
     >
-    
+    <v-list-item
+      v-if="(!isLogged)"
+      color="primary"
+    >
+    <base-form-r/>
+    <base-form-l/>
+    </v-list-item>
+    <v-list-item
+      v-if="(isLogged)"
+      color="primary"
+    > <v-btn text
+    @click="Logout()"
+    > Logout
+  </v-btn> </v-list-item>
       <v-list-item
         v-for="name in items"
         :key="name"

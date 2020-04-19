@@ -4,9 +4,10 @@
     overlay-opacity="0.8"
     max-width="600px">
     <template v-slot:activator="{ on }">
-      <v-btn text
-
-      v-on="on">SIGNUP</v-btn>
+      <div class="rel">
+      <button
+      class="btn-6"
+      v-on="on"><span>signup</span></button></div>
     </template>
     <v-card
 
@@ -118,11 +119,11 @@
 
           </v-row>
         </v-container>
-        <small>*indica i campi obbligatori</small>
+        <small style="color:white">*indica i campi obbligatori</small>
       </v-card-text>
         <v-divider></v-divider>
 
-      <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+      <v-card-text style="color:white">Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
 
       <div class="regbtn2">
           <div class="center">
@@ -210,34 +211,21 @@ export default {
 </script>
 
 <style scoped>
-#register {
-  background-image: linear-gradient(to right, red , orange);
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  width: 50%;
-  border-radius: 8px;
-  cursor: pointer;
-  opacity: 0.9;
-  text-align: center;
-}
 
+.rel {
+  padding: 10px;
+}
 h1 {
   text-align: center;
+
   color: white;
 }
+.v-text-field {
 
-.cardtitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 25px;
+  background-color: inherit;
 }
 
-.regbtn{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .regbtn2{
     padding: 10px;
     margin: 10px;
@@ -245,7 +233,14 @@ h1 {
   align-items: center;
   justify-content: center;
 }
-
+.regbtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v-card-text {
+  text-align: center;
+}
 .v-dialog {
   border-radius: 10px;
 }
@@ -290,6 +285,85 @@ svg {
   color: white;
   font-size: 18px;
   font-weight: 600;
+}
+
+.btn-6{
+  display: inline-block;
+  position: relative;
+  border-radius: 2px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 2px black;
+  transition: all 0.2s linear;
+  background: #2F4F4F;
+}
+.btn-6:hover {
+  color: #666;
+  transition: all 0.2s linear;
+  background: #C0C0C0;
+  box-shadow: 0 0 6px black;
+}
+span{
+  display: block;
+  padding: 5px 20px;
+  font-weight: lighter;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+.btn-6::before, .btn-6::after{
+  content:"";
+  width: 0;
+  height: 2px;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: red;
+  filter: blur(2px);
+}
+
+span::before, span::after{
+  content:"";
+  width:2px;
+  height:0;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: red;
+  filter: blur(2px);
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  width: 100%;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  height: 100%;
+}
+
+.btn-6::before{
+  left: 50%;
+  top: 0;
+  transition-duration: 0.4s;
+}
+.btn-6::after{
+  left: 50%;
+  bottom: 0;
+  transition-duration: 0.4s;
+}
+.btn-6 span::before{
+  left: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6 span::after{
+  right: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  left: 0;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  top: 0;
 }
 
 </style>
