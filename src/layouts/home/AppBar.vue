@@ -34,7 +34,7 @@
       <v-col
       v-if="(!this.isLogged)"
 
-        class="font-weight-bold"
+        
         min-width="96"
         text
         ><base-form-la></base-form-la>
@@ -42,7 +42,7 @@
       <v-col
       v-if="(!this.isLogged)"
 
-        class="font-weight-bold"
+
         min-width="96"
         text
         ><base-form-ra/>

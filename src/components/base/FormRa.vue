@@ -13,7 +13,7 @@
 
     class="pa-auto"
     >
-    <v-form @submit.prevent="register">
+    <v-form @submit.prevent="register" v-model="valid">
       <div class="cardtitle">
         <h1
         >REGISTRATI</h1></div>
@@ -25,6 +25,7 @@
           <v-row>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
+              :rules="nameRules"
                 :error-messages="errors.username"
                 @change="errors.username=''"
                 prepend-icon="mdi-account"
@@ -56,6 +57,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
+              :rules="phoneRules"
                 :error-messages="errors.phone"
                 @change="errors.phone=''"
                 prepend-icon="mdi-phone"
@@ -82,6 +84,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
+              :rules="emailRules"
                 :error-messages="errors.email"
                 @change="errors.email=''"
                 prepend-icon="mdi-email"
@@ -94,6 +97,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
+              :rules="passwordRules"
                 :error-messages="errors.password"
                 @change="errors.password=''"
                 prepend-icon="mdi-key"
@@ -106,6 +110,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
+              :rules="password2Rules"
                 :error-messages="errors.password2"
                 @change="errors.password2=''"
                 solo filed
@@ -127,7 +132,7 @@
 
       <div class="regbtn2">
           <div class="center">
-              <button class="btn" type="submit">
+              <button class="btn" type="submit" :disabled="!valid">
                 <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                   <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                   <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
@@ -165,7 +170,24 @@ export default {
     first_name: '',
     last_name: '',
     birth_date: '',
-    phone: ''
+    phone: '',
+    valid: true,
+      nameRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      emailRules: [
+        v => !!v || 'Campo obbligatorio',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      passwordRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      password2Rules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      phoneRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
   }),
   methods:
   {
@@ -249,7 +271,6 @@ h1 {
 }
 
 .center {
-
   width: 180px;
   height: 60px;
   position: absolute;
@@ -259,7 +280,7 @@ h1 {
   width: 180px;
   height: 60px;
   cursor: pointer;
-  background: transparent;
+  background: green;
   border: 1px solid white;
   outline: none;
   transition: 1s ease-in-out;
@@ -309,8 +330,8 @@ svg {
 span{
   display: block;
   padding: 5px 20px;
-  font-weight: lighter;
-  letter-spacing: 5px;
+  font-weight: ;
+  letter-spacing: 3px;
   text-transform: uppercase;
 }
 .btn-6::before, .btn-6::after{
@@ -365,5 +386,7 @@ span::before, span::after{
 .btn-6:hover span::before, .btn-6:hover span::after{
   top: 0;
 }
-
+.btn:disabled {
+  background: grey;
+}
 </style>

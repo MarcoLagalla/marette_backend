@@ -127,9 +127,7 @@ a:link {
 .v-card {
   background: rgba(100, 100, 100, 0.9);
 }
-
 .center {
-
   width: 180px;
   height: 60px;
   position: absolute;
@@ -139,7 +137,7 @@ a:link {
   width: 180px;
   height: 60px;
   cursor: pointer;
-  background: transparent;
+  background: green;
   border: 1px solid white;
   outline: none;
   transition: 1s ease-in-out;

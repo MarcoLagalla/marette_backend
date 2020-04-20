@@ -264,7 +264,7 @@ h1 {
   width: 180px;
   height: 60px;
   cursor: pointer;
-  background: transparent;
+  background: green;
   border: 1px solid white;
   outline: none;
   transition: 1s ease-in-out;
