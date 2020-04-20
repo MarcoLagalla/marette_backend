@@ -88,7 +88,7 @@
         <div class="text-center">
           <base-btn
             :tile="false"
-            :to="{ name: 'Pro' }"
+            :to="{ name: '' }"
             rounded
             @click="menu = false"
           >

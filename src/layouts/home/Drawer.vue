@@ -44,9 +44,29 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+
   export default {
     name: 'HomeDrawer',
+    computed: {
+      isLogged () {
+        return this.$store.getters['userAuthentication/isAuthenticated']
+      }
+    },
 
+    methods : {
+      ...mapActions('userAuthentication', ['logout']),
+       Logout: function () {
+               return this.logout().then(() => {
+                  this.snackbar = true;
+                  this.$router.push('/')
+              }).catch(() => {
+                  this.text = 'Logout eseguito con qualche difficoltà'
+                  this.snackbar = true;
+                  this.$router.push('/')
+               });
+      },
+    },
     props: {
       items: {
         type: Array,
