@@ -4,9 +4,7 @@
     <router-link tag="button" v-if="user_private.type==='business'" to="newRestaurant">Aggiungi ristorante</router-link>
 
 
-    <p v-for="(campo, i) in user" :key="i" >{{i.replace(/_/g , ' ')}} : {{campo}}</p>
-
-    <v-row dense>
+      <v-row dense>
       <v-col cols="12">
         <v-card
         color="#385F73"
@@ -14,7 +12,9 @@
         >
         <v-card-title class="headline">Profilo utente</v-card-title>
 
-        <v-card-subtitle></v-card-subtitle>
+        <v-card-subtitle>
+            <p v-for="(campo, i) in user" :key="i" >{{i.replace(/_/g , ' ')}} : {{campo}}</p>
+        </v-card-subtitle>
 
         <v-card-actions>
           <v-btn @click="show = !show" text>Modifica password<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon></v-btn>
