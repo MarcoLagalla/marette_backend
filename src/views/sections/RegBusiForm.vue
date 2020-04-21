@@ -47,7 +47,7 @@
 
       <v-text-field :rules="required" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire città di residenza" id="city" name="city" required></v-text-field>
 
-      <v-text-field :rules="birth_dateRules" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
+      <v-text-field :rules="required.concat(validateDate)" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
 
       <v-text-field :rules="password2Rules" solo :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
     </v-col>
@@ -103,9 +103,7 @@ export default {
         ],
         password2Rules: [
           v => !!v || 'Campo obbligatorio',
-        ],
-        birth_dateRules: [
-          v => !!v || 'Campo obbligatorio',
+          v => v === this.password || "Le password devono combaciare"
         ]
     }
   },
@@ -134,7 +132,12 @@ export default {
                     document.getElementById(id).scrollIntoView(false)
                     document.getElementById(id).focus({preventScroll:true});
                 })
-    }
+    },
+    validateDate(value) {
+      var today = new Date();
+      var bah = new Date(value);
+      return bah.getDate() < today.getDate() || "Sei forse un viaggiatore temporale?"
+    },
   },
   computed:
   {
