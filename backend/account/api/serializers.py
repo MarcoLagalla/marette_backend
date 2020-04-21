@@ -1,6 +1,5 @@
 from django.contrib.auth.models import update_last_login
 from django.core.validators import RegexValidator
-from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -27,10 +26,11 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
+
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
-                  'birth_date', 'phone', 'is_active', 'is_superuser']
+                  'birth_date', 'phone', 'email_activated', 'is_superuser']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
             'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
@@ -72,7 +72,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
-                  'cf', 'birth_date', 'city', 'address', 'cap', 'phone']
+                  'cf', 'birth_date', 'city', 'address', 'n_civ', 'cap', 'phone', 'email_activated']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
             'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
@@ -124,7 +124,10 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    new_password2 = serializers.CharField(required=True)
 
     def validate_new_password(self, value):
+        if not self.new_password == self.new_password2:
+            raise serializers.ValidationError({'password': 'Le password devono combaciare'})
         validate_password(value)
         return value
