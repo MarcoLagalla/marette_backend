@@ -165,6 +165,13 @@ class UpdatePassword(APIView):
                     return Response({"old_password": ["Wrong password."]},
                                     status=status.HTTP_400_BAD_REQUEST)
 
+                new_password = serializer.data.get("new_password")
+                new_password2 = serializer.data.get("ner_password2")
+
+                if not new_password == new_password2:
+                    return Response({'password': 'Le password devono combaciare'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
                 # delete auth token
                 request.user.auth_token.delete()
 
