@@ -166,7 +166,7 @@ class UpdatePassword(APIView):
                                     status=status.HTTP_400_BAD_REQUEST)
 
                 new_password = serializer.data.get("new_password")
-                new_password2 = serializer.data.get("ner_password2")
+                new_password2 = serializer.data.get("new_password2")
 
                 if not new_password == new_password2:
                     return Response({'password': 'Le password devono combaciare'},
