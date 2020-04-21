@@ -43,7 +43,7 @@
 
       <v-text-field :rules="cfRules" solo :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
 
-      <v-text-field :rules="cityRules" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required></v-text-field>
+      <v-text-field :rules="cityRules" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire città di residenza" id="city" name="city" required></v-text-field>
 
       <v-text-field :rules="birth_dateRules" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
 
