@@ -22,7 +22,7 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
     birth_date = serializers.CharField(required=False)
-    is_active = serializers.BooleanField(source='user.is_active', read_only=True)
+    #is_active = serializers.BooleanField(source='user.is_active', read_only=True)
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
