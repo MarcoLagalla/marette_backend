@@ -14,8 +14,11 @@
         <label for="city"><b>Città in cui è locata l'attività*</b></label>
         <v-text-field :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire Città" id="city" name="psw" required></v-text-field>
 
-        <label for="address"><b>Indirizzo del locale con numero civico*</b></label>
+        <label for="address"><b>Indirizzo del locale*</b></label>
         <v-text-field :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire Indirizzo" id="address" name="address" required></v-text-field>
+
+        <label for="n_civ"><b>Numero civico*</b></label>
+        <v-text-field :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="text" placeholder="Inserire numero civico" id="n_civ" name="n_civ" required></v-text-field>
 
         <label for="cap"><b>CAP del locale*</b></label>
         <v-text-field :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
@@ -41,6 +44,7 @@
                 activity_description: '',
                 city: '',
                 address: '',
+                n_civ: '',
                 cap: '',
                 restaurant_number: '',
                 p_iva: ''
@@ -55,6 +59,7 @@
                     activity_description: this.activity_description,
                     city: this.city,
                     address: this.address,
+                    n_civ: this.n_civ,
                     cap: this.cap,
                     restaurant_number: this.restaurant_number,
                     p_iva: this.p_iva

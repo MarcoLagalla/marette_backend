@@ -30,6 +30,8 @@
 
       <v-text-field :rules="addressRules" solo :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
 
+      <v-text-field :rules="addressRules" solo :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="number" placeholder="Inserire numero civico" id="n_civ" name="n_civ" required></v-text-field>
+
       <v-text-field :rules="capRules" solo :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
 
       <v-text-field :rules="phoneRules" solo :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
@@ -88,6 +90,7 @@ export default {
       phone: '',
       cap: '',
       address: '',
+      n_civ: '',
       city: '',
       cf: '',
       valid: true,
@@ -142,6 +145,7 @@ export default {
         phone: this.phone,
         first_name: this.first_name,
         last_name: this.last_name,
+        n_civ: this.n_civ,
         birth_date: this.birth_date,
         cap: this.cap,
         address: this.address,
