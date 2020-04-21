@@ -34,9 +34,7 @@
             >
               Contact Us
             </base-btn>
-            <base-btn :to="{ name: 'Login' }">
-        Login
-      </base-btn>
+            
           </v-col>
         </v-row>
       </v-container>

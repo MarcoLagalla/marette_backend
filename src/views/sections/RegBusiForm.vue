@@ -7,7 +7,7 @@
     class="ma-0 pa-8"
     justify="center"
     >
-    <v-form @submit.prevent="register">
+    <v-form @submit.prevent="register" v-model="valid">
       <v-card
       opacity="0.5"
       shaped
@@ -24,30 +24,30 @@
     justify="center"
     >
     <v-col cols="12" sm="6" >
-      <v-text-field solo :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
+      <v-text-field :rules="nameRules" solo :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
+      <v-text-field :rules="first_nameRules" solo :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
+      <v-text-field :rules="addressRules" solo :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
+      <v-text-field :rules="capRules" solo :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
+      <v-text-field :rules="phoneRules" solo :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
+      <v-text-field :rules="passwordRules" solo :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
     </v-col>
     <v-col cols="12" sm="6" >
-      <v-text-field solo :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
+      <v-text-field :rules="emailRules" solo :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
+      <v-text-field :rules="last_nameRules" solo :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
+      <v-text-field :rules="cfRules" solo :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required></v-text-field>
+      <v-text-field :rules="cityRules" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire residenza" id="city" name="city" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
+      <v-text-field :rules="birth_dateRules" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
 
-      <v-text-field solo :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
+      <v-text-field :rules="password2Rules" solo :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
     </v-col>
   </v-row>
   <hr>
@@ -55,7 +55,7 @@
   <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
   <div class="regbtn2">
       <div class="center">
-          <button class="btn" type="submit">
+          <button class="btn" type="submit" :disabled="!valid">
             <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
               <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
               <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
@@ -89,7 +89,45 @@ export default {
       cap: '',
       address: '',
       city: '',
-      cf: ''
+      cf: '',
+      valid: true,
+        nameRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        emailRules: [
+          v => !!v || 'Campo obbligatorio',
+          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        ],
+        passwordRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        password2Rules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        phoneRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        first_nameRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        last_nameRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        birth_dateRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        capRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        addressRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        cityRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
+        cfRules: [
+          v => !!v || 'Campo obbligatorio',
+        ],
     }
   },
   methods:
@@ -218,5 +256,9 @@ svg {
 a {
   color: dodgerblue;
 }
+.btn:disabled {
+  background: red;
+  cursor: not-allowed;
 
+}
 </style>

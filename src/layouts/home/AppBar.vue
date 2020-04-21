@@ -34,7 +34,7 @@
       <v-col
       v-if="(!this.isLogged)"
 
-        
+
         min-width="96"
         text
         ><base-form-la></base-form-la>
@@ -130,7 +130,6 @@
       items: [
         'Home',
         'About',
-        'Contact',
       ],
       snackbar: false,
       text: 'Logout eseguito con successo',
