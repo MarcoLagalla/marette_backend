@@ -4,15 +4,16 @@
     overlay-opacity="0.8"
     max-width="600px">
     <template v-slot:activator="{ on }">
-      <v-btn text
-
-      v-on="on">SIGNUP</v-btn>
+      <div class="rel">
+      <button
+      class="btn-6"
+      v-on="on"><span>signup</span></button></div>
     </template>
     <v-card
 
     class="pa-auto"
     >
-    <v-form @submit.prevent="register">
+    <v-form @submit.prevent="register" v-model="valid">
       <div class="cardtitle">
         <h1
         >REGISTRATI</h1></div>
@@ -24,6 +25,7 @@
           <v-row>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
+              :rules="nameRules"
                 :error-messages="errors.username"
                 @change="errors.username=''"
                 prepend-icon="mdi-account"
@@ -55,6 +57,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
+              :rules="phoneRules"
                 :error-messages="errors.phone"
                 @change="errors.phone=''"
                 prepend-icon="mdi-phone"
@@ -81,6 +84,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
+              :rules="emailRules"
                 :error-messages="errors.email"
                 @change="errors.email=''"
                 prepend-icon="mdi-email"
@@ -93,6 +97,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
+              :rules="passwordRules"
                 :error-messages="errors.password"
                 @change="errors.password=''"
                 prepend-icon="mdi-key"
@@ -105,6 +110,7 @@
             </v-col>
             <v-col cols="12" sm="6" md="6">
               <v-text-field
+              :rules="password2Rules"
                 :error-messages="errors.password2"
                 @change="errors.password2=''"
                 solo filed
@@ -118,15 +124,15 @@
 
           </v-row>
         </v-container>
-        <small>*indica i campi obbligatori</small>
+        <small style="color:white">*indica i campi obbligatori</small>
       </v-card-text>
         <v-divider></v-divider>
 
-      <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+      <v-card-text style="color:white">Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
 
       <div class="regbtn2">
           <div class="center">
-              <button class="btn" type="submit">
+              <button class="btn" type="submit" :disabled="!valid">
                 <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                   <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                   <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
@@ -164,7 +170,24 @@ export default {
     first_name: '',
     last_name: '',
     birth_date: '',
-    phone: ''
+    phone: '',
+    valid: true,
+      nameRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      emailRules: [
+        v => !!v || 'Campo obbligatorio',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      passwordRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      password2Rules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
+      phoneRules: [
+        v => !!v || 'Campo obbligatorio',
+      ],
   }),
   methods:
   {
@@ -210,34 +233,21 @@ export default {
 </script>
 
 <style scoped>
-#register {
-  background-image: linear-gradient(to right, red , orange);
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  width: 50%;
-  border-radius: 8px;
-  cursor: pointer;
-  opacity: 0.9;
-  text-align: center;
-}
 
+.rel {
+  padding: 10px;
+}
 h1 {
   text-align: center;
+
   color: white;
 }
+.v-text-field {
 
-.cardtitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 25px;
+  background-color: inherit;
 }
 
-.regbtn{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .regbtn2{
     padding: 10px;
     margin: 10px;
@@ -245,7 +255,14 @@ h1 {
   align-items: center;
   justify-content: center;
 }
-
+.regbtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v-card-text {
+  text-align: center;
+}
 .v-dialog {
   border-radius: 10px;
 }
@@ -254,7 +271,6 @@ h1 {
 }
 
 .center {
-
   width: 180px;
   height: 60px;
   position: absolute;
@@ -292,4 +308,85 @@ svg {
   font-weight: 600;
 }
 
+.btn-6{
+  display: inline-block;
+  position: relative;
+  border-radius: 2px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 2px black;
+  transition: all 0.2s linear;
+  background: #2F4F4F;
+}
+.btn-6:hover {
+  color: #666;
+  transition: all 0.2s linear;
+  background: #C0C0C0;
+  box-shadow: 0 0 6px black;
+}
+span{
+  display: block;
+  padding: 5px 20px;
+  font-weight: ;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.btn-6::before, .btn-6::after{
+  content:"";
+  width: 0;
+  height: 2px;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: red;
+  filter: blur(2px);
+}
+
+span::before, span::after{
+  content:"";
+  width:2px;
+  height:0;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: red;
+  filter: blur(2px);
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  width: 100%;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  height: 100%;
+}
+
+.btn-6::before{
+  left: 50%;
+  top: 0;
+  transition-duration: 0.4s;
+}
+.btn-6::after{
+  left: 50%;
+  bottom: 0;
+  transition-duration: 0.4s;
+}
+.btn-6 span::before{
+  left: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6 span::after{
+  right: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  left: 0;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  top: 0;
+}
+.btn:disabled {
+  background: grey;
+}
 </style>

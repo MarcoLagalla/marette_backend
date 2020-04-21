@@ -18,7 +18,7 @@ const ifAuthenticated = (to, from, next) => {
     next();
     return;
   }
-  next("/login");
+  next("/");
 };
 
 const router = new Router({
@@ -55,21 +55,9 @@ const router = new Router({
           path: 'about',
           name: 'About',
           component: () => import('@/views/pages/about.vue'),
-          meta: { src: require('@/assets/about.jpg') },
+          //meta: { src: require('@/assets/about.jpg') },
         },
-        {
-          path: 'contact-us',
-          name: 'Contact',
-          component: () => import('@/views/pages/contact-us.vue'),
-          meta: { src: require('@/assets/contact.jpg') },
-        },
-        {
-          path: 'registration',
-          name: 'Registration',
-          component: () => import('@/views/pages/registration.vue'),
-          beforeEnter: ifNotAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
-        },
+
         {
           path: 'registrationBusiness',
           name: 'RegBusiness',
@@ -91,12 +79,7 @@ const router = new Router({
           beforeEnter: ifAuthenticated,
           //meta: { src: require('@/assets/.jpg') },
         },
-        {
-          path: 'login',
-          name: 'Login',
-          component: () => import('@/views/pages/login.vue'),
-          beforeEnter: ifNotAuthenticated,
-        },
+
         {
           path: '*',
           name: 'FourOhFour',
@@ -104,7 +87,7 @@ const router = new Router({
         },
       ],
     },
-    
+
 
   ],
 })

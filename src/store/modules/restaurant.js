@@ -3,12 +3,14 @@ import postRegisterRestaurant from  '../../services/manageRestaurant'
 
 const state = {
     status: '',
-    error: '',
-    id_restaurant: ''
+    errors: [],
+    id_restaurant: '',
+    list: []
 }
 
 const getters = {
-
+    restaurantList: state => state.list,
+    errors: state => state.errors,
 
 }
 
@@ -24,7 +26,7 @@ const actions = {
             })
             .catch(err => {
                 commit('REG_REST_ERROR', err.response)
-                reject(err)
+                reject(err.response.data)
             })
         })
     },
@@ -34,7 +36,6 @@ const actions = {
             postRegisterRestaurant.getRestaurantList()
             .then(resp => {
                 const data = resp.data
-                console.log(data)
                 commit('REST_LIST_SUCCESS', data)
                 resolve(resp)
             })
@@ -56,7 +57,7 @@ const mutations = {
     },
     REG_REST_ERROR: (state, error) => {
         state.status = 'error'
-        state.error = error.status //non son sicuro sia il comando giusto
+        state.errors = error.data
     },
     REST_LIST_SUCCESS: (state, list) => {
         state.list = list
