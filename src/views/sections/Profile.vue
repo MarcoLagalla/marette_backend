@@ -1,7 +1,7 @@
 <template>
     <div class="body">
   <v-container>
-    <router-link tag="button" v-if="user_private.type==='business'" to="newRestaurant">Aggiungi ristorante</router-link>
+    <router-link tag="button" v-if="isBusiness" to="newRestaurant">Aggiungi ristorante</router-link>
 
 
       <v-row dense>
@@ -138,6 +138,9 @@ export default {
     errors(){
       return this.$store.getters['userProfile/errors']
     },
+    isBusiness(){
+        return this.$store.getters['userProfile/isBusiness']
+      }
   },
 }
 </script>

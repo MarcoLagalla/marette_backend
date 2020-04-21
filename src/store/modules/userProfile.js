@@ -26,6 +26,7 @@ const getters = {
   id: state => state.id,
   username: state => state.username,*/
 
+  isBusiness: state => state.user_private.type==='business',
   user: state => state.user,
   errors: state=> state.errors,
   user_private: state => state.user_private
@@ -137,3 +138,4 @@ function updateCookie( data ) {
   var expires = "expires="+ d.toUTCString();
   document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
 }
+
