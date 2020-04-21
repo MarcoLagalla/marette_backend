@@ -117,11 +117,11 @@
        Logout: function () {
                return this.logout().then(() => {
                   this.snackbar = true;
-                  this.$router.push('/')
+                  location.reload()
               }).catch(() => {
                   this.text = 'Logout eseguito con qualche difficoltà'
                   this.snackbar = true;
-                  this.$router.push('/')
+                  location.reload()
                });
       },
     },
