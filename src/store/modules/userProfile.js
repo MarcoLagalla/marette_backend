@@ -57,7 +57,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('USER_REQUEST')
 
-      manageUserProfile.changePassword(state.user.id, data)
+      manageUserProfile.changePassword(state.user_private.id, data)
           .then(resp => {
 
             commit('PSW_CHANGE_SUCCESS', resp.data.password)
