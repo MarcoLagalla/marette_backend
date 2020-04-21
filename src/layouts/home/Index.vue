@@ -27,7 +27,6 @@
     },
     computed: {
       isLogged () {
-
         return this.$store.getters['userAuthentication/isAuthenticated']
       },
     }
