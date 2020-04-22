@@ -24,32 +24,32 @@
     justify="center"
     >
     <v-col cols="12" sm="6" >
-      <v-text-field :rules="required" solo :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
+      <v-text-field label="Username" :rules="required" solo :error-messages="errors.username" @change="errors.username=''" v-model='username' type="text" placeholder="Inserire Username" id="username" name="username" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
+      <v-text-field label="Nome" :rules="required" solo :error-messages="errors.first_name" @change="errors.first_name=''" v-model='first_name' type="text" placeholder="Inserire Nome" id="first_name" name="first_name" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
+      <v-text-field label="Indirizzo" :rules="required" solo :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" placeholder="Inserire indirizzo" id="address" name="address" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="number" placeholder="Inserire numero civico" id="n_civ" name="n_civ" required></v-text-field>
+      <v-text-field label="Numero civico" :rules="required" solo :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="number" placeholder="Inserire numero civico" id="n_civ" name="n_civ" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
+      <v-text-field label="CAP" :rules="required" solo :error-messages="errors.cap" @change="errors.cap=''" v-model='cap' type="number" placeholder="Inserire CAP" id="cap" name="cap" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
+      <v-text-field label="Numero telefonico" :rules="required" solo :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" placeholder="Inserire Numero di Telefono" id="phone" name="phone" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
+      <v-text-field label="Password" :rules="required" solo :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" placeholder="Inserire Password" id="psw" name="psw" required></v-text-field>
     </v-col>
     <v-col cols="12" sm="6" >
-      <v-text-field :rules="emailRules" solo :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
+      <v-text-field label="Email" :rules="emailRules" solo :error-messages="errors.email" @change="errors.email=''" v-model='email' type="email" placeholder="Inserire Email" id="email" name="email" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
+      <v-text-field label="Cognome" :rules="required" solo :error-messages="errors.last_name" @change="errors.last_name=''" v-model='last_name' type="text" placeholder="Inserire Cognome" id="last_name" name="last_name" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
+      <v-text-field label="Codice fiscale" :rules="required" solo :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
 
-      <v-text-field :rules="required" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire città di residenza" id="city" name="city" required></v-text-field>
+      <v-text-field label="Città di residenza" :rules="required" solo :error-messages="errors.city" @change="errors.city=''" v-model='city' type="text" placeholder="Inserire città di residenza" id="city" name="city" required></v-text-field>
 
-      <v-text-field :rules="required.concat(validateDate)" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
+      <v-text-field label="Data di nascita" :rules="required.concat(validateDate)" solo :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" placeholder="Inserire Data di Nascita" id="birth_date" name="birth_date" required></v-text-field>
 
-      <v-text-field :rules="password2Rules" solo :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
+      <v-text-field label="Ripetere la password" :rules="password2Rules" solo :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" placeholder="Ripetere Password" id="psw-repeat" name="psw-repeat" required></v-text-field>
     </v-col>
   </v-row>
   <hr>
