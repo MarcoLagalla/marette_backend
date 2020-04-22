@@ -30,12 +30,12 @@
               justify="center"
               >
               <v-col cols="12" sm="6" md="4">
-              <v-text-field solo background-color="#486F83" :error-messages="errors.old_password" @change="errors.old_password=''"  v-model='old_password' type="password" placeholder=" Inserire vecchia password" id="old_password" name="old_password" required></v-text-field>
+              <v-text-field :error-messages="errors.old_password" @change="errors.old_password=''" solo background-color="#486F83" v-model='old_password' type="password" placeholder=" Inserire vecchia password" id="old_password" name="old_password" required></v-text-field>
 </v-col><v-col cols="12" sm="6" md="4">
-              <v-text-field solo background-color="#486F83" v-model='new_password' type="password" placeholder=" Inserire nuova password" id="new_password" name="new_password" required></v-text-field>
+              <v-text-field :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#486F83" v-model='new_password' type="password" placeholder=" Inserire nuova password" id="new_password" name="new_password" required></v-text-field>
 
             </v-col><v-col cols="12" sm="6" md="4">
-              <v-text-field solo background-color="#486F83"  v-model='new_password2' type="password" placeholder=" Reinserire nuova password" id="new_password2" name="new_password2" required></v-text-field>
+              <v-text-field :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#486F83"  v-model='new_password2' type="password" placeholder=" Reinserire nuova password" id="new_password2" name="new_password2" required></v-text-field>
             </v-col>
             </v-row><div class="regbtn2">
                 <div class="center">
@@ -96,6 +96,14 @@ export default {
       old_password: '',
       new_password: '',
       new_password2: '',
+      passwordRules: [
+          v => !!v || 'Campo obbligatorio',
+          v => v !== this.old_password || "La nuova password deve essere diversa dalla vecchia"
+        ],
+      password2Rules: [
+          v => !!v || 'Campo obbligatorio',
+          v => v === this.new_password || "Le password devono combaciare"
+        ],
       show: false,
       items: [
         {
