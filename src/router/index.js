@@ -86,6 +86,14 @@ const router = new Router({
         },
 
         {
+          path: 'resetpass',
+          name: 'resetpass',
+          component: () => import('@/views/pages/resetPass.vue'),
+          //beforeEnter: ifAuthenticated,
+          //meta: { src: require('@/assets/.jpg') },
+        },
+
+        {
           path: '*',
           name: 'FourOhFour',
           component: () => import('@/views/pages/404.vue'),
