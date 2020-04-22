@@ -112,6 +112,7 @@ class LoginSerializer(serializers.Serializer):
 
 class ResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
     token = serializers.CharField()
 
 class AskResetPasswordSerializer(serializers.Serializer):
