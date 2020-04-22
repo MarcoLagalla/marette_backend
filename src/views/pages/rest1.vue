@@ -1,20 +1,10 @@
-<template>
-  <div class="about" id="about">
-    <h1>This is an about page</h1>
-  </div>
-</template>
 
-<style scoped="">
-  h1 {
-    color: red !important;
-  }
-</style>
 <script>
   // Extensions
   import View from '@/views/View'
 
   // Mixins
-  //import LoadSections from '@/mixins/load-sections'
+  import LoadSections from '@/mixins/load-sections'
 
   export default {
     name: 'rest1',
@@ -22,6 +12,16 @@
     metaInfo: { title: 'Login' },
 
     extends: View,
+
+    mixins: [
+      LoadSections([
+        'rest-banner',
+        'rest-menu',
+        //'rest-events',
+        //'rest-map',
+        'info',
+      ]),
+    ],
 
     props: {
       id: {

@@ -31,7 +31,7 @@ const router = new Router({
     return { x: 0, y: 0 }
   },
   routes: [
-  {
+/*  {
       path: '/rest1',
       component: () => import('@/layouts/rest1/Index.vue'),
       children: [
@@ -41,7 +41,7 @@ const router = new Router({
           component: () => import('@/views/pages/rest1.vue'),
         },
       ],
-    },
+    },*/
     {
       path: '/',
       component: () => import('@/layouts/home/Index.vue'),
@@ -50,6 +50,11 @@ const router = new Router({
           path: '',
           name: 'Home',
           component: () => import('@/views/pages/home.vue'),
+        },
+        {
+          path: 'rest1',
+          name: 'Rest1',
+          component: () => import('@/views/pages/rest1.vue'),
         },
         {
           path: 'about',

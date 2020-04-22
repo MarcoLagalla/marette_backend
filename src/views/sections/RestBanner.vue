@@ -1,0 +1,77 @@
+<template>
+  <div class="body">
+    <v-row
+    align="center"
+    class="ma-0 pa-8"
+    justify="center"
+    >
+    <v-col
+       cols="6"
+       md="4"
+     >
+
+     </v-col>
+     <v-col
+        cols="6"
+        md="4"
+      >
+
+      </v-col>
+      <v-col
+         cols="6"
+         md="4"
+       >
+       <div class="infocard">
+         <v-card dark
+   class="mx-6 mt-12"
+   height="50%"
+   max-width="344"
+   outlined
+   color="rgba(0,0,0,0.8)"
+ >
+   <v-list-item three-line>
+     <v-list-item-content>
+       <div class="overline mb-4"></div>
+       <v-list-item-title class="headline mb-1">Pizzeria marechiaro</v-list-item-title>
+       <v-list-item-subtitle>bla bla bla</v-list-item-subtitle>
+     </v-list-item-content>
+
+
+   </v-list-item>
+
+   <v-card-actions>
+
+   </v-card-actions>
+ </v-card>
+       </div>
+       </v-col>
+</v-row>
+</div>
+</template>
+
+<script>
+
+export default {
+  name: "restban",
+
+}
+</script>
+
+<style scoped>
+.infocard {
+  height:400px;
+}
+.body {
+  margin: 0!important;
+  background: url("https://initiate.alphacoders.com/images/738/cropped-1920-1080-738359.jpg?5332") no-repeat center center fixed;
+}
+
+.regbtn2{
+    padding: 10px;
+    margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+</style>
