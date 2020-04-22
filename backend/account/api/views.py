@@ -19,6 +19,7 @@ from ..permissions import IsCustomer, IsBusiness
 
 from backend.webapp.models import Restaurant
 
+
 class ListUsersAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
@@ -164,6 +165,17 @@ class UpdatePassword(APIView):
                     return Response({"old_password": ["Wrong password."]},
                                     status=status.HTTP_400_BAD_REQUEST)
 
+                new_password = serializer.data.get("new_password")
+                new_password2 = serializer.data.get("new_password2")
+
+                if not new_password == new_password2:
+                    return Response({'password': 'Le password devono combaciare'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                # check if new_password != old_password
+                if not old_password != new_password:
+                    return Response({'password': 'La nuova password deve essere diversa da quella vecchia'},
+                                    status=status.HTTP_400_BAD_REQUEST)
                 # delete auth token
                 request.user.auth_token.delete()
 
@@ -238,11 +250,15 @@ class ResetPasswordAPIView(APIView):
         if serializer.is_valid():
             given_token = serializer.validated_data['token']
             password = serializer.validated_data['password']
+            password2 = serializer.validated_data['password2']
 
             users = User.objects.all()
             for user in users:
 
                 if passwordreset_token.check_token(user, given_token):
+                    if not password == password2:
+                        return Response({'password': 'Le password devono combaciare'},
+                                        status=status.HTTP_400_BAD_REQUEST)
                     user.set_password(password)
                     user.save()
                     return Response(status=status.HTTP_200_OK)
@@ -360,6 +376,12 @@ class UpdateBusinessUserProfile(APIView):
             value_errors.update({'address': 'Il campo non può essere vuoto.'})
 
         try:
+            n_civ = request.data.pop('n_civ')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
+
+        try:
             cap = request.data.pop('cap')
         except KeyError:
             missing_keys = True
@@ -389,6 +411,7 @@ class UpdateBusinessUserProfile(APIView):
             # numero di telefono, city, address, cap
             user.city = city
             user.address = address
+            user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
             user.save()

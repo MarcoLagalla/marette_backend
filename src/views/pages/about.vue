@@ -14,11 +14,7 @@
 
     mixins: [
       LoadSections([
-        'hero-alt',
         'theme-features',
-        'logform',
-        'regform',
-        'newsletter',
         'info',
       ]),
     ],

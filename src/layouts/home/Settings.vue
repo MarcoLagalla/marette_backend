@@ -15,7 +15,7 @@
       <v-card
         id="settings"
         class="py-2 px-4"
-        color="#0000004D"
+        color="#ffffff8D"
         dark
         flat
         style="position: fixed; top: 164px; right: -35px;"
@@ -23,21 +23,27 @@
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon large>
-          mdi-cog
+        <v-icon
+        color="blue"
+        large>
+          mdi-account
         </v-icon>
       </v-card>
     </template>
 
-    <v-card class="py-2">
-      <base-title
-        align="center"
-        title="Theme Colors"
-        space="0"
-      />
+    <v-card
+     class="py-2">
+     <router-link :to="{ name: 'profile'}">
+      <div class="text-center">
+        <div class="title1"
+        >
+          Profilo
 
+
+        </div>
+      </div></router-link>
       <v-card-text>
-        <v-item-group
+    <!--    <v-item-group
           v-model="$vuetify.theme.themes.light.primary"
           class="d-flex justify-center"
         >
@@ -57,49 +63,39 @@
               />
             </template>
           </v-item>
-        </v-item-group>
+        </v-item-group> -->
 
-        <v-divider class="my-6" />
+        <v-divider class="mb-6" />
+
 
         <base-btn
           block
-          href="https://store.vuetifyjs.com/product/daedal-responsive-multi-purpose-theme-free?ref=vtyd-pro-page-settings"
+          href="#"
           class="mb-6"
           color="accent"
           target="_blank"
         >
-          Free Download
+          Prenotazioni
         </base-btn>
 
-        <base-btn
-          :to="{ name: 'Sink' }"
-          block
-          color="grey darken-1"
-          dark
-          @click="menu = false"
-        >
-          View All Components
-        </base-btn>
+
+
 
         <v-divider class="my-6" />
 
-        <base-img
-          class="mx-auto mb-6"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-light.png"
-          width="88"
-        />
+
 
         <div class="text-center">
           <base-btn
             :tile="false"
-            :to="{ name: 'Pro' }"
+            :to="{ name: '' }"
             rounded
             @click="menu = false"
           >
-            Go Pro
+            I tuoi ristoranti
 
             <v-icon right>
-              mdi-rocket
+              mdi-food-fork-drink
             </v-icon>
           </base-btn>
         </div>
@@ -124,3 +120,48 @@
     },
   }
 </script>
+
+<style scoped>
+  .title1{
+    background: rgba(200,20,20,0.7);
+    color: white;
+    text-align: center;
+    position: relative;
+    padding: 0;
+    padding-top: 0;
+    font-weight: bold;
+    font-size: 2em;
+    margin-bottom: 0;
+    margin-left: 5%;
+    margin-right: 5%;
+
+  }
+  .title1::before {
+    content: '';
+    position: absolute;
+  border-color: white;
+  border-style: solid;
+  border-width: 1em 1em 1em 1em;
+  height: 2em;
+  top: 0;
+  right: 93%;
+  width: 0.5em;
+  transform: rotate(45deg);
+}
+.title1::after {
+  content: '';
+  position: absolute;
+border-color: white;
+border-style: solid;
+border-width: 1em 1em 1em 1em;
+height: 2em;
+top: 0;
+left: 90%;
+width: 0.5em;
+transform: rotate(45deg);
+}
+
+a{
+  text-decoration: none;
+}
+</style>

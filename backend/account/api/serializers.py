@@ -22,10 +22,11 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
     birth_date = serializers.CharField(required=False)
-    is_active = serializers.BooleanField(source='user.is_active', read_only=True)
+    #is_active = serializers.BooleanField(source='user.is_active', read_only=True)
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
+
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
@@ -71,7 +72,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     class Meta:
         model = Business
         fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
-                  'cf', 'birth_date', 'city', 'address', 'cap', 'phone', 'email_activated']
+                  'cf', 'birth_date', 'city', 'address', 'n_civ', 'cap', 'phone', 'email_activated']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
             'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
@@ -111,6 +112,7 @@ class LoginSerializer(serializers.Serializer):
 
 class ResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
     token = serializers.CharField()
 
 class AskResetPasswordSerializer(serializers.Serializer):
@@ -126,7 +128,5 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password2 = serializers.CharField(required=True)
 
     def validate_new_password(self, value):
-        if not self.new_password == self.new_password2:
-            raise serializers.ValidationError({'password': 'Le password devono combaciare'})
         validate_password(value)
         return value

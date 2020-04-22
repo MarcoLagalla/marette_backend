@@ -2,9 +2,9 @@
   <v-row justify="center">
     <v-dialog v-model="dialog"  max-width="500px">
       <template v-slot:activator="{ on }">
-        <v-btn text
-        color="black"
-        v-on="on">Login</v-btn>
+        <div class="rel">
+          <button class="btn-6"
+          v-on="on"><span>Login</span></button></div>
       </template>
       <v-card
 
@@ -68,7 +68,7 @@ export default {
         email: this.email,
         password: this.password,
       }).then(() => {
-        this.$router.push('/')
+        location.reload()
       });
     }
   },
@@ -87,6 +87,9 @@ export default {
 <style scoped>
 {box-sizing: border-box}
 /* Add padding to containers */
+.rel {
+  padding: 10px;
+}
 h1 {
   text-align: center;
   margin-bottom: 5%;
@@ -97,15 +100,7 @@ h1 {
   border-radius: 25px;
   background-color: inherit;
 }
-a:link {
-  color: red;
-}
-#login {
-  width: 60%;
-  cursor: pointer;
-  opacity: 0.9;
-  text-align: center;
-}
+
 .regbtn2{
     padding: 10px;
     margin: 10px;
@@ -127,7 +122,9 @@ a:link {
 .v-card {
   background: rgba(100, 100, 100, 0.9);
 }
+
 .center {
+
   width: 180px;
   height: 60px;
   position: absolute;
@@ -142,7 +139,6 @@ a:link {
   outline: none;
   transition: 1s ease-in-out;
 }
-
 svg {
   position: absolute;
   left: 0;
@@ -153,19 +149,94 @@ svg {
   stroke-dashoffset: 150;
   transition: 1s ease-in-out;
 }
-
 .btn:hover {
   transition: 1s ease-in-out;
   background: #b20000;
 }
-
 .btn:hover svg {
   stroke-dashoffset: -480;
 }
-
 .btn span {
   color: white;
   font-size: 18px;
   font-weight: 600;
+}
+.btn-6{
+  display: inline-block;
+  position: relative;
+  border-radius: 2px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 2px black;
+  transition: all 0.2s linear;
+  background: #2F4F4F;
+}
+.btn-6:hover {
+  color: #666;
+  transition: all 0.2s linear;
+  background: #C0C0C0;
+  box-shadow: 0 0 6px black;
+}
+span{
+  display: block;
+  padding: 5px 20px;
+  font-weight: ;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+.btn-6::before, .btn-6::after{
+  content:"";
+  width: 0;
+  height: 2px;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: #2F4F4F;
+  filter: blur(2px);
+}
+
+span::before, span::after{
+  content:"";
+  width:2px;
+  height:0;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: #2F4F4F;
+  filter: blur(2px);
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  width: 100%;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  height: 100%;
+}
+
+.btn-6::before{
+  left: 50%;
+  top: 0;
+  transition-duration: 0.4s;
+}
+.btn-6::after{
+  left: 50%;
+  bottom: 0;
+  transition-duration: 0.4s;
+}
+.btn-6 span::before{
+  left: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6 span::after{
+  right: 0;
+  top: 50%;
+  transition-duration: 0.4s;
+}
+.btn-6:hover::before, .btn-6:hover::after{
+  left: 0;
+}
+.btn-6:hover span::before, .btn-6:hover span::after{
+  top: 0;
 }
 </style>
