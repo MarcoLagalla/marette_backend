@@ -172,6 +172,10 @@ class UpdatePassword(APIView):
                     return Response({'password': 'Le password devono combaciare'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
+                # check if new_password != old_password
+                if not old_password != new_password:
+                    return Response({'password': 'La nuova password deve essere diversa da quella vecchia'},
+                                    status=status.HTTP_400_BAD_REQUEST)
                 # delete auth token
                 request.user.auth_token.delete()
 
@@ -246,11 +250,15 @@ class ResetPasswordAPIView(APIView):
         if serializer.is_valid():
             given_token = serializer.validated_data['token']
             password = serializer.validated_data['password']
+            password2 = serializer.validated_data['password2']
 
             users = User.objects.all()
             for user in users:
 
                 if passwordreset_token.check_token(user, given_token):
+                    if not password == password2:
+                        return Response({'password': 'Le password devono combaciare'},
+                                        status=status.HTTP_400_BAD_REQUEST)
                     user.set_password(password)
                     user.save()
                     return Response(status=status.HTTP_200_OK)
