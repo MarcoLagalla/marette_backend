@@ -172,6 +172,10 @@ class UpdatePassword(APIView):
                     return Response({'password': 'Le password devono combaciare'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
+                # check if new_password != old_password
+                if not old_password != new_password:
+                    return Response({'password': 'La nuova password deve essere diversa da quella vecchia'},
+                                    status=status.HTTP_400_BAD_REQUEST)
                 # delete auth token
                 request.user.auth_token.delete()
 
