@@ -44,7 +44,7 @@
 
           <v-row align="center" class="ma-0" justify="center">
 
-            <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" placeholder="Inserire CF" id="cf" name="cf" required></v-text-field>
+            <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" id="cf" name="cf" required></v-text-field>
 
             <v-text-field label="Data di nascita" :rules="required.concat(validateDate)" :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" id="birth_date" name="birth_date" required></v-text-field>
 
@@ -164,9 +164,13 @@ export default {
 
 <style scoped>
 
+  .v-text-field {
+    padding: 10px;
+  }
+
 .body {
   margin: 0!important;
-  background: url("https://images7.alphacoders.com/679/thumb-1920-679641.jpg") no-repeat center center fixed;
+  background: url("https://miamidiario.com/wp-content/uploads/2018/10/01-Beach-Club-Restaurant1.jpg") no-repeat center center fixed;
 }
 .v-card {
   text-align: center;
