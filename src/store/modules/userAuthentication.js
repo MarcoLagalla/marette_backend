@@ -99,7 +99,47 @@ const actions = {
       })
 
     })
-  }
+  },
+
+  AskPasswordreset: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      commit('AUTH_REQUEST')
+
+      sendUserAuthentication.AskPasswordreset(data)
+          .then(resp => {
+            commit('ASK_PSW_RESET_SUCCESS', resp.data)
+            resolve(resp.data.password)
+
+          })
+          .catch(err => {
+
+            commit('ASK_PSW_RESET_ERROR', err.response)
+            reject(err)
+
+          })
+    })
+  },
+
+  ConfirmPasswordreset: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      commit('USER_REQUEST')
+
+      sendUserAuthentication.ConfirmPasswordreset( data)
+          .then(resp => {
+
+            commit('PSW_CHANGE_SUCCESS', resp.data.password)
+            resolve(resp.data.password)
+
+          })
+          .catch(err => {
+
+            commit('PSW_CHANGE_ERROR', err.response)
+            reject(err)
+
+          })
+    })
+  },
+
 }
 
 const mutations = {
@@ -120,7 +160,16 @@ const mutations = {
   AUTH_LOGOUT: state => {
     state.token = "";
     state.id = "";
-  }
+  },
+
+  ASK_PSW_RESET_SUCCESS: (state) => {
+    state.status = 'success'
+  },
+
+  ASK_PSW_RESET_ERROR: (state, error) => {
+    state.status = 'error'
+    state.errors = error.data
+  },
 
 
 }
