@@ -2,8 +2,6 @@
     <div class="body">
   <v-container>
     <router-link tag="button" v-if="isBusiness" to="newRestaurant">Aggiungi ristorante</router-link>
-
-
       <v-row dense>
       <v-col cols="12">
         <v-card
@@ -19,10 +17,10 @@
         <v-card-actions>
           <v-btn @click="show = !show" text>Modifica password<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon></v-btn>
         </v-card-actions>
+
         <v-expand-transition>
           <div v-show="show">
             <v-divider></v-divider>
-
             <v-form @submit.prevent="change_psw">
               <v-row
               align="center"
@@ -30,13 +28,41 @@
               justify="center"
               >
               <v-col cols="12" sm="6" md="4">
-              <v-text-field :error-messages="errors.old_password" @change="errors.old_password=''" solo background-color="#486F83" v-model='old_password' type="password" placeholder=" Inserire vecchia password" id="old_password" name="old_password" required></v-text-field>
-</v-col><v-col cols="12" sm="6" md="4">
-              <v-text-field :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#486F83" v-model='new_password' type="password" placeholder=" Inserire nuova password" id="new_password" name="new_password" required></v-text-field>
+              <v-text-field
+                      :error-messages="errors.old_password" @change="errors.old_password=''"
+                      solo background-color="#486F83"
+                      v-model='old_password'
+                      type="password"
+                      placeholder=" Inserire vecchia password"
+                      id="old_password"
+                      name="old_password"
+                      required>
+              </v-text-field>
 
             </v-col><v-col cols="12" sm="6" md="4">
-              <v-text-field :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#486F83"  v-model='new_password2' type="password" placeholder=" Reinserire nuova password" id="new_password2" name="new_password2" required></v-text-field>
+              <v-text-field
+                      :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''"
+                      solo background-color="#486F83"
+                      v-model='new_password'
+                      type="password"
+                      placeholder=" Inserire nuova password"
+                      id="new_password"
+                      name="new_password"
+                      required>
+              </v-text-field>
+            </v-col><v-col cols="12" sm="6" md="4">
+
+              <v-text-field
+                      :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''"
+                      solo background-color="#486F83"
+                      v-model='new_password2'
+                      type="password"
+                      placeholder=" Reinserire nuova password"
+                      id="new_password2"
+                      name="new_password2" required>
+              </v-text-field>
             </v-col>
+
             </v-row><div class="regbtn2">
                 <div class="center">
               <button type="submit" class="password_btn" >Modifica Password</button>
