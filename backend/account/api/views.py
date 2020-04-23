@@ -258,13 +258,13 @@ class ResetPasswordAPIView(APIView):
 
                 if passwordreset_token.check_token(user, given_token):
                     if not password == password2:
-                        return Response({'password': 'Le password devono combaciare'},
+                        return Response({'error': 'Le password devono combaciare!'},
                                         status=status.HTTP_400_BAD_REQUEST)
                     user.set_password(password)
                     user.save()
-                    return Response(status=status.HTTP_200_OK)
+                    return Response({'details': 'Password cambiata correttamente!'}, status=status.HTTP_200_OK)
 
-            return Response({'error':  ['Token di autorizzazione non valido.']}, status.HTTP_404_NOT_FOUND)
+            return Response({'error':  'Token di autorizzazione non valido.'}, status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
