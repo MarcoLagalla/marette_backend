@@ -104,7 +104,6 @@ const actions = {
   AskPasswordreset: ({commit}, data) => {
     return new Promise((resolve, reject) => {
       commit('AUTH_REQUEST')
-        //deleteCookies();
       sendUserAuthentication.AskPasswordreset(data)
           .then(resp => {
             commit('ASK_PSW_RESET_SUCCESS', resp.data)
@@ -112,7 +111,6 @@ const actions = {
 
           })
           .catch(err => {
-            console.log(err.response)
 
             commit('ASK_PSW_RESET_ERROR', err.response)
             reject(err.response.data.error)
@@ -124,7 +122,6 @@ const actions = {
   ConfirmPasswordreset: ({commit}, data) => {
     return new Promise((resolve, reject) => {
       commit('AUTH_REQUEST')
-        console.log(data)
 
           sendUserAuthentication.ConfirmPasswordreset(data)
           .then(resp => {
