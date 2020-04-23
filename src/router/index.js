@@ -68,29 +68,25 @@ const router = new Router({
           name: 'RegBusiness',
           component: () => import('@/views/pages/registrationBusiness.vue'),
           beforeEnter: ifNotAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
         },
         {
           path: 'newRestaurant',
           name: 'NewRestaurant',
           component: () => import('@/views/pages/newRestaurant.vue'),
           beforeEnter: ifAuthenticated, //TODO: solo se è business
-          //meta: { src: require('@/assets/.jpg') },
         },
         {
           path: 'profile',
           name: 'profile',
           component: () => import('@/views/pages/profile.vue'),
           beforeEnter: ifAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
         },
 
         {
           path: 'resetpass',
           name: 'resetpass',
           component: () => import('@/views/pages/resetPass.vue'),
-          //beforeEnter: ifAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
+          beforeEnter: ifNotAuthenticated,
         },
 
         {
