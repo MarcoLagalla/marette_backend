@@ -38,7 +38,7 @@
       </div>
   </div>
 
-  <v-card-text><a style="color:white" href="#">Hai dimenticato la password? </a></v-card-text>
+  <v-card-text><a style="color:white" href="#"><router-link to="/resetpass">Hai dimenticato la password? </router-link></a></v-card-text>
 </v-form>
 </v-card>
 </v-dialog>
