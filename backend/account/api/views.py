@@ -235,11 +235,12 @@ class AskPasswordAPIView(APIView):
             if user:
                 reset_token = passwordreset_token.make_token(user)
                 send_reset_email(user, reset_token)
-                return Response(status.HTTP_200_OK)
+                return Response({'details': 'Email inviata correttamente!'}, status.HTTP_200_OK)
+
             else:
-                return Response(status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'Email non esistente!'}, status.HTTP_404_NOT_FOUND)
         else:
-            return Response(status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Parametri non validi!'}, status.HTTP_400_BAD_REQUEST)
 
 
 class ResetPasswordAPIView(APIView):
