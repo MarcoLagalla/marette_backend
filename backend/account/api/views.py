@@ -226,19 +226,19 @@ class ActivateUserAPIView(APIView):
 
 
 class AskPasswordAPIView(APIView):
-
     def post(self, request):
         serializer = AskResetPasswordSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
-            user = get_object_or_404(User, email=email)
-            if user:
-                reset_token = passwordreset_token.make_token(user)
-                send_reset_email(user, reset_token)
-                return Response({'details': 'Email inviata correttamente!'}, status.HTTP_200_OK)
-
-            else:
+            
+            try:
+                user = User.objects.all().get(email=email)
+            except User.DoesNotExist:
                 return Response({'error': 'Email non esistente!'}, status.HTTP_404_NOT_FOUND)
+
+            reset_token = passwordreset_token.make_token(user)
+            send_reset_email(user, reset_token)
+            return Response({'details': 'Email inviata correttamente!'}, status.HTTP_200_OK)
         else:
             return Response({'error': 'Parametri non validi!'}, status.HTTP_400_BAD_REQUEST)
 
