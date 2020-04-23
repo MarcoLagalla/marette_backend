@@ -230,7 +230,7 @@ class AskPasswordAPIView(APIView):
         serializer = AskResetPasswordSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
-            
+
             try:
                 user = User.objects.all().get(email=email)
             except User.DoesNotExist:
