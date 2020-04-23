@@ -104,17 +104,18 @@ const actions = {
   AskPasswordreset: ({commit}, data) => {
     return new Promise((resolve, reject) => {
       commit('AUTH_REQUEST')
-
+        //deleteCookies();
       sendUserAuthentication.AskPasswordreset(data)
           .then(resp => {
             commit('ASK_PSW_RESET_SUCCESS', resp.data)
-            resolve(resp.data.password)
+            resolve(resp.data.details)
 
           })
           .catch(err => {
+            console.log(err.response)
 
             commit('ASK_PSW_RESET_ERROR', err.response)
-            reject(err)
+            reject(err.response.data.error)
 
           })
     })
@@ -122,18 +123,21 @@ const actions = {
 
   ConfirmPasswordreset: ({commit}, data) => {
     return new Promise((resolve, reject) => {
-      commit('USER_REQUEST')
+      commit('AUTH_REQUEST')
+        console.log(data)
 
-      sendUserAuthentication.ConfirmPasswordreset( data)
+          sendUserAuthentication.ConfirmPasswordreset(data)
           .then(resp => {
 
-            commit('PSW_CHANGE_SUCCESS', resp.data.password)
-            resolve(resp.data.password)
+            commit('ASK_PSW_RESET_SUCCESS', resp.data)
+              //setCookies(data.token);
+              console.log(resp.data)
+            resolve(resp.data)
 
           })
           .catch(err => {
 
-            commit('PSW_CHANGE_ERROR', err.response)
+            commit('ASK_PSW_RESET_ERROR', err.response)
             reject(err)
 
           })
