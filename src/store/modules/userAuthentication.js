@@ -130,15 +130,13 @@ const actions = {
           .then(resp => {
 
             commit('ASK_PSW_RESET_SUCCESS', resp.data)
-              //setCookies(data.token);
-              console.log(resp.data)
-            resolve(resp.data)
+            resolve(resp.data.details)
 
           })
           .catch(err => {
 
             commit('ASK_PSW_RESET_ERROR', err.response)
-            reject(err)
+            reject(err.response.data.error)
 
           })
     })
