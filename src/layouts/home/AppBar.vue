@@ -9,10 +9,10 @@
     >
       <router-link to="/">
         <base-img
-          :src="require('@/assets/marette-logo.png')"
+          :src="require('@/assets/logo_small.png')"
           contain
-          max-width="180"
-          width="100%"
+          max-width="80"
+
         />
       </router-link>
 
@@ -128,8 +128,7 @@
     data: () => ({
       drawer: null,
       items: [
-        'Home',
-        'About',
+        
       ],
       snackbar: false,
       text: 'Logout eseguito con successo',
@@ -186,7 +185,7 @@ transition: .4s;
   transition: ease .4s;
   content: '';
   position: absolute;
-  border-color: red;
+  border-color: #af473c;
   border-style: solid;
 border-width: 3px 0 0 0;
 height: 0.5em;

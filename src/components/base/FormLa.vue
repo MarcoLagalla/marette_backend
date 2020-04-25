@@ -12,7 +12,7 @@
       <v-form @submit.prevent="login" class="container">
         <h1>MEMBER LOGIN</h1>
         <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
-        <v-divider></v-divider>
+
         <div class="regbtn">
           <v-text-field prepend-inner-icon="mdi-account"
           solo v-model='email' :error-messages="errors.email" @change="errors.email=''" type="email" placeholder="Inserire Email" id="email" name="email" required>
@@ -23,7 +23,7 @@
         solo v-model='password' :error-messages="errors.password" @change="errors.password=''" type="password" placeholder="Inserire Password" id="psw" name="psw" required>
       </v-text-field>
     </div>
-    <v-divider></v-divider>
+
 
 
 <div class="regbtn2">
@@ -118,7 +118,8 @@ h1 {
   border-radius: 10px;
 }
 .v-card {
-  background: rgba(100, 100, 100, 0.9);
+  background: #3c3c3c;
+  opacity: 0.9
 }
 
 .center {
@@ -132,7 +133,7 @@ h1 {
   width: 180px;
   height: 60px;
   cursor: pointer;
-  background: green;
+  background: #626e60;
   border: 1px solid white;
   outline: none;
   transition: 1s ease-in-out;
@@ -149,7 +150,7 @@ svg {
 }
 .btn:hover {
   transition: 1s ease-in-out;
-  background: #b20000;
+  background: #628e60;
 }
 .btn:hover svg {
   stroke-dashoffset: -480;

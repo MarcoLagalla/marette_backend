@@ -1,6 +1,6 @@
 <template>
   <div class="menubody">
-  <h1>Menu</h1>
+<h1>Menu</h1><v-container>
   <v-row dense>
           <v-col
             v-for="(item, i) in items"
@@ -28,7 +28,7 @@
 
             </v-card>
           </v-col>
-        </v-row>
+        </v-row></v-container>
           </div>
 </template>
 
@@ -89,6 +89,56 @@
               artist: 'Ellie Goulding',
             },
           ],
+          items2: [
+            {
+              color: '#1F7087',
+              src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
+              title: 'Supermodel',
+              artist: 'Foster the People',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+            {
+              color: '#952175',
+              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+              title: 'Halcyon Days',
+              artist: 'Ellie Goulding',
+            },
+          ],
         }),
 
   }
@@ -98,7 +148,7 @@ h1 {
   color: white;
   margin-bottom:  10px;
   margin-left: 10px;
-  
+
 }
 .menubody {
   position: relative;

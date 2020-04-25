@@ -63,7 +63,9 @@ export default {
 }
 .body {
   margin: 0!important;
-  background: url("https://initiate.alphacoders.com/images/738/cropped-1920-1080-738359.jpg?5332") no-repeat center center fixed;
+  background: url("https://images6.alphacoders.com/609/609345.jpg") no-repeat center center fixed;
+  background-size: cover;
+
 }
 
 .regbtn2{

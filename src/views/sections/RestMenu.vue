@@ -12,17 +12,12 @@
 <base-menu-cat />
      </v-col>
      <v-col
-        cols="6"
-        md="6"
+        cols="9"
+        md="9"
       >
 <base-menu />
       </v-col>
-      <v-col
-         cols=""
-         md="3"
-       >
-<base-rest-cart />
-       </v-col>
+
 </v-row>
 </div>
 </template>

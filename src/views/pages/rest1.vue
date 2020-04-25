@@ -16,6 +16,7 @@
     mixins: [
       LoadSections([
         'rest-banner',
+        'rest-vetrina',
         'rest-menu',
         //'rest-events',
         //'rest-map',

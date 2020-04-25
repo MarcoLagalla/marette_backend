@@ -2,10 +2,10 @@
   <v-theme-provider :dark="dark">
     <div>
       <base-img
-        :src="require('@/assets/marette-logo.png')"
+        :src="require('@/assets/logo_small.png')"
         contain
         max-width="128"
-        min-height="78"
+        min-height="70"
         width="100%"
       />
 
@@ -14,6 +14,7 @@
         space="4"
         title="Modernizziamo chi è rimasto nel 1800"
         weight="regular"
+        class="mt-4"
       />
 
       <base-body>

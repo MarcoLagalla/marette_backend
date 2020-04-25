@@ -48,7 +48,7 @@ float: left;
 }
 
 .header {
-position: relative;
+position: sticky;
 left: 0;
 top: 0;
 

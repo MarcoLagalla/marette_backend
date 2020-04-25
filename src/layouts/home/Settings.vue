@@ -1,17 +1,6 @@
 <template>
-  <v-menu
-    v-model="menu"
-    :close-on-content-click="false"
-    bottom
-    left
-    max-width="90%"
-    min-width="275"
-    offset-x
-    offset-y
-    origin="top right"
-    transition="scale-transition"
-  >
-    <template v-slot:activator="{ attrs, on }">
+
+  <router-link :to="{ name: 'profile'}">
       <v-card
         id="settings"
         class="py-2 px-4"
@@ -28,81 +17,10 @@
         large>
           mdi-account
         </v-icon>
-      </v-card>
+      </v-card></router-link>
     </template>
 
-    <v-card
-     class="py-2">
-     <router-link :to="{ name: 'profile'}">
-      <div class="text-center">
-        <div class="title1"
-        >
-          Profilo
 
-
-        </div>
-      </div></router-link>
-      <v-card-text>
-    <!--    <v-item-group
-          v-model="$vuetify.theme.themes.light.primary"
-          class="d-flex justify-center"
-        >
-          <v-item
-            v-for="color in colors"
-            :key="color"
-            :value="color"
-          >
-            <template v-slot="{ active, toggle }">
-              <base-avatar
-                :color="color"
-                :outlined="active"
-                class="ma-2"
-                size="48"
-                style="cursor: pointer;"
-                @click.stop="toggle"
-              />
-            </template>
-          </v-item>
-        </v-item-group> -->
-
-        <v-divider class="mb-6" />
-
-
-        <base-btn
-          block
-          href="#"
-          class="mb-6"
-          color="accent"
-          target="_blank"
-        >
-          Prenotazioni
-        </base-btn>
-
-
-
-
-        <v-divider class="my-6" />
-
-
-
-        <div class="text-center">
-          <base-btn
-            :tile="false"
-            :to="{ name: '' }"
-            rounded
-            @click="menu = false"
-          >
-            I tuoi ristoranti
-
-            <v-icon right>
-              mdi-food-fork-drink
-            </v-icon>
-          </base-btn>
-        </div>
-      </v-card-text>
-    </v-card>
-  </v-menu>
-</template>
 
 <script>
   export default {

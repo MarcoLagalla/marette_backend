@@ -1,8 +1,11 @@
 <template>
+  <div class="body">
+
+
   <v-theme-provider dark>
     <base-section
       id="info-alt"
-      class="grey darken-4"
+      
     >
       <v-responsive
         class="mx-auto"
@@ -43,7 +46,7 @@
         </v-container>
       </v-responsive>
     </base-section>
-  </v-theme-provider>
+  </v-theme-provider>  </div>
 </template>
 
 <script>
@@ -55,7 +58,11 @@
   }
 </script>
 
-<style lang="sass">
-  #info-alt a
-    text-decoration: none
+<style scoped>
+a {
+  text-decoration: none;
+}
+.body {
+  background: #3c3c3c!important;
+}
 </style>
