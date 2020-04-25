@@ -52,7 +52,7 @@
         },
         methods:
         {
-            ...mapActions('restaurant', ['newRestaurant']),
+            ...mapActions('restaurants', ['newRestaurant']),
             register: function () {
                 this.newRestaurant({
                     activity_name: this.activity_name,
@@ -76,7 +76,7 @@
         computed:
             {
                 errors(){
-                    return this.$store.getters['restaurant/errors']
+                    return this.$store.getters['restaurants/errors']
                 }
             }
     }

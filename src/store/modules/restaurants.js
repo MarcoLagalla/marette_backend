@@ -5,7 +5,7 @@ const state = {
     status: '',
     errors: [],
     id_restaurant: '',
-    list: []
+    list: [],
 }
 
 const getters = {
