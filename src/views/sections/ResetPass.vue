@@ -29,7 +29,11 @@
         </v-form>
 
     <v-form v-else @submit.prevent="send_email">
-        <p> Inserire Email: </p>
+        <template v-if="inviato">
+            <h2 id="success">Email inviata con successo!</h2>
+            <p>Sono passati 10 minuti e non ti è ancora arrivata?<br>Ritenta, sarai più fortunato!</p>
+        </template>
+        <p v-else> Inserire Email: </p>
 
         <v-text-field
                 label="Email"
@@ -43,7 +47,7 @@
                 required>
 
         </v-text-field>
-        <button type="submit"  class="password_btn" > Invia Richiesta</button>
+        <button type="submit"  class="password_btn">Invia Nuova Richiesta</button>
 
     </v-form>
 
@@ -67,6 +71,7 @@ import { mapActions } from 'vuex'
                 password:'',
                 password2:'',
                 valid: true,
+                inviato: false,
 
                 emailRules: [
                     v => !!v || 'Campo obbligatorio',
@@ -85,9 +90,9 @@ import { mapActions } from 'vuex'
                 send_email: function(){
                     this.AskPasswordreset({
                         email: this.email,
-                    }).then( messaggio => {
+                    }).then( () => {
 
-                            alert(messaggio)
+                            this.inviato=true;
 
                         })
 
@@ -106,6 +111,7 @@ import { mapActions } from 'vuex'
                         password2: this.password2,
                     }).then( messaggio => {
 
+                            this.$router.push('/')
                             alert(messaggio)
 
                         })
@@ -148,7 +154,9 @@ import { mapActions } from 'vuex'
 </script>
 
 <style scoped>
-
+#success {
+    color: #1e7e34;
+}
 .password_btn {
   background-color: #4CAF50;
   color: white;
