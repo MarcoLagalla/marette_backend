@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 import userAuthentication from './modules/userAuthentication'
 import userProfile from "./modules/userProfile"
-import restaurant from "./modules/restaurant";
+import restaurant from "./modules/restaurants";
 
 Vue.use(Vuex)
 
