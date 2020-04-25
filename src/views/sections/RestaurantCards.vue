@@ -68,11 +68,11 @@
     computed:
     {
       restaurantList(){
-        return this.$store.getters['restaurant/restaurantList']
+        return this.$store.getters['restaurants/restaurantList']
       }
     },
     created() {
-      this.$store.dispatch("restaurant/getRestaurants")
+      this.$store.dispatch("restaurants/getRestaurants")
     }
   }
 </script>
