@@ -5,12 +5,34 @@ const state = {
     status: '',
     errors: [],
     id_restaurant: '',
-    list: []
+    list: [],
+    FOOD_CATEGORY_CHOICES : [
+        'Altro',
+        'Antipasto',
+        'Primo',
+        'Secondo',
+        'Contorno',
+        'Dessert',
+        'Caffetteria',
+        'Panetteria',
+        'Panini e Piadine',
+        'Pizza',
+        'Secondo',
+        'Snack',
+    ],
+
+    DISCOUNT_TYPE_CHOICE: [
+        'Fisso',
+        'Percentuale'
+    ],
+
 }
 
 const getters = {
     restaurantList: state => state.list,
     errors: state => state.errors,
+    food_category_choice: state => state.food_category_choice,
+    discount_type_choice: state => state.discount_type_choice,
 
 }
 
