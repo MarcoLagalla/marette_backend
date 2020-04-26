@@ -29,7 +29,8 @@ const getters = {
   isBusiness: state => state.user_private.type==='business',
   user: state => state.user,
   errors: state=> state.errors,
-  user_private: state => state.user_private
+  user_private: state => state.user_private,
+  restaurants: state => state.user_private.restaurants
 }
 
 const actions = {
