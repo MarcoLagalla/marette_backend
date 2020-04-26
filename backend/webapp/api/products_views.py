@@ -16,6 +16,7 @@ from .products_serializers import ReadProductSerializer, WriteProductSerializer
 
 import json
 
+
 class ListProducts(ListAPIView):
     serializer_class = ReadProductSerializer
 
