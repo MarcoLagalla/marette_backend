@@ -81,7 +81,12 @@ const router = new Router({
           component: () => import('@/views/pages/profile.vue'),
           beforeEnter: ifAuthenticated,
         },
-
+        {
+          path: 'profile/:id',
+          name: 'ManageRest',
+          component: () => import('@/views/pages/manageRest.vue'),
+          beforeEnter: ifAuthenticated, //TODO: solo se è business
+        },
         {
           path: 'resetpass',
           name: 'resetpass',
