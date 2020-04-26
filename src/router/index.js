@@ -21,6 +21,22 @@ const ifAuthenticated = (to, from, next) => {
   next("/");
 };
 
+const ifBusiness = (to, from, next) => {
+  if (store.getters['userProfile/isBusiness']) {
+    next();
+    return;
+  }
+  next("/");
+};
+
+const ifOwner = (to, from, next) => {
+  if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
+     next();
+    return;
+  }
+  next("/");
+};
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -73,19 +89,19 @@ const router = new Router({
           path: 'newRestaurant',
           name: 'NewRestaurant',
           component: () => import('@/views/pages/newRestaurant.vue'),
-          beforeEnter: ifAuthenticated, //TODO: solo se è business
+          beforeEnter: ifBusiness
         },
         {
           path: 'profile',
           name: 'profile',
           component: () => import('@/views/pages/profile.vue'),
-          beforeEnter: ifAuthenticated,
+          beforeEnter:  ifAuthenticated,
         },
         {
           path: 'profile/:id',
           name: 'ManageRest',
           component: () => import('@/views/pages/manageRest.vue'),
-          beforeEnter: ifAuthenticated, //TODO: solo se è business
+          beforeEnter: ifOwner,
         },
         {
           path: 'resetpass',
