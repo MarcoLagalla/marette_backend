@@ -31,8 +31,6 @@ class Restaurant(models.Model):
 FOOD_CATEGORY_CHOICES = [
     ('Altro', 'Altro'),
     ('Antipasto', 'Antipasto'),
-    ('Primo', 'Primo'),
-    ('Secondo', 'Secondo'),
     ('Contorno', 'Contorno'),
     ('Dessert', 'Dessert'),
     ('Caffetteria', 'Caffetteria'),
@@ -43,6 +41,21 @@ FOOD_CATEGORY_CHOICES = [
     ('Secondo', 'Secondo'),
     ('Snack', 'Snack'),
 ]
+
+FOOD_CATEGORY_CHOICES_IMAGES = {
+    'Altro':                'placeholder/product/altro.png',
+    'Antipasto':            'placeholder/product/antipasto.png',
+    'Contorno':             'placeholder/product/contorno.png',
+    'Dessert':              'placeholder/product/dessert.png',
+    'Caffetteria':          'placeholder/product/caffetteria.png',
+    'Panetteria':           'placeholder/product/panetteria.png',
+    'Panini e Piadine':     'placeholder/product/panini_e_piadine.png',
+    'Pizza':                'placeholder/product/pizza.png',
+    'Primo':                'placeholder/product/primo.png',
+    'Secondo':              'placeholder/product/secondo.png',
+    'Snack':                'placeholder/product/snack.png'
+}
+
 
 DISCOUNT_TYPES_CHOICES = [
     ('Fisso', 'Fisso'),
@@ -81,8 +94,8 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
-    image = models.ImageField(upload_to='product')
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
+    image = models.ImageField(upload_to='product', blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     tags = models.ManyToManyField(ProductTag, blank=True)
 
@@ -109,9 +122,13 @@ class Product(models.Model):
         return new_price
 
     def get_image(self):
-        if self.image:
+        if not (self.image and hasattr(self.image, 'url')):
+            try:
+                return FOOD_CATEGORY_CHOICES_IMAGES.get(self.category)
+            except KeyError:
+                return FOOD_CATEGORY_CHOICES_IMAGES.get('Altro')
+        else:
             return self.image.url
-
 
 class Menu(models.Model):
 
