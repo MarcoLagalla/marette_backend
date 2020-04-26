@@ -4,7 +4,7 @@
       id="home-app-bar"
       app
 
-      color="white"
+      color="#FFF8DC"
       height="80"
     >
       <router-link to="/">
@@ -128,7 +128,7 @@
     data: () => ({
       drawer: null,
       items: [
-        
+
       ],
       snackbar: false,
       text: 'Logout eseguito con successo',

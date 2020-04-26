@@ -9,8 +9,7 @@
         flat
         style="position: fixed; top: 164px; right: -35px;"
         width="100"
-        v-bind="attrs"
-        v-on="on"
+        
       >
         <v-icon
         color="blue"
