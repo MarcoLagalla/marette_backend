@@ -1,26 +1,30 @@
 <template>
-    <v-container>
+  <div class="body">
         <h1> RESET PASSWORD</h1><br><br>
+    <v-row align="center" class="mx-0 pa-8" justify="center">
+
+<div class="rp">
+
 
 
         <v-form v-if="reset_token" @submit.prevent="compare_token" >
-            <p> Inserire nuova password: </p>
+
 
             <v-text-field
                     :error-messages="errors.password" @change="errors.password=''"
-                    solo background-color="#486F83"
+
                     v-model='password'
                     type="password"
-                    placeholder=" Inserire nuova password"
+                    label=" Inserire nuova password"
                     id="password"
                     name="password" required></v-text-field>
 
             <v-text-field
                     :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''"
-                    solo background-color="#486F83"
+
                     v-model='password2'
                     type="password"
-                    placeholder=" Ripeti nuova password"
+                    label=" Ripeti nuova password"
                     id="password2"
                     name="password2" required></v-text-field>
             <button type="submit"  class="password_btn" :disabled="!isDisable"> Invia Richiesta cambio password</button>
@@ -33,15 +37,15 @@
             <h2 id="success">Email inviata con successo!</h2>
             <p>Sono passati 10 minuti e non ti è ancora arrivata?<br>Ritenta, sarai più fortunato!</p>
         </template>
-        <p v-else> Inserire Email: </p>
+
 
         <v-text-field
-                label="Email"
+
                 :rules="emailRules" :error-messages="errors.email" @change="errors.email=''"
-                solo background-color="#486F83"
+
                 v-model='email'
                 type="email"
-                placeholder=" Inserire email associata all'account"
+                label=" Inserire email associata all'account"
                 id="email"
                 name="email"
                 required>
@@ -50,8 +54,9 @@
         <button type="submit"  class="password_btn">Invia Nuova Richiesta</button>
 
     </v-form>
-
-    </v-container>
+</div>
+  </v-row>
+</div>
 </template>
 
 <script>
@@ -154,13 +159,24 @@ import { mapActions } from 'vuex'
 </script>
 
 <style scoped>
+.rp {
+  width: 50%;
+}
 #success {
     color: #1e7e34;
 }
+.body {
+  background: oldlace;
+}
+h1{
+  text-align: center;
+  padding: 20px;
+  color: var(--chilli);
+}
 .password_btn {
-  background-color: #4CAF50;
+  background-color: var(--herb);
   color: white;
-  border: inset #4CAF50 2px!important;
+  border: inset var(--herb) 2px!important;
   padding: 16px 20px;
   margin: 4px 0;
   border: none;
