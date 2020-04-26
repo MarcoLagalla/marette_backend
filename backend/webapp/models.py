@@ -10,6 +10,7 @@ from django.utils.text import slugify
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
+    slug = models.SlugField(unique=False, blank=True)
     url = models.SlugField(unique=True, blank=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
@@ -24,6 +25,7 @@ class Restaurant(models.Model):
         return self.activity_name
 
     def set_url(self):
+        self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
 
