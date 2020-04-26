@@ -40,7 +40,7 @@ class ListProducts(APIView):
             _cat_products = products.filter(category=category)
             _cat_products_data = ReadProductSerializer(_cat_products, many=True)
             products_list.update({category: _cat_products_data.data})
-        
+
         return Response(products_list, status=status.HTTP_200_OK)
 
     # def get_queryset(self):
