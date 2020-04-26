@@ -11,18 +11,41 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, ProductDiscount
+from ..models import Restaurant, Product, ProductTag, ProductDiscount, FOOD_CATEGORY_CHOICES
 from .products_serializers import ReadProductSerializer, WriteProductSerializer
 
 import json
 
 
-class ListProducts(ListAPIView):
-    serializer_class = ReadProductSerializer
+class ListProducts(APIView):
 
-    def get_queryset(self):
-        restaurant_id = self.kwargs['id']
-        return Product.objects.filter(restaurant_id=restaurant_id)
+    def get(self, request, id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response({'error': 'Non esiste ristorante con questo ID'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # get all products for the restaurant
+        products = Product.objects.filter(restaurant=restaurant)
+
+        # if the restaurant does not have products
+        if products.count() == 0:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        products_list = {}
+        # for each category
+        for val, category in FOOD_CATEGORY_CHOICES:
+            _cat_products = products.filter(category=category)
+            _cat_products_data = ReadProductSerializer(_cat_products, many=True)
+            products_list.update({category: _cat_products_data.data})
+        
+        return Response(products_list, status=status.HTTP_200_OK)
+
+    # def get_queryset(self):
+    #     restaurant_id = self.kwargs['id']
+    #     return Product.objects.filter(restaurant_id=restaurant_id)
 
 
 class AddProduct(APIView):
