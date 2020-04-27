@@ -32,7 +32,7 @@
       <base-btn
         class="mb-12"
         color="white"
-        :to="'about'"
+        to="/about"
         outlined
       >
         Chi siamo
