@@ -1,34 +1,49 @@
+<template>
+  <div>
+    <RestBanner v-if="attiveComponents.includes('banner')"></RestBanner>
+    <RestVetrina v-if="attiveComponents.includes('vetrina')"></RestVetrina>
+    <Restmenu v-if="attiveComponents.includes('menu')" :id="restID" :name="name"></Restmenu>
+    <Info></Info>
+  </div>
+</template>
+
 
 <script>
   // Extensions
   import View from '@/views/View'
 
-  // Mixins
-  import LoadSections from '@/mixins/load-sections'
+  // Components
+  import Restmenu from "../sections/RestMenu";
+  import RestBanner from "../sections/RestBanner";
+  import RestVetrina from "../sections/RestVetrina";
+  import Info from "../sections/Info";
+  import {mapActions} from "vuex";
 
   export default {
-    name: 'rest1',
+      name: 'restaurant',
+      components: {Restmenu, RestBanner, RestVetrina, Info},
+      metaInfo: {title: 'Restaurant'},
 
-    metaInfo: { title: 'Login' },
+      extends: View,
 
-    extends: View,
-
-    mixins: [
-      LoadSections([
-        'rest-banner',
-        'rest-vetrina',
-        'rest-menu',
-        //'rest-events',
-        //'rest-map',
-        'info',
-      ]),
-    ],
-
-    props: {
-      id: {
-        type: String,
-        default: 'login',
+      data() {
+          return {
+              restID: this.$route.params.id,
+              name: this.$route.params.name
+          }
       },
-    },
+      methods: {
+            ...mapActions('restaurantData', ['getRestaurantData']),
+      },
+      created() {
+          this.getRestaurantData(this.restID)
+      },
+      computed:
+      {
+        attiveComponents(){
+          return this.$store.getters['restaurantData/components']
+        }
+      }
+
   }
 </script>
