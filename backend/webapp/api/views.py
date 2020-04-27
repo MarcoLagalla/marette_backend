@@ -46,7 +46,7 @@ class CreateRestaurantAPIView(APIView):
 class ShowRestaurantAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request, id, slug):
+    def get(self, request, id):
         restaurant = get_object_or_404(Restaurant, id=id)
         try:
             data = {}
@@ -61,7 +61,7 @@ class UpdateRestaurantAPIView(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, slug):
+    def post(self, request, id):
         try:
             restaurant = get_object_or_404(Restaurant, id=id)
         except Restaurant.DoesNotExist:
