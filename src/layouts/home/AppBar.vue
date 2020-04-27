@@ -3,7 +3,6 @@
     <v-app-bar
       id="home-app-bar"
       app
-
       color="#FFF8DC"
       height="80"
     >
@@ -12,7 +11,6 @@
           :src="require('@/assets/logo_small.png')"
           contain
           max-width="80"
-
         />
       </router-link>
 
@@ -25,9 +23,7 @@
         ><v-col>
         <button
         v-if="(this.isLogged)"
-
         class="btn-6"
-
         @click="Logout()"
         ><span>Logout</span>
       </button></v-col>
@@ -41,36 +37,25 @@
       </v-col>
       <v-col
       v-if="(!this.isLogged)"
-
-
         min-width="96"
         text
         ><base-form-ra/>
       </v-col>
       <div class="ul">
 
-
           <v-col
 
           >
-          <router-link
-          tag="button"
+          <button
           v-for="(name, i) in items"
           :key="i"
-          :to="{ name }"
-          :exact="name === 'Home'"
-          :ripple="false"
            class="li">
-
-          <div
-            class="a"
-            :to="{ name }"
-            :exact="name === 'Home'"
+          <a
+            :href="'#'+name"
             :ripple="false"
             min-width="96"
-
             >
-            {{ name }}</div></router-link>
+            {{ name }}</a></button>
           </v-col></div>
         </v-row>
         <v-snackbar
@@ -128,7 +113,11 @@
     data: () => ({
       drawer: null,
       items: [
-
+        'Home',
+        'Vetrina',
+        'Menu',
+        'Galleria',
+        'Info'
       ],
       snackbar: false,
       text: 'Logout eseguito con successo',
@@ -138,7 +127,10 @@
 </script>
 
 <style scoped>
-
+a {
+  text-decoration: none;
+  scroll-behavior: smooth;
+}
 .ul {
   margin: 0;
   padding: 0;
@@ -154,7 +146,7 @@
   margin: 0 15px;
 }
 @import url('https://fonts.googleapis.com/css2?family=B612&display=swap');
-.ul .li .a {
+.ul .li a {
   padding-left: 5px;
   position: relative;
   display: block;
@@ -168,7 +160,7 @@
   color: #666;
   transition: .4s;
 }
-.ul .li .a::before {
+.ul .li a::before {
   content: '';
   position: absolute;
   margin-left: -5px;
@@ -181,7 +173,7 @@ bottom: 0;
 width: 0;
 transition: .4s;
 }
-.ul .li .a:hover::before {
+.ul .li a:hover::before {
   transition: ease .4s;
   content: '';
   position: absolute;
@@ -194,7 +186,7 @@ width: 100%;
 filter: blur(2px);
 }
 
-.ul .li .a:hover {
+.ul .li a:hover {
   transition: ease .4s;
   text-shadow: 0 0 8px black;
   color: white

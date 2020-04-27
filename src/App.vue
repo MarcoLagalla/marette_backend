@@ -27,4 +27,8 @@
   --chilli: #af473c;
   --charcoal: #3c3c3c;
 }
+html {
+  
+	scroll-behavior: smooth;
+}
 </style>
