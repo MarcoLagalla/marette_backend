@@ -1,4 +1,5 @@
 from django.core import validators as valids
+from django.core.validators import MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from backend.account.models import Business
@@ -63,7 +64,7 @@ class Product(models.Model):
     description = models.TextField(max_length=600)
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
     image = models.ImageField(upload_to='product', blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     tags = models.ManyToManyField(ProductTag, blank=True)
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
@@ -103,7 +104,7 @@ class MenuEntry(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=100)
-    num_products = models.IntegerField(default=1)
+    num_products = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     products = models.ManyToManyField(Product, blank=True)
 
     def __str__(self):
@@ -115,7 +116,7 @@ class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
 
     entries = models.ManyToManyField(MenuEntry, blank=True)
 
