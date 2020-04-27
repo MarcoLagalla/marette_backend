@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import userAuthentication from './modules/userAuthentication'
 import userProfile from "./modules/userProfile"
 import restaurants from "./modules/restaurants";
-import restaurantProducts from "./modules/restaurantProducts";
+import restaurantData from "./modules/restaurantData";
 
 Vue.use(Vuex)
 
@@ -14,7 +14,7 @@ export default new Vuex.Store({
     userProfile,
     userAuthentication,
     restaurants,
-    restaurantProducts,
+    restaurantData,
   },
 
 })

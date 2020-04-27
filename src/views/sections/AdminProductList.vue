@@ -17,7 +17,7 @@
             }
         },
         methods: {
-            ...mapActions('restaurantProducts', ['getRestaurantData']),
+            ...mapActions('restaurantData', ['getRestaurantData']),
         },
 
         computed: {}
