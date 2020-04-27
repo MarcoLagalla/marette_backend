@@ -58,7 +58,6 @@ FOOD_CATEGORY_CHOICES_IMAGES = {
     'Snack':                'placeholder/product/snack.png'
 }
 
-
 DISCOUNT_TYPES_CHOICES = [
     ('Fisso', 'Fisso'),
     ('Percentuale', 'Percentuale'),
@@ -102,6 +101,7 @@ class Product(models.Model):
     tags = models.ManyToManyField(ProductTag, blank=True)
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
+    show_image = models.BooleanField(blank=True, default=True)
 
     def __str__(self):
         return self.name
@@ -132,6 +132,17 @@ class Product(models.Model):
         else:
             return self.image.url
 
+
+class MenuEntry(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=100)
+    products = models.ManyToManyField(Product, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Menu(models.Model):
 
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
@@ -139,7 +150,7 @@ class Menu(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
 
-    products = models.ManyToManyField(Product, blank=True)  # menu di appartenenza
+    entries = models.ManyToManyField(MenuEntry, blank=True)  # menu di appartenenza
 
     def __str__(self):
         return self.name
