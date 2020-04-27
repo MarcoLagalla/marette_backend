@@ -64,12 +64,12 @@ const actions = {
                 })
                 .catch(err => {
                     commit('REST_MENU_ERROR', err.response)
-                    reject(err.response.data)
+                    reject(err.response)
                 })
             })
             .catch(err => {
                 commit('REST_DATA_ERROR', err.response)
-                reject(err.response.data)
+                reject(err.response)
             })
         })
     },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <RestBanner v-if="attiveComponents.includes('banner')"></RestBanner>
+    <RestBanner v-if="attiveComponents.includes('banner')" :restData="restData"></RestBanner>
     <RestVetrina v-if="attiveComponents.includes('vetrina')"></RestVetrina>
     <Restmenu v-if="attiveComponents.includes('menu')" :id="restID" :name="name"></Restmenu>
     <Info></Info>
@@ -36,12 +36,18 @@
             ...mapActions('restaurantData', ['getRestaurantData']),
       },
       created() {
-          this.getRestaurantData(this.restID)
+          this.getRestaurantData(this.restID).catch(error => {
+              if(error.status === 404)
+                  this.$router.push('/404')
+          })
       },
       computed:
       {
-        attiveComponents(){
-          return this.$store.getters['restaurantData/components']
+          attiveComponents(){
+            return this.$store.getters['restaurantData/components']
+          },
+          restData(){
+          return this.$store.getters['restaurantData/restData']
         }
       }
 
