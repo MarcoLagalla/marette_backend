@@ -1,11 +1,11 @@
 from django.core import validators as valids
 from django.db import models
-from django.conf import settings
-
 from phonenumber_field.modelfields import PhoneNumberField
 from backend.account.models import Business
 from django_resized import ResizedImageField
 from django.utils.text import slugify
+
+from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, DISCOUNT_TYPES_CHOICES
 
 
 class Restaurant(models.Model):
@@ -18,7 +18,7 @@ class Restaurant(models.Model):
     address = models.CharField(max_length=100, blank=False)
     n_civ = models.IntegerField(blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
-    restaurant_number = PhoneNumberField(null=False, blank=False, help_text='Contact phone number')
+    restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
 
     def __str__(self):
@@ -28,40 +28,6 @@ class Restaurant(models.Model):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
-
-
-FOOD_CATEGORY_CHOICES = [
-    ('Altro', 'Altro'),
-    ('Antipasto', 'Antipasto'),
-    ('Contorno', 'Contorno'),
-    ('Dessert', 'Dessert'),
-    ('Caffetteria', 'Caffetteria'),
-    ('Panetteria', 'Panetteria'),
-    ('Panini e Piadine', 'Panini e Piadine'),
-    ('Pizza', 'Pizza'),
-    ('Primo', 'Primo'),
-    ('Secondo', 'Secondo'),
-    ('Snack', 'Snack'),
-]
-
-FOOD_CATEGORY_CHOICES_IMAGES = {
-    'Altro':                'placeholder/product/altro.png',
-    'Antipasto':            'placeholder/product/antipasto.png',
-    'Contorno':             'placeholder/product/contorno.png',
-    'Dessert':              'placeholder/product/dessert.png',
-    'Caffetteria':          'placeholder/product/caffetteria.png',
-    'Panetteria':           'placeholder/product/panetteria.png',
-    'Panini e Piadine':     'placeholder/product/panini_e_piadine.png',
-    'Pizza':                'placeholder/product/pizza.png',
-    'Primo':                'placeholder/product/primo.png',
-    'Secondo':              'placeholder/product/secondo.png',
-    'Snack':                'placeholder/product/snack.png'
-}
-
-DISCOUNT_TYPES_CHOICES = [
-    ('Fisso', 'Fisso'),
-    ('Percentuale', 'Percentuale'),
-]
 
 
 class ProductTag(models.Model):
@@ -137,6 +103,7 @@ class MenuEntry(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=100)
+    num_products = models.IntegerField(default=1)
     products = models.ManyToManyField(Product, blank=True)
 
     def __str__(self):
@@ -148,9 +115,9 @@ class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    entries = models.ManyToManyField(MenuEntry, blank=True)  # menu di appartenenza
+    entries = models.ManyToManyField(MenuEntry, blank=True)
 
     def __str__(self):
         return self.name
