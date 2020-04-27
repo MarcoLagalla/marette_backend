@@ -26,6 +26,12 @@
 
 export default {
   name: "restmenu",
+    props: ['name', 'id'],
+    data() {
+            return {
+
+            }
+        },
 
 }
 </script>
