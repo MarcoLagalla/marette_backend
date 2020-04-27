@@ -8,50 +8,45 @@
 <v-container>
   <v-row>
     <v-col
-    v-for="(restaurant, i) in restaurantList"
-    :key="i"
-    cols="12"
-    md="6"
-    >
-    <v-card
-    v-bind="restaurant"
-    class="mx-auto"
-    max-width="400"
-    >
-    <v-img
-    class="white--text align-end"
-    height="200px"
-    src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-    >
-    <v-card-title>{{ restaurant.activity_name }}</v-card-title>
-  </v-img>
+      v-for="(restaurant, i) in restaurantList"
+      :key="i"
+      cols="12"
+      md="6"
+      >
+      <router-link :to="restaurant.url">
+        <v-card
+        v-bind="restaurant"
+        class="mx-auto"
+        max-width="400"
+        >
+          <v-img
+          class="white--text align-end"
+          height="200px"
+          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+          >
+            <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+          </v-img>
 
-  <v-card-subtitle class="pb-0">Category</v-card-subtitle>
+          <v-card-subtitle class="pb-0">Category</v-card-subtitle>
 
-  <v-card-text class="text--primary">
-    <div>{{ restaurant.activity_description }}</div>
+          <v-card-text class="text--primary">
+            <div>{{ restaurant.activity_description }}</div>
 
 
-  </v-card-text>
+          </v-card-text>
 
-  <v-card-actions>
-    <v-btn
-    color="orange"
-    text
-    >
-    Share
-  </v-btn>
-
-  <v-btn
-  color="orange"
-  text
-  >
-  Explore
-</v-btn>
-</v-card-actions>
-</v-card>
-</v-col>
-</v-row>
+          <v-card-actions>
+            <v-btn
+            color="orange"
+            text
+            >
+            Condividi
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </router-link>
+    </v-col>
+  </v-row>
 </v-container>
 </base-section>
 </div>
@@ -80,5 +75,8 @@
   .body {
     /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
     background:#f1f1f1;
+  }
+  a {
+    text-decoration: none
   }
 </style>
