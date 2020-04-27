@@ -33,17 +33,7 @@
     @click="Logout()"
     ><span>Logout</span>
   </button> </v-list-item>
-      <v-list-item
-        v-for="name in items"
-        :key="name"
-        :href="'#'+name"
-        :exact="name === 'Home'"
-        color="primary"
-      >
-        <v-list-item-content>
-          <v-list-item-title v-text="name" />
-        </v-list-item-content>
-      </v-list-item>
+      <router-view  name="restMenuMobile" :items="items"></router-view>
     </v-list>
   </v-navigation-drawer>
 </template>

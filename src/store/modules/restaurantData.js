@@ -8,9 +8,11 @@ const state = {
     restData: {},
     status: '',
     components: [
-        'banner',
-        'vetrina',
-        'menu',
+        'Home',
+        'Vetrina',
+        'Menu',
+        'Galleria',
+        'Info'
     ],
 
     FOOD_CATEGORY_CHOICES : [

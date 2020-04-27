@@ -1,8 +1,8 @@
 <template>
   <div>
-    <RestBanner v-if="attiveComponents.includes('banner')" :restData="restData"></RestBanner>
-    <RestVetrina v-if="attiveComponents.includes('vetrina')"></RestVetrina>
-    <Restmenu v-if="attiveComponents.includes('menu')" :id="restID" :name="name"></Restmenu>
+    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
+    <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
+    <Restmenu v-if="activeComponents.includes('Menu')" :id="restID" :name="name"></Restmenu>
     <Info></Info>
   </div>
 </template>
@@ -43,7 +43,7 @@
       },
       computed:
       {
-          attiveComponents(){
+          activeComponents(){
             return this.$store.getters['restaurantData/components']
           },
           restData(){

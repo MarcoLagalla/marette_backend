@@ -23,26 +23,26 @@
        >
        <div class="infocard">
          <v-card dark
-   class="mx-6 mt-12"
-   height="50%"
-   max-width="344"
-   outlined
-   color="rgba(0,0,0,0.8)"
- >
-   <v-list-item three-line>
-     <v-list-item-content>
-       <div class="overline mb-4"></div>
-       <v-list-item-title class="headline mb-1">{{restData.activity_name}}</v-list-item-title>
-       <v-list-item-subtitle>{{restData.activity_description}}</v-list-item-subtitle>
-     </v-list-item-content>
+           class="mx-6 mt-12"
+           height="50%"
+           max-width="344"
+           outlined
+           color="rgba(0,0,0,0.8)"
+         >
+           <v-list-item three-line>
+             <v-list-item-content>
+               <div class="overline mb-4"></div>
+               <v-list-item-title class="headline mb-1">{{restData.activity_name}}</v-list-item-title>
+               <v-list-item-subtitle>{{restData.activity_description}}</v-list-item-subtitle>
+             </v-list-item-content>
 
 
-   </v-list-item>
+           </v-list-item>
 
-   <v-card-actions>
+           <v-card-actions>
 
-   </v-card-actions>
- </v-card>
+           </v-card-actions>
+         </v-card>
        </div>
        </v-col>
 </v-row>

@@ -46,16 +46,8 @@
           <v-col
 
           >
-          <button
-          v-for="(name, i) in items"
-          :key="i"
-           class="li">
-          <a
-            :href="'#'+name"
-            :ripple="false"
-            min-width="96"
-            >
-            {{ name }}</a></button>
+            <router-view  name="restMenu" :items="activeComponents"></router-view>
+
           </v-col></div>
         </v-row>
         <v-snackbar
@@ -76,7 +68,7 @@
 
     <home-drawer
       v-model="drawer"
-      :items="items"
+      :items="activeComponents"
     />
   </div>
 </template>
@@ -92,6 +84,9 @@
     },
 
     computed: {
+      activeComponents() {
+                return this.$store.getters['restaurantData/components']
+            },
       isLogged () {
         return this.$store.getters['userAuthentication/isAuthenticated']
       }
@@ -112,13 +107,6 @@
     },
     data: () => ({
       drawer: null,
-      items: [
-        'Home',
-        'Vetrina',
-        'Menu',
-        'Galleria',
-        'Info'
-      ],
       snackbar: false,
       text: 'Logout eseguito con successo',
       timeout: 2000,
