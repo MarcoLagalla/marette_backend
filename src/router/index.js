@@ -68,11 +68,6 @@ const router = new Router({
           component: () => import('@/views/pages/home.vue'),
         },
         {
-          path: 'rest1',
-          name: 'Rest1',
-          component: () => import('@/views/pages/rest1.vue'),
-        },
-        {
           path: 'about',
           name: 'About',
           component: () => import('@/views/pages/about.vue'),
@@ -108,6 +103,11 @@ const router = new Router({
           name: 'resetpass',
           component: () => import('@/views/pages/resetPass.vue'),
           beforeEnter: ifNotAuthenticated,
+        },
+        {
+          path: ':id/:name',
+          name: 'RestaurantHome',
+          component: () => import('@/views/pages/rest1.vue'),
         },
 
         {
