@@ -21,7 +21,16 @@ class ListDiscounts(ListAPIView):
 
     def get_queryset(self):
         restaurant_id = self.kwargs['id']
-        return ProductDiscount.objects.filter(restaurant_id=restaurant_id)
+        try:
+            restaurant = Restaurant.objects.all().get(id=restaurant_id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        discounts = ProductDiscount.objects.filter(restaurant=restaurant)
+        if discounts.count() == 0:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return discounts
 
 
 class DetailsDiscounts(APIView):

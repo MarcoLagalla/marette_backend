@@ -17,8 +17,8 @@ class Restaurant(models.Model):
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
     address = models.CharField(max_length=100, blank=False)
-    n_civ = models.IntegerField(blank=False)
-    cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
+    n_civ = models.PositiveIntegerField(blank=False)
+    cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
 
@@ -104,7 +104,7 @@ class MenuEntry(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=100)
-    num_products = models.IntegerField(default=1, validators=[MinValueValidator(0)])
+    num_products = models.PositiveIntegerField(default=1, validators=[MinValueValidator(0)])
     products = models.ManyToManyField(Product, blank=True)
 
     def __str__(self):

@@ -14,7 +14,7 @@ class ProductDiscountSerializer(serializers.ModelSerializer):
 class ProductTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductTag
-        exclude = ('id', )
+        fields = '__all__'
 
 
 class ReadProductSerializer(serializers.ModelSerializer):
@@ -90,3 +90,5 @@ class WriteProductSerializer(serializers.ModelSerializer):
         # salvo le modifiche
         product.save()
         return product
+
+

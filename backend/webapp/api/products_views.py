@@ -12,7 +12,7 @@ from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
 from ..models import Restaurant, Product, ProductTag, ProductDiscount, FOOD_CATEGORY_CHOICES
-from .products_serializers import ReadProductSerializer, WriteProductSerializer
+from .products_serializers import ReadProductSerializer, WriteProductSerializer, ProductTagSerializer
 
 import json
 
@@ -227,3 +227,8 @@ class ProductDetails(APIView):
 
         serializer = ReadProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListProductTags(ListAPIView):
+    queryset = ProductTag.objects.all()
+    serializer_class = ProductTagSerializer
