@@ -26,7 +26,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'final_price', 'image')
+                  'tags', 'discounts', 'final_price', 'image', 'show_image')
 
     def get_image(self, instance):
         request = self.context.get('request')
@@ -40,11 +40,13 @@ class WriteProductSerializer(serializers.ModelSerializer):
 
     tags = serializers.ListField(required=False)
     discounts = serializers.ListField(required=False)
+    image = serializers.ImageField(required=False)
+    show_image = serializers.BooleanField(required=False, default=True)
 
     class Meta:
         model = Product
         fields = ('name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'image')
+                  'tags', 'discounts', 'image', 'show_image')
 
     def get_image_url(self, instance):
         request = self.context.get('request')

@@ -72,16 +72,16 @@ class AddProduct(APIView):
                 if restaurant.owner.user == request.user:
                     # è il proprietario, può aggiungere un prodotto
                     try:
-                        image = request.data['image']
-                    except KeyError:
-                        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-                    try:
                         data = json.loads(request.data['data'])
                     except KeyError:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-                    data.update({'image': image})
+                    try:
+                        image = request.data['image']
+                        data.update({'image': image})
+                    except KeyError:
+                        pass
+
                     serializer = WriteProductSerializer(data=data)
                     if serializer.is_valid():
                         ret_data = {}
@@ -169,9 +169,18 @@ class UpdateProduct(APIView):
                         product = Product.objects.all() \
                             .filter(restaurant=restaurant).get(id=p_id)
                         if product:
-                            image = request.data['image']
-                            data = json.loads(request.data['data'])
-                            data.update({'image': image})
+
+                            try:
+                                data = json.loads(request.data['data'])
+                            except KeyError:
+                                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                            try:
+                                image = request.data['image']
+                                data.update({'image': image})
+                            except KeyError:
+                                pass
+
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
 
