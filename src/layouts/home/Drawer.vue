@@ -36,7 +36,7 @@
       <v-list-item
         v-for="name in items"
         :key="name"
-        :to="{ name }"
+        :href="'#'+name"
         :exact="name === 'Home'"
         color="primary"
       >
