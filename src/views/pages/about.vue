@@ -14,7 +14,7 @@
 
     mixins: [
       LoadSections([
-        'theme-features',
+        'chisiamo',
         'info',
       ]),
     ],
