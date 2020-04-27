@@ -2,17 +2,16 @@ from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, GenericAPIView
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, ProductDiscount, FOOD_CATEGORY_CHOICES
-from .products_serializers import ReadProductSerializer, WriteProductSerializer
+from ..models import Restaurant, Product, ProductTag, FOOD_CATEGORY_CHOICES
+from .products_serializers import ReadProductSerializer, WriteProductSerializer, ProductTagSerializer
 
 import json
 
@@ -227,3 +226,8 @@ class ProductDetails(APIView):
 
         serializer = ReadProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListProductTags(ListAPIView):
+    queryset = ProductTag.objects.all()
+    serializer_class = ProductTagSerializer
