@@ -32,8 +32,8 @@
    <v-list-item three-line>
      <v-list-item-content>
        <div class="overline mb-4"></div>
-       <v-list-item-title class="headline mb-1">Pizzeria marechiaro</v-list-item-title>
-       <v-list-item-subtitle>bla bla bla</v-list-item-subtitle>
+       <v-list-item-title class="headline mb-1">{{restData.activity_name}}</v-list-item-title>
+       <v-list-item-subtitle>{{restData.activity_description}}</v-list-item-subtitle>
      </v-list-item-content>
 
 
@@ -53,6 +53,13 @@
 
 export default {
   name: "restban",
+
+  props: {
+      restData: {
+          type: Object,
+          required: true,
+      },
+  }
 
 }
 </script>
