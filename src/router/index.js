@@ -5,6 +5,7 @@ import store from "@/store"
 import RestMenu from "../components/base/RestMenu";
 import rest1 from "../views/pages/rest1";
 import RestMenuMobile from "../components/base/RestMenuMobile";
+import ManageRest from "../views/pages/manageRest";
 
 Vue.use(Router)
 
@@ -85,9 +86,13 @@ const router = new Router({
           beforeEnter:  ifAuthenticated,
         },
         {
-          path: 'profile/:id',
+          path: 'profile/:id/:name',
           name: 'ManageRest',
-          component: () => import('@/views/pages/manageRest.vue'),
+          components: {
+            default: ManageRest,
+            restMenu: RestMenu,
+            restMenuMobile: RestMenuMobile
+          },
           beforeEnter: ifOwner,
         },
         {
@@ -99,7 +104,6 @@ const router = new Router({
         {
           path: ':id/:name',
           name: 'RestaurantHome',
-          //component: () => import('@/views/pages/rest1.vue'),
           components: {
             default: rest1,
             restMenu: RestMenu,
