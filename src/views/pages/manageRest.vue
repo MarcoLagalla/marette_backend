@@ -2,7 +2,7 @@
   <div>
 
     <button @click="manageComponents('Home')">{{getButtonMessageFor('Home')}}</button><br>
-    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
+    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData" :admin="admin"></RestBanner>
 
     <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><br>
     <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
@@ -50,6 +50,7 @@ export default {
     return {
       restID: this.$route.params.id,
       name: this.$route.params.name,
+      admin: true
 
     }
   },

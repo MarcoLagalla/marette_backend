@@ -19,9 +19,12 @@ export default {
       type: Object,
       required: true,
     },
+      admin: {
+        type: Boolean,
+        default: false,
+      }
   },
   data: () => ({
-    admin: true
   })
 }
 </script>
