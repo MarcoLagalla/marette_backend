@@ -27,7 +27,7 @@ const state = {
         'Panini e Piadine',
         'Pizza',
         'Secondo',
-        'Snack',
+        'Snack', //TODO: contollare
     ],
 
     DISCOUNT_TYPE_CHOICE: [
@@ -46,6 +46,12 @@ const getters = {
 }
 
 const actions = {
+    addComponent: ({commit}, componentName) =>{
+        commit('REST_ADD_COMPONENT', componentName)
+    },
+    removeComponent: ({commit}, componentName) =>{
+        commit('REST_RMV_COMPONENT', componentName)
+    },
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
             commit('REST_DATA_REQUEST', restaurantID)
@@ -79,6 +85,14 @@ const actions = {
 }
 
 const mutations = {
+    REST_RMV_COMPONENT: (state, componentName) =>{
+        state.components.splice(state.components.indexOf(componentName), 1);
+    },
+
+    REST_ADD_COMPONENT: (state, componentName) =>{
+        state.components.push(componentName);
+    },
+
     REST_DATA_REQUEST: (state, ID) => {
         state.status = 'loading'
         state.ID = ID
