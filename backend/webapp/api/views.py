@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer
-from ..models import Restaurant
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from ..models import Restaurant, RestaurantComponents
 from ...account.models import Business
 from ...account.permissions import IsBusiness
 import phonenumbers
@@ -24,7 +24,7 @@ class ListRestaurantsAPIView(ListAPIView):
 
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness]
 
     # only authenticated business users can create a new restaurant
     def post(self, request):
@@ -34,7 +34,7 @@ class CreateRestaurantAPIView(APIView):
             serializer = CreateRestaurantSerializer(data=request.data, context={'business_user': user})
             if serializer.is_valid():
                 restaurant = serializer.save()
-                data['response'] = "successfully registered a new restaurant"
+                data['response'] = "Ristorante correttamente creato"
                 data['id_restaurant'] = restaurant.id
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
@@ -47,14 +47,26 @@ class ShowRestaurantAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, id):
-        restaurant = get_object_or_404(Restaurant, id=id)
+
         try:
-            data = {}
-            serializer = ListRestaurantSerializer(restaurant, many=False)
-            data.update(serializer.data)
-            return Response(data, status.HTTP_200_OK)
+            restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
             return Response({'error': ["Ristorante non trovato."]}, status.HTTP_404_NOT_FOUND)
+
+        data = {}
+        serializer = ListRestaurantSerializer(restaurant, many=False)
+        data.update(serializer.data)
+
+        # retrieve restaurant components
+        try:
+            components = RestaurantComponents.objects.get(restaurant=restaurant)
+            components_data = RestaurantComponentsSerializer(components)
+            data.update({'components': components_data.data})
+        except RestaurantComponents.DoesNotExist:
+            pass
+
+        return Response(data, status.HTTP_200_OK)
+
 
 
 class UpdateRestaurantAPIView(APIView):

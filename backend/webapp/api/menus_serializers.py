@@ -8,7 +8,7 @@ from .products_serializers import ProductTagSerializer
 
 class MenuEntryProductSerializer(serializers.ModelSerializer):
     tags = ProductTagSerializer(many=True)
-    
+
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'image', 'tags')
