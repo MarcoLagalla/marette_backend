@@ -80,6 +80,16 @@ class EventiComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+class ContattaciComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='contattaci_component', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
 
 
 class RestaurantComponents(models.Model):
@@ -89,6 +99,7 @@ class RestaurantComponents(models.Model):
     menu = models.ForeignKey(MenuComponent, related_name='menu_component', on_delete=models.DO_NOTHING, null=True, blank=True)
     galleria = models.ForeignKey(GalleriaComponent, related_name='galleria_component', on_delete=models.DO_NOTHING, null=True, blank=True)
     eventi = models.ForeignKey(EventiComponent, related_name='eventi_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+    contattaci = models.ForeignKey(ContattaciComponent, related_name='contattaci_component', on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.restaurant.activity_name

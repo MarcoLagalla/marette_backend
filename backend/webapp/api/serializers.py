@@ -4,7 +4,7 @@ from operator import itemgetter
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator, ValidationError
 from ..models import Restaurant, RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
-    EventiComponent, MenuComponent
+    EventiComponent, MenuComponent, ContattaciComponent
 
 from ...account.models import Business
 from ...account.api.serializers import BusinessSerializer
@@ -41,16 +41,12 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         restaurant.save()
 
         # create ComponentsPanels (empty)
-        home = HomeComponent.objects.create(restaurant=restaurant,
-                                            name='Home')
-        vetrina = VetrinaComponent.objects.create(restaurant=restaurant,
-                                                  name='Vetrina')
-        galleria = GalleriaComponent.objects.create(restaurant=restaurant,
-                                                    name='Galleria')
-        eventi = EventiComponent.objects.create(restaurant=restaurant,
-                                                name='Eventi')
-        menu = MenuComponent.objects.create(restaurant=restaurant,
-                                            name='Menù')
+        home = HomeComponent.objects.create(restaurant=restaurant, name='Home')
+        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='Vetrina')
+        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='Galleria')
+        eventi = EventiComponent.objects.create(restaurant=restaurant, name='Eventi')
+        menu = MenuComponent.objects.create(restaurant=restaurant, name='Menu')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='Menu')
 
         RestaurantComponents.objects.create(
             restaurant=restaurant,
@@ -58,7 +54,8 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
             vetrina=vetrina,
             galleria=galleria,
             eventi=eventi,
-            menu=menu
+            menu=menu,
+            contattaci=contattaci
         )
 
         return restaurant
@@ -84,7 +81,10 @@ class EventiSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventiComponent
         fields = ('id', 'show')
-
+class ContattaciSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventiComponent
+        fields = ('id', 'show')
 
 class RestaurantComponentsSerializer(serializers.ModelSerializer):
     home = HomeSerializer()
@@ -92,7 +92,8 @@ class RestaurantComponentsSerializer(serializers.ModelSerializer):
     menu = MenuSerializer()
     galleria = GalleriaSerializer()
     eventi = EventiSerializer()
+    contattaci = ContattaciSerializer()
 
     class Meta:
         model = RestaurantComponents
-        fields = ('home', 'vetrina', 'menu', 'galleria', 'eventi')
+        fields = ('home', 'vetrina', 'menu', 'galleria', 'eventi', 'contattaci')

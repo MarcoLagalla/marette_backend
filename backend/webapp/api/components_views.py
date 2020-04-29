@@ -8,7 +8,7 @@ from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
 from ..models import MenuComponent, GalleriaComponent, \
-    EventiComponent, VetrinaComponent, HomeComponent, Restaurant
+    EventiComponent, VetrinaComponent, HomeComponent, Restaurant, ContattaciComponent
 
 
 class ActivateComponent(APIView):
@@ -59,6 +59,11 @@ class ActivateComponent(APIView):
                 try:
                     panel = EventiComponent.objects.all().get(restaurant=restaurant)
                 except EventiComponent.DoesNotExist:
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+            elif type == 'contattaci':
+                try:
+                    panel = ContattaciComponent.objects.all().get(restaurant=restaurant)
+                except ContattaciComponent.DoesNotExist:
                     return Response(status=status.HTTP_404_NOT_FOUND)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -119,6 +124,11 @@ class DeactivateComponent(APIView):
                 try:
                     panel = EventiComponent.objects.all().get(restaurant=restaurant)
                 except EventiComponent.DoesNotExist:
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+            elif type == 'contattaci':
+                try:
+                    panel = ContattaciComponent.objects.all().get(restaurant=restaurant)
+                except ContattaciComponent.DoesNotExist:
                     return Response(status=status.HTTP_404_NOT_FOUND)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
