@@ -1,29 +1,31 @@
 <script>
-  // Extensions
-  import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-  // Mixins
-  import LoadSections from '@/mixins/load-sections'
+// Mixins
+import LoadSections from '@/mixins/load-sections'
 
-  export default {
-    name: 'RegBusiness',
+export default {
+  name: 'RegBusiness',
 
-    metaInfo: { title: 'RegBusiness' },
+  metaInfo: {
+    title: 'RegBusiness'
+  },
 
-    extends: View,
+  extends: View,
 
-    mixins: [
-      LoadSections([
-        'RegBusiForm',
-        'info',
-      ]),
-    ],
+  mixins: [
+    LoadSections([
+      'RegBusiForm',
+      'info',
+    ]),
+  ],
 
-    props: {
-      id: {
-        type: String,
-        default: 'RegBusiness',
-      },
+  props: {
+    id: {
+      type: String,
+      default: 'RegBusiness',
     },
-  }
+  },
+}
 </script>

@@ -5,20 +5,17 @@
   </v-col>
 </v-row>
 </template>
-
 <script>
 export default {
   name: "RestMenu",
   props: ['items']
 }
 </script>
-
 <style scoped>
 a {
   text-decoration: none;
   scroll-behavior: smooth;
 }
-
 .ul {
   margin: 0;
   padding: 0;
@@ -28,14 +25,11 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 .ul .li {
   list-style: none;
   margin: 0 15px;
 }
-
 @import url('https://fonts.googleapis.com/css2?family=B612&display=swap');
-
 .ul .li a {
   padding-left: 5px;
   position: relative;
@@ -50,7 +44,6 @@ a {
   color: #666;
   transition: .4s;
 }
-
 .ul .li a::before {
   content: '';
   position: absolute;
@@ -64,7 +57,6 @@ a {
   width: 0;
   transition: .4s;
 }
-
 .ul .li a:hover::before {
   transition: ease .4s;
   content: '';
@@ -77,7 +69,6 @@ a {
   width: 100%;
   filter: blur(2px);
 }
-
 .ul .li a:hover {
   transition: ease .4s;
   text-shadow: 0 0 8px black;

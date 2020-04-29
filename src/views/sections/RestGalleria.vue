@@ -1,12 +1,12 @@
 <template>
-<base-rest-vetrina>
-  
-</base-rest-vetrina>
+<base-rest-galleria>
+
+</base-rest-galleria>
 </template>
 
 <script>
 export default {
-  name: "restvetrina",
+  name: "restgalleria",
 
 }
 </script>

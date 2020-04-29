@@ -1,55 +1,65 @@
 <template>
-  <div>
-    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
-    <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
-    <Restmenu v-if="activeComponents.includes('Menu')" :id="restID" :name="name"></Restmenu>
-    <Info></Info>
-  </div>
+<div>
+  <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
+  <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
+  <Restmenu v-if="activeComponents.includes('Menu')" :id="restID" :name="name"></Restmenu>
+  <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+  <Info></Info>
+</div>
 </template>
 
 
 <script>
-  // Extensions
-  import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-  // Components
-  import Restmenu from "../sections/RestMenu";
-  import RestBanner from "../sections/RestBanner";
-  import RestVetrina from "../sections/RestVetrina";
-  import Info from "../sections/Info";
-  import {mapActions} from "vuex";
+// Components
+import Restmenu from "../sections/RestMenu";
+import RestBanner from "../sections/RestBanner";
+import RestVetrina from "../sections/RestVetrina";
+import RestGalleria from "../sections/RestGalleria";
+import Info from "../sections/Info";
+import {
+  mapActions
+} from "vuex";
 
-  export default {
-      name: 'restaurant',
-      components: {Restmenu, RestBanner, RestVetrina, Info},
-      metaInfo: {title: 'Restaurant'},
+export default {
+  name: 'restaurant',
+  components: {
+    Restmenu,
+    RestBanner,
+    RestVetrina,
+    RestGalleria,
+    Info
+  },
+  metaInfo: {
+    title: 'Restaurant'
+  },
 
-      extends: View,
+  extends: View,
 
-      data() {
-          return {
-              restID: this.$route.params.id,
-              name: this.$route.params.name
-          }
-      },
-      methods: {
-            ...mapActions('restaurantData', ['getRestaurantData']),
-      },
-      created() {
-          this.getRestaurantData(this.restID).catch(error => {
-              if(error.status === 404)
-                  this.$router.push('/404')
-          })
-      },
-      computed:
-      {
-          activeComponents(){
-            return this.$store.getters['restaurantData/components']
-          },
-          restData(){
-          return this.$store.getters['restaurantData/restData']
-        }
-      }
-
+  data() {
+    return {
+      restID: this.$route.params.id,
+      name: this.$route.params.name
+    }
+  },
+  methods: {
+    ...mapActions('restaurantData', ['getRestaurantData']),
+  },
+  created() {
+    this.getRestaurantData(this.restID).catch(error => {
+      if (error.status === 404)
+        this.$router.push('/404')
+    })
+  },
+  computed: {
+    activeComponents() {
+      return this.$store.getters['restaurantData/components']
+    },
+    restData() {
+      return this.$store.getters['restaurantData/restData']
+    }
   }
+}
 </script>

@@ -1,35 +1,36 @@
 
 <script>
-      // Extensions
-        import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-      // Mixins
-        import LoadSections from '@/mixins/load-sections'
+// Mixins
+import LoadSections from '@/mixins/load-sections'
 
-    export default {
-        name: "manageRest",
+export default {
+  name: "manageRest",
 
-        metaInfo: { title: 'manageRest' },
+  metaInfo: {
+    title: 'manageRest'
+  },
 
-        extends: View,
+  extends: View,
 
-    mixins: [
-        LoadSections([
-            'ManageRest',
-            'AdminProductList',
-            'info',
-         ]),
-    ],
+  mixins: [
+    LoadSections([
+      'ManageRest',
+      'AdminProductList',
+      'info',
+    ]),
+  ],
 
-    props: {
-      id: {
-        type: String,
-        default: 'manageRest',
-      },
+  props: {
+    id: {
+      type: String,
+      default: 'manageRest',
     },
+  },
 
-    }
-
+}
 </script>
 
 <style scoped>

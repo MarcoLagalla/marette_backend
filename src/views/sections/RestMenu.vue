@@ -1,22 +1,17 @@
 <template>
   <div class="body" id="Menu">
+    <v-row>
+      <v-col>
+        <base-cat-tabs/>
+      </v-col>
+    </v-row>
     <v-row
-
     class="ma-0 pa-8"
-
     >
     <v-col
-       cols=""
-       md="3"
-     >
-<base-menu-cat />
-     </v-col>
-     <v-col
-        cols="9"
-        md="9"
-      >
-<base-menu />
-      </v-col>
+    >
+    
+  </v-col>
 
 </v-row>
 </div>
@@ -26,12 +21,12 @@
 
 export default {
   name: "restmenu",
-    props: ['name', 'id'],
-    data() {
-            return {
+  props: ['name', 'id'],
+  data() {
+    return {
 
-            }
-        },
+    }
+  },
 
 }
 </script>

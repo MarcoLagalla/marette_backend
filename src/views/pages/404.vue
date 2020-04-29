@@ -1,29 +1,31 @@
 <script>
-  // Extensions
-  import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-  // Mixins
-  import LoadSections from '@/mixins/load-sections'
+// Mixins
+import LoadSections from '@/mixins/load-sections'
 
-  export default {
-    name: 'FourOhFour',
+export default {
+  name: 'FourOhFour',
 
-    metaInfo: { title: 'Oops! No Page Found' },
+  metaInfo: {
+    title: 'Oops! No Page Found'
+  },
 
-    extends: View,
+  extends: View,
 
-    mixins: [
-      LoadSections([
-        '404',
-        'info',
-      ]),
-    ],
+  mixins: [
+    LoadSections([
+      '404',
+      'info',
+    ]),
+  ],
 
-    props: {
-      id: {
-        type: String,
-        default: 'about',
-      },
+  props: {
+    id: {
+      type: String,
+      default: 'about',
     },
-  }
+  },
+}
 </script>
