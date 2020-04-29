@@ -6,7 +6,8 @@ from backend.account.models import Business
 from django_resized import ResizedImageField
 from django.utils.text import slugify
 
-from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, DISCOUNT_TYPES_CHOICES
+from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
+    DISCOUNT_TYPES_CHOICES, RESTAURANT_COMPONENTS
 
 
 class Restaurant(models.Model):
@@ -29,6 +30,68 @@ class Restaurant(models.Model):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
+
+class HomeComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='home', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
+class VetrinaComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='vetrina', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
+class MenuComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='menu_component', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
+class GalleriaComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
+class EventiComponent(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='eventi_component', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    show = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('restaurant', 'name',)
+
+    def __str__(self):
+        return self.restaurant.__str__() + " : " + self.name
+
+
+class RestaurantComponents(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='components', on_delete=models.CASCADE)
+    home = models.ForeignKey(HomeComponent, related_name='home_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+    vetrina = models.ForeignKey(VetrinaComponent, related_name='vetrina_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+    menu = models.ForeignKey(MenuComponent, related_name='menu_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+    galleria = models.ForeignKey(GalleriaComponent, related_name='galleria_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+    eventi = models.ForeignKey(EventiComponent, related_name='eventi_component', on_delete=models.DO_NOTHING, null=True, blank=True)
+
+    def __str__(self):
+        return self.restaurant.activity_name
 
 
 class ProductTag(models.Model):
