@@ -4,7 +4,7 @@ import manageRestaurant from "../../services/manageRestaurant";
 
 const state = {
     ID: 1,
-    productList: [],
+    productList: {},
     restData: {},
     status: '',
     components: [
@@ -64,8 +64,15 @@ const actions = {
 
                 manageProduct.getProductList(restaurantID)
                 .then(respMenu => {
-                    const dataMenu = respMenu.data
-
+                    var dataMenu = {}
+                    if (respMenu.status === 204){
+                        state.FOOD_CATEGORY_CHOICES.forEach((category)=>{
+                            dataMenu[category]=[]
+                        })
+                    }
+                    else {
+                        dataMenu = respMenu.data
+                    }
                     commit('REST_MENU_SUCCESS', dataMenu)
                     resolve()
                 })

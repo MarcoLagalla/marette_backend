@@ -2,7 +2,7 @@
   <div class="body" id="Menu">
     <v-row>
       <v-col>
-        <base-cat-tabs/>
+        <base-cat-tabs :menu="menu" :admin="admin"/>
       </v-col>
     </v-row>
     <v-row
@@ -21,12 +21,22 @@
 
 export default {
   name: "restmenu",
-  props: ['name', 'id'],
+  props: {
+      admin: {
+        type: Boolean,
+        default: false,
+      }
+  },
   data() {
     return {
 
     }
   },
+  computed: {
+      menu() {
+          return this.$store.getters['restaurantData/productList']
+      },
+  }
 
 }
 </script>

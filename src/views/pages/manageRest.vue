@@ -8,7 +8,7 @@
     <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
 
     <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><br>
-    <Restmenu v-if="activeComponents.includes('Menu')" :id="restID" :name="name"></Restmenu>
+    <Restmenu v-if="activeComponents.includes('Menu')" :admin="admin"></Restmenu>
 
     <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><br>
     <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
