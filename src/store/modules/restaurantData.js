@@ -88,9 +88,33 @@ const actions = {
         })
     },
 
+    addProduct: ({commit}, product) => {
+        return new Promise((resolve, reject) => {
+            var payload = {}
+            payload['id'] = state.ID
+            payload['data'] = product
+
+            manageProduct.addProduct(payload)
+            .then(resp => {
+                commit('REST_ADD_PROD_SUCCESS')
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_ADD_PROD_ERROR')
+                reject(err)
+            })
+        })
+    },
+
 }
 
 const mutations = {
+    REST_ADD_PROD_SUCCESS: () =>{
+    },
+
+    REST_ADD_PROD_ERROR: () =>{
+    },
+
     REST_RMV_COMPONENT: (state, componentName) =>{
         state.components.splice(state.components.indexOf(componentName), 1);
     },
