@@ -54,7 +54,7 @@
         </v-card>
       </v-col>
 
-      <v-col v-for="(item, i) in items" :key="i" cols="12">
+      <!--v-col v-for="(item, i) in items" :key="i" cols="12">
         <v-card :color="item.color" dark>
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
@@ -68,7 +68,35 @@
             </v-avatar>
           </div>
         </v-card>
-      </v-col>
+      </v-col-->
+      <v-row>
+        <v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="12" md="6">
+            <v-card v-bind="restaurant" class="mx-auto" max-width="400">
+              <router-link :to="restaurant.url">
+                <v-img class="white--text align-end" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
+                  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+                </v-img>
+              </router-link>
+              <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
+
+              <v-card-text class="text--primary">
+                <div>{{ restaurant.activity_description }}</div>
+              </v-card-text>
+
+              <v-card-actions>
+                <router-link :to="'profile/'+restaurant.url">
+                  <v-btn color="orange" text>
+                    Gestione ristorante
+                  </v-btn>
+                </router-link>
+                <v-btn color="orange" text>
+                  Modifica ristorante
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+
+        </v-col>
+      </v-row>
     </v-row>
   </v-container>
 </div>
@@ -142,8 +170,15 @@ export default {
     },
     isBusiness() {
       return this.$store.getters['userProfile/isBusiness']
+    },
+    userRestaurantList() {
+      return this.$store.getters['restaurants/userList']
     }
   },
+
+  created() {
+    this.$store.dispatch("restaurants/getUserRestaurants")
+  }
 }
 </script>
 
