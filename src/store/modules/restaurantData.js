@@ -18,16 +18,15 @@ const state = {
     FOOD_CATEGORY_CHOICES : [
         'Altro',
         'Antipasto',
-        'Primo',
-        'Secondo',
         'Contorno',
         'Dessert',
         'Caffetteria',
         'Panetteria',
         'Panini e Piadine',
         'Pizza',
+        'Primo',
         'Secondo',
-        'Snack', //TODO: contollare
+        'Snack'
     ],
 
     DISCOUNT_TYPE_CHOICE: [
