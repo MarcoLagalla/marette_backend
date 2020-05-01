@@ -3,7 +3,7 @@
   <v-container>
 
     <v-row dense>
-      <v-col cols="12">
+      <v-col cols="6">
         <v-card class="profilc" dark>
           <v-card-title class="profilo">Profilo utente</v-card-title>
 
@@ -69,10 +69,36 @@
           </div>
         </v-card>
       </v-col-->
-      <v-row>
-        <v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="12" md="6">
-            <v-card v-bind="restaurant" class="mx-auto" max-width="400">
-              <router-link :to="restaurant.url">
+
+        <v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="6">
+            <v-card class="restc" v-bind="restaurant" dark>
+              <div class="d-flex flex-no-wrap justify-space-between">
+                <div>
+                  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+
+                  <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
+
+                  <v-card-text class="text--primary">
+                    <div>{{ restaurant.activity_description }}</div>
+                  </v-card-text>
+                </div>
+                <v-col >
+                <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/'+restaurant.url">  <v-icon x-large dark>
+                    fas fa-cogs
+                  </v-icon>
+                </router-link>
+                <router-link tag="button" class="settings" v-if="isBusiness" :to="restaurant.url">  <v-icon x-large dark>
+                    fas fa-address-card
+                  </v-icon>
+                </router-link>  </v-col>
+                <v-avatar class="ma-3" size="125" tile>
+                  <v-img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"></v-img>
+                </v-avatar>
+              </div>
+
+
+
+              <!--router-link :to="restaurant.url">
                 <v-img class="white--text align-end" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
                   <v-card-title>{{ restaurant.activity_name }}</v-card-title>
                 </v-img>
@@ -92,7 +118,7 @@
                 <v-btn color="orange" text>
                   Modifica ristorante
                 </v-btn>
-              </v-card-actions>
+              </v-card-actions-->
             </v-card>
 
         </v-col>
@@ -187,8 +213,26 @@ export default {
   /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
   background: #f1f1f1;
 }
-
+.settings {
+  background-color: midnightblue;
+  color: white;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 25px;
+  transition: 0.6s;
+  font-weight: bold;
+  border: inset 2px navy;
+  float: right;
+}
+.settings:hover {
+  box-shadow: 0 0 6px black;
+}
+.restc {
+  box-shadow: 0 0 15 black;
+  background: var(--herb)
+}
 .profilc {
+  box-shadow: 0 0 15 black;
   background: var(--herb)
 }
 
