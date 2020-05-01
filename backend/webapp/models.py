@@ -5,6 +5,8 @@ from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from backend.account.models import Business
 from django_resized import ResizedImageField
@@ -195,7 +197,7 @@ class ProductDiscount(models.Model):
                 raise ValueError('Inserire un valore tra 0-100.')
         super(ProductDiscount, self).save(*args, **kwargs)
 
-    
+
     # TODO: dimensione massima foto prodotto
 class Product(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='restaurant', on_delete=models.CASCADE)
@@ -313,9 +315,23 @@ class Menu(models.Model):
 class Picture(models.Model):
 
     image = ResizedImageField(size=[600, 600], upload_to='components/gallery', quality=95,
-                              crop=['middle', 'center'], keep_meta=False)
+                              crop=['middle', 'center'],keep_meta=False)
     name = models.CharField(max_length=100, default='')
     description = models.TextField(blank=True, null=True, default='')
 
     def __str__(self):
         return self.name
+
+
+@receiver(pre_save, sender=Product)
+def do_something_if_changed(sender, instance, **kwargs):
+    try:
+        obj = sender.objects.get(pk=instance.pk)
+    except sender.DoesNotExist:
+        pass # Object is new, so field hasn't technically changed, but you may want to do something else here.
+    else:
+        if instance.image == '':
+            instance.thumb_image = None
+        if not obj.image == instance.image:  # Image has changed
+            obj.thumb_image = None
+            obj.save()

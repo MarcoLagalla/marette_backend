@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_cleanup',
     'admin_reorder',
     'localflavor',
     'django.contrib.admin',
@@ -205,3 +206,5 @@ ADMIN_REORDER = (
                 'webapp.ContattaciComponent',)},
 
 )
+
+DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
