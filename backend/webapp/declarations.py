@@ -26,6 +26,20 @@ FOOD_CATEGORY_CHOICES_IMAGES = {
     'Snack':                'placeholder/product/snack.png'
 }
 
+FOOD_CATEGORY_CHOICES_THUMBS_IMAGES = {
+    'Altro':                'placeholder/product/thumbs/altro.jpg',
+    'Antipasto':            'placeholder/product/thumbs/antipasto.jpg',
+    'Contorno':             'placeholder/product/thumbs/contorno.jpg',
+    'Dessert':              'placeholder/product/thumbs/dessert.jpg',
+    'Caffetteria':          'placeholder/product/thumbs/caffetteria.jpg',
+    'Panetteria':           'placeholder/product/thumbs/panetteria.jpg',
+    'Panini e Piadine':     'placeholder/product/thumbs/panini_e_piadine.jpg',
+    'Pizza':                'placeholder/product/thumbs/pizza.jpg',
+    'Primo':                'placeholder/product/thumbs/primo.jpg',
+    'Secondo':              'placeholder/product/thumbs/secondo.jpg',
+    'Snack':                'placeholder/product/thumbs/snack.jpg'
+}
+
 DISCOUNT_TYPES_CHOICES = [
     ('Fisso', 'Fisso'),
     ('Percentuale', 'Percentuale'),

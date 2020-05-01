@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_reorder',
     'localflavor',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'admin_reorder.middleware.ModelAdminReorder',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -176,3 +178,30 @@ EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+ADMIN_REORDER = (
+    # Keep original label and models
+    'sites',
+
+    # Reorder app models
+    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+    {'app': 'account', 'models': ('account.Customer', 'account.Business')},
+    {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant',)},
+    {'app': 'webapp', 'label': 'Restaurant',
+     'models': ('webapp.Product',
+                'webapp.ProductDiscount',
+                'webapp.ProductTag',
+                'webapp.Menu',
+                'webapp.MenuEntry',
+                'webapp.Picture',)},
+    {'app': 'webapp', 'label': 'RestaurantComponents',
+     'models': ('webapp.RestaurantComponents',
+                'webapp.HomeComponent',
+                'webapp.MenuComponent',
+                'webapp.EventiComponent',
+                'webapp.GalleriaComponent',
+                'webapp.VetrinaComponent',
+                'webapp.ContattaciComponent',)},
+
+)
