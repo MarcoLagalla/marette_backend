@@ -31,7 +31,10 @@ class ListProducts(APIView):
 
         # if the restaurant does not have products
         if products.count() == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            products_list = {}
+            for val, category in FOOD_CATEGORY_CHOICES:
+                products_list.update({category: []})
+            return Response(products_list, status=status.HTTP_200_OK)
 
         products_list = {}
         # for each category
