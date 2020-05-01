@@ -24,7 +24,7 @@ const actions = {
             .then(resp => {
                 const data = resp.data
                 commit('REG_REST_SUCCESS', data.id_restaurant)
-                resolve(resp)
+                resolve(resp.data)
             })
             .catch(err => {
                 commit('REG_REST_ERROR', err.response)

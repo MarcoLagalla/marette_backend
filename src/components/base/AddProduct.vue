@@ -9,6 +9,7 @@
         @change="onChanged"
         :width="300"
         :height="300"
+        :crop="true"
         :changeOnClick="false"
         accept="image/jpeg, image/png, image/gif"
         buttonClass="ui button primary"

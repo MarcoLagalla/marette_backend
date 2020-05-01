@@ -64,8 +64,8 @@ export default {
         cap: this.cap,
         restaurant_number: this.restaurant_number,
         p_iva: this.p_iva
-      }).then(() => {
-        this.$router.push('/profile')
+      }).then((response) => {
+        this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
       }).catch(error => {
         var id = Object.keys(error)[0];
         document.getElementById(id).scrollIntoView(false)

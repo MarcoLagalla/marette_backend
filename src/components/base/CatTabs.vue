@@ -12,7 +12,7 @@
       <v-tab-item v-for="category in categories" :key="category">
         <v-card color="basil" flat>
           <base-menu :products="menu[category]"/>
-          <base-add-product :category='category' :v-if="admin"></base-add-product>
+          <base-add-product :category='category' :v-if="admin" :admin="admin"></base-add-product>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
