@@ -1,9 +1,10 @@
 <template>
   <div>
+    <div class="addprod">
     <v-form @submit.prevent="submitProduct">
-      <v-text-field solo background-color="#486F83" v-model='name' type="text" placeholder=" Inserire nome prodotto" id="name" name="name" required></v-text-field>
-      <v-text-field solo background-color="#486F83" v-model='description' type="text" placeholder=" Inserire descrizione" id="description" name="description" required></v-text-field>
-      <v-text-field solo background-color="#486F83" v-model='price' type="number" placeholder=" Inserire prezzo" id="price" name="price" required></v-text-field>
+      <v-text-field v-model='name' type="text" label=" Inserire nome prodotto" id="name" name="name" required></v-text-field>
+      <v-text-field v-model='description' type="text" label=" Inserire descrizione" id="description" name="description" required></v-text-field>
+      <v-text-field v-model='price' type="number" label=" Inserire prezzo" id="price" name="price" required></v-text-field>
       <picture-input
         ref="productImage"
         @change="onChanged"
@@ -17,8 +18,9 @@
         upload: '<h1>Carica immagine</h1>',
         drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
       </picture-input>
-      <button type="submit">Aggiungi Prodotto</button>
+      <button type="submit" class="addconf">Aggiungi Prodotto</button>
     </v-form>
+        </div>
   </div>
 </template>
 <script>
@@ -72,4 +74,20 @@ export default {
 }
 </script>
 <style scoped>
+.addprod {
+  margin: auto;
+  width: 50%;
+  padding: 20px;
+}
+.addconf {
+  padding: 10px;
+  border-radius: 25px;
+  border: inset 2px red;
+  background: rgba(255, 0, 0, 0.5);
+  transition: 0.5s;
+  color: blueviolet
+}
+.addconf:hover {
+  box-shadow: 0 0 10px black;
+}
 </style>

@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-  name: 'BaseMenu',
+  name: 'BaseProdList',
   props: ['products'],
   inheritAttrs: false,
   data: () => ({
