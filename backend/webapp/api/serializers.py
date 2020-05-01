@@ -41,12 +41,12 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         restaurant.save()
 
         # create ComponentsPanels (empty)
-        home = HomeComponent.objects.create(restaurant=restaurant, name='Home')
-        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='Vetrina')
-        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='Galleria')
-        eventi = EventiComponent.objects.create(restaurant=restaurant, name='Eventi')
-        menu = MenuComponent.objects.create(restaurant=restaurant, name='Menu')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='Menu')
+        home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
+        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
+        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
+        eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
+        menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTACI')
 
         RestaurantComponents.objects.create(
             restaurant=restaurant,
