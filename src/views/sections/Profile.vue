@@ -1,16 +1,16 @@
 <template>
-<div class="body">
-  <v-container>
+  <div class="body">
+    <v-container>
 
-    <v-row dense>
-      <v-col cols="6">
-        <v-card class="profilc" dark>
-          <v-card-title class="profilo">Profilo utente</v-card-title>
+      <v-row dense>
+        <v-col cols="6">
+          <v-card class="profilc" dark>
+            <v-card-title class="profilo">Profilo utente</v-card-title>
 
-          <v-card-subtitle>
-            <p v-for="(campo, i) in user" :key="i">{{i.replace(/_/g , ' ')}} : {{campo}}</p>
-          </v-card-subtitle>
-          <router-link tag="button" class="addrest" v-if="isBusiness" to="newRestaurant">Aggiungi ristorante <v-icon right dark>
+            <v-card-subtitle>
+              <p v-for="(campo, i) in user" :key="i">{{i.replace(/_/g , ' ')}} : {{campo}}</p>
+            </v-card-subtitle>
+            <router-link tag="button" class="addrest" v-if="isBusiness" to="newRestaurant">Aggiungi ristorante <v-icon right dark>
               mdi-food-fork-drink
             </v-icon>
           </router-link>
@@ -26,105 +26,103 @@
                 <v-row align="center" class="ma-0 mt-8" justify="center">
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field light :error-messages="errors.old_password" @change="errors.old_password=''" solo background-color="#FFF8DC" v-model='old_password' type="password" placeholder=" Inserire vecchia password" id="old_password"
-                      name="old_password" required>
-                    </v-text-field>
+                    name="old_password" required>
+                  </v-text-field>
 
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field light :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password' type="password" placeholder=" Inserire nuova password"
-                      id="new_password" name="new_password" required>
-                    </v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field light :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password' type="password" placeholder=" Inserire nuova password"
+                  id="new_password" name="new_password" required>
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
 
-                    <v-text-field light :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password2' type="password" placeholder=" Reinserire nuova password"
-                      id="new_password2" name="new_password2" required>
-                    </v-text-field>
-                  </v-col>
+                <v-text-field light :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password2' type="password" placeholder=" Reinserire nuova password"
+                id="new_password2" name="new_password2" required>
+              </v-text-field>
+            </v-col>
 
-                </v-row>
-                <div class="regbtn2">
-                  <div class="center">
-                    <button type="submit" class="password_btn">Modifica Password</button>
-                  </div>
-                </div>
-              </v-form>
+          </v-row>
+          <div class="regbtn2">
+            <div class="center">
+              <button type="submit" class="password_btn">Modifica Password</button>
             </div>
-          </v-expand-transition>
-        </v-card>
-      </v-col>
-
-      <!--v-col v-for="(item, i) in items" :key="i" cols="12">
-        <v-card :color="item.color" dark>
-          <div class="d-flex flex-no-wrap justify-space-between">
-            <div>
-              <v-card-title class="headline" v-text="item.title"></v-card-title>
-
-              <v-card-subtitle v-text="item.artist"></v-card-subtitle>
-            </div>
-
-            <v-avatar class="ma-3" size="125" tile>
-              <v-img :src="item.src"></v-img>
-            </v-avatar>
           </div>
-        </v-card>
-      </v-col-->
+        </v-form>
+      </div>
+    </v-expand-transition>
+  </v-card>
+</v-col>
 
-        <v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="6">
-            <v-card class="restc" v-bind="restaurant" dark>
-              <div class="d-flex flex-no-wrap justify-space-between">
-                <div>
-                  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+<!--v-col v-for="(item, i) in items" :key="i" cols="12">
+<v-card :color="item.color" dark>
+<div class="d-flex flex-no-wrap justify-space-between">
+<div>
+<v-card-title class="headline" v-text="item.title"></v-card-title>
 
-                  <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
+<v-card-subtitle v-text="item.artist"></v-card-subtitle>
+</div>
 
-                  <v-card-text class="text--primary">
-                    <div>{{ restaurant.activity_description }}</div>
-                  </v-card-text>
-                </div>
-                <v-col >
-                <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/'+restaurant.url">  <v-icon x-large dark>
-                    fas fa-cogs
-                  </v-icon>
-                </router-link>
-                <router-link tag="button" class="settings" v-if="isBusiness" :to="restaurant.url">  <v-icon x-large dark>
-                    fas fa-address-card
-                  </v-icon>
-                </router-link>  </v-col>
-                <v-avatar class="ma-3" size="125" tile>
-                  <v-img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"></v-img>
-                </v-avatar>
-              </div>
+<v-avatar class="ma-3" size="125" tile>
+<v-img :src="item.src"></v-img>
+</v-avatar>
+</div>
+</v-card>
+</v-col-->
+
+<v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="6">
+  <v-card class="restc" v-bind="restaurant" dark>
+    <div class="d-flex flex-no-wrap justify-space-between">
+      <div>
+        <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+
+        <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
+
+        <v-card-text class="text--primary">
+          <div>{{ restaurant.activity_description }}</div>
+        </v-card-text>
+      </div>
+      <v-col >
+        <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/'+restaurant.url">  <v-icon x-large dark>
+          fas fa-cogs
+        </v-icon>
+      </router-link>
+      <router-link tag="button" class="settings" v-if="isBusiness" :to="restaurant.url">  <v-icon x-large dark>
+        fas fa-address-card
+      </v-icon>
+    </router-link>  </v-col>
+    <v-avatar class="ma-3" size="125" tile>
+      <v-img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"></v-img>
+    </v-avatar>
+  </div>
 
 
 
-              <!--router-link :to="restaurant.url">
-                <v-img class="white--text align-end" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
-                  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
-                </v-img>
-              </router-link>
-              <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
+  <!--router-link :to="restaurant.url">
+  <v-img class="white--text align-end" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
+  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
+</v-img>
+</router-link>
+<v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
 
-              <v-card-text class="text--primary">
-                <div>{{ restaurant.activity_description }}</div>
-              </v-card-text>
+<v-card-text class="text--primary">
+<div>{{ restaurant.activity_description }}</div>
+</v-card-text>
 
-              <v-card-actions>
-                <router-link :to="'profile/'+restaurant.url">
-                  <v-btn color="orange" text>
-                    Gestione ristorante
-                  </v-btn>
-                </router-link>
-                <v-btn color="orange" text>
-                  Modifica ristorante
-                </v-btn>
-              </v-card-actions-->
-            </v-card>
-
-        </v-col>
-      </v-row>
-    </v-row>
-  </v-container>
+<v-card-actions>
+<router-link :to="'profile/'+restaurant.url">
+<v-btn color="orange" text>
+Gestione ristorante
+</v-btn>
+</router-link>
+<v-btn color="orange" text>
+Modifica ristorante
+</v-btn>
+</v-card-actions-->
+</v-card>
+</v-col>
+</v-row>
+</v-container>
 </div>
 </template>
 
@@ -154,57 +152,57 @@ export default {
       ],
       show: false,
       items: [{
-          color: '#1F7087',
-          src: 'https://cdn.vuetifyjs.com/images/cards/docks.jpg',
-          title: 'Ristorante 1',
-          artist: '',
-        },
-        {
-          color: '#952175',
-          src: "https://cdn.vuetifyjs.com/images/cards/docks.jpg",
-          title: 'Ristorante 2',
-          artist: '',
-        },
-      ],
-    }
-  },
-  methods: {
-    ...mapActions('userProfile', ['changePassword']),
-    change_psw: function() {
-      this.changePassword({
-        old_password: this.old_password,
-        new_password: this.new_password,
-        new_password2: this.new_password2,
-
-      }).then(messaggio => {
-
-        alert(messaggio)
-
-      })
-
-    }
-  },
-  computed: {
-    user() {
-      return this.$store.getters['userProfile/user']
-    },
-    user_private() {
-      return this.$store.getters['userProfile/user_private']
-    },
-    errors() {
-      return this.$store.getters['userProfile/errors']
-    },
-    isBusiness() {
-      return this.$store.getters['userProfile/isBusiness']
-    },
-    userRestaurantList() {
-      return this.$store.getters['restaurants/userList']
-    }
-  },
-
-  created() {
-    this.$store.dispatch("restaurants/getUserRestaurants")
+        color: '#1F7087',
+        src: 'https://cdn.vuetifyjs.com/images/cards/docks.jpg',
+        title: 'Ristorante 1',
+        artist: '',
+      },
+      {
+        color: '#952175',
+        src: "https://cdn.vuetifyjs.com/images/cards/docks.jpg",
+        title: 'Ristorante 2',
+        artist: '',
+      },
+    ],
   }
+},
+methods: {
+  ...mapActions('userProfile', ['changePassword']),
+  change_psw: function() {
+    this.changePassword({
+      old_password: this.old_password,
+      new_password: this.new_password,
+      new_password2: this.new_password2,
+
+    }).then(messaggio => {
+
+      alert(messaggio)
+
+    })
+
+  }
+},
+computed: {
+  user() {
+    return this.$store.getters['userProfile/user']
+  },
+  user_private() {
+    return this.$store.getters['userProfile/user_private']
+  },
+  errors() {
+    return this.$store.getters['userProfile/errors']
+  },
+  isBusiness() {
+    return this.$store.getters['userProfile/isBusiness']
+  },
+  userRestaurantList() {
+    return this.$store.getters['restaurants/userList']
+  }
+},
+
+created() {
+  this.$store.dispatch("restaurants/getUserRestaurants")
+}
 }
 </script>
 
