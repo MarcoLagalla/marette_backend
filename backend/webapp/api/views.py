@@ -36,6 +36,7 @@ class CreateRestaurantAPIView(APIView):
                 restaurant = serializer.save()
                 data['response'] = "successfully registered a new restaurant"
                 data['id_restaurant'] = restaurant.id
+                data['slug'] = restaurant.slug
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
