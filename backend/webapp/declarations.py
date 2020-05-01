@@ -30,3 +30,13 @@ DISCOUNT_TYPES_CHOICES = [
     ('Fisso', 'Fisso'),
     ('Percentuale', 'Percentuale'),
 ]
+
+
+RESTAURANT_COMPONENTS = [
+    ('Home', 'Home'),
+    ('Vetrina', 'Vetrina'),
+    ('Menù', 'Menù'),
+    ('Galleria', 'Galleria'),
+    ('Contattaci', 'Contattaci'),
+    ('Eventi', 'Eventi'),
+]
