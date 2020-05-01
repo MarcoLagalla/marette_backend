@@ -1,3 +1,4 @@
+from PIL import Image
 from django.core import validators as valids
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -8,6 +9,8 @@ from django.utils.text import slugify
 
 from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, RESTAURANT_COMPONENTS
+
+MAX_IMAGE_WIDTH = 600000  # 600 KB for image
 
 
 class Restaurant(models.Model):
@@ -31,22 +34,52 @@ class Restaurant(models.Model):
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
         self.save()
 
+
 class HomeComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='home', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    image = ResizedImageField(size=[1920, 1080], quality=95, upload_to='components/home',
+                              crop=['middle', 'center'], keep_meta=False, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     show = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ('restaurant', 'name',)
+
+    def get_image(self):
+        if not (self.image and hasattr(self.image, 'url')):
+            return 'components/home/placeholder.png'
+        else:
+            return self.image.url
+
+    def get_name(self):
+        return self.name.upper()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            img = Image.open(self.image.path)
+            COMPRESS_RATIO = 95
+            step = 5
+            while len(img.fp.read()) > MAX_IMAGE_WIDTH:
+                img.save(self.image.path, format="JPEG", quality=COMPRESS_RATIO - step)
+                img = Image.open(self.image.path)
+                step += 5
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
 class VetrinaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='vetrina', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    menu_giorno = models.ForeignKey('Menu', related_name='menu_giorno', on_delete=models.DO_NOTHING,
+                                    blank=True, null=True)
     show = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('restaurant', 'name',)
+
+    def get_name(self):
+        return self.name.upper()
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
@@ -58,15 +91,22 @@ class MenuComponent(models.Model):
     class Meta:
         unique_together = ('restaurant', 'name',)
 
+    def get_name(self):
+        return self.name.upper()
+
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
 class GalleriaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    immagini = models.ManyToManyField('Picture', related_name='immagini', null=True, blank=True)
     show = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('restaurant', 'name',)
+
+    def get_name(self):
+        return self.name.upper()
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
@@ -78,6 +118,9 @@ class EventiComponent(models.Model):
     class Meta:
         unique_together = ('restaurant', 'name',)
 
+    def get_name(self):
+        return self.name.upper()
+
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
 class ContattaciComponent(models.Model):
@@ -87,6 +130,9 @@ class ContattaciComponent(models.Model):
 
     class Meta:
         unique_together = ('restaurant', 'name',)
+
+    def get_name(self):
+        return self.name.upper()
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
@@ -193,6 +239,17 @@ class Menu(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
 
     entries = models.ManyToManyField(MenuEntry, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Picture(models.Model):
+
+    image = ResizedImageField(size=[600, 600], upload_to='components/gallery', quality=95,
+                              crop=['middle', 'center'], keep_meta=False)
+    name = models.CharField(max_length=100, default='')
+    description = models.TextField(blank=True, null=True, default='')
 
     def __str__(self):
         return self.name

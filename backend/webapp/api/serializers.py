@@ -62,29 +62,70 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
 
 
 class HomeSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(required=False)
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = HomeComponent
-        fields = ('id', 'show')
+        fields = ('id', 'show', 'name', 'description', 'image')
+
+    def get_image(self, instance):
+        return instance.get_image()
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class VetrinaSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = VetrinaComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'menu_giorno', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
 class MenuSerializer(serializers.ModelSerializer):
-            class Meta:
-                model = MenuComponent
-                fields = ('id', 'show')
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MenuComponent
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
 class GalleriaSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = GalleriaComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'immagini', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
 class EventiSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = EventiComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class ContattaciSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
-        model = EventiComponent
-        fields = ('id', 'show')
+        model = ContattaciComponent
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
 
 class RestaurantComponentsSerializer(serializers.ModelSerializer):
     home = HomeSerializer()
