@@ -8,7 +8,7 @@ const state = {
 
   },
 
-  user_private : {
+  user_private : getUserPrivateCookie() || {
         id: '',
         is_superuser: false,
         type:"",
@@ -29,7 +29,8 @@ const getters = {
   isBusiness: state => state.user_private.type==='business',
   user: state => state.user,
   errors: state=> state.errors,
-  user_private: state => state.user_private
+  user_private: state => state.user_private,
+  restaurants: state => state.user_private.restaurants
 }
 
 const actions = {
@@ -41,6 +42,7 @@ const actions = {
         .then(resp => {
           const data = resp.data
           data.id = id
+          setCookiesUserPrivate(data)
           commit('USER_SUCCESS', data)
         })
         .catch(err => {
@@ -50,6 +52,7 @@ const actions = {
   },
 
   logout: ({commit}) => {
+    deleteUserPrivateCookies()
     commit('USER_PROF_LOGOUT')
   },
 
@@ -57,11 +60,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('USER_REQUEST')
 
-      manageUserProfile.changePassword(state.user.id, data)
+      manageUserProfile.changePassword(state.user_private.id, data)
           .then(resp => {
 
             commit('PSW_CHANGE_SUCCESS', resp.data.password)
-            updateCookie(resp.data)
+            updateTokenCookie(resp.data.token)
             resolve(resp.data.password)
 
           })
@@ -131,11 +134,35 @@ export default {
   actions,
   mutations
 }
-function updateCookie( data ) {
+function updateTokenCookie( token ) {
   var d = new Date();
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  document.cookie = "user-token=" + token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
 }
 
+function setCookiesUserPrivate( data) {
+  var user_private = {}
+    user_private['type']=data.type
+    user_private['id'] = data.id
+    user_private['is_superuser'] = data.is_superuser
+    if (data.type === 'business')
+       user_private['restaurants'] = data.restaurants
+  var d = new Date();
+  var exdays = 364;
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + ";path=/";
+}
+
+function deleteUserPrivateCookies() {
+  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+
+function getUserPrivateCookie() {
+ var result = document.cookie.match(new RegExp('user_private' + '=([^;]+)'));
+ result && (result = JSON.parse(result[1]));
+ return result;
+}

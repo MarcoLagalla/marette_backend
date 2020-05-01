@@ -29,6 +29,14 @@
           class="my-2"
         />
       </template>
+      <base-btn
+        class="mb-12"
+        color="white"
+        to="/about"
+        outlined
+      >
+        Chi siamo
+      </base-btn>
     </div>
   </v-theme-provider>
 </template>

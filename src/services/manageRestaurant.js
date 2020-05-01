@@ -15,4 +15,11 @@ export default {
             })
     },
 
+    getRestaurantData(payload) {
+        return api.get('v1/webapp/restaurant/' + payload)
+            .then(response => {
+                return response
+            })
+    },
+
 }

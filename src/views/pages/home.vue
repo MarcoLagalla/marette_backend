@@ -1,30 +1,32 @@
 
 <script>
-  // Extensions
-  import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-  // Mixins
-  import LoadSections from '@/mixins/load-sections'
+// Mixins
+import LoadSections from '@/mixins/load-sections'
 
-  export default {
-    name: 'Home',
+export default {
+  name: 'Home',
 
-    metaInfo: { title: 'Home' },
+  metaInfo: {
+    title: 'Home'
+  },
 
-    extends: View,
+  extends: View,
 
-    mixins: [
-      LoadSections([
-        'restaurantCards',
-        'info',
-      ]),
-    ],
+  mixins: [
+    LoadSections([
+      'restaurantCards',
+      'info',
+    ]),
+  ],
 
-    props: {
-      id: {
-        type: String,
-        default: 'home',
-      },
+  props: {
+    id: {
+      type: String,
+      default: 'home',
     },
-  }
+  },
+}
 </script>

@@ -1,13 +1,13 @@
 <template>
-  <v-content>
-    <v-fade-transition mode="out-in">
-      <router-view />
-    </v-fade-transition>
-  </v-content>
+<v-content>
+  <v-fade-transition mode="out-in">
+    <router-view />
+  </v-fade-transition>
+</v-content>
 </template>
 
 <script>
-  export default {
-    name: 'BaseView',
-  }
+export default {
+  name: 'BaseView',
+}
 </script>

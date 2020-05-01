@@ -1,3 +1,4 @@
+
 <script>
 // Extensions
 import View from '@/views/View'
@@ -6,17 +7,17 @@ import View from '@/views/View'
 import LoadSections from '@/mixins/load-sections'
 
 export default {
-  name: 'About',
+  name: "resetPass",
 
   metaInfo: {
-    title: 'About Us'
+    title: 'resetPass'
   },
 
   extends: View,
 
   mixins: [
     LoadSections([
-      'chisiamo',
+      'ResetPass',
       'info',
     ]),
   ],
@@ -24,8 +25,13 @@ export default {
   props: {
     id: {
       type: String,
-      default: 'about',
+      default: 'resetPass',
     },
   },
+
 }
 </script>
+
+<style scoped>
+
+</style>

@@ -19,12 +19,16 @@
   }
 </script>
 
-<style lang="sass">
-  .extra-padding
-    padding-bottom: 96px !important
-    padding-top: 96px !important
+<style >
 
-    @media screen and (max-width: 959px)
-      padding-top: 48px !important
-      padding-bottom: 48px !important
+:root {
+  --terracotta: #945d60;
+  --herb: #626e60;
+  --chilli: #af473c;
+  --charcoal: #3c3c3c;
+}
+html {
+  
+	scroll-behavior: smooth;
+}
 </style>

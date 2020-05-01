@@ -2,6 +2,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@/store"
+import RestMenu from "../components/base/RestMenu";
+import rest1 from "../views/pages/rest1";
+import RestMenuMobile from "../components/base/RestMenuMobile";
+import ManageRest from "../views/pages/manageRest";
 
 Vue.use(Router)
 
@@ -21,6 +25,22 @@ const ifAuthenticated = (to, from, next) => {
   next("/");
 };
 
+const ifBusiness = (to, from, next) => {
+  if (store.getters['userProfile/isBusiness']) {
+    next();
+    return;
+  }
+  next("/");
+};
+
+const ifOwner = (to, from, next) => {
+  if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
+     next();
+    return;
+  }
+  next("/");
+};
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -31,17 +51,6 @@ const router = new Router({
     return { x: 0, y: 0 }
   },
   routes: [
-  {
-      path: '/rest1',
-      component: () => import('@/layouts/rest1/Index.vue'),
-      children: [
-        {
-          path: '',
-          name: 'Rest1',
-          component: () => import('@/views/pages/rest1.vue'),
-        },
-      ],
-    },
     {
       path: '/',
       component: () => import('@/layouts/home/Index.vue'),
@@ -63,21 +72,43 @@ const router = new Router({
           name: 'RegBusiness',
           component: () => import('@/views/pages/registrationBusiness.vue'),
           beforeEnter: ifNotAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
         },
         {
           path: 'newRestaurant',
           name: 'NewRestaurant',
           component: () => import('@/views/pages/newRestaurant.vue'),
-          beforeEnter: ifAuthenticated, //TODO: solo se è business
-          //meta: { src: require('@/assets/.jpg') },
+          beforeEnter: ifBusiness
         },
         {
           path: 'profile',
           name: 'profile',
           component: () => import('@/views/pages/profile.vue'),
-          beforeEnter: ifAuthenticated,
-          //meta: { src: require('@/assets/.jpg') },
+          beforeEnter:  ifAuthenticated,
+        },
+        {
+          path: 'profile/:id/:name',
+          name: 'ManageRest',
+          components: {
+            default: ManageRest,
+            restMenu: RestMenu,
+            restMenuMobile: RestMenuMobile
+          },
+          beforeEnter: ifOwner,
+        },
+        {
+          path: 'resetpass',
+          name: 'resetpass',
+          component: () => import('@/views/pages/resetPass.vue'),
+          beforeEnter: ifNotAuthenticated,
+        },
+        {
+          path: ':id/:name',
+          name: 'RestaurantHome',
+          components: {
+            default: rest1,
+            restMenu: RestMenu,
+            restMenuMobile: RestMenuMobile
+          }
         },
 
         {
