@@ -315,7 +315,7 @@ class Menu(models.Model):
 class Picture(models.Model):
 
     image = ResizedImageField(size=[600, 600], upload_to='components/gallery', quality=95,
-                              crop=['middle', 'center'], keep_meta=False)
+                              crop=['middle', 'center'],keep_meta=False)
     name = models.CharField(max_length=100, default='')
     description = models.TextField(blank=True, null=True, default='')
 

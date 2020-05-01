@@ -206,3 +206,5 @@ ADMIN_REORDER = (
                 'webapp.ContattaciComponent',)},
 
 )
+
+DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
