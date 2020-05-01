@@ -10,7 +10,7 @@ from django.utils.text import slugify
 from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, RESTAURANT_COMPONENTS
 
-MAX_IMAGE_WIDTH = 600000  # 600 KB for image
+MAX_IMAGE_SIZE = 600000  # 600 KB for image
 
 
 class Restaurant(models.Model):
@@ -59,15 +59,22 @@ class HomeComponent(models.Model):
         super().save(*args, **kwargs)
         if self.image:
             img = Image.open(self.image.path)
-            COMPRESS_RATIO = 95
-            step = 5
-            while len(img.fp.read()) > MAX_IMAGE_WIDTH:
-                img.save(self.image.path, format="JPEG", quality=COMPRESS_RATIO - step)
-                img = Image.open(self.image.path)
-                step += 5
+
+            if len(img.fp.read()) > MAX_IMAGE_SIZE:
+                compress_image(self.image.path, 70)
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+
+def compress_image(img_file, CRATIO):
+    img = Image.open(img_file)
+    if len(img.fp.read()) > MAX_IMAGE_SIZE:
+        img.save(img_file, format="JPEG", optimize=True, quality=CRATIO)
+    img = Image.open(img_file)
+    size = len(img.fp.read())
+    return size
+
 class VetrinaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='vetrina', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -99,7 +106,7 @@ class MenuComponent(models.Model):
 class GalleriaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    immagini = models.ManyToManyField('Picture', related_name='immagini', null=True, blank=True)
+    immagini = models.ManyToManyField('Picture', related_name='immagini', blank=True)
     show = models.BooleanField(default=False)
 
     class Meta:
