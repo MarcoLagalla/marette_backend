@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_cleanup',
     'admin_reorder',
     'localflavor',
     'django.contrib.admin',
