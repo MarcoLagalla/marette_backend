@@ -1,7 +1,12 @@
 <template>
-<base-rest-galleria>
+  <div class="body" id="Galleria">
 
-</base-rest-galleria>
+  <base-rest-h1> Galleria </base-rest-h1>
+  <div class="gallerycont">
+
+ <base-rest-galleria>
+ </base-rest-galleria>
+   </div> </div>
 </template>
 
 <script>
@@ -12,5 +17,7 @@ export default {
 </script>
 
 <style scoped>
-
+.gallerycont {
+  padding: 30px;
+}
 </style>
