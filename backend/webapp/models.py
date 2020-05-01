@@ -1,14 +1,17 @@
+from io import BytesIO
+
 from PIL import Image
 from django.core import validators as valids
+from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from backend.account.models import Business
 from django_resized import ResizedImageField
 from django.utils.text import slugify
-
+import os
 from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
-    DISCOUNT_TYPES_CHOICES, RESTAURANT_COMPONENTS
+    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES
 
 MAX_IMAGE_SIZE = 600000  # 600 KB for image
 
@@ -75,6 +78,7 @@ def compress_image(img_file, CRATIO):
     size = len(img.fp.read())
     return size
 
+
 class VetrinaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='vetrina', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -90,6 +94,8 @@ class VetrinaComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+
 class MenuComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='menu_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -103,6 +109,8 @@ class MenuComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+
 class GalleriaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -117,6 +125,8 @@ class GalleriaComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+
 class EventiComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='eventi_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -130,6 +140,8 @@ class EventiComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+
 class ContattaciComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='contattaci_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -183,14 +195,16 @@ class ProductDiscount(models.Model):
                 raise ValueError('Inserire un valore tra 0-100.')
         super(ProductDiscount, self).save(*args, **kwargs)
 
-
+    
+    # TODO: dimensione massima foto prodotto
 class Product(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='restaurant', on_delete=models.CASCADE)
 
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='product', blank=True, null=True)
+    image = models.ImageField(upload_to='product', blank=True,null=True)
+    thumb_image = models.ImageField(upload_to='product/thumbnails', blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     tags = models.ManyToManyField(ProductTag, blank=True)
 
@@ -217,6 +231,15 @@ class Product(models.Model):
             new_price = 0
         return new_price
 
+    def get_thumb_image(self):
+        if not (self.thumb_image and hasattr(self.thumb_image, 'url')):
+            try:
+                return FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get(self.category)
+            except KeyError:
+                return FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get('Altro')
+        else:
+            return self.thumb_image.url
+
     def get_image(self):
         if not (self.image and hasattr(self.image, 'url')):
             try:
@@ -226,6 +249,42 @@ class Product(models.Model):
         else:
             return self.image.url
 
+    def save(self, *args, **kwargs):
+        if not self.image.closed:
+            if not self.make_thumb_image():
+                # set to a default thumbnail
+                raise Exception('Could not create thumbnail - is the file type valid?')
+        super(Product, self).save(*args, **kwargs)
+
+    def make_thumb_image(self):
+
+        image = Image.open(self.image)
+        image = image.resize(size=(150, 150))
+        image.thumbnail((150, 150), Image.ANTIALIAS)
+        thumb_name, thumb_extension = os.path.splitext(self.image.name)
+        thumb_extension = thumb_extension.lower()
+
+        thumb_filename = thumb_name + '_thumb' + thumb_extension
+
+        if thumb_extension in ['.jpg', '.jpeg']:
+            FTYPE = 'JPEG'
+        elif thumb_extension == '.gif':
+            FTYPE = 'GIF'
+        elif thumb_extension == '.png':
+            FTYPE = 'PNG'
+        else:
+            return False  # Unrecognized file type
+
+        # Save thumbnail to in-memory file as StringIO
+        temp_thumb = BytesIO()
+        image.save(temp_thumb, FTYPE)
+        temp_thumb.seek(0)
+
+        # set save=False, otherwise it will run in an infinite loop
+        self.thumb_image.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
+        temp_thumb.close()
+
+        return True
 
 class MenuEntry(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
