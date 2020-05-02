@@ -48,5 +48,6 @@ class Order(models.Model):
         for item in self.items:
             discount -= item.get_total_discount_amount()
         for menu in self.menus_items:
+            pass
             # TODO: implementare discountMenu
         return discount
