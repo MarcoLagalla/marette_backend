@@ -1,5 +1,5 @@
 <template>
-<div id="Info"> 
+<div id="CONTATTACI">
     <base-rest-h1> Info </base-rest-h1>
     <base-rest-info> </base-rest-info>
 </div>

@@ -1,10 +1,10 @@
 <template>
 <div>
-  <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
-  <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
-  <Restmenu v-if="activeComponents.includes('Menu')" ></Restmenu>
-  <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
-  <RestInfo v-if="activeComponents.includes('Info')"></RestInfo>
+  <RestBanner v-if="activeComponents.home.show" :restData="restData"></RestBanner>
+  <RestVetrina v-if="activeComponents.vetrina.show"></RestVetrina>
+  <Restmenu v-if="activeComponents.menu.show" ></Restmenu>
+  <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
+  <RestInfo v-if="activeComponents.contattaci.show"></RestInfo>
   <Info></Info>
 </div>
 </template>
@@ -49,12 +49,6 @@ export default {
   },
   methods: {
     ...mapActions('restaurantData', ['getRestaurantData']),
-  },
-  created() {
-    this.getRestaurantData(this.restID).catch(error => {
-      if (error.status === 404)
-        this.$router.push('/404')
-    })
   },
   computed: {
     activeComponents() {

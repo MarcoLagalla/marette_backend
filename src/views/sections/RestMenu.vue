@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="Menu">
+  <div class="body" id="MENU">
     <v-row>
       <v-col>
         <base-cat-tabs :menu="menu" :admin="admin"/>

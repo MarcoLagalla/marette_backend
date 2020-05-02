@@ -35,10 +35,22 @@ const ifBusiness = (to, from, next) => {
 
 const ifOwner = (to, from, next) => {
   if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
-     next();
+     store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
+       next();
+     }).catch(()=>{
+       next("/404");
+     })
     return;
   }
   next("/");
+};
+
+const ifExist = (to, from, next) => {
+  store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
+    next();
+  }).catch(()=>{
+    next("/404");
+  })
 };
 
 const router = new Router({
@@ -108,7 +120,8 @@ const router = new Router({
             default: rest1,
             restMenu: RestMenu,
             restMenuMobile: RestMenuMobile
-          }
+          },
+          beforeEnter: ifExist,
         },
 
         {

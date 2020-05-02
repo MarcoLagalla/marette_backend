@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="Galleria">
+  <div class="body" id="GALLERIA">
 
   <base-rest-h1> Galleria </base-rest-h1>
   <div class="gallerycont">

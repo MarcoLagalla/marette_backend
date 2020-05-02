@@ -7,13 +7,6 @@ const state = {
     productList: {},
     restData: {},
     status: '',
-    components: [
-        'Home',
-        'Vetrina',
-        'Menu',
-        'Galleria',
-        'Info'
-    ],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -40,16 +33,30 @@ const getters = {
     food_category_choice: state => state.food_category_choice,
     discount_type_choice: state => state.discount_type_choice,
     productList: state => state.productList,
-    components: state => state.components,
+    components: state => state.restData.components,
     restData: state => state.restData,
 }
 
 const actions = {
-    addComponent: ({commit}, componentName) =>{
-        commit('REST_ADD_COMPONENT', componentName)
+    activateComponent: ({commit}, componentName) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {id: state.ID, component: componentName}
+             manageRestaurant.activateComponent(payload)
+                 .then(respRes => {
+                    commit('REST_ADD_COMPONENT', componentName)
+                 })
+         })
+
     },
-    removeComponent: ({commit}, componentName) =>{
-        commit('REST_RMV_COMPONENT', componentName)
+    deactivateComponent: ({commit}, componentName) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {id: state.ID, component: componentName}
+             manageRestaurant.deactivateComponent(payload)
+                 .then(respRes => {
+                    commit('REST_RMV_COMPONENT', componentName)
+                 })
+         })
+
     },
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
@@ -64,17 +71,8 @@ const actions = {
 
                 manageProduct.getProductList(restaurantID)
                 .then(respMenu => {
-                    var dataMenu = {}
-                    if (respMenu.status === 204){
-                        state.FOOD_CATEGORY_CHOICES.forEach((category)=>{
-                            dataMenu[category]=[]
-                        })
-                    }
-                    else {
-                        dataMenu = respMenu.data
-                    }
-                    commit('REST_MENU_SUCCESS', dataMenu)
-                    resolve()
+                    commit('REST_MENU_SUCCESS', respMenu.data)
+                    resolve(respRes.data.components)
                 })
                 .catch(err => {
                     commit('REST_MENU_ERROR', err.response)
@@ -116,11 +114,11 @@ const mutations = {
     },
 
     REST_RMV_COMPONENT: (state, componentName) =>{
-        state.components.splice(state.components.indexOf(componentName), 1);
+        state.restData.components[componentName].show=false;
     },
 
     REST_ADD_COMPONENT: (state, componentName) =>{
-        state.components.push(componentName);
+        state.restData.components[componentName].show=true;
     },
 
     REST_DATA_REQUEST: (state, ID) => {

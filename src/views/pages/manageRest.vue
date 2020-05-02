@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="buttons">
-      <button @click="manageComponents('Home')">{{getButtonMessageFor('Home')}}</button><hr>
-      <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><hr>
-      <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><hr>
-      <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><hr>
-      <button @click="manageComponents('Info')">{{getButtonMessageFor('Info')}}</button><hr>
+      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button><hr>
+      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button><hr>
+      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button><hr>
+      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button><hr>
+      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button><hr>
     </div>
-    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData" :admin="admin"></RestBanner>
+    <RestBanner v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestBanner>
 
-    <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
+    <RestVetrina v-if="activeComponents.vetrina.show"></RestVetrina>
 
-    <Restmenu v-if="activeComponents.includes('Menu')" :admin="admin"></Restmenu>
+    <Restmenu v-if="activeComponents.menu.show" :admin="admin"></Restmenu>
 
-    <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+    <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
 
-    <RestInfo v-if="activeComponents.includes('Info')" ></RestInfo>
+    <RestInfo v-if="activeComponents.contattaci.show" ></RestInfo>
     <Info></Info>
   </div>
 </template>
@@ -56,32 +56,26 @@ export default {
     return {
       restID: this.$route.params.id,
       name: this.$route.params.name,
-      admin: true
+      admin: true,
 
     }
   },
   methods: {
-    ...mapActions('restaurantData', ['getRestaurantData', 'addComponent', 'removeComponent']),
+    ...mapActions('restaurantData', ['getRestaurantData', 'activateComponent', 'deactivateComponent']),
       manageComponents(nameComponent){
-        if (this.activeComponents.includes(nameComponent)){
-            this.removeComponent(nameComponent);
+        if (this.activeComponents[nameComponent].show){
+            this.deactivateComponent(nameComponent);
         }
         else {
-            this.addComponent(nameComponent)
+            this.activateComponent(nameComponent)
         }
       },
       getButtonMessageFor(nameComponent){
-        if (this.activeComponents.includes(nameComponent))
+        if (this.activeComponents[nameComponent].show)
             return 'Disattiva ' + nameComponent
           else
               return 'Attiva ' + nameComponent
       }
-  },
-  created() {
-    this.getRestaurantData(this.restID).catch(error => {
-      if (error.status === 404)
-        this.$router.push('/404')
-    })
   },
   computed: {
     activeComponents() {

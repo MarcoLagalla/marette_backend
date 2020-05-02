@@ -22,4 +22,18 @@ export default {
             })
     },
 
+    activateComponent(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/components/' + payload.component + '/activate')
+            .then(response => {
+                return response
+            })
+    },
+
+    deactivateComponent(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/components/' + payload.component + '/deactivate')
+            .then(response => {
+                return response
+            })
+    },
+
 }

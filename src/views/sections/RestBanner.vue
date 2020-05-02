@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="Home">
+  <div class="body" id="HOME">
     <v-row align="center" class="ma-0 pa-8" justify="center">
       <v-col cols="6" md="4">
       </v-col>

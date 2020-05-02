@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="Vetrina">
+  <div class="body" id="VETRINA">
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
