@@ -99,6 +99,20 @@ class Product(models.Model):
             new_price = 0
         return new_price
 
+    def get_original_price(self):
+        return self.price
+
+    def get_total_discount_amount(self):
+        discount = 0
+        for discount in self.discounts.all():
+            if discount.type == 'Fisso':
+                # sconto fisso, da sottrarre al prezzo
+                discount -= discount.value
+            elif discount.type == 'Percentuale':
+                # sconto percentuale
+                discount -= round(discount / 100 * discount.value, 2)
+        return discount
+
     def get_thumb_image(self):
         if not (self.thumb_image and hasattr(self.thumb_image, 'url')):
             try:
