@@ -1,16 +1,18 @@
 <template>
   <div>
+    <div class="buttons">
+      <button @click="manageComponents('Home')">{{getButtonMessageFor('Home')}}</button><hr>
+      <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><hr>
+      <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><hr>
+      <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><hr>
 
-    <button @click="manageComponents('Home')">{{getButtonMessageFor('Home')}}</button><br>
+    </div>
     <RestBanner v-if="activeComponents.includes('Home')" :restData="restData" :admin="admin"></RestBanner>
 
-    <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><br>
     <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
 
-    <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><br>
     <Restmenu v-if="activeComponents.includes('Menu')" :admin="admin"></Restmenu>
 
-    <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><br>
     <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
     <Info></Info>
   </div>
@@ -87,3 +89,22 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .buttons {
+    position: fixed;
+    z-index: 100;
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: grey;
+  }
+  button {
+    padding: 10px;
+    width: 100%;
+    border: solid white 1px;
+    transition: 0.4s
+  }
+  button:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+</style>
