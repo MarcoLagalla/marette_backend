@@ -5,7 +5,7 @@
       <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><hr>
       <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><hr>
       <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><hr>
-
+      <button @click="manageComponents('Info')">{{getButtonMessageFor('Info')}}</button><hr>
     </div>
     <RestBanner v-if="activeComponents.includes('Home')" :restData="restData" :admin="admin"></RestBanner>
 
@@ -14,6 +14,8 @@
     <Restmenu v-if="activeComponents.includes('Menu')" :admin="admin"></Restmenu>
 
     <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+
+    <RestInfo v-if="activeComponents.includes('Info')" ></RestInfo>
     <Info></Info>
   </div>
 </template>
@@ -28,6 +30,7 @@ import Restmenu from "../sections/RestMenu";
 import RestBanner from "../sections/RestBanner";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
+import RestInfo from "../sections/RestInfo";
 import Info from "../sections/Info";
 import {
   mapActions
@@ -40,6 +43,7 @@ export default {
     RestBanner,
     RestVetrina,
     RestGalleria,
+    RestInfo,
     Info
   },
   metaInfo: {

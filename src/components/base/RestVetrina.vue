@@ -8,7 +8,7 @@
             <v-card-title class="headline" v-text="item.title"></v-card-title>
             <v-card-subtitle v-text="item.artist"></v-card-subtitle>
             <v-card-actions>
-              <v-btn color="red">add to cart</v-btn>
+              <v-btn color="red" class="addtocart">add to cart</v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -39,11 +39,16 @@ export default {
 <style scoped>
 .body {
   margin: 0 !important;
-  background: #35302D;
+  background: firebrick;
 }
 h1 {
   color: white;
   text-align: center;
   padding-top: 20px;
+}
+.addtocart {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 </style>

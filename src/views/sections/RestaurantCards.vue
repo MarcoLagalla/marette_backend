@@ -1,7 +1,7 @@
 <template>
 <div class="body">
   <base-section id="theme-features">
-    <base-section-heading title="Ristoranti">
+    <base-section-heading title="Ristoranti" color="red">
       Ecco la nostra scelta di ristoranti
     </base-section-heading>
 
@@ -61,25 +61,35 @@ export default {
 .like {
   float: right;
   padding: 10px;
+    transition: 0.3s ease-in-out;
+  opacity: 0.8;
 }
 .share {
   font-weight: bold;
   color: orange;
   border-radius: 25px;
   padding: 10px;
-  font-size: 1em
-
-
+  font-size: 1em;
+  transition: 0.3s ease-in-out;
 }
+.share:hover {
+  color: darkorange;
+  opacity: 1;
+}
+.shalikere:hover {
+  color: darkorange;
+  opacity: 1;
+}
+
 .restcard {
-  box-shadow: 0 0 10px var(--charcoal);
+  box-shadow: 0 0 5px var(--charcoal);
   transition: 0.5s;
 }
 .restcard:hover {
-  box-shadow: 0 0 25px var(--charcoal)
+  box-shadow: 0 0 20px var(--charcoal)
 }
 .imag {
-  box-shadow: 0 2px 2px black;
+  box-shadow: 0 2px 2px var(--charcoal);
 }
 a {
   text-decoration: none

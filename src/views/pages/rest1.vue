@@ -4,6 +4,7 @@
   <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
   <Restmenu v-if="activeComponents.includes('Menu')" ></Restmenu>
   <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+  <RestInfo v-if="activeComponents.includes('Info')"></RestInfo>
   <Info></Info>
 </div>
 </template>
@@ -18,6 +19,7 @@ import Restmenu from "../sections/RestMenu";
 import RestBanner from "../sections/RestBanner";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
+import RestInfo from "../sections/RestInfo";
 import Info from "../sections/Info";
 import {
   mapActions
@@ -30,6 +32,7 @@ export default {
     RestBanner,
     RestVetrina,
     RestGalleria,
+    RestInfo,
     Info
   },
   metaInfo: {

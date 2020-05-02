@@ -212,25 +212,25 @@ created() {
   background: #f1f1f1;
 }
 .settings {
-  background-color: midnightblue;
+  background-color: var(--chilli);
   color: white;
   margin: 5px;
   padding: 10px;
   border-radius: 25px;
   transition: 0.6s;
   font-weight: bold;
-  border: inset 2px navy;
+  border: inset 2px darkred;
   float: right;
 }
 .settings:hover {
-  box-shadow: 0 0 6px black;
+  box-shadow: 0 0 6px var(--charcoal);
 }
 .restc {
-  box-shadow: 0 0 15 black;
+  box-shadow: 0 0 15 var(--charcoal);
   background: var(--herb)
 }
 .profilc {
-  box-shadow: 0 0 15 black;
+  box-shadow: 0 0 15 var(--charcoal);
   background: var(--herb)
 }
 
@@ -267,17 +267,17 @@ created() {
 }
 
 .addrest {
-  background-color: midnightblue;
+  background-color: var(--chilli);
   color: white;
   padding: 15px;
   border-radius: 25px;
   transition: 0.6s;
   margin-left: 10px;
   font-weight: bold;
-  border: inset 2px navy;
+  border: inset 2px darkred;
 }
 
 .addrest:hover {
-  box-shadow: 0 0 6px black;
+  box-shadow: 0 0 6px var(--charcoal);
 }
 </style>

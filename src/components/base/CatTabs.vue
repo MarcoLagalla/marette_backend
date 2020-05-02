@@ -3,14 +3,14 @@
     <v-card-title class="text-center justify-center py-6">
       <h1 class="font-weight-bold display-3 basil--text">Categorie</h1>
     </v-card-title>
-    <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
-      <v-tab v-for="category in categories" :key="category">
+    <v-tabs v-model="tab" color="basil" grow >
+      <v-tab v-for="category in categories" :key="category" class="tabcat">
         {{ category }}
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="category in categories" :key="category">
-        <v-card color="basil" flat>
+        <v-card color="basil" >
           <base-prod-list :products="menu[category]"/>
           <base-add-product :category='category' :v-if="admin" :admin="admin"></base-add-product>
         </v-card>
@@ -61,5 +61,8 @@ export default {
 }
 .basil--text {
   color: #356859 !important;
+}
+.tabcat {
+  background-color: beige;
 }
 </style>
