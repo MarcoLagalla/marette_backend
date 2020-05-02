@@ -11,7 +11,7 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, ProductDiscount
+from ..models.models import Restaurant, Product, ProductTag, ProductDiscount
 from .products_serializers import ProductDiscountSerializer
 
 

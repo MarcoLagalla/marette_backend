@@ -3,7 +3,8 @@ from operator import itemgetter
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models import Restaurant, RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
+from ..models.models import Restaurant
+from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
 from ...account.models import Business
@@ -86,6 +87,7 @@ class VetrinaSerializer(serializers.ModelSerializer):
     def get_name(self, instance):
         return instance.get_name()
 
+
 class MenuSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
@@ -96,6 +98,7 @@ class MenuSerializer(serializers.ModelSerializer):
     def get_name(self, instance):
         return instance.get_name()
 
+
 class GalleriaSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
@@ -105,6 +108,7 @@ class GalleriaSerializer(serializers.ModelSerializer):
 
     def get_name(self, instance):
         return instance.get_name()
+
 
 class EventiSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -126,6 +130,7 @@ class ContattaciSerializer(serializers.ModelSerializer):
 
     def get_name(self, instance):
         return instance.get_name()
+
 
 class RestaurantComponentsSerializer(serializers.ModelSerializer):
     home = HomeSerializer()

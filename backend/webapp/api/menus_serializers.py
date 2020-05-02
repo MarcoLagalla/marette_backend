@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from ..models import Menu, MenuEntry, Product
+from ..models.models import Product
+from ..models.menu import Menu, MenuEntry
 from .products_serializers import ProductTagSerializer
 
 

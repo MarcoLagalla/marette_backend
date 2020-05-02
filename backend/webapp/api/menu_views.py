@@ -10,7 +10,9 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Menu, MenuEntry, DISCOUNT_TYPES_CHOICES
+from ..models.models import Restaurant
+from ..models.menu import Menu, MenuEntry
+
 from .menus_serializers import MenuSerializer, MenuEntrySerializer
 
 

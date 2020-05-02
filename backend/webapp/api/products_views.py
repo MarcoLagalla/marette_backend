@@ -10,7 +10,7 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, FOOD_CATEGORY_CHOICES
+from ..models.models import Restaurant, Product, ProductTag, FOOD_CATEGORY_CHOICES
 from .products_serializers import ReadProductSerializer, WriteProductSerializer, ProductTagSerializer
 
 import json

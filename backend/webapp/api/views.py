@@ -8,7 +8,8 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
-from ..models import Restaurant, RestaurantComponents
+from ..models.models import Restaurant
+from ..models.components import RestaurantComponents
 from ...account.models import Business
 from ...account.permissions import IsBusiness
 import phonenumbers

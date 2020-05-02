@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from ..models import Product, ProductDiscount, ProductTag
+from ..models.models import Product, ProductDiscount, ProductTag
 
 
 class ProductDiscountSerializer(serializers.ModelSerializer):

@@ -17,7 +17,7 @@ from ..tokens import account_activation_token, passwordreset_token
 from ..views import send_welcome_email, send_reset_email
 from ..permissions import IsCustomer, IsBusiness
 
-from backend.webapp.models import Restaurant
+from backend.webapp.models.models import Restaurant
 
 
 class ListUsersAPIView(APIView):
