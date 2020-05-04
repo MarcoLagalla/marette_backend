@@ -19,7 +19,7 @@ from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHO
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
     slug = models.SlugField(unique=False, blank=True)
-    url = models.SlugField(unique=True, blank=True)
+    url = models.CharField(max_length=150, unique=True, blank=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
@@ -35,7 +35,11 @@ class Restaurant(models.Model):
     def set_url(self):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
-        self.save()
+
+    def save(self, *args, **kwargs):
+        super(Restaurant, self).save(*args, **kwargs)
+        self.set_url()
+        super(Restaurant, self).save(*args, **kwargs)
 
 
 class ProductTag(models.Model):
