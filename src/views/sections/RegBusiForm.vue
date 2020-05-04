@@ -26,7 +26,7 @@
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" id="cf" name="cf" required></v-text-field>
-            <v-text-field label="Data di nascita" :rules="required" :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" id="birth_date" name="birth_date" required></v-text-field>
+            <v-text-field label="Data di nascita" :rules="required.concat(validateDate)" :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" id="birth_date" name="birth_date" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Numero telefonico" :rules="required" :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" id="phone" name="phone" required></v-text-field>
@@ -116,6 +116,11 @@ export default {
         });
       })
     },
+    /*validateDate(value) {
+      var today = new Date();
+      var bah = new Date(value);
+      return bah.getDate() < today.getDate() || "Sei forse un viaggiatore temporale?"
+    },*/
   },
   computed: {
     status() {
