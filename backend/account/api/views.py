@@ -98,23 +98,26 @@ class LoginGetToken(APIView):
             password = request.data['password']
             try:
                 user = User.objects.get(email__iexact=email)
-                if user:
-                    if user.check_password(password):
-                        # successfully logged in
-                        update_last_login(None, user)
-                        if not Token.objects.all().filter(user=user):
-                            token = Token.objects.create(user=user).key
-                            data['token'] = token
-                            data['id'] = user.id
-                            return Response(data, status=status.HTTP_200_OK)
-                        else:
-                            token = Token.objects.get(user=user).key
-                            data['token'] = token
-                            data['id'] = user.id
-                            return Response(data, status=status.HTTP_200_OK)
             except User.DoesNotExist:
-                data['error'] = ["L'utente non esiste."]
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                try:
+                    user = User.objects.get(username__iexact=email)
+                except User.DoesNotExist:
+                    data['error'] = ["L'utente non esiste."]
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            if user:
+                if user.check_password(password):
+                    # successfully logged in
+                    update_last_login(None, user)
+                    if not Token.objects.all().filter(user=user):
+                        token = Token.objects.create(user=user).key
+                        data['token'] = token
+                        data['id'] = user.id
+                        return Response(data, status=status.HTTP_200_OK)
+                    else:
+                        token = Token.objects.get(user=user).key
+                        data['token'] = token
+                        data['id'] = user.id
+                        return Response(data, status=status.HTTP_200_OK)
 
         data['error'] = ["Credenziali sbagliate."]
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
@@ -151,7 +154,10 @@ class UpdatePassword(APIView):
 
         if serializer.is_valid():
 
-            user_to_update = get_object_or_404(User, id=id)
+            try:
+                user_to_update = User.objects.all().get(id=id)
+            except User.DoesNotExist():
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             try:
                 token = Token.objects.get(user_id=user_to_update.id).key
@@ -202,15 +208,16 @@ class ActivateUserAPIView(APIView):
     def get(self, request, id, token):
         try:
             user = User.objects.get(pk=id)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-        if user is not None:
+        except User.DoesNotExist():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if user:
             try:
                 utente = Customer.objects.get(user=user)
-            except ObjectDoesNotExist:
+            except Customer.DoesNotExist():
                 try:
                     utente = Business.objects.get(user=user)
-                except ObjectDoesNotExist:
+                except Business.DoesNotExist():
                     return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
             if account_activation_token.check_token(user, token) and utente:
