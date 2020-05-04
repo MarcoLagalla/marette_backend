@@ -4,7 +4,12 @@ from .models import Restaurant, Product, ProductTag, ProductDiscount, Menu, Menu
 # Register your models here.
 admin.site.register(Restaurant)
 
-admin.site.register(Product)
+
+class ProductInline(admin.ModelAdmin):
+    model = Product
+    exclude = ['thumb_image']
+
+admin.site.register(Product, ProductInline)
 admin.site.register(ProductTag)
 admin.site.register(ProductDiscount)
 

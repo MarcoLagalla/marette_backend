@@ -22,15 +22,18 @@ class ReadProductSerializer(serializers.ModelSerializer):
     discounts = ProductDiscountSerializer(many=True, required=False)
     final_price = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(required=False)
+    thumb_image = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'final_price', 'image', 'show_image')
+                  'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image')
 
     def get_image(self, instance):
-        request = self.context.get('request')
         return instance.get_image()
+
+    def get_thumb_image(self, instance):
+        return instance.get_thumb_image()
 
     def get_final_price(self, obj):
         return obj.get_price_with_discount()
