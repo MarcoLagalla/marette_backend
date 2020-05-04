@@ -6,7 +6,10 @@ from .models.components import RestaurantComponents, HomeComponent, VetrinaCompo
 from .models.orders import Order
 
 # Register your models here.
-admin.site.register(Restaurant)
+class RestaurantAdmin(admin.ModelAdmin):
+    readonly_fields=('url', 'slug', )
+
+admin.site.register(Restaurant, RestaurantAdmin)
 
 
 class ProductInline(admin.ModelAdmin):
