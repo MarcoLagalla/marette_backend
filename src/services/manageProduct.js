@@ -20,4 +20,11 @@ export default {
             })
     },
 
+    listTags(){
+                return api.get('v1/webapp/restaurant/product/tags')
+            .then(response => {
+                return response
+            })
+    }
+
 }
