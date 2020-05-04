@@ -78,6 +78,7 @@ class Product(models.Model):
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
     show_image = models.BooleanField(blank=True, default=True)
+    available = models.BooleanField(blank=True, default=True)
 
     def __str__(self):
         return self.name

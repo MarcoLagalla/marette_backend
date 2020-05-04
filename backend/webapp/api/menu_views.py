@@ -193,7 +193,7 @@ class MenuEntryAdd(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, m_id):
+    def post(self, request, id):
         try:
             user = Business.objects.all().get(user=self.request.user)
         except Business.DoesNotExist:
@@ -222,7 +222,7 @@ class MenuEntryDelete(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, m_id, me_id):
+    def post(self, request, id, me_id):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
@@ -262,7 +262,7 @@ class MenuEntryEdit(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, m_id, me_id):
+    def post(self, request, id, me_id):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
@@ -320,7 +320,7 @@ class MenuEntryEdit(APIView):
 
 class MenuEntryDetail(APIView):
 
-    def get(self, request, id, m_id, me_id):
+    def get(self, request, id, me_id):
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
