@@ -44,6 +44,11 @@ class WriteMenuEntrySerializer(serializers.ModelSerializer):
             for itm in products:
                 try:
                     t = Product.objects.all().filter(restaurant=restaurant).get(id=itm)
+                    # TODO: secondo me va bene anche cosi, nello store non è disponibile
+                    #       se già non lo era, ma nel menu si vede.
+                    # if not t.available:
+                    #     t.available = True
+                    #     t.save()
                     menu_entry.products.add(t)
                 except Product.DoesNotExist:
                     pass
