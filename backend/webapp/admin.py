@@ -3,6 +3,7 @@ from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Pic
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
+from .models.orders import Order
 
 # Register your models here.
 admin.site.register(Restaurant)
@@ -30,3 +31,5 @@ admin.site.register(RestaurantComponents)
 
 
 admin.site.register(Picture)
+
+admin.site.register(Order)

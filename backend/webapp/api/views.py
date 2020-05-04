@@ -28,9 +28,15 @@ class CreateRestaurantAPIView(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     # only authenticated business users can create a new restaurant
+    @transaction.atomic()
     def post(self, request):
-        user = get_object_or_404(Business, user=self.request.user)
+        try:
+            user = Business.objects.all().get(user=self.request.user)
+        except Business.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         data = {}
+
         if user:
             serializer = CreateRestaurantSerializer(data=request.data, context={'business_user': user})
             if serializer.is_valid():
@@ -68,7 +74,6 @@ class ShowRestaurantAPIView(APIView):
             pass
 
         return Response(data, status.HTTP_200_OK)
-
 
 
 class UpdateRestaurantAPIView(APIView):
