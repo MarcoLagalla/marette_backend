@@ -7,6 +7,7 @@ const state = {
     productList: {},
     restData: {},
     status: '',
+    tags:[],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -35,6 +36,7 @@ const getters = {
     productList: state => state.productList,
     components: state => state.restData.components,
     restData: state => state.restData,
+    tags: state => state.tags,
 }
 
 const actions = {
@@ -86,11 +88,15 @@ const actions = {
         })
     },
 
+
+
     addProduct: ({commit}, product) => {
         return new Promise((resolve, reject) => {
+
             var payload = {}
             payload['id'] = state.ID
             payload['data'] = product
+            console.log(product)
 
             manageProduct.addProduct(payload)
             .then(resp => {
@@ -103,6 +109,25 @@ const actions = {
             })
         })
     },
+
+    getListTag: ({commit}, product) => {
+        return new Promise((resolve, reject) => {
+
+            manageProduct.listTags()
+            .then(resp => {
+                commit('LIST_TAGS_SUCCESS', resp)
+                console.log(resp)
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('LIST_TAGS_ERROR')
+                reject(err)
+            })
+        })
+    },
+
+
+
 
 }
 
@@ -148,6 +173,16 @@ const mutations = {
         state.status = 'error'
         state.error = error
     },
+
+    LIST_TAGS_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.tags = data
+    },
+
+    LIST_TAGS_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    }
 }
 
 export default {
@@ -157,3 +192,5 @@ export default {
   actions,
   mutations
 }
+
+
