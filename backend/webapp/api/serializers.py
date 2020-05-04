@@ -18,7 +18,8 @@ class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
     class Meta:
         model = Restaurant
-        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'city', 'address', 'n_civ', 'cap']
+        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description',
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):
