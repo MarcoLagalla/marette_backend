@@ -62,6 +62,4 @@ class Order(models.Model):
         return discount
 
     def get_code(self):
-        if self.status == ORDER_STATUS['Confirmed']:
-            return self.code
-        return None
+        return self.code
