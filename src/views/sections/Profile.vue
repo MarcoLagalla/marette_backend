@@ -87,7 +87,7 @@
           fas fa-cogs
         </v-icon>
       </router-link>
-      <router-link tag="button" class="settings" v-if="isBusiness" :to="restaurant.url">  <v-icon x-large dark>
+      <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/manage/' + restaurant.url">  <v-icon x-large dark>
         fas fa-address-card
       </v-icon>
     </router-link>  </v-col>
