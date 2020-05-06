@@ -1,9 +1,11 @@
 <template>
 <div class="body">
-  <base-section id="theme-features">
-    <base-section-heading title="Ristoranti" color="red">
-      Ecco la nostra scelta di ristoranti
-    </base-section-heading>
+  <base-section id="">
+  <div class="title-center">
+    <h1 >Ristoranti</h1>
+      <div class="divider"></div>
+      <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
+    
 
     <v-container>
       <v-row>
@@ -53,7 +55,23 @@ export default {
 <style scoped>
 .body {
   /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
-  background: #f1f1f1;
+  background:var(--herb);
+}
+.divider {
+  width: 50px;
+  background: var(--chilli);
+  height: 5px;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.title-center {
+  padding: 10px;
+  margin: 10px;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .actions {
   padding: 10px;
@@ -93,5 +111,13 @@ export default {
 }
 a {
   text-decoration: none
+}
+.subt {
+  color: aliceblue;
+  font-weight: bold;
+}
+h1 {
+  color: aliceblue;
+  font-size: 2em;
 }
 </style>

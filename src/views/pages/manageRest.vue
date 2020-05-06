@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="buttons">
-      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button><hr>
-      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button><hr>
-      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button><hr>
-      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button><hr>
-      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button><hr>
+      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button>
+      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button>
+      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button>
+      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button>
+      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button>
     </div>
     <RestBanner v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestBanner>
 
@@ -98,7 +98,7 @@ export default {
   }
   button {
     padding: 10px;
-    width: 100%;
+    
     border: solid white 1px;
     transition: 0.4s
   }

@@ -1,8 +1,8 @@
 <template>
   <div class="menubody">
     <v-container>
-      <v-row dense>
-        <v-col v-for="(product, i) in products" :key="i" cols="12">
+      <v-row >
+        <v-col v-for="(product, i) in products" :key="i" cols="12" >
           <v-card color="#616161" dark class="product">
             <div class="d-flex flex-no-wrap justify-space-between">
               <div class="quant">
@@ -116,6 +116,6 @@ h1 {
   box-shadow: 0 0 2px black;
 }
 .product:hover{
-  box-shadow:0 0 10px blue;
+  box-shadow:0 0 10px black;
 }
 </style>
