@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.core.validators import MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import random
 
 from backend.account.models import Customer
 from .models import Restaurant, Product
@@ -30,17 +31,14 @@ class Order(models.Model):
     items = models.ManyToManyField(Product, blank=True)
     menus_items = models.ManyToManyField(Menu, blank=True)
 
-    total = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)], blank=True, null=True)
-
-    code = models.CharField(max_length=6, default='', blank=True)
+    code = models.CharField(max_length=100, default='', blank=True)
 
     def __str__(self):
         return self.restaurant.activity_name + "[{0}]".format(self.pk)
 
     def save(self, *args, **kwargs):
-        instance = super(Order, self).save(*args, **kwargs)
-        transaction.on_commit(self.set_total)
-        return instance
+        self.code = generate_order_code(self.restaurant.id)
+        super(Order, self).save(*args, **kwargs)
 
     def get_total(self):
         # for each items
@@ -62,6 +60,11 @@ class Order(models.Model):
         return discount
 
     def get_code(self):
-        if self.status == ORDER_STATUS['Confirmed']:
-            return self.code
-        return None
+        return self.code
+
+
+def generate_order_code(id):
+    digits = 10
+    lower = 10**(digits-1)
+    upper = 10**digits - 1
+    return str(id) + "-" + str(random.randint(lower, upper))

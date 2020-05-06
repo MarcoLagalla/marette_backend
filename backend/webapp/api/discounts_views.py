@@ -15,22 +15,20 @@ from ..models.models import Restaurant, Product, ProductTag, ProductDiscount
 from .products_serializers import ProductDiscountSerializer
 
 
-class ListDiscounts(ListAPIView):
+class ListDiscounts(APIView):
 
-    serializer_class = ProductDiscountSerializer
-
-    def get_queryset(self):
-        restaurant_id = self.kwargs['id']
+    def get(self, request, id):
+        restaurant_id = id
         try:
             restaurant = Restaurant.objects.all().get(id=restaurant_id)
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         discounts = ProductDiscount.objects.filter(restaurant=restaurant)
-        if discounts.count() == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return discounts
+        serializer = ProductDiscountSerializer(discounts, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DetailsDiscounts(APIView):
