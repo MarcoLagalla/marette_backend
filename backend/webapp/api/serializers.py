@@ -1,25 +1,46 @@
 from collections import OrderedDict
 from operator import itemgetter
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant
+from ..models.models import Restaurant, RestaurantDiscount
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
-from ...account.models import Business
 from ...account.api.serializers import BusinessSerializer
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
 
 
+class RestaurantDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantDiscount
+        fields = ('id', 'title', 'category', 'type', 'value', )
+
+    @transaction.atomic
+    def save(self, restaurant):
+        try:
+
+            restaurant_discount = RestaurantDiscount.objects.create(
+                restaurant=restaurant,
+                **self.validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'Questo sconto esiste già.'})
+
+        return restaurant_discount
+
+
+
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
+    discounts = RestaurantDiscountSerializer(many=True, required=False)
+
     class Meta:
         model = Restaurant
         fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description',
-                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):

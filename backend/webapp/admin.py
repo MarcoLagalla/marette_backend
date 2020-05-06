@@ -3,7 +3,7 @@ from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import flatten_fieldsets
 from django.forms import ModelForm
 
-from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -88,4 +88,7 @@ class MyAdmin(ModelAdmin):
     def total(self, obj):
         return obj.get_total()
 
+
 admin.site.register(Order, MyAdmin)
+
+admin.site.register(RestaurantDiscount)
