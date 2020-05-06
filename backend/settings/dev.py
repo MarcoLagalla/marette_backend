@@ -192,6 +192,7 @@ ADMIN_REORDER = (
     {'app': 'webapp', 'label': 'Restaurant',
      'models': ('webapp.Product',
                 'webapp.ProductDiscount',
+                'webapp.RestaurantDiscount',
                 'webapp.ProductTag',
                 'webapp.Menu',
                 'webapp.MenuEntry',

@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import flatten_fieldsets
 from django.forms import ModelForm
+from rest_framework.exceptions import ValidationError
 
-from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -24,6 +25,7 @@ class ProductInline(admin.ModelAdmin):
 
 admin.site.register(Product, ProductInline)
 admin.site.register(ProductTag)
+
 admin.site.register(ProductDiscount)
 
 admin.site.register(Menu)
@@ -40,8 +42,6 @@ admin.site.register(RestaurantComponents)
 
 admin.site.register(Picture)
 
-from django import forms
-
 
 class MyAdmin(ModelAdmin):
 
@@ -52,40 +52,29 @@ class MyAdmin(ModelAdmin):
                 'restaurant',
                 'date_created',
                 'code',
-                'total',
+                ('total', 'discount'),
+                ('imposable', 'iva'),
                 'items',
                 'menus_items',
             )}),
     )
-    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'total')
+    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva')
 
     # when in production
-    # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'items', 'menus_items', 'total')
-
-    def get_form(self, request, obj=None, **kwargs):
-        # By passing 'fields', we prevent ModelAdmin.get_form from
-        # looking up the fields itself by calling self.get_fieldsets()
-        # If you do not do this you will get an error from
-        # modelform_factory complaining about non-existent fields.
-
-        kwargs['fields'] = flatten_fieldsets(self.fieldsets)
-
-        return super(MyAdmin, self).get_form(request, obj, **kwargs)
-
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = super(MyAdmin, self).get_fieldsets(request, obj)
-        already = False
-        for group, fields in fieldsets:
-            for field in fields['fields']:
-                if field == 'total':
-                    already = True
-        if not already:
-            fieldsets[0][1]['fields'] += ('total',)
-        return fieldsets
-
-        return newfieldsets
+    # readonly_fields = ('all')
 
     def total(self, obj):
         return obj.get_total()
 
+    def iva(self, obj):
+        return obj.get_total_iva()
+
+    def discount(self, obj):
+        return obj.get_total_discount()
+
+    def imposable(self, obj):
+        return obj.get_imposable()
+
 admin.site.register(Order, MyAdmin)
+
+admin.site.register(RestaurantDiscount)

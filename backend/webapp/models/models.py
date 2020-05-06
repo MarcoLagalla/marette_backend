@@ -3,11 +3,13 @@ from io import BytesIO
 from PIL import Image
 from django.core import validators as valids
 from django.core.files.base import ContentFile
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework import serializers
+
 from backend.account.models import Business
 from django_resized import ResizedImageField
 from django.utils.text import slugify
@@ -29,6 +31,8 @@ class Restaurant(models.Model):
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
 
+    discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
+
     def __str__(self):
         return self.activity_name
 
@@ -36,10 +40,14 @@ class Restaurant(models.Model):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
 
+    def discounts_count(self):
+        return self.discounts.all().count()
+
     def save(self, *args, **kwargs):
         super(Restaurant, self).save(*args, **kwargs)
         self.set_url()
         super(Restaurant, self).save(*args, **kwargs)
+
 
 
 class ProductTag(models.Model):
@@ -51,20 +59,44 @@ class ProductTag(models.Model):
         return self.name
 
 
+class RestaurantDiscount(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='activity_discount', on_delete=models.CASCADE)
+
+    title = models.CharField(max_length=100)
+    type = models.CharField(max_length=30, choices=DISCOUNT_TYPES_CHOICES)
+    category = models.CharField(max_length=100, choices=(FOOD_CATEGORY_CHOICES + [('All', 'All'),]))
+    value = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        unique_together = ('restaurant', 'title', 'type', 'category', 'value')
+
+    def __str__(self):
+        return "[{0}] {1}".format(self.restaurant.url, self.title)
+
+    def save(self, *args, **kwargs):
+        if self.type == 'Percentuale':
+            if not self.value in range(0, 100):
+                raise serializers.ValidationError({'error': 'Inserire un valore tra 0-100.'})
+        super(RestaurantDiscount, self).save(*args, **kwargs)
+
+
 class ProductDiscount(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='restaurant_discount', on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, related_name='product_discount', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=100)
     type = models.CharField(max_length=30, choices=DISCOUNT_TYPES_CHOICES)
     value = models.DecimalField(max_digits=10, decimal_places=2)
 
+    class Meta:
+        unique_together = ('restaurant', 'title', 'type', 'value')
+
     def __str__(self):
-        return self.title
+        return "[{0}] {1}".format(self.restaurant.url, self.title)
 
     def save(self, *args, **kwargs):
         if self.type == 'Percentuale':
             if not self.value in range(0, 100):
-                raise ValueError('Inserire un valore tra 0-100.')
+                raise serializers.ValidationError({'error': 'Inserire un valore tra 0-100.'})
         super(ProductDiscount, self).save(*args, **kwargs)
 
 
@@ -75,9 +107,12 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='product', blank=True,null=True)
+    image = models.ImageField(upload_to='product', blank=True, null=True)
     thumb_image = models.ImageField(upload_to='product/thumbnails', blank=True, null=True)
+
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    iva = models.IntegerField(default=22, validators=[MinValueValidator(0), MaxValueValidator(100)])
+
     tags = models.ManyToManyField(ProductTag, blank=True)
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
@@ -89,14 +124,27 @@ class Product(models.Model):
 
     def get_all_discounts(self):
         price = self.price
-        for discount in self.discounts.all():
-            if discount.type == 'Fisso':
-                # sconto fisso, da sottrarre al prezzo
-                price -= discount.value
-            elif discount.type == 'Percentuale':
-                # sconto percentuale
-                price -= round(price / 100 * discount.value, 2)
-        return price
+        # A restaurant-level discount override local product discount:
+        if self.restaurant.discounts_count() > 0:
+            for discount in self.restaurant.discounts.all():
+                if discount.category == self.category or discount.category == 'All':
+                    if discount.type == 'Fisso':
+                        # sconto fisso, da sottrarre al prezzo
+                        price -= discount.value
+                    elif discount.type == 'Percentuale':
+                        # sconto percentuale
+                        price -= round(price / 100 * discount.value, 2)
+            return price
+        else:
+            # no restaurant-level discount, see if product
+            for discount in self.discounts.all():
+                if discount.type == 'Fisso':
+                    # sconto fisso, da sottrarre al prezzo
+                    price -= discount.value
+                elif discount.type == 'Percentuale':
+                    # sconto percentuale
+                    price -= round(price / 100 * discount.value, 2)
+            return price
 
     def get_price_with_discount(self):
         new_price = self.get_all_discounts()
@@ -107,16 +155,33 @@ class Product(models.Model):
     def get_original_price(self):
         return self.price
 
+    def get_iva(self):
+        return self.price - self.somma_imponibile()
+
+    def somma_imponibile(self):
+        return (100 * self.price) / (100 + self.iva)
+
     def get_total_discount_amount(self):
         discount = 0
-        for discount in self.discounts.all():
-            if discount.type == 'Fisso':
-                # sconto fisso, da sottrarre al prezzo
-                discount -= discount.value
-            elif discount.type == 'Percentuale':
-                # sconto percentuale
-                discount -= round(discount / 100 * discount.value, 2)
-        return discount
+        if self.restaurant.discounts_count() > 0:
+            for d in self.restaurant.discounts.all():
+                if d.category == self.category or d.category == 'All':
+                    if d.type == 'Fisso':
+                        # sconto fisso, da sottrarre al prezzo
+                        discount -= d.value
+                    elif d.type == 'Percentuale':
+                        # sconto percentuale
+                        discount -= round(self.price / 100 * d.value, 2)
+            return discount
+        else:
+            for d in self.discounts.all():
+                if d.type == 'Fisso':
+                    # sconto fisso, da sottrarre al prezzo
+                    discount -= d.value
+                elif d.type == 'Percentuale':
+                    # sconto percentuale
+                    discount -= round(self.price / 100 * d.value, 2)
+            return discount
 
     def get_thumb_image(self):
         if not (self.thumb_image and hasattr(self.thumb_image, 'url')):

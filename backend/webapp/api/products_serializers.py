@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404
 
 from ..models.models import Product, ProductDiscount, ProductTag
@@ -9,6 +9,19 @@ class ProductDiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDiscount
         fields = ('id', 'title', 'type', 'value', )
+
+    @transaction.atomic()
+    def save(self, restaurant):
+
+        try:
+            product_discount = ProductDiscount.objects.create(
+                restaurant=restaurant,
+                **self.validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'Questo sconto esiste già.'})
+
+        return product_discount
 
 
 class ProductTagSerializer(serializers.ModelSerializer):
@@ -26,7 +39,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'category', 'price',
+        fields = ('id', 'name', 'description', 'category', 'price', 'iva',
                   'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image', 'available')
 
     def get_image(self, instance):
@@ -49,7 +62,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'category', 'price',
+        fields = ('name', 'description', 'category', 'price', 'iva',
                   'tags', 'discounts', 'image', 'show_image','available')
 
     def get_image_url(self, instance):
