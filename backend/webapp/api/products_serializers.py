@@ -39,7 +39,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'category', 'price',
+        fields = ('id', 'name', 'description', 'category', 'price', 'iva',
                   'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image', 'available')
 
     def get_image(self, instance):
@@ -62,7 +62,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'category', 'price',
+        fields = ('name', 'description', 'category', 'price', 'iva',
                   'tags', 'discounts', 'image', 'show_image','available')
 
     def get_image_url(self, instance):

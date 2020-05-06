@@ -3,7 +3,7 @@ from io import BytesIO
 from PIL import Image
 from django.core import validators as valids
 from django.core.files.base import ContentFile
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -107,9 +107,12 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='product', blank=True,null=True)
+    image = models.ImageField(upload_to='product', blank=True, null=True)
     thumb_image = models.ImageField(upload_to='product/thumbnails', blank=True, null=True)
+
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    iva = models.IntegerField(default=22, validators=[MinValueValidator(0), MaxValueValidator(100)])
+
     tags = models.ManyToManyField(ProductTag, blank=True)
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
@@ -152,27 +155,32 @@ class Product(models.Model):
     def get_original_price(self):
         return self.price
 
+    def get_iva(self):
+        return self.price - self.somma_imponibile()
+
+    def somma_imponibile(self):
+        return (100 * self.price) / (100 + self.iva)
+
     def get_total_discount_amount(self):
         discount = 0
-
         if self.restaurant.discounts_count() > 0:
-            for discount in self.restaurant.discounts.all():
-                if discount.category == self.category or discount.category == 'All':
-                    if discount.type == 'Fisso':
+            for d in self.restaurant.discounts.all():
+                if d.category == self.category or d.category == 'All':
+                    if d.type == 'Fisso':
                         # sconto fisso, da sottrarre al prezzo
-                        discount -= discount.value
-                    elif discount.type == 'Percentuale':
+                        discount -= d.value
+                    elif d.type == 'Percentuale':
                         # sconto percentuale
-                        discount -= round(discount / 100 * discount.value, 2)
+                        discount -= round(self.price / 100 * d.value, 2)
             return discount
         else:
-            for discount in self.discounts.all():
-                if discount.type == 'Fisso':
+            for d in self.discounts.all():
+                if d.type == 'Fisso':
                     # sconto fisso, da sottrarre al prezzo
-                    discount -= discount.value
-                elif discount.type == 'Percentuale':
+                    discount -= d.value
+                elif d.type == 'Percentuale':
                     # sconto percentuale
-                    discount -= round(discount / 100 * discount.value, 2)
+                    discount -= round(self.price / 100 * d.value, 2)
             return discount
 
     def get_thumb_image(self):

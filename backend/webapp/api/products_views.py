@@ -79,9 +79,9 @@ class AddProduct(APIView):
                         return Response(status=status.HTTP_400_BAD_REQUEST)
 
                     try:
-                        image = request.data['image']
+                        image = request.FILES['image']
                         data.update({'image': image})
-                    except KeyError:
+                    except Exception:
                         pass
 
                     serializer = WriteProductSerializer(data=data)
@@ -89,7 +89,8 @@ class AddProduct(APIView):
                         ret_data = {}
                         product = serializer.save(restaurant)
                         ret_data.update(serializer.data)
-                        ret_data.update({'image': product.image.url})
+                        ret_data.update({'image': product.get_image()})
+                        ret_data.update({'thumb_image': product.get_thumb_image()})
                         return Response(ret_data, status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -178,21 +179,19 @@ class UpdateProduct(APIView):
                                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
                             try:
-                                image = request.data['image']
+                                image = request.FILES['image']
                                 data.update({'image': image})
                             except KeyError:
                                 pass
 
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
-
                                 if 'tags' in data:
                                     product.tags.clear()
                                     for t in data['tags']:
                                         for d in data['discounts']:
                                             try:
-                                                tag = ProductTag.objects.all().filter(restaurant=restaurant).get(
-                                                    id=d)
+                                                tag = ProductTag.objects.all().get(id=d)
                                                 if tag:
                                                     product.tags.add(d)
                                             except ProductTag.DoesNotExist:

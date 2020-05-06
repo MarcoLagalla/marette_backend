@@ -47,7 +47,14 @@ class Order(models.Model):
             total += item.get_price_with_discount()
         for menu in self.menus_items.all():
             total += menu.get_price()
-        return total
+        return "{:.2f}".format(total)
+
+    def get_total_iva(self):
+        # for each items
+        iva = 0
+        for item in self.items.all():
+            iva += item.get_iva()
+        return "{:.2f}".format(iva)
 
     def get_total_discount(self):
         # for each items
@@ -56,8 +63,8 @@ class Order(models.Model):
             discount -= item.get_total_discount_amount()
         for menu in self.menus_items.all():
             pass
-            # TODO: implementare discountMenu
-        return discount
+            # TODO: implementare discountMenu?
+        return "{:.2f}".format(discount)
 
     def get_code(self):
         return self.code
