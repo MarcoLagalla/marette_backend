@@ -54,6 +54,9 @@ class Order(models.Model):
         iva = 0
         for item in self.items.all():
             iva += item.get_iva()
+        for menu in self.menus_items.all():
+            iva += menu.get_iva()
+
         return "{:.2f}".format(iva)
 
     def get_total_discount(self):
