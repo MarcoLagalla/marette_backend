@@ -52,40 +52,16 @@ class MyAdmin(ModelAdmin):
                 'restaurant',
                 'date_created',
                 'code',
-                'discount',
-                'total',
-                'iva',
+                ('total', 'discount'),
+                ('imposable', 'iva'),
                 'items',
                 'menus_items',
             )}),
     )
-    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'iva')
+    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva')
 
     # when in production
-    # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'items', 'menus_items', 'total')
-
-    def get_form(self, request, obj=None, **kwargs):
-        # By passing 'fields', we prevent ModelAdmin.get_form from
-        # looking up the fields itself by calling self.get_fieldsets()
-        # If you do not do this you will get an error from
-        # modelform_factory complaining about non-existent fields.
-
-        kwargs['fields'] = flatten_fieldsets(self.fieldsets)
-        return super(MyAdmin, self).get_form(request, obj, **kwargs)
-
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = super(MyAdmin, self).get_fieldsets(request, obj)
-        already = False
-        for group, fields in fieldsets:
-            if 'iva' in fields['fields'] or 'total' in fields['fields']\
-                    or 'discount' in fields['fields']:
-                already = True
-        if not already:
-            fieldsets[0][1]['fields'] += ('total', 'iva', 'discount',)
-
-        return fieldsets
-
-        return newfieldsets
+    # readonly_fields = ('all')
 
     def total(self, obj):
         return obj.get_total()
@@ -96,6 +72,8 @@ class MyAdmin(ModelAdmin):
     def discount(self, obj):
         return obj.get_total_discount()
 
+    def imposable(self, obj):
+        return obj.get_imposable()
 
 admin.site.register(Order, MyAdmin)
 

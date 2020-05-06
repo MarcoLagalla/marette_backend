@@ -49,6 +49,9 @@ class Order(models.Model):
             total += menu.get_price()
         return "{:.2f}".format(total)
 
+    def get_imposable(self):
+        return float(self.get_total()) - float(self.get_total_iva())
+
     def get_total_iva(self):
         # for each items
         iva = 0
