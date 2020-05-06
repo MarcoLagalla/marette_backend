@@ -13,7 +13,7 @@
           <router-link :to="restaurant.url">
             <v-card v-bind="restaurant" class="restcard" max-width="400">
               <v-img class="white--text align-end imag" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
-                <v-card-title><h1>{{ restaurant.activity_name }}</h1></v-card-title>
+                <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
               </v-img>
 
               <v-card-text class="text--primary">
