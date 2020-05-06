@@ -2,7 +2,7 @@
   <div>
     <div class="addprod">
       <v-form @submit.prevent="submitProduct">
-        <v-text-field
+        <v-text-field outlined
           v-model="name"
           type="text"
           label=" Inserire nome prodotto"
@@ -10,7 +10,7 @@
           name="name"
           required
         ></v-text-field>
-        <v-text-field
+        <v-text-field outlined
           v-model="description"
           type="text"
           label=" Inserire descrizione"
@@ -18,7 +18,7 @@
           name="description"
           required
         ></v-text-field>
-        <v-text-field
+        <v-text-field outlined
           v-model="price"
           type="number"
           label=" Inserire prezzo"
