@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from ..models import Product, ProductDiscount, ProductTag
+from ..models.models import Product, ProductDiscount, ProductTag
 
 
 class ProductDiscountSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class ReadProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image')
+                  'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image', 'available')
 
     def get_image(self, instance):
         return instance.get_image()
@@ -45,11 +45,12 @@ class WriteProductSerializer(serializers.ModelSerializer):
     discounts = serializers.ListField(required=False)
     image = serializers.ImageField(required=False)
     show_image = serializers.BooleanField(required=False, default=True)
+    available = serializers.BooleanField(required=False, default=True)
 
     class Meta:
         model = Product
         fields = ('name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'image', 'show_image')
+                  'tags', 'discounts', 'image', 'show_image','available')
 
     def get_image_url(self, instance):
         request = self.context.get('request')
