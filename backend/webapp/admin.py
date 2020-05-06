@@ -57,7 +57,7 @@ class MyAdmin(ModelAdmin):
                 'menus_items',
             )}),
     )
-    readonly_fields = ('user','restaurant', 'date_created', 'code', 'total')
+    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'total')
 
     # when in production
     # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'items', 'menus_items', 'total')
