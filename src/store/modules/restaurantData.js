@@ -7,7 +7,8 @@ const state = {
     productList: {},
     restData: {},
     status: '',
-    tags:[],
+    tags:{},
+    discounts:{},
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -23,10 +24,6 @@ const state = {
         'Snack'
     ],
 
-    DISCOUNT_TYPE_CHOICE: [
-        'Fisso',
-        'Percentuale'
-    ],
 
 }
 
@@ -37,6 +34,7 @@ const getters = {
     components: state => state.restData.components,
     restData: state => state.restData,
     tags: state => state.tags,
+    discounts: state => state.discounts
 }
 
 const actions = {
@@ -110,17 +108,34 @@ const actions = {
         })
     },
 
-    getListTag: ({commit}, product) => {
+    getListTag: ({commit}) => {
         return new Promise((resolve, reject) => {
 
             manageProduct.listTags()
             .then(resp => {
-                commit('LIST_TAGS_SUCCESS', resp)
+                commit('LIST_TAGS_SUCCESS', resp.data)
                 console.log(resp)
-                resolve(resp)
+                resolve(resp.data)
             })
             .catch(err => {
                 commit('LIST_TAGS_ERROR')
+                reject(err)
+            })
+        })
+    },
+
+    getListDiscounts: ({commit}) => {
+        return new Promise((resolve, reject) => {
+
+            manageProduct.listDiscounts(state.ID)
+                console.log(state.ID)
+            .then(resp => {
+                commit('LIST_DISCOUNTS_SUCCESS', resp.data)
+                console.log(resp)
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('LIST_DISCOUNTS_ERROR')
                 reject(err)
             })
         })
@@ -180,6 +195,16 @@ const mutations = {
     },
 
     LIST_TAGS_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+    LIST_DISCOUNTS_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.tags = data
+    },
+
+    LIST_DISCOUNTS_ERROR: (state, error) => {
         state.status = 'error'
         state.error = error
     }
