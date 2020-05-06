@@ -98,6 +98,12 @@ const router = new Router({
           beforeEnter:  ifAuthenticated,
         },
         {
+          path: 'profile/manage/:id/:name',
+          name: 'ManageRestData',
+          component: () => import('@/views/pages/manageRestData.vue'),
+          beforeEnter:  ifOwner,
+        },
+        {
           path: 'profile/:id/:name',
           name: 'ManageRest',
           components: {
