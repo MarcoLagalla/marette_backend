@@ -25,6 +25,13 @@ export default {
             .then(response => {
                 return response
             })
-    }
+    },
+
+    listDiscounts(id){
+                return api.get('v1/webapp/restaurant/' + id + '/discounts')
+            .then(response => {
+                return response
+            })
+    },
 
 }
