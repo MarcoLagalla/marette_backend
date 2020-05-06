@@ -1,13 +1,21 @@
 from django.contrib import admin
-from .models import Restaurant, Product, ProductTag, ProductDiscount, Menu, MenuEntry, RestaurantComponents, \
-    HomeComponent, VetrinaComponent, EventiComponent, GalleriaComponent, MenuComponent, ContattaciComponent, Picture
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture
+from .models.menu import Menu, MenuEntry
+from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
+    GalleriaComponent, MenuComponent, ContattaciComponent
+from .models.orders import Order
+
 # Register your models here.
-admin.site.register(Restaurant)
+class RestaurantAdmin(admin.ModelAdmin):
+    readonly_fields=('url', 'slug', )
+
+admin.site.register(Restaurant, RestaurantAdmin)
 
 
 class ProductInline(admin.ModelAdmin):
     model = Product
     exclude = ['thumb_image']
+
 
 admin.site.register(Product, ProductInline)
 admin.site.register(ProductTag)
@@ -26,3 +34,5 @@ admin.site.register(RestaurantComponents)
 
 
 admin.site.register(Picture)
+
+admin.site.register(Order)

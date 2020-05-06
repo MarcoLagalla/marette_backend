@@ -1,9 +1,11 @@
 <template>
 <div class="body">
-  <base-section id="theme-features">
-    <base-section-heading title="Ristoranti" color="red">
-      Ecco la nostra scelta di ristoranti
-    </base-section-heading>
+  <base-section id="">
+  <div class="title-center">
+    <h1 >Ristoranti</h1>
+      <div class="divider"></div>
+      <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
+    
 
     <v-container>
       <v-row>
@@ -11,7 +13,7 @@
           <router-link :to="restaurant.url">
             <v-card v-bind="restaurant" class="restcard" max-width="400">
               <v-img class="white--text align-end imag" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
-                <v-card-title><h1>{{ restaurant.activity_name }}</h1></v-card-title>
+                <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
               </v-img>
 
               <v-card-text class="text--primary">
@@ -53,7 +55,23 @@ export default {
 <style scoped>
 .body {
   /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
-  background: #f1f1f1;
+  background:var(--herb);
+}
+.divider {
+  width: 50px;
+  background: var(--chilli);
+  height: 5px;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.title-center {
+  padding: 10px;
+  margin: 10px;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .actions {
   padding: 10px;
@@ -93,5 +111,13 @@ export default {
 }
 a {
   text-decoration: none
+}
+.subt {
+  color: aliceblue;
+  font-weight: bold;
+}
+h1 {
+  color: aliceblue;
+  font-size: 2em;
 }
 </style>

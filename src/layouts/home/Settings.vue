@@ -10,7 +10,7 @@
     width="100"
     >
     <v-icon
-    color="blue"
+    color="red"
     large>
     mdi-account
   </v-icon>

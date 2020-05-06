@@ -12,16 +12,14 @@ from backend.account.models import Business
 from django_resized import ResizedImageField
 from django.utils.text import slugify
 import os
-from .declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
+from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES
-
-MAX_IMAGE_SIZE = 600000  # 600 KB for image
 
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
     slug = models.SlugField(unique=False, blank=True)
-    url = models.SlugField(unique=True, blank=True)
+    url = models.CharField(max_length=150, unique=True, blank=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
@@ -37,139 +35,11 @@ class Restaurant(models.Model):
     def set_url(self):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
-        self.save()
-
-
-class HomeComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='home', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    image = ResizedImageField(size=[1920, 1080], quality=95, upload_to='components/home',
-                              crop=['middle', 'center'], keep_meta=False, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_image(self):
-        if not (self.image and hasattr(self.image, 'url')):
-            return 'components/home/placeholder.png'
-        else:
-            return self.image.url
-
-    def get_name(self):
-        return self.name.upper()
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-
-            if len(img.fp.read()) > MAX_IMAGE_SIZE:
-                compress_image(self.image.path, 70)
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-def compress_image(img_file, CRATIO):
-    img = Image.open(img_file)
-    if len(img.fp.read()) > MAX_IMAGE_SIZE:
-        img.save(img_file, format="JPEG", optimize=True, quality=CRATIO)
-    img = Image.open(img_file)
-    size = len(img.fp.read())
-    return size
-
-
-class VetrinaComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='vetrina', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    menu_giorno = models.ForeignKey('Menu', related_name='menu_giorno', on_delete=models.DO_NOTHING,
-                                    blank=True, null=True)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_name(self):
-        return self.name.upper()
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-class MenuComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='menu_component', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_name(self):
-        return self.name.upper()
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-class GalleriaComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    immagini = models.ManyToManyField('Picture', related_name='immagini', blank=True)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_name(self):
-        return self.name.upper()
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-class EventiComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='eventi_component', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_name(self):
-        return self.name.upper()
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-class ContattaciComponent(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='contattaci_component', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    show = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('restaurant', 'name',)
-
-    def get_name(self):
-        return self.name.upper()
-
-    def __str__(self):
-        return self.restaurant.__str__() + " : " + self.name
-
-
-class RestaurantComponents(models.Model):
-    restaurant = models.ForeignKey(Restaurant, related_name='components', on_delete=models.CASCADE)
-    home = models.ForeignKey(HomeComponent, related_name='home_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-    vetrina = models.ForeignKey(VetrinaComponent, related_name='vetrina_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-    menu = models.ForeignKey(MenuComponent, related_name='menu_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-    galleria = models.ForeignKey(GalleriaComponent, related_name='galleria_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-    eventi = models.ForeignKey(EventiComponent, related_name='eventi_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-    contattaci = models.ForeignKey(ContattaciComponent, related_name='contattaci_component', on_delete=models.DO_NOTHING, null=True, blank=True)
-
-    def __str__(self):
-        return self.restaurant.activity_name
+        super(Restaurant, self).save(*args, **kwargs)
+        self.set_url()
+        super(Restaurant, self).save(*args, **kwargs)
 
 
 class ProductTag(models.Model):
@@ -198,7 +68,7 @@ class ProductDiscount(models.Model):
         super(ProductDiscount, self).save(*args, **kwargs)
 
 
-    # TODO: dimensione massima foto prodotto
+# TODO: dimensione massima foto prodotto
 class Product(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='restaurant', on_delete=models.CASCADE)
 
@@ -212,6 +82,7 @@ class Product(models.Model):
 
     discounts = models.ManyToManyField(ProductDiscount, blank=True)
     show_image = models.BooleanField(blank=True, default=True)
+    available = models.BooleanField(blank=True, default=True)
 
     def __str__(self):
         return self.name
@@ -232,6 +103,20 @@ class Product(models.Model):
         if new_price < 0:
             new_price = 0
         return new_price
+
+    def get_original_price(self):
+        return self.price
+
+    def get_total_discount_amount(self):
+        discount = 0
+        for discount in self.discounts.all():
+            if discount.type == 'Fisso':
+                # sconto fisso, da sottrarre al prezzo
+                discount -= discount.value
+            elif discount.type == 'Percentuale':
+                # sconto percentuale
+                discount -= round(discount / 100 * discount.value, 2)
+        return discount
 
     def get_thumb_image(self):
         if not (self.thumb_image and hasattr(self.thumb_image, 'url')):
@@ -288,34 +173,11 @@ class Product(models.Model):
 
         return True
 
-class MenuEntry(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=100)
-    num_products = models.PositiveIntegerField(default=1, validators=[MinValueValidator(0)])
-    products = models.ManyToManyField(Product, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Menu(models.Model):
-
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
-
-    entries = models.ManyToManyField(MenuEntry, blank=True)
-
-    def __str__(self):
-        return self.name
-
 
 class Picture(models.Model):
 
     image = ResizedImageField(size=[600, 600], upload_to='components/gallery', quality=95,
-                              crop=['middle', 'center'],keep_meta=False)
+                              crop=['middle', 'center'], keep_meta=False)
     name = models.CharField(max_length=100, default='')
     description = models.TextField(blank=True, null=True, default='')
 

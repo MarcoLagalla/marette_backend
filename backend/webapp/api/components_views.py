@@ -7,8 +7,9 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import MenuComponent, GalleriaComponent, \
-    EventiComponent, VetrinaComponent, HomeComponent, Restaurant, ContattaciComponent
+from ..models.models import Restaurant
+from ..models.components import MenuComponent, GalleriaComponent, EventiComponent, \
+    VetrinaComponent, HomeComponent, ContattaciComponent
 
 
 class ActivateComponent(APIView):

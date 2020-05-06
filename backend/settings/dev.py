@@ -185,8 +185,8 @@ ADMIN_REORDER = (
     # Keep original label and models
     'sites',
 
-    # Reorder app models
-    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+    # Reorder app models authtoken.models import Token
+    {'app': 'auth', 'models': ('auth.User', 'auth.Group', 'authtoken.Token'),},
     {'app': 'account', 'models': ('account.Customer', 'account.Business')},
     {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant',)},
     {'app': 'webapp', 'label': 'Restaurant',
@@ -204,7 +204,7 @@ ADMIN_REORDER = (
                 'webapp.GalleriaComponent',
                 'webapp.VetrinaComponent',
                 'webapp.ContattaciComponent',)},
-
+    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order',)}
 )
 
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}

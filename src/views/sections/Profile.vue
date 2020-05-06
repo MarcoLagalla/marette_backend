@@ -70,7 +70,8 @@
 </v-card>
 </v-col-->
 
-<v-col v-for="(restaurant, i) in userRestaurantList" :key="i" cols="6">
+<v-col  cols="6">
+  <v-row v-for="(restaurant, i) in userRestaurantList" :key="i">
   <v-card class="restc" v-bind="restaurant" dark>
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
@@ -87,7 +88,7 @@
           fas fa-cogs
         </v-icon>
       </router-link>
-      <router-link tag="button" class="settings" v-if="isBusiness" :to="restaurant.url">  <v-icon x-large dark>
+      <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/manage/' + restaurant.url">  <v-icon x-large dark>
         fas fa-address-card
       </v-icon>
     </router-link>  </v-col>
@@ -120,6 +121,7 @@ Modifica ristorante
 </v-btn>
 </v-card-actions-->
 </v-card>
+  </v-row>
 </v-col>
 </v-row>
 </v-container>
@@ -227,7 +229,10 @@ created() {
 }
 .restc {
   box-shadow: 0 0 15 var(--charcoal);
-  background: var(--herb)
+  background: var(--herb);
+  width: 100%;
+  margin-left: 10px;
+  margin-bottom: 10px;;
 }
 .profilc {
   box-shadow: 0 0 15 var(--charcoal);

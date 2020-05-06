@@ -2,7 +2,8 @@ from django.urls import path
 from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView
 from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProduct, ProductDetails, ListProductTags
 from .discounts_views import ListDiscounts, AddDiscounts, EditDiscounts, DeleteDiscounts, DetailsDiscounts
-from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu
+from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu, MenuEntryAdd, MenuEntryDetail, \
+    MenuEntryEdit, MenuEntryDelete
 from .components_views import ActivateComponent, DeactivateComponent
 app_name = 'webapp'
 
@@ -25,6 +26,11 @@ urlpatterns = [
     path('restaurant/<int:id>/menus/<int:m_id>/details', DetailsMenu.as_view(), name='details_menu'),
     path('restaurant/<int:id>/menus/<int:m_id>/edit', EditMenu.as_view(), name='edit_menu'),
     path('restaurant/<int:id>/menus/<int:m_id>/delete', DeleteMenu.as_view(), name='delete_menu'),
+
+    path('restaurant/<int:id>/menus/entry/add', MenuEntryAdd.as_view(), name='add_menuentry'),
+    path('restaurant/<int:id>/menus/entry/<int:me_id>/details', MenuEntryDetail.as_view(), name='details_menuentry'),
+    path('restaurant/<int:id>/menus/entry/<int:me_id>/edit', MenuEntryEdit.as_view(), name='edit_menuentry'),
+    path('restaurant/<int:id>/menus/entry/<int:me_id>/delete', MenuEntryDelete.as_view(), name='delete_menuentry'),
 
     path('restaurant/<int:id>/components/<str:type>/activate', ActivateComponent.as_view(), name='on_component'),
     path('restaurant/<int:id>/components/<str:type>/deactivate', DeactivateComponent.as_view(), name='off_component'),
