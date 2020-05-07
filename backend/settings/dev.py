@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django_cleanup',
     'admin_reorder',
     'localflavor',
     'django.contrib.admin',
@@ -49,7 +48,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rest_framework.authtoken',
     'django_resized',
-
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
@@ -192,6 +191,7 @@ ADMIN_REORDER = (
     {'app': 'webapp', 'label': 'Restaurant',
      'models': ('webapp.Product',
                 'webapp.ProductDiscount',
+                'webapp.RestaurantDiscount',
                 'webapp.ProductTag',
                 'webapp.Menu',
                 'webapp.MenuEntry',

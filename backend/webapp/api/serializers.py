@@ -1,36 +1,61 @@
 from collections import OrderedDict
 from operator import itemgetter
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant
+from ..models.models import Restaurant, RestaurantDiscount
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
-from ...account.models import Business
 from ...account.api.serializers import BusinessSerializer
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
 
 
+class RestaurantDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantDiscount
+        fields = ('id', 'title', 'category', 'type', 'value', )
+
+    @transaction.atomic
+    def save(self, restaurant):
+        try:
+
+            restaurant_discount = RestaurantDiscount.objects.create(
+                restaurant=restaurant,
+                **self.validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'Questo sconto esiste già.'})
+
+        return restaurant_discount
+
+
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
+    discounts = RestaurantDiscountSerializer(many=True, required=False)
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Restaurant
-        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description',
-                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
+        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'image',
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
+
+    def get_image(self, obj):
+        return obj.get_image()
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
     class Meta:
         model = Restaurant
-        fields = ['id', 'activity_name', 'activity_description', 'city',
+        fields = ['id', 'activity_name', 'activity_description', 'city', 'image',
                   'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
     @transaction.atomic
-    def save(self):
-        business_user = self.context.get("business_user")
+    def save(self, owner):
 
         try:
             if not vat_number_validation(self.validated_data['p_iva']):
@@ -38,9 +63,11 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-        restaurant = Restaurant.objects.create(owner=business_user, **self.validated_data)
+
+        restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
+
 
         # create ComponentsPanels (empty)
         home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
