@@ -34,4 +34,11 @@ export default {
             })
     },
 
+    addDiscount(discount, id){
+                    return api.post('v1/webapp/restaurant/' + id + '/discounts/add', discount)
+            .then(response => {
+                return response
+            })
+    }
+
 }
