@@ -32,26 +32,30 @@ class RestaurantDiscountSerializer(serializers.ModelSerializer):
         return restaurant_discount
 
 
-
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
     discounts = RestaurantDiscountSerializer(many=True, required=False)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurant
-        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description',
+        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'image',
                   'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
+
+    def get_image(self, obj):
+        return obj.get_image()
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
     class Meta:
         model = Restaurant
-        fields = ['id', 'activity_name', 'activity_description', 'city',
+        fields = ['id', 'activity_name', 'activity_description', 'city', 'image',
                   'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
     @transaction.atomic
-    def save(self):
-        business_user = self.context.get("business_user")
+    def save(self, owner):
 
         try:
             if not vat_number_validation(self.validated_data['p_iva']):
@@ -59,9 +63,11 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-        restaurant = Restaurant.objects.create(owner=business_user, **self.validated_data)
+
+        restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
+
 
         # create ComponentsPanels (empty)
         home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')

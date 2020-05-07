@@ -1,10 +1,14 @@
+import json
+
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
@@ -23,6 +27,7 @@ class ListRestaurantsAPIView(ListAPIView):
     serializer_class = ListRestaurantSerializer
 
 
+
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
@@ -34,16 +39,26 @@ class CreateRestaurantAPIView(APIView):
             user = Business.objects.all().get(user=self.request.user)
         except Business.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
         data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            image = request.FILES['image']
+            input_data.update({'image': image})
+        except Exception as err:
+            pass
 
         if user:
-            serializer = CreateRestaurantSerializer(data=request.data, context={'business_user': user})
+            serializer = CreateRestaurantSerializer(data=input_data, context={'business_user': user})
             if serializer.is_valid():
-                restaurant = serializer.save()
+                restaurant = serializer.save(user)
                 data['response'] = "Ristorante correttamente creato"
                 data['id_restaurant'] = restaurant.id
                 data['slug'] = restaurant.slug
+                data['image'] = restaurant.get_image()
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -82,57 +97,67 @@ class UpdateRestaurantAPIView(APIView):
     @transaction.atomic()
     def post(self, request, id):
         try:
-            restaurant = get_object_or_404(Restaurant, id=id)
+            restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
             return Response({'error': ["Ristorante non trovato."]}, status.HTTP_404_NOT_FOUND)
 
         missing_keys = False
         value_errors = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            activity_name = request.data.pop('activity_name')
+            image = request.FILES['image']
+            input_data.update({'image': image})
+        except Exception as err:
+            pass
+
+        try:
+            activity_name = input_data.get('activity_name')
         except KeyError:
             missing_keys = True
             value_errors.update({'activity_name': 'Il campo non può essere vuoto.'})
 
         try:
-            activity_description = request.data.pop('activity_description')
+            activity_description = input_data.get('activity_description')
         except KeyError:
             missing_keys = True
             value_errors.update({'activity_description': 'Il campo non può essere vuoto.'})
 
         try:
-            restaurant_number = request.data.pop('restaurant_number')
+            restaurant_number = input_data.get('restaurant_number')
         except KeyError:
             missing_keys = True
             value_errors.update({'restaurant_number': 'Il campo non può essere vuoto.'})
 
         try:
-            city = request.data.pop('city')
+            city = input_data.get('city')
         except KeyError:
             missing_keys = True
             value_errors.update({'city': 'Il campo non può essere vuoto.'})
 
         try:
-            address = request.data.pop('address')
+            address = input_data.get('address')
         except KeyError:
             missing_keys = True
             value_errors.update({'address': 'Il campo non può essere vuoto.'})
 
         try:
-            n_civ = request.data.pop('n_civ')
+            n_civ = input_data.get('n_civ')
         except KeyError:
             missing_keys = True
             value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
 
         try:
-            cap = request.data.pop('cap')
+            cap = input_data.get('cap')
         except KeyError:
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
 
         try:
-            p_iva = request.data.pop('p_iva')
+            p_iva = input_data.get('p_iva')
         except KeyError:
             missing_keys = True
             value_errors.update({'p_iva': 'Il campo non può essere vuoto.'})
@@ -146,7 +171,7 @@ class UpdateRestaurantAPIView(APIView):
             validation_errors_ = True
             validation_errors.update({'restaurant_number': 'Il numero di telefono deve essere valido'})
 
-        cap_validator = re.match('^[0-9]{5}$', cap)
+        cap_validator = re.match('^[0-9]{5}$', str(cap))
         if not cap_validator:
             validation_errors_ = True
             validation_errors.update({'cap': 'Inserire un CAP valido.'})
@@ -166,18 +191,14 @@ class UpdateRestaurantAPIView(APIView):
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
             # numero di telefono del ristorante, city, address, cap
-            restaurant.activity_name = activity_name
-            restaurant.activity_description = activity_description
 
-            restaurant.city = city
-            restaurant.address = address
-            restaurant.n_civ = n_civ
-            restaurant.cap = cap
-            restaurant.restaurant_number = restaurant_number
-            restaurant.p_iva = p_iva
+            for key in input_data:
+                setattr(restaurant, key, input_data[key])
 
             restaurant.save()
-            restaurant.set_url()  # needed to update the url if activity_name changes
-            return Response(status=status.HTTP_200_OK)
+
+            rest_data = ListRestaurantSerializer(restaurant)
+            return Response(rest_data.data, status=status.HTTP_200_OK)
+
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
