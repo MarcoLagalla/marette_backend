@@ -1,8 +1,8 @@
 <template>
   <div>
-    <select v-model="prova">
-      <option v-for="category in categories" :key="category" >{{category}}</option>
-    </select>
+    <v-select :items="categories" label="Categoria del prodotto:" v-model="category" @change="choosedCategory = true"></v-select>
+    <v-select :items="menu[category]" item-text="name" item-value="id" label="Selezionare prodotto:" v-model="product" :disabled="!choosedCategory"></v-select>
+    <v-btn :disabled="product===''" @click="$emit('addProduct', product)">Aggiungi</v-btn>
   </div>
 </template>
 
@@ -10,7 +10,9 @@
   export default {
     name: "AddProductToPortata",
     data: () => ({
-      prova: ""
+      category: "",
+      choosedCategory: false,
+      product: ''
     }),
     computed: {
       menu() {
