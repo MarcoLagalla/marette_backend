@@ -36,4 +36,10 @@ export default {
             })
     },
 
+    updateRestaurantData(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/update', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

@@ -48,6 +48,21 @@ const actions = {
         })
     },
 
+    updateRestaurant: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+            manageRestaurant.updateRestaurantData(data)
+            .then(resp => {
+                const data = resp.data
+                commit('REST_UPDATE_SUCCESS', data)
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_UPDATE_ERROR')
+                reject(err)
+            })
+        })
+    },
+
     getUserRestaurants: ({commit, rootGetters}) => {
         return new Promise((resolve, reject) => {
             commit('REST_USR_LIST_REQUEST')
@@ -99,6 +114,10 @@ const mutations = {
     },
     REST_LIST_ERROR: (state) => {
         state.status = 'error_list'
+    },
+    REST_UPDATE_SUCCESS: () => {
+    },
+    REST_UPDATE_ERROR: () => {
     },
 
 }

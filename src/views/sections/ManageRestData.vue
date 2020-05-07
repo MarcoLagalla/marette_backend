@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.prevent="update" >
     <v-container>
       <v-row dense>
         <v-col cols="6">
@@ -8,8 +8,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Nome del locale'"></v-card-title>
-                  <v-expand-transition><div v-show="show">
-                  <div class="description" v-text="restData.activity_name"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.activity_name"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show">
+                      <v-text-field solo class="description" v-model='restData.activity_name' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -27,8 +31,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Descrizione del locale'"></v-card-title>
-                  <v-expand-transition><div v-show="show0">
-                  <div class="description" v-text="restData.activity_description"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.activity_description"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show0">
+                      <v-text-field solo class="description" v-model='restData.activity_description' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -46,8 +54,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Citta'"></v-card-title>
-                  <v-expand-transition><div v-show="show1">
-                  <div class="description" v-text="restData.city"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.city"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show1">
+                      <v-text-field solo class="description" v-model='restData.city' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -65,8 +77,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Indirizzo'"></v-card-title>
-                  <v-expand-transition><div v-show="show2">
-                  <div class="description" v-text="restData.address"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.address"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show2">
+                      <v-text-field solo class="description" v-model='restData.address' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -84,8 +100,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Numero civico'"></v-card-title>
-                  <v-expand-transition><div v-show="show3">
-                  <div class="description" v-text="restData.n_civ"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.n_civ"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show3">
+                      <v-text-field solo class="description" v-model='restData.n_civ' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -103,8 +123,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Cap'"></v-card-title>
-                  <v-expand-transition><div v-show="show4">
-                  <div class="description" v-text="restData.cap"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.cap"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show4">
+                      <v-text-field solo class="description" v-model='restData.cap' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -122,8 +146,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Numero di telefono'"></v-card-title>
-                  <v-expand-transition><div v-show="show5">
-                  <div class="description" v-text="restData.restaurant_number"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.restaurant_number"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show5">
+                      <v-text-field solo class="description" v-model='restData.restaurant_number' type="tel"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -141,8 +169,12 @@
               <div class="quant">
                 <div class>
                   <v-card-title class="headline" v-text="'Partita IVA'"></v-card-title>
-                  <v-expand-transition><div v-show="show6">
-                  <div class="description" v-text="restData.p_iva"></div></div></v-expand-transition>
+                  <v-card-subtitle class="pb-0" v-text="restData.p_iva"></v-card-subtitle>
+                  <v-expand-transition>
+                    <div v-show="show6">
+                      <v-text-field solo class="description" v-model='restData.p_iva' type="text"></v-text-field>
+                    </div>
+                  </v-expand-transition>
                 </div>
               </div>
               <v-card-actions class="pos1">
@@ -161,18 +193,21 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "ManageRestData",
   data() {
     return {
-    show: false,
-    show0:false,
-    show1: false,
-    show2: false,
-    show3: false,
-    show4: false,
-    show5: false,
-    show6: false,
+      show: false,
+      show0:false,
+      show1: false,
+      show2: false,
+      show3: false,
+      show4: false,
+      show5: false,
+      show6: false,
+      id: this.$route.params.id
     }
   },
   computed: {
@@ -180,9 +215,24 @@ export default {
       return this.$store.getters["restaurantData/restData"];
     }
   },
-  beforeDestroy() {
-    alert("Sicuro?");
-  }
+  methods: {
+    ...mapActions('restaurants', ['updateRestaurant']),
+    update: function() {
+      this.updateRestaurant({
+        id: this.id,
+        data: {
+          activity_name: this.restData.activity_name,
+          activity_description: this.restData.activity_description,
+          city: this.restData.city,
+          address: this.restData.address,
+          n_civ: this.restData.n_civ,
+          cap: this.restData.cap,
+          restaurant_number: this.restData.restaurant_number,
+          p_iva: this.restData.p_iva,
+        }
+      })
+    }
+  },
 };
 </script>
 
