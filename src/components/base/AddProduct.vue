@@ -70,11 +70,37 @@
             </v-list>
             </v-card>
 
+
+
+
         <br><br>
-      <v-btn @click="toggleShowDiscounts">Inserisci uno sconto al prodotto</v-btn>
+
+      <picture-input
+        ref="productImage"
+        @change="onChanged"
+        :width="300"
+        :height="300"
+        size="5"
+        :crop="true"
+        :changeOnClick="false"
+        accept="image/jpeg, image/png, image/gif"
+        buttonClass="ui button primary"
+        :customStrings="{
+        upload: '<h1>Carica immagine</h1>',
+        drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
+      </picture-input>
+        <br><br>
+
+
+     <button type="submit" class="addconf">Aggiungi Prodotto</button>
+
+    </v-form>
+        <br><br>
+
+      <v-btn @click="toggleShowDiscounts">Mostra lista sconti disponibili</v-btn>
         <br>
+        <div v-show="showDiscounts">
           <v-card
-            v-show="showDiscounts"
             class="mx-auto"
             max-width="500"
           >
@@ -107,36 +133,59 @@
                           color="blue accent-4"
                           @click="toggle"
                         ></v-checkbox>
+
                       </v-list-item-action>
                     </template>
+
                   </v-list-item>
                 </template>
               </v-list-item-group>
             </v-list>
+
             </v-card>
+        <br>
 
-        <br><br>
+            <v-btn @click="toggleAddDiscount"> Inserisci nuovo sconto</v-btn>
+              <v-card
+              v-show="showAddDiscount"
+              class="mx-auto"
+              max-width="500"
+              ><br>
+                <v-form @submit.prevent="submitDiscount">
+                        <v-text-field outlined
+                          v-model="discount_name"
+                          type="text"
+                          label=" Inserire nome sconto"
+                          id="discount_name"
+                          name="discount_name"
+                          required
+                        ></v-text-field>
+                        Tipo di sconto:
+                        <v-radio-group v-model="discount_type" row>
+                          <v-radio
+                            :label= "'Fisso'"
+                            :value="'Fisso'"
+                          ></v-radio>
+                          <v-radio
+                            :label="'Percentuale'"
+                            :value="'Percentuale'"
+                          ></v-radio>
+                        </v-radio-group>
+                        <v-text-field outlined
+                          v-model="discount_price"
+                          type="number"
+                          label=" Inserire sconto in decimale o percentuale"
+                          id="discount_price"
+                          name="discount_price"
+                          required
+                        ></v-text-field>
+                       <button type="submit" class="addconf">Aggiungi Sconto</button>
 
-      <picture-input
-        ref="productImage"
-        @change="onChanged"
-        :width="300"
-        :height="300"
-        size="5"
-        :crop="true"
-        :changeOnClick="false"
-        accept="image/jpeg, image/png, image/gif"
-        buttonClass="ui button primary"
-        :customStrings="{
-        upload: '<h1>Carica immagine</h1>',
-        drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
-      </picture-input>
-        <br><br>
+                  </v-form>
 
 
-     <button type="submit" class="addconf">Aggiungi Prodotto</button>
-
-    </v-form>
+              </v-card>
+          </div>
                     <!--vue-anka-cropper></vue-anka-cropper-->
 
     </div>
@@ -169,8 +218,12 @@ export default {
         description: '',
         price: '',
         image: '',
+        discount_name: '',
+        discount_price: '',
+        discount_type: '',
         showTags: false,
         showDiscounts: false,
+        showAddDiscount: false,
         selectedTags: [],
         selectedDiscounts: [],
 
@@ -183,6 +236,7 @@ export default {
     discounts() {
       return this.$store.getters['manageRestaurant/discounts']
     },
+
 
     tags() {
       return this.$store.getters['restaurantData/tags']
@@ -199,7 +253,8 @@ export default {
 
   methods: {
       ...mapActions('restaurantData', ['addProduct']),
-      ...mapActions('restaurantData',['listTag']),
+      ...mapActions('restaurantData', ['addDiscount']),
+
       onChanged() {
         console.log("New picture loaded");
         if (this.$refs.productImage.file) {
@@ -208,6 +263,7 @@ export default {
           console.log("Old browser. No support for Filereader API");
         }
       },
+
       submitProduct: function() {
           const data = {
               "name": this.name,
@@ -223,12 +279,25 @@ export default {
           this.addProduct(formData)
         },
 
+        submitDiscount: function(){
+        let data = {
+          "title": this.discount_name,
+          "type": this.discount_type,
+          "value": this.discount_price,
+        };
+        this.addDiscount(data)
+       },
+
       toggleShowTags() {
         this.showTags = !this.showTags;
       },
 
     toggleShowDiscounts() {
         this.showDiscounts = !this.showDiscounts;
+      },
+
+    toggleAddDiscount() {
+        this.showAddDiscount = !this.showAddDiscount;
       },
 
 
@@ -249,7 +318,7 @@ export default {
   border: inset 2px red;
   background: rgba(255, 0, 0, 0.5);
   transition: ease 0.4s  ;
-  color:forestgreen;
+  color:black;
 }
 .addconf:hover {
   box-shadow: 0 0 10px black;
