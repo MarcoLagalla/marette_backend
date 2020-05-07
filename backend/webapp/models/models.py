@@ -29,12 +29,15 @@ class Restaurant(models.Model):
     n_civ = models.PositiveIntegerField(blank=False)
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
-    p_iva = models.CharField(max_length=11, blank=False, unique=True)
+    p_iva = models.CharField(max_length=11, blank=False)
 
     image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
                               upload_to='restaurant', blank=True, null=True, force_format='PNG')
 
     discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
+
+    class Meta:
+        unique_together = ('id', 'owner', 'p_iva')
 
     def __str__(self):
         return self.activity_name
