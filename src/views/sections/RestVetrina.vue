@@ -4,13 +4,17 @@
     <v-container>
       <v-row>
         <v-col v-for="(item, i) in items2" :key="i" cols="6" md="6">
-          <v-card color="mx-auto" width="800" height="800">
+          <v-card  color="mx-auto" width="800" height="800">
             <v-card-title class="headline" v-text="item.title"></v-card-title>
             <v-card-subtitle v-text="item.artist"></v-card-subtitle>
             <v-card-actions>
               <v-btn color="red" class="addtocart">add to cart</v-btn>
             </v-card-actions>
           </v-card>
+
+        </v-col>
+        <v-col  cols="6" md="6">
+          <base-rest-vetrina-add-menu></base-rest-vetrina-add-menu>
         </v-col>
       </v-row>
     </v-container>
@@ -18,9 +22,11 @@
 </template>
 
 <script>
+import BaseRestVetrinaAddMenu from "../../components/base/RestVetrinaAddMenu";
 export default {
   name: "restvetrina",
-    data: () => ({
+  components: {BaseRestVetrinaAddMenu},
+  data: () => ({
         items2: [{
               color: '#1F7087',
               src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
