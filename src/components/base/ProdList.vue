@@ -17,7 +17,7 @@
                   <div class="description" v-text="product.description"></div>
                 </div>
               </div>
-              <div class="pos2" v-text="product.tags"></div>
+              <div class="pos2" v-for="(item, j) in product.tags" :key="j" v-text="item.name"></div>
               <v-card-actions class="pos1">
                 <div class="quant">
                   <div v-text="product.price"></div>
@@ -83,7 +83,7 @@ h1 {
   right: 0;
 }
 .pos2 {
-  position: absolute;
+  position: relative;
   top: 0 !important;
   right: 0;
   padding: 15px;
