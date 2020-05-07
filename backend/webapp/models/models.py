@@ -5,7 +5,7 @@ from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
@@ -20,8 +20,8 @@ from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHO
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
-    slug = models.SlugField(unique=False, blank=True)
-    url = models.CharField(max_length=150, unique=True, blank=True)
+    slug = models.SlugField(unique=False, default='', null=True, blank=True)
+    url = models.CharField(max_length=150, unique=True, default='', null=True, blank=True)
     activity_name = models.CharField(max_length=30, unique=False, blank=False)
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
@@ -31,10 +31,18 @@ class Restaurant(models.Model):
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False, unique=True)
 
+    image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
+                              upload_to='restaurant', blank=True, null=True, force_format='PNG')
+
     discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
 
     def __str__(self):
         return self.activity_name
+
+    def save(self, *args, **kwargs):
+        if self.id is not None:
+            self.set_url()
+        super(Restaurant, self).save(*args, **kwargs)
 
     def set_url(self):
         self.slug = slugify(self.activity_name)
@@ -43,11 +51,11 @@ class Restaurant(models.Model):
     def discounts_count(self):
         return self.discounts.all().count()
 
-    def save(self, *args, **kwargs):
-        super(Restaurant, self).save(*args, **kwargs)
-        self.set_url()
-        super(Restaurant, self).save(*args, **kwargs)
-
+    def get_image(self):
+        if not (self.image and hasattr(self.image, 'url')):
+            return 'media/placeholder/restaurant/placeholder.png'
+        else:
+            return self.image.url
 
 
 class ProductTag(models.Model):
@@ -249,6 +257,8 @@ class Picture(models.Model):
     def __str__(self):
         return self.name
 
+
+# to make thumb_image coherent with image cross DB modifications
 
 @receiver(pre_save, sender=Product)
 def do_something_if_changed(sender, instance, **kwargs):
