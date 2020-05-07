@@ -7,8 +7,8 @@ const state = {
     productList: {},
     restData: {},
     status: '',
-    tags:{},
-    discounts:{},
+    tags:[],
+    discounts:[],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -24,12 +24,17 @@ const state = {
         'Snack'
     ],
 
+    DISCOUNT_TYPE_CHOICES : [
+        'Fisso',
+        'Percentuale'
+    ],
+
 
 }
 
 const getters = {
     food_category_choice: state => state.food_category_choice,
-    discount_type_choice: state => state.discount_type_choice,
+    discount_type_choices: state => state.DISCOUNT_TYPE_CHOICES,
     productList: state => state.productList,
     components: state => state.restData.components,
     restData: state => state.restData,
@@ -128,7 +133,6 @@ const actions = {
         return new Promise((resolve, reject) => {
 
             manageProduct.listDiscounts(state.ID)
-                console.log(state.ID)
             .then(resp => {
                 commit('LIST_DISCOUNTS_SUCCESS', resp.data)
                 console.log(resp)
@@ -136,6 +140,22 @@ const actions = {
             })
             .catch(err => {
                 commit('LIST_DISCOUNTS_ERROR')
+                reject(err)
+            })
+        })
+    },
+    addDiscount: ({commit}, discount) => {
+        return new Promise((resolve, reject) => {
+
+
+            manageProduct.addDiscount(discount, state.ID)
+            .then(resp => {
+                commit('ADD_DISCOUNT_SUCCESS', resp.data);
+                console.log(resp);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_DISCOUNT_ERROR');
                 reject(err)
             })
         })
@@ -201,13 +221,25 @@ const mutations = {
 
     LIST_DISCOUNTS_SUCCESS: (state, data) => {
         state.status = 'success'
-        state.tags = data
+        state.discounts = data
     },
 
     LIST_DISCOUNTS_ERROR: (state, error) => {
         state.status = 'error'
         state.error = error
-    }
+    },
+
+    ADD_DISCOUNT_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.discounts = state.discounts + data
+    },
+
+    ADD_DISCOUNT_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+
 }
 
 export default {
