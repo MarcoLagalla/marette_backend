@@ -28,14 +28,14 @@ export default {
     },
 
     listDiscounts(id){
-                return api.get('v1/webapp/restaurant/' + id + '/discounts')
+                return api.get('v1/webapp/restaurant/' + id + '/products/discounts')
             .then(response => {
                 return response
             })
     },
 
     addDiscount(discount, id){
-                    return api.post('v1/webapp/restaurant/' + id + '/discounts/add', discount)
+                    return api.post('v1/webapp/restaurant/' + id + '/products/discounts/add', discount)
             .then(response => {
                 return response
             })
