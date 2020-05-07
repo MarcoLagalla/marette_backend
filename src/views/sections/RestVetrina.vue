@@ -14,7 +14,7 @@
 
         </v-col>
         <v-col  cols="6" md="6">
-          <base-rest-vetrina-add-menu></base-rest-vetrina-add-menu>
+          <base-add-menu></base-add-menu>
         </v-col>
       </v-row>
     </v-container>
@@ -22,10 +22,8 @@
 </template>
 
 <script>
-import BaseRestVetrinaAddMenu from "../../components/base/RestVetrinaAddMenu";
 export default {
   name: "restvetrina",
-  components: {BaseRestVetrinaAddMenu},
   data: () => ({
         items2: [{
               color: '#1F7087',
