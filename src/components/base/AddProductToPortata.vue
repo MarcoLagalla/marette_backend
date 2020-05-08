@@ -22,6 +22,9 @@
           if (product.id === prodId)
             prod = product
         });
+        this.category = ""
+        this.choosedCategory = false,
+        this.productId = ''
         this.$emit('added_product', prod)
       }
     },

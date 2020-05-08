@@ -42,4 +42,18 @@ export default {
                 return response
             })
     },
+
+    addMenuEntry(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/menus/entry/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
+    deleteMenuEntry(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/entry/' + payload.entryId + '/delete')
+            .then(response => {
+                return response
+            })
+    },
 }
