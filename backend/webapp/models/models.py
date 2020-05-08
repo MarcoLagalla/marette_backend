@@ -1,6 +1,9 @@
+import random
+import string
 from io import BytesIO
 
 from PIL import Image
+from django.conf import settings
 from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -18,6 +21,27 @@ from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHO
     DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES
 
 
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+def gallery_component(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'components/gallery/{rand}/{name}.{ext}'.format(
+          rand=randomString(10), name=name, ext=ext)
+    return file_path
+
+def products_image(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    return file_path
+def products_image_thumb(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    return file_path
+
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
     slug = models.SlugField(unique=False, default='', null=True, blank=True)
@@ -29,12 +53,15 @@ class Restaurant(models.Model):
     n_civ = models.PositiveIntegerField(blank=False)
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
-    p_iva = models.CharField(max_length=11, blank=False, unique=True)
+    p_iva = models.CharField(max_length=11, blank=False)
 
     image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
                               upload_to='restaurant', blank=True, null=True, force_format='PNG')
 
     discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
+
+    class Meta:
+        unique_together = ('id', 'owner', 'p_iva')
 
     def __str__(self):
         return self.activity_name
@@ -115,8 +142,8 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
     category = models.CharField(max_length=30, choices=FOOD_CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='product', blank=True, null=True)
-    thumb_image = models.ImageField(upload_to='product/thumbnails', blank=True, null=True)
+    image = models.ImageField(upload_to=products_image, blank=True, null=True)
+    thumb_image = models.ImageField(upload_to=products_image_thumb, blank=True, null=True)
 
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     iva = models.IntegerField(default=22, validators=[MinValueValidator(0), MaxValueValidator(100)])
@@ -249,7 +276,7 @@ class Product(models.Model):
 
 class Picture(models.Model):
 
-    image = ResizedImageField(size=[600, 600], upload_to='components/gallery', quality=95,
+    image = ResizedImageField(size=[600, 600], upload_to=gallery_component, quality=95,
                               crop=['middle', 'center'], keep_meta=False)
     name = models.CharField(max_length=100, default='')
     description = models.TextField(blank=True, null=True, default='')
