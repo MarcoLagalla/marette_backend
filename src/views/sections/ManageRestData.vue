@@ -187,6 +187,10 @@
         </v-col>
 
         <v-col cols="6">
+          <img ref="restImageOld" :src="restData.image">
+        </v-col>
+
+        <v-col cols="6">
           <picture-input
             ref="restImage"
             @change="onChanged"
@@ -251,11 +255,15 @@ export default {
         p_iva: this.restData.p_iva,
       };
 
+      if(!this.image){
+          this.image = this.$refs.restImageOld.file
+      }
+
       const formData = new FormData();
       formData.append('image', this.image);
       formData.append('data', JSON.stringify(data));
 
-      this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con cuccesso e gestire errori
+      this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con successo, gestire errori, aggiornare immagine quando cambia e far tornare le cose chiuse dopo aver salvato
     },
 
     onChanged() {
