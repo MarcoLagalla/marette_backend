@@ -1,4 +1,11 @@
+import os
+import random
+import string
+
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django_resized import ResizedImageField
 from PIL import Image
 
@@ -7,10 +14,20 @@ from .models import Restaurant
 MAX_IMAGE_SIZE = 600000  # 600 KB for image
 
 
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+def home_component(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'components/home/{restaurant_id}/{rand}/{name}.{ext}'.format(
+         restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    return file_path
+
 class HomeComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='home', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    image = ResizedImageField(size=[1920, 1080], quality=95, upload_to='components/home',
+    image = ResizedImageField(size=[1920, 1080], quality=95, upload_to=home_component,
                               crop=['middle', 'center'], keep_meta=False, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     show = models.BooleanField(default=False)
@@ -137,3 +154,4 @@ def compress_image(img_file, CRATIO):
     img = Image.open(img_file)
     size = len(img.fp.read())
     return size
+
