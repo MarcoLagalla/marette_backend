@@ -36,6 +36,7 @@ def products_image(instance, filename):
     file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
           restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
     return file_path
+
 def products_image_thumb(instance, filename):
     name, ext = filename.split('.')
     file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(

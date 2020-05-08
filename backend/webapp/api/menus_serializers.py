@@ -20,7 +20,7 @@ class MenuEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenuEntry
-        fields = ('id', 'name', 'num_products', 'products')
+        fields = ('id', 'restaurant', 'menu', 'name', 'num_products', 'products')
 
 
 class WriteMenuEntrySerializer(serializers.ModelSerializer):
@@ -31,16 +31,18 @@ class WriteMenuEntrySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'num_products', 'products')
 
     @transaction.atomic()
-    def save(self, restaurant):
+    def save(self, restaurant, menu):
         try:
             products = self.validated_data.pop('products')
         except KeyError:
             products = None
 
-        menu_entry = MenuEntry.objects.create(restaurant=restaurant, **self.validated_data)
+        menu_entry = MenuEntry.objects.create(restaurant=restaurant,
+                                              menu=menu,
+                                              **self.validated_data)
 
         if products:
-            # se ho dei MenuEntry di QUESTO RISTORANTE
+            # se ho dei Prodotti di QUESTO RISTORANTE
             for itm in products:
                 try:
                     t = Product.objects.all().filter(restaurant=restaurant).get(id=itm)
@@ -60,19 +62,14 @@ class WriteMenuEntrySerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    entries = MenuEntrySerializer(many=True)
+    entries = serializers.SerializerMethodField()
 
     class Meta:
         model = Menu
         fields = ('id', 'name', 'description', 'price', 'entries')
 
-
-class MenuSerializer(serializers.ModelSerializer):
-    entries = MenuEntrySerializer(many=True)
-
-    class Meta:
-        model = Menu
-        fields = ('id', 'name', 'description', 'price', 'entries')
+    def get_entries(self, obj):
+        return MenuEntrySerializer(obj.get_entries(), many=True).data
 
 
 class WriteMenuSerializer(serializers.ModelSerializer):

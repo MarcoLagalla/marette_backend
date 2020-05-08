@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import flatten_fieldsets
-from django.forms import ModelForm
+import django.forms
 from rest_framework.exceptions import ValidationError
 
 from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount
@@ -52,7 +52,35 @@ admin.site.register(ProductTag)
 
 admin.site.register(ProductDiscount)
 
-admin.site.register(Menu)
+
+class MenuInline(django.forms.ModelForm):
+
+    entries = django.forms.MultipleChoiceField(disabled=True)
+
+    class Meta:
+        model = Menu
+        fields = "__all__"
+        readonly_fields = ('entries',)
+
+    def __init__(self, *args, **kwargs):
+        super(MenuInline, self).__init__(*args, **kwargs)
+        choises = MenuEntry.objects.all().filter(menu=self.instance.pk).values_list('id', 'name')
+        active_id = []
+        for id, name in choises:
+            active_id.append(id)
+        self.fields['entries'] = django.forms.MultipleChoiceField(choices=choises)
+        self.initial['entries'] = active_id
+        self.fields['entries'].disabled = True
+
+    def delete_model(self, request, obj):
+        for entry in obj.entries.all():
+            entry.delete()
+        return super(MenuInline, self).delete_model(request, obj)
+
+class MenuAdmin(ModelAdmin):
+  form = MenuInline
+
+admin.site.register(Menu, MenuAdmin)
 
 admin.site.register(MenuEntry)
 
