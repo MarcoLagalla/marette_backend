@@ -26,9 +26,9 @@
   <v-divider />
               <div class="actions">
                 <button class="share">
-                  Condividi <v-icon color="orange"> mdi-share-variant </v-icon>
+                  Condividi <v-icon color="var(--herb)"> mdi-share-variant </v-icon>
                 </button>
-                <button class="like">  <v-icon color="orange"> mdi-heart </v-icon></button>
+                <button class="like">  <v-icon color="var(--herb)"> mdi-heart </v-icon></button>
               </div>
             </v-card>
           </router-link>
@@ -59,11 +59,11 @@ export default {
 <style scoped>
 .body {
   /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
-  background:var(--herb);
+  background:var(--chilli);
 }
 .divider {
   width: 50px;
-  background: var(--chilli);
+  background: var(--herb);
   height: 5px;
   margin: auto;
   margin-top: 10px;
@@ -88,18 +88,18 @@ export default {
 }
 .share {
   font-weight: bold;
-  color: orange;
+  color: var(--herb);
   border-radius: 25px;
   padding: 10px;
   font-size: 1em;
   transition: 0.3s ease-in-out;
 }
 .share:hover {
-  color: darkorange;
+  color: var(--herb);
   opacity: 1;
 }
 .shalikere:hover {
-  color: darkorange;
+  color: var(--herb);
   opacity: 1;
 }
 
