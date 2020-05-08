@@ -70,16 +70,3 @@ class Business(models.Model):
 
     class Meta:
         verbose_name_plural = "Businesses"
-
-
-# Remove empty avatar dirs
-
-@receiver(post_save, sender=Business)
-@receiver(post_save, sender=Customer)
-def clean_empty_folder(sender, instance, **kwargs):
-    for root, dirs, files in os.walk(os.path.join(settings.MEDIA_ROOT, 'avatars')):
-        for d in dirs:
-            dir = os.path.join(root, d)
-            # check if dir is empty
-            if not os.listdir(dir):
-                os.rmdir(dir)
