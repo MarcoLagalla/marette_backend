@@ -17,22 +17,18 @@ from ..models.menu import Menu, MenuEntry
 from .menus_serializers import MenuSerializer, WriteMenuSerializer, MenuEntrySerializer, WriteMenuEntrySerializer
 
 
-class ListMenus(ListAPIView):
-    serializer_class = MenuSerializer
+class ListMenus(APIView):
 
-    def get_queryset(self):
-        restaurant_id = self.kwargs['id']
+    def get(self, request, id):
         try:
-            restaurant = Restaurant.objects.all().get(id=restaurant_id)
+            restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        menus = Menu.objects.filter(restaurant=restaurant)
-        if menus.count() == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        menus = Menu.objects.all().filter(restaurant=restaurant)
+        serializer = MenuSerializer(menus, many=True)
 
-        return menus
-
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AddMenu(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -156,19 +152,7 @@ class EditMenu(APIView):
 
                             serializer = WriteMenuSerializer(data=request.data)
                             if serializer.is_valid():
-
                                 data = request.data
-                                if 'entries' in data:
-                                    menu.entries.clear()
-                                    for d in data['entries']:
-                                        try:
-                                            entry = MenuEntry.objects.all().filter(restaurant=restaurant).get(id=d)
-                                            if entry:
-                                                menu.entries.add(d)
-                                        except MenuEntry.DoesNotExist:
-                                            pass
-                                    del data['entries']
-
                                 for key in data:
                                     setattr(menu, key, data[key])
                                 menu.save()
