@@ -193,7 +193,7 @@ class MenuEntryAdd(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id):
+    def post(self, request, id, m_id):
         try:
             user = Business.objects.all().get(user=self.request.user)
         except Business.DoesNotExist:
@@ -204,12 +204,17 @@ class MenuEntryAdd(APIView):
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        try:
+            menu = Menu.objects.all().get(id=m_id)
+        except Menu.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         data = {}
         if user:
             if user == restaurant.owner:
                 serializer = WriteMenuEntrySerializer(data=request.data)
                 if serializer.is_valid():
-                    menuentry = serializer.save(restaurant)
+                    menuentry = serializer.save(restaurant, menu)
                     menuentry.save()
                     data = serializer.data
                     data.update({'id': menuentry.id})
@@ -224,12 +229,17 @@ class MenuEntryDelete(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, me_id):
+    def post(self, request, id, m_id, me_id):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
             token = Token.objects.all().get(user=request.user).key
         except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            menu = Menu.objects.all().get(id=m_id)
+        except Menu.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if token == request.user.auth_token.key:
@@ -244,11 +254,11 @@ class MenuEntryDelete(APIView):
                     # verifico che il menu sia un menu del mio ristorante
                     try:
                         menu_entry = MenuEntry.objects.all() \
-                            .filter(restaurant=restaurant).get(id=me_id)
+                            .filter(restaurant=restaurant).filter(menu=menu).get(id=me_id)
                         if menu_entry:
                             menu_entry.delete()
                             return Response(status=status.HTTP_200_OK)
-                    except Menu.DoesNotExist:
+                    except MenuEntry.DoesNotExist:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -264,12 +274,17 @@ class MenuEntryEdit(APIView):
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
-    def post(self, request, id, me_id):
+    def post(self, request, id, m_id, me_id):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
             token = Token.objects.all().get(user=request.user).key
         except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            menu = Menu.objects.all().get(id=m_id)
+        except Menu.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if token == request.user.auth_token.key:
@@ -284,7 +299,7 @@ class MenuEntryEdit(APIView):
                     # verifico che il menu sia un menu del mio ristorante
                     try:
                         menu_entry = MenuEntry.objects.all() \
-                            .filter(restaurant=restaurant).get(id=me_id)
+                            .filter(restaurant=restaurant).filter(menu=menu).get(id=me_id)
                         if menu_entry:
 
                             serializer = WriteMenuEntrySerializer(data=request.data)
@@ -309,7 +324,7 @@ class MenuEntryEdit(APIView):
                             else:
                                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-                    except Menu.DoesNotExist:
+                    except MenuEntry.DoesNotExist:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -322,15 +337,19 @@ class MenuEntryEdit(APIView):
 
 class MenuEntryDetail(APIView):
 
-    def get(self, request, id, me_id):
+    def get(self, request, id, m_id, me_id):
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            menu = Menu.objects.all().get(id=m_id)
+        except Menu.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            menu_entry = MenuEntry.objects.all().filter(restaurant=restaurant).get(id=me_id)
+            menu_entry = MenuEntry.objects.all().filter(restaurant=restaurant).filter(menu=menu).get(id=me_id)
         except MenuEntry.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
