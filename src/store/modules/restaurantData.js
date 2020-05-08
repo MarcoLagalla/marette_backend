@@ -39,7 +39,8 @@ const getters = {
     components: state => state.restData.components,
     restData: state => state.restData,
     tags: state => state.tags,
-    discounts: state => state.discounts
+    discounts: state => state.discounts,
+    id: state => state.ID,
 }
 
 const actions = {

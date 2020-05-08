@@ -58,7 +58,7 @@ import PictureInput from "vue-picture-input";
 
 export default {
   name: "NewRestaurant",
-    components: {
+  components: {
     PictureInput,
   },
   data() {
@@ -77,7 +77,7 @@ export default {
   methods: {
     ...mapActions('restaurants', ['newRestaurant']),
     register: function() {
-        const data = {
+      const data = {
         activity_name: this.activity_name,
         activity_description: this.activity_description,
         city: this.city,
@@ -87,28 +87,31 @@ export default {
         restaurant_number: this.restaurant_number,
         p_iva: this.p_iva
       };
-         const formData = new FormData();
-          formData.append('image', this.image);
-          formData.append('data', JSON.stringify(data));
-      this.newRestaurant(formData).then((response) => {
-        this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
-      }).catch(error => {
-        var id = Object.keys(error)[0];
-        document.getElementById(id).scrollIntoView(false)
-        document.getElementById(id).focus({
-          preventScroll: true
-        });
-      })
+
+      const formData = new FormData();
+      formData.append('image', this.image);
+      formData.append('data', JSON.stringify(data));
+
+      this.newRestaurant(formData)
+        .then((response) => {
+          this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
+        })
+        .catch(error => {
+          var id = Object.keys(error)[0];
+          document.getElementById(id).scrollIntoView(false)
+          document.getElementById(id).focus({
+            preventScroll: true
+          });
+        })
     },
 
-      onChanged() {
-        console.log("New picture loaded");
-        if (this.$refs.restImage.file) {
-          this.image = this.$refs.restImage.file;
-        } else {
-          console.log("Old browser. No support for Filereader API");
-        }
-      },
+    onChanged() {
+      if (this.$refs.restImage.file) {
+        this.image = this.$refs.restImage.file;
+      } else {
+        console.log("Old browser. No support for Filereader API");
+      }
+    },
 
 
   },

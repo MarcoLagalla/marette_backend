@@ -36,8 +36,8 @@ export default {
             })
     },
 
-    updateRestaurantData(payload) {
-        return api.post('v1/webapp/restaurant/' + payload.id + '/update', payload.data)
+    updateRestaurantData(id, data) {
+        return api.post('v1/webapp/restaurant/' + id + '/update', data)
             .then(response => {
                 return response
             })
