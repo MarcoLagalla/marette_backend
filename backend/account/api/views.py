@@ -42,6 +42,7 @@ class CustomerAPIView(APIView):
     permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
+    @transaction.atomic()
     def post(self, request):
         serializer = CustomerSerializer(data=request.data)
         data = {}
@@ -67,6 +68,7 @@ class BusinessAPIView(APIView):
     permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
+    @transaction.atomic()
     def post(self, request):
         serializer = BusinessSerializer(data=request.data)
         data = {}
@@ -156,7 +158,7 @@ class UpdatePassword(APIView):
 
             try:
                 user_to_update = User.objects.all().get(id=id)
-            except User.DoesNotExist():
+            except User.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
             try:
@@ -208,16 +210,16 @@ class ActivateUserAPIView(APIView):
     def get(self, request, id, token):
         try:
             user = User.objects.get(pk=id)
-        except User.DoesNotExist():
+        except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if user:
             try:
                 utente = Customer.objects.get(user=user)
-            except Customer.DoesNotExist():
+            except Customer.DoesNotExist:
                 try:
                     utente = Business.objects.get(user=user)
-                except Business.DoesNotExist():
+                except Business.DoesNotExist:
                     return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
             if account_activation_token.check_token(user, token) and utente:
@@ -277,20 +279,30 @@ class ResetPasswordAPIView(APIView):
 
 
 class UserProfileAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
-        user = get_object_or_404(User, id=id)
 
-        if user and not user.is_superuser:
-            token = get_object_or_404(Token, user=user)
-            if request.user.auth_token.key == token.key:
+        try:
+            user = User.objects.all().get(id=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if user:
+            if request.user.auth_token.key == token or request.user.is_superuser:
                 # check if customer
                 try:
                     data = {}
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
                     data.update(serializer.data)
+                    data.update({'avatar': customer.get_image()})
                     data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
@@ -298,6 +310,7 @@ class UserProfileAPIView(APIView):
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
                         data.update(serializer.data)
+                        data.update({'avatar': business.get_image()})
                         data.update({'type': 'business'})
 
                         # retrieve the list of restaurants

@@ -324,7 +324,7 @@ class MenuEntryDetail(APIView):
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
-        except Restaurant.DoesNotExist():
+        except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
