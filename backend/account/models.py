@@ -1,7 +1,12 @@
+from sys import path
+import os
+from django.conf import settings
 from django.db import models
 from django.core import validators as valids
 import unidecode, re
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
@@ -16,7 +21,7 @@ def randomString(stringLength=8):
 def content_file_name(instance, filename):
     name, ext = filename.split('.')
     file_path = 'avatars/{customer_id}/{rand}/avatar.{ext}'.format(
-         customer_id=instance.id, rand=randomString(4), ext=ext)
+         customer_id=instance.user.id, rand=randomString(5), ext=ext)
     return file_path
 
 
@@ -65,3 +70,16 @@ class Business(models.Model):
 
     class Meta:
         verbose_name_plural = "Businesses"
+
+
+# Remove empty avatar dirs
+
+@receiver(post_save, sender=Business)
+@receiver(post_save, sender=Customer)
+def clean_empty_folder(sender, instance, **kwargs):
+    for root, dirs, files in os.walk(os.path.join(settings.MEDIA_ROOT, 'avatars')):
+        for d in dirs:
+            dir = os.path.join(root, d)
+            # check if dir is empty
+            if not os.listdir(dir):
+                os.rmdir(dir)

@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
 import re
@@ -44,7 +46,19 @@ class CustomerAPIView(APIView):
     # non authenticated users can create a new user
     @transaction.atomic()
     def post(self, request):
-        serializer = CustomerSerializer(data=request.data)
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except (KeyError, Exception):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        serializer = CustomerSerializer(data=input_data)
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
@@ -70,7 +84,19 @@ class BusinessAPIView(APIView):
     # non authenticated users can create a new user
     @transaction.atomic()
     def post(self, request):
-        serializer = BusinessSerializer(data=request.data)
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except (KeyError, Exception):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        serializer = BusinessSerializer(data=input_data)
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
@@ -344,8 +370,20 @@ class UpdateCostumerUserProfile(APIView):
         except Customer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        input_data = {}
         try:
-            phone = request.data.pop('phone')
+            input_data = json.loads(request.data['data'])
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        try:
+            phone = input_data.get('phone')
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -356,54 +394,76 @@ class UpdateCostumerUserProfile(APIView):
             # numero di telefono
             if phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
                 user.phone = phone
-                user.save()
-                return Response(status=status.HTTP_200_OK)
             else:
                 return Response({'phone': 'Il numero di telefono non è valido.'},
                                 status=status.HTTP_400_BAD_REQUEST)
+            if avatar:
+                user.avatar = avatar
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UpdateBusinessUserProfile(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
     def post(self, request, id):
+
         try:
             user = Business.objects.get(user_id=id)
         except Business.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response("ok",status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=user.user).key
+        except Token.DoesNotExist:
+            return Response("2", status=status.HTTP_404_NOT_FOUND)
+
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
 
         missing_keys = False
         value_errors = {}
 
         try:
-            phone = request.data.pop('phone')
+            phone = input_data.pop('phone')
         except KeyError:
             missing_keys = True
             value_errors.update({'phone': 'Il campo non può essere vuoto.'})
 
         try:
-            city = request.data.pop('city')
+            city = input_data.pop('city')
         except KeyError:
             missing_keys = True
             value_errors.update({'city': 'Il campo non può essere vuoto.'})
 
         try:
-            address = request.data.pop('address')
+            address = input_data.pop('address')
         except KeyError:
             missing_keys = True
             value_errors.update({'address': 'Il campo non può essere vuoto.'})
 
         try:
-            n_civ = request.data.pop('n_civ')
+            n_civ = input_data.pop('n_civ')
         except KeyError:
             missing_keys = True
             value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
 
         try:
-            cap = request.data.pop('cap')
+            cap = input_data.pop('cap')
         except KeyError:
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
@@ -417,7 +477,7 @@ class UpdateBusinessUserProfile(APIView):
             validation_errors_ = True
             validation_errors.update({'phone': 'Il numero di telefono deve essere valido'})
 
-        cap_validator = re.match('^[0-9]{5}$', cap)
+        cap_validator = re.match('^[0-9]{5}$', str(cap))
         if not cap_validator:
             validation_errors_ = True
             validation_errors.update({'cap': 'Inserire un CAP valido.'})
@@ -425,9 +485,7 @@ class UpdateBusinessUserProfile(APIView):
         if validation_errors_:
             return Response(validation_errors, status=status.HTTP_400_BAD_REQUEST)
 
-        token = get_object_or_404(Token, user=user.user)
-
-        if request.user.auth_token == token:
+        if request.user.auth_token.key == token:
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
             user.city = city
@@ -435,7 +493,11 @@ class UpdateBusinessUserProfile(APIView):
             user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
+            if avatar:
+                user.avatar = avatar
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
