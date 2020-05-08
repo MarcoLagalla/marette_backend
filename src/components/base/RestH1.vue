@@ -26,6 +26,6 @@ export default {
   background-color: #fff9ec !important;
 }
 .basil--text {
-  color: var(--herb) !important;
+  color: var(--chilli) !important;
 }
 </style>

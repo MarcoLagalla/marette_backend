@@ -3,8 +3,11 @@
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
+        <v-col  cols="6" md="6">
+          <base-add-menu></base-add-menu>
+        </v-col>
         <v-col v-for="(item, i) in items2" :key="i" cols="6" md="6">
-          <v-card  color="mx-auto" width="800" height="800">
+          <v-card  color="vetrinacard" width="800" height="800">
             <v-card-title class="headline" v-text="item.title"></v-card-title>
             <v-card-subtitle v-text="item.artist"></v-card-subtitle>
             <v-card-actions>
@@ -12,9 +15,6 @@
             </v-card-actions>
           </v-card>
 
-        </v-col>
-        <v-col  cols="6" md="6">
-          <base-add-menu></base-add-menu>
         </v-col>
       </v-row>
     </v-container>
@@ -46,7 +46,7 @@ export default {
 <style scoped>
 .body {
   margin: 0 !important;
-  background: firebrick;
+  background: var(--whitesmoke);
 }
 h1 {
   color: white;
@@ -58,4 +58,8 @@ h1 {
   bottom: 10px;
   right: 10px;
 }
+  .vetrinacard {
+    box-shadow: 0 0 10px var(--charcoal);
+
+  }
 </style>

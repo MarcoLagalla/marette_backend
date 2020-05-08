@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <v-text-field v-model='name' type="text" label="Nome della portata" required></v-text-field>
-    <v-text-field v-model='num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
+  <div class="addportata">
+    <v-text-field outlined v-model='name' type="text" label="Nome della portata" required></v-text-field>
+    <v-text-field outlined v-model='num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
 
     <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" >
@@ -51,5 +51,7 @@
 </script>
 
 <style scoped>
+.addportata {
 
+}
 </style>

@@ -13,7 +13,7 @@
 
     <v-container>
       <v-row>
-        <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="6">
+        <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="4">
           <router-link :to="restaurant.url">
             <v-card v-bind="restaurant" class="restcard" max-width="400">
               <v-img class="white--text align-end imag" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
@@ -105,10 +105,11 @@ export default {
 
 .restcard {
   box-shadow: 0 0 5px var(--charcoal);
-  transition: 0.5s;
+  transition: 0.4s;
+    margin: 10px;
 }
 .restcard:hover {
-  box-shadow: 0 0 20px var(--charcoal)
+  box-shadow: 0 0 20px #FFFFFF;
 }
 .imag {
   box-shadow: 0 2px 2px var(--charcoal);

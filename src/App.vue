@@ -26,6 +26,7 @@
   --herb: #626e60;
   --chilli: #af473c;
   --charcoal: #3c3c3c;
+  --whitesmoke: #F5F5F5;
 }
 html {
   

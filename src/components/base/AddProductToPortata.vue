@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="portprod">
     <v-select :items="categories" label="Categoria del prodotto:" v-model="category" @change="choosedCategory = true"></v-select>
     <v-select :items="menu[category]" item-text="name" item-value="id" label="Selezionare prodotto:" v-model="productId" :disabled="!choosedCategory"></v-select>
     <v-btn :disabled="productId===''" @click="added_product">Aggiungi</v-btn>
@@ -47,5 +47,7 @@
 </script>
 
 <style scoped>
-
+.portprod {
+  ;
+}
 </style>
