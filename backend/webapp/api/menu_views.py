@@ -156,19 +156,7 @@ class EditMenu(APIView):
 
                             serializer = WriteMenuSerializer(data=request.data)
                             if serializer.is_valid():
-
                                 data = request.data
-                                if 'entries' in data:
-                                    menu.entries.clear()
-                                    for d in data['entries']:
-                                        try:
-                                            entry = MenuEntry.objects.all().filter(restaurant=restaurant).get(id=d)
-                                            if entry:
-                                                menu.entries.add(d)
-                                        except MenuEntry.DoesNotExist:
-                                            pass
-                                    del data['entries']
-
                                 for key in data:
                                     setattr(menu, key, data[key])
                                 menu.save()

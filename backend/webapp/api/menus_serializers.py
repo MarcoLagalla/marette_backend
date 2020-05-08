@@ -73,32 +73,14 @@ class MenuSerializer(serializers.ModelSerializer):
 
 
 class WriteMenuSerializer(serializers.ModelSerializer):
-    entries = serializers.ListField(required=False)
-
     class Meta:
         model = Menu
-        fields = ('id', 'name', 'description', 'price', 'entries')
+        fields = ('id', 'name', 'description', 'price')
 
     @transaction.atomic()
     def save(self, restaurant):
-        # i tags e i discounts sono oggetti a parte:
-        try:
-            entries = self.validated_data.pop('entries')
-        except KeyError:
-            entries = None
 
         menu = Menu.objects.create(restaurant=restaurant, **self.validated_data)
-
-        if entries:
-            # se ho dei MenuEntry di QUESTO RISTORANTE
-            for itm in entries:
-                try:
-                    t = MenuEntry.objects.all().filter(restaurant=restaurant).get(id=itm)
-                    menu.entries.add(t)
-                except MenuEntry.DoesNotExist:
-                    pass
-
-        # salvo le modifiche
         menu.save()
 
         return menu

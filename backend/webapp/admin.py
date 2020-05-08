@@ -55,7 +55,7 @@ admin.site.register(ProductDiscount)
 
 class MenuInline(django.forms.ModelForm):
 
-    entries = django.forms.MultipleChoiceField(disabled=True)
+    entries = django.forms.MultipleChoiceField(disabled=True, required=False)
 
     class Meta:
         model = Menu
@@ -71,6 +71,7 @@ class MenuInline(django.forms.ModelForm):
         self.fields['entries'] = django.forms.MultipleChoiceField(choices=choises)
         self.initial['entries'] = active_id
         self.fields['entries'].disabled = True
+        self.fields['entries'].required = False
 
     def delete_model(self, request, obj):
         for entry in obj.entries.all():
