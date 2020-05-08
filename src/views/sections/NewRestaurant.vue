@@ -27,6 +27,22 @@
             </v-text-field>
             <v-text-field label="Partita iva associata al locale*" :error-messages="errors.p_iva" @change="errors.p_iva=''" v-model='p_iva' type="number" id="p_iva" name="p_iva" required></v-text-field>
           </v-row>
+          <v-row align="center" class="ma-0" justify="center">
+            <picture-input
+              ref="restImage"
+              @change="onChanged"
+              :width="300"
+              :height="300"
+              size="5"
+              :crop="true"
+              :changeOnClick="false"
+              accept="image/jpeg, image/png, image/gif"
+              buttonClass="ui button primary"
+              :customStrings="{
+              upload: '<h1>Carica immagine</h1>',
+              drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
+            </picture-input>
+          </v-row>
         </v-col>
         <button type="submit" class="registerbtn">Aggiungi ristorante</button>
       </form>
@@ -38,8 +54,13 @@
 import {
   mapActions
 } from 'vuex'
+import PictureInput from "vue-picture-input";
+
 export default {
   name: "NewRestaurant",
+    components: {
+    PictureInput,
+  },
   data() {
     return {
       activity_name: '',
@@ -49,13 +70,14 @@ export default {
       n_civ: '',
       cap: '',
       restaurant_number: '',
-      p_iva: ''
+      p_iva: '',
+      image: '',
     }
   },
   methods: {
     ...mapActions('restaurants', ['newRestaurant']),
     register: function() {
-      this.newRestaurant({
+        const data = {
         activity_name: this.activity_name,
         activity_description: this.activity_description,
         city: this.city,
@@ -64,7 +86,11 @@ export default {
         cap: this.cap,
         restaurant_number: this.restaurant_number,
         p_iva: this.p_iva
-      }).then((response) => {
+      };
+         const formData = new FormData();
+          formData.append('image', this.image);
+          formData.append('data', JSON.stringify(data));
+      this.newRestaurant(formData).then((response) => {
         this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
       }).catch(error => {
         var id = Object.keys(error)[0];
@@ -73,7 +99,18 @@ export default {
           preventScroll: true
         });
       })
-    }
+    },
+
+      onChanged() {
+        console.log("New picture loaded");
+        if (this.$refs.restImage.file) {
+          this.image = this.$refs.restImage.file;
+        } else {
+          console.log("Old browser. No support for Filereader API");
+        }
+      },
+
+
   },
   computed: {
     errors() {
