@@ -13,10 +13,10 @@ from django.contrib.auth.hashers import make_password
 
 
 class CustomerRegistrationTestCase(APITestCase):
-    user = None
 
     @classmethod
     def setUpTestData(cls):
+        """ Static method for the access of a base customer user need to perform tests. """
         superuser = User.objects.create_superuser(username='admin',
                                                        email='admin@gmail.com',
                                                        password='1234')
@@ -25,11 +25,6 @@ class CustomerRegistrationTestCase(APITestCase):
         base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app', password=make_password('12345'))
 
         base_customer = Customer.objects.create(user=base_user, **data)
-
-
-    def setUp(self):
-        pass
-
 
     def test_can_create_user(self):                                                  # TODO NON SALVA EFFETTIVAMENTE GLI UTENTI NEL DB
         response = self.client.post(reverse('account:register_customer'), self.data)
