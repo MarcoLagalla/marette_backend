@@ -3,7 +3,7 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" >
-          <v-card color="#616161" dark class="product">
+          <v-card color="var(--ming)" dark class="product">
             <div class="d-flex flex-no-wrap justify-space-between">
               <div class="quant">
                 <div class>
@@ -23,15 +23,17 @@
                   <div v-text="product.price"></div>
                   <v-icon small class="quant">fas fa-euro-sign</v-icon>
                 </div>
-                <v-btn color="red" class="managebutton">
+                <div class="mngbtn">
+                <v-btn class="managebutton">
                   <i class="fas fa-shopping-basket"></i>
                 </v-btn>
-                <v-btn color="red" class="managebutton">
+                <v-btn class="managebutton">
                   <i class="fas fa-percent"></i>
                 </v-btn>
-                <v-btn color="red" class="managebutton">
+                <v-btn class="managebutton">
                   <i class="fas fa-times"></i>
                 </v-btn>
+                </div>
               </v-card-actions>
             </div>
           </v-card>
@@ -100,7 +102,7 @@ h1 {
   top: 0;
   bottom: 0;
   width: 100%;
-  background: firebrick;
+  background: var(--whitesmoke);
 }
 .quant {
   padding: 5px;
@@ -111,11 +113,13 @@ h1 {
   padding: 15px;
 }
 .managebutton {
-  transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: 0.3s ease-in-out;
+  background: var(--chilli)!important;
+  display: block;
+  margin-top: 5px;
 }
 .managebutton:hover {
   scale: 1.1;
-  background: rgba(255, 0, 0, 0.9);
 }
 .product {
   transition: ease-in-out 0.4s;

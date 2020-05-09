@@ -26,7 +26,7 @@
           name="price"
           required
         ></v-text-field>
-              <v-btn @click="toggleShowTags">Inserisci i tag</v-btn>
+              <button class="manage" @click="toggleShowTags">Inserisci i tag</button>
         <br>
           <v-card
             v-show="showTags"
@@ -92,12 +92,12 @@
         <br><br>
 
 
-     <button type="submit" class="addconf">Aggiungi Prodotto</button>
+     <button type="submit" class="manage">Aggiungi Prodotto</button>
 
     </v-form>
         <br><br>
 
-      <v-btn @click="toggleShowDiscounts">Mostra lista sconti disponibili</v-btn>
+      <button class="manage" @click="toggleShowDiscounts">Mostra lista sconti disponibili</button>
         <br>
         <div v-show="showDiscounts">
           <v-card
@@ -145,7 +145,7 @@
             </v-card>
         <br>
 
-            <v-btn @click="toggleAddDiscount"> Inserisci nuovo sconto</v-btn>
+            <button class="manage" @click="toggleAddDiscount"> Inserisci nuovo sconto</button>
               <v-card
               v-show="showAddDiscount"
               class="mx-auto"
@@ -311,15 +311,15 @@ export default {
   width: 50%;
   padding: 20px;
 }
-.addconf {
+.manage {
   padding: 10px;
   border-radius: 25px;
-  border: inset 2px red;
-  background: rgba(255, 0, 0, 0.5);
+  border: inset 2px var(--charcoal);
+  background: var(--charcoal);
   transition: ease 0.4s  ;
-  color:black;
+  color:white;
 }
-.addconf:hover {
+.manage:hover {
   box-shadow: 0 0 10px black;
 }
 </style>

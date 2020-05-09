@@ -11,7 +11,7 @@
             <v-card-title class="headline" v-text="item.title"></v-card-title>
             <v-card-subtitle v-text="item.artist"></v-card-subtitle>
             <v-card-actions>
-              <v-btn color="red" class="addtocart">add to cart</v-btn>
+              <button class="addtocart">Aggiungi al carrello <i class="fas fa-shopping-basket"></i></button>
             </v-card-actions>
           </v-card>
 
@@ -57,6 +57,12 @@ h1 {
   position: absolute;
   bottom: 10px;
   right: 10px;
+  background: var(--chilli);
+  padding: 10px;
+  color: white;
+  border-radius: 25px;
+  border: inset 2px var(--chilli);
+  font-weight: bold;
 }
   .vetrinacard {
     box-shadow: 0 0 10px var(--charcoal);

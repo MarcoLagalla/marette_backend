@@ -27,6 +27,7 @@
   --chilli: #af473c;
   --charcoal: #3c3c3c;
   --whitesmoke: #F5F5F5;
+  --emerald: #00916E;
 }
 html {
   
