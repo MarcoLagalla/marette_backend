@@ -135,7 +135,7 @@ const actions = {
             manageProduct.listDiscounts(state.ID)
             .then(resp => {
                 commit('LIST_DISCOUNTS_SUCCESS', resp.data)
-                console.log(resp)
+                console.log(resp.data)
                 resolve(resp.data)
             })
             .catch(err => {
