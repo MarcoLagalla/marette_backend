@@ -6101,6 +6101,8 @@ postcss-discard-overridden@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/postcss-discard-overridden/-/postcss-discard-overridden-4.0.1.tgz#652aef8a96726f029f5e3e00146ee7a4e755ff57"
   integrity sha512-IYY2bEDD7g1XM1IDEsUT4//iEYCxAmP5oDSFMVU/JVvT7gh+l4fmjciLqGgwjdWpQIdb0Che2VX00QObS5+cTg==
+  dependencies:
+    postcss "^7.0.0"
 
 postcss-load-config@^2.0.0:
   version "2.1.0"
@@ -6338,6 +6340,10 @@ postcss-selector-parser@^6.0.0, postcss-selector-parser@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.0.2.tgz#934cf799d016c83411859e09dcecade01286ec5c"
   integrity sha512-36P2QR59jDTOAiIkqEprfJDsoNrvwFei3eCqKd1Y0tUsBimsq39BLp7RD+JWny3WgB1zGhJX8XVePwm9k4wdBg==
+  dependencies:
+    cssesc "^3.0.0"
+    indexes-of "^1.0.1"
+    uniq "^1.0.1"
 
 postcss-svgo@^4.0.2:
   version "4.0.2"
@@ -8101,6 +8107,11 @@ vue-loader@^15.8.3:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-picture-input@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/vue-picture-input/-/vue-picture-input-2.1.6.tgz#6a47af68d19c9122cdd20de980d3b113b0a614be"
+  integrity sha512-aM5Pyjz3Kup35/6OCjpgA0BEpLTW9YuN7Ds44XLibXZcxnYYLQezmXpb6IXg/orVTMwMLWNpsHCT3wPhLfjdeA==
 
 vue-router@^3.1.5:
   version "3.1.6"

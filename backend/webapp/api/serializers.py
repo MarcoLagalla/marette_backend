@@ -1,34 +1,61 @@
 from collections import OrderedDict
 from operator import itemgetter
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models import Restaurant, RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
+from ..models.models import Restaurant, RestaurantDiscount
+from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
-from ...account.models import Business
 from ...account.api.serializers import BusinessSerializer
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
 
 
+class RestaurantDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantDiscount
+        fields = ('id', 'title', 'category', 'type', 'value', )
+
+    @transaction.atomic
+    def save(self, restaurant):
+        try:
+
+            restaurant_discount = RestaurantDiscount.objects.create(
+                restaurant=restaurant,
+                **self.validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'Questo sconto esiste già.'})
+
+        return restaurant_discount
+
+
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
+    discounts = RestaurantDiscountSerializer(many=True, required=False)
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Restaurant
-        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'city', 'address', 'n_civ', 'cap']
+        fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'image',
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
+
+    def get_image(self, obj):
+        return obj.get_image()
 
 
 class CreateRestaurantSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
     class Meta:
         model = Restaurant
-        fields = ['id', 'activity_name', 'activity_description', 'city',
+        fields = ['id', 'activity_name', 'activity_description', 'city', 'image',
                   'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
     @transaction.atomic
-    def save(self):
-        business_user = self.context.get("business_user")
+    def save(self, owner):
 
         try:
             if not vat_number_validation(self.validated_data['p_iva']):
@@ -36,17 +63,19 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-        restaurant = Restaurant.objects.create(owner=business_user, **self.validated_data)
+
+        restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
 
+
         # create ComponentsPanels (empty)
-        home = HomeComponent.objects.create(restaurant=restaurant, name='Home')
-        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='Vetrina')
-        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='Galleria')
-        eventi = EventiComponent.objects.create(restaurant=restaurant, name='Eventi')
-        menu = MenuComponent.objects.create(restaurant=restaurant, name='Menu')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='Menu')
+        home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
+        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
+        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
+        eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
+        menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTACI')
 
         RestaurantComponents.objects.create(
             restaurant=restaurant,
@@ -62,29 +91,74 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
 
 
 class HomeSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(required=False)
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = HomeComponent
-        fields = ('id', 'show')
+        fields = ('id', 'show', 'name', 'description', 'image')
+
+    def get_image(self, instance):
+        return instance.get_image()
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class VetrinaSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = VetrinaComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'menu_giorno', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class MenuSerializer(serializers.ModelSerializer):
-            class Meta:
-                model = MenuComponent
-                fields = ('id', 'show')
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MenuComponent
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class GalleriaSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = GalleriaComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'immagini', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class EventiSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = EventiComponent
-        fields = ('id', 'show')
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
+
 class ContattaciSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
-        model = EventiComponent
-        fields = ('id', 'show')
+        model = ContattaciComponent
+        fields = ('id', 'name', 'show')
+
+    def get_name(self, instance):
+        return instance.get_name()
+
 
 class RestaurantComponentsSerializer(serializers.ModelSerializer):
     home = HomeSerializer()

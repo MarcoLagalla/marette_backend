@@ -22,20 +22,31 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
     password2 = serializers.CharField(style={'input_style': 'password'}, write_only=True)
 
     birth_date = serializers.CharField(required=False)
-    #is_active = serializers.BooleanField(source='user.is_active', read_only=True)
     is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
 
     id = serializers.IntegerField(source='user.id', read_only=True)
 
+    avatar = serializers.ImageField(required=False)
+
     class Meta:
         model = Customer
         fields = ['id', 'username', 'email', 'password', 'password2', 'first_name', 'last_name',
-                  'birth_date', 'phone', 'email_activated', 'is_superuser']
+                  'birth_date', 'phone', 'email_activated', 'is_superuser', 'avatar']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
             'email': {UniqueValidator: 'Esiste già un utente con questa email.'},
             'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
         }
+
+    def to_representation(self, instance):
+        my_fields = {'avatar'}
+        data = super().to_representation(instance)
+        for field in my_fields:
+            try:
+                    data[field] = instance.get_image()
+            except KeyError:
+                pass
+        return data
 
     @transaction.atomic
     def save(self):
@@ -69,9 +80,11 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
     id = serializers.IntegerField(source='user.id', read_only=True)
 
+    avatar = serializers.ImageField(required=False)
+
     class Meta:
         model = Business
-        fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name',
+        fields = ['id', 'username', 'password', 'password2', 'email', 'first_name', 'last_name', 'avatar',
                   'cf', 'birth_date', 'city', 'address', 'n_civ', 'cap', 'phone', 'email_activated']
         custom_error_messages_for_validators = {
             'username': {UniqueValidator: 'Esiste già un utente con questo username.'},
@@ -80,6 +93,16 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
             'phone': {UniqueValidator: 'Esiste già un utente con questo numero.'},
             'birth_date': {RegexValidator: 'prova'},
         }
+
+    def to_representation(self, instance):
+        my_fields = {'avatar'}
+        data = super().to_representation(instance)
+        for field in my_fields:
+            try:
+                    data[field] = instance.get_image()
+            except KeyError:
+                pass
+        return data
 
     @transaction.atomic
     def save(self):
@@ -106,7 +129,7 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.CharField()
     password = serializers.CharField()
 
 

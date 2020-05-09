@@ -48,17 +48,20 @@ class OwnProfilePermission(permissions.BasePermission):
 
 class IsBusiness(permissions.BasePermission):
     def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
 
         try:
             business = Business.objects.get(user_id=request.user.id)
         except Business.DoesNotExist:
             return False
-
         return request.user or request.user.is_superuser
 
 
 class IsCustomer(permissions.BasePermission):
     def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
 
         try:
             customer = Customer.objects.get(user_id=request.user.id)

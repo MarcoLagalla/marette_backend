@@ -1,14 +1,27 @@
 from rest_framework import serializers
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404
 
-from ..models import Product, ProductDiscount, ProductTag
+from ..models.models import Product, ProductDiscount, ProductTag
 
 
 class ProductDiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDiscount
         fields = ('id', 'title', 'type', 'value', )
+
+    @transaction.atomic()
+    def save(self, restaurant):
+
+        try:
+            product_discount = ProductDiscount.objects.create(
+                restaurant=restaurant,
+                **self.validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'Questo sconto esiste già.'})
+
+        return product_discount
 
 
 class ProductTagSerializer(serializers.ModelSerializer):
@@ -22,15 +35,18 @@ class ReadProductSerializer(serializers.ModelSerializer):
     discounts = ProductDiscountSerializer(many=True, required=False)
     final_price = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(required=False)
+    thumb_image = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'final_price', 'image', 'show_image')
+        fields = ('id', 'name', 'description', 'category', 'price', 'iva',
+                  'tags', 'discounts', 'final_price', 'image', 'thumb_image', 'show_image', 'available')
 
     def get_image(self, instance):
-        request = self.context.get('request')
         return instance.get_image()
+
+    def get_thumb_image(self, instance):
+        return instance.get_thumb_image()
 
     def get_final_price(self, obj):
         return obj.get_price_with_discount()
@@ -42,11 +58,12 @@ class WriteProductSerializer(serializers.ModelSerializer):
     discounts = serializers.ListField(required=False)
     image = serializers.ImageField(required=False)
     show_image = serializers.BooleanField(required=False, default=True)
+    available = serializers.BooleanField(required=False, default=True)
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'category', 'price',
-                  'tags', 'discounts', 'image', 'show_image')
+        fields = ('name', 'description', 'category', 'price', 'iva',
+                  'tags', 'discounts', 'image', 'show_image','available')
 
     def get_image_url(self, instance):
         request = self.context.get('request')

@@ -1,33 +1,65 @@
 <template>
-  <div class="about" id="about">
-    <h1>This is an about page</h1>
-  </div>
+<div>
+  <RestBanner v-if="activeComponents.includes('Home')" :restData="restData"></RestBanner>
+  <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
+  <Restmenu v-if="activeComponents.includes('Menu')" ></Restmenu>
+  <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+  <Info></Info>
+</div>
 </template>
 
-<style scoped="">
-  h1 {
-    color: red !important;
-  }
-</style>
+
 <script>
-  // Extensions
-  import View from '@/views/View'
+// Extensions
+import View from '@/views/View'
 
-  // Mixins
-  //import LoadSections from '@/mixins/load-sections'
+// Components
+import Restmenu from "../sections/RestMenu";
+import RestBanner from "../sections/RestBanner";
+import RestVetrina from "../sections/RestVetrina";
+import RestGalleria from "../sections/RestGalleria";
+import Info from "../sections/Info";
+import {
+  mapActions
+} from "vuex";
 
-  export default {
-    name: 'rest1',
+export default {
+  name: 'restaurant',
+  components: {
+    Restmenu,
+    RestBanner,
+    RestVetrina,
+    RestGalleria,
+    Info
+  },
+  metaInfo: {
+    title: 'Restaurant'
+  },
 
-    metaInfo: { title: 'Login' },
+  extends: View,
 
-    extends: View,
-
-    props: {
-      id: {
-        type: String,
-        default: 'login',
-      },
+  data() {
+    return {
+      restID: this.$route.params.id,
+      name: this.$route.params.name
+    }
+  },
+  methods: {
+    ...mapActions('restaurantData', ['getRestaurantData']),
+  },
+  created() {
+    this.getRestaurantData(this.restID).catch(error => {
+      if (error.status === 404)
+        this.$router.push('/404')
+    })
+  },
+  computed: {
+    activeComponents() {
+      return this.$store.getters['restaurantData/components']
     },
+    restData() {
+      return this.$store.getters['restaurantData/restData']
+    }
   }
+}
 </script>

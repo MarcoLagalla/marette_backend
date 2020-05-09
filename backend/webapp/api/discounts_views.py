@@ -11,26 +11,25 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, ProductDiscount
+from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, RestaurantDiscount
 from .products_serializers import ProductDiscountSerializer
+from .serializers import RestaurantDiscountSerializer
 
 
-class ListDiscounts(ListAPIView):
+class ListDiscounts(APIView):
 
-    serializer_class = ProductDiscountSerializer
-
-    def get_queryset(self):
-        restaurant_id = self.kwargs['id']
+    def get(self, request, id):
+        restaurant_id = id
         try:
             restaurant = Restaurant.objects.all().get(id=restaurant_id)
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         discounts = ProductDiscount.objects.filter(restaurant=restaurant)
-        if discounts.count() == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return discounts
+        serializer = ProductDiscountSerializer(discounts, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DetailsDiscounts(APIView):
@@ -68,11 +67,10 @@ class AddDiscounts(APIView):
                 # verifico che sia proprietario del ristorante
                 if restaurant.owner.user == request.user:
                     # è il proprietario, può aggiungere un discount
+
                     serializer = ProductDiscountSerializer(data=request.data)
                     if serializer.is_valid():
-                        d = serializer.save()
-                        d.restaurant = restaurant
-                        d.save()
+                        d = serializer.save(restaurant)
                         return Response(serializer.validated_data,
                                         status=status.HTTP_201_CREATED)
                     else:
@@ -125,7 +123,7 @@ class EditDiscounts(APIView):
                             else:
                                 return Response(serializer.errors,
                                                 status=status.HTTP_400_BAD_REQUEST)
-                    except Product.DoesNotExist:
+                    except ProductDiscount.DoesNotExist:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -166,7 +164,173 @@ class DeleteDiscounts(APIView):
                         if discount:
                             discount.delete()
                             return Response(status=status.HTTP_200_OK)
-                    except Product.DoesNotExist:
+                    except ProductDiscount.DoesNotExist:
+                        return Response(status=status.HTTP_404_NOT_FOUND)
+                else:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            except Restaurant.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class AddRestaurantDiscounts(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id):
+
+        # verifico che l'utente sia il proprietario del ristorante
+        try:
+            token = Token.objects.all().get(user=request.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key:
+            # utente loggato con token giusto
+            # cerco un ristorante con l'id richiesto e verifico la paternità
+            try:
+                restaurant = Restaurant.objects.all().get(id=id)
+
+                # verifico che sia proprietario del ristorante
+                if restaurant.owner.user == request.user:
+                    # creo il discount
+                    serializer = RestaurantDiscountSerializer(data=request.data)
+                    if serializer.is_valid():
+                        serializer.save(restaurant)
+                        return Response(status=status.HTTP_201_CREATED)
+                    else:
+                        return Response(serializer.errors,
+                                        status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            except Restaurant.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ListRestaurantDiscounts(APIView):
+
+    def get(self, request, id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            discounts = RestaurantDiscount.objects.all().filter(restaurant=restaurant)
+        except RestaurantDiscount.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = RestaurantDiscountSerializer(discounts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DetailsRestaurantDiscounts(APIView):
+
+    def get(self, request, id, d_id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            discounts = RestaurantDiscount.objects.all().filter(restaurant=restaurant).get(id=d_id)
+        except RestaurantDiscount.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = RestaurantDiscountSerializer(discounts)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EditRestaurantDiscounts(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id, d_id):
+
+        # verifico che l'utente sia il proprietario del ristorante
+        try:
+            token = Token.objects.all().get(user=request.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key:
+            # utente loggato con token giusto
+            # cerco un ristorante con l'id richiesto e verifico la paternità
+            try:
+                restaurant = Restaurant.objects.all().get(id=id)
+
+                # verifico che sia proprietario del ristorante
+                if restaurant.owner.user == request.user:
+                    try:
+                        discount = ProductDiscount.objects.all() \
+                            .filter(restaurant=restaurant).get(id=d_id)
+                        if discount:
+                            serializer = RestaurantDiscountSerializer(data=request.data)
+                            if serializer.is_valid():
+                                for key in serializer.validated_data:
+                                    setattr(discount, key, serializer.validated_data[key])
+
+                                discount.restaurant = restaurant
+                                discount.save()
+                                return Response(status=status.HTTP_200_OK)
+                            else:
+                                return Response(serializer.errors,
+                                                status=status.HTTP_400_BAD_REQUEST)
+                    except ProductDiscount.DoesNotExist:
+                        return Response(status=status.HTTP_404_NOT_FOUND)
+                else:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            except Restaurant.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class DeleteRestaurantDiscounts(APIView):
+
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id, d_id):
+
+        # verifico che l'utente sia il proprietario del ristorante
+
+        try:
+            token = Token.objects.all().get(user=request.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key:
+            # utente loggato con token giusto
+            # cerco un ristorante con l'id richiesto e verifico la paternità
+            try:
+                restaurant = Restaurant.objects.all().get(id=id)
+
+                # verifico che sia proprietario del ristorante
+                if restaurant.owner.user == request.user:
+
+                    # verifico che il prodotto sia un prodotto del mio ristorante
+                    try:
+
+                        discount = RestaurantDiscount.objects.all() \
+                            .filter(restaurant=restaurant).get(id=d_id)
+
+                        if discount:
+                            discount.delete()
+                            return Response(status=status.HTTP_200_OK)
+
+                    except RestaurantDiscount.DoesNotExist:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)

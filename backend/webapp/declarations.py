@@ -13,17 +13,31 @@ FOOD_CATEGORY_CHOICES = [
 ]
 
 FOOD_CATEGORY_CHOICES_IMAGES = {
-    'Altro':                'placeholder/product/altro.png',
-    'Antipasto':            'placeholder/product/antipasto.png',
-    'Contorno':             'placeholder/product/contorno.png',
-    'Dessert':              'placeholder/product/dessert.png',
-    'Caffetteria':          'placeholder/product/caffetteria.png',
-    'Panetteria':           'placeholder/product/panetteria.png',
-    'Panini e Piadine':     'placeholder/product/panini_e_piadine.png',
-    'Pizza':                'placeholder/product/pizza.png',
-    'Primo':                'placeholder/product/primo.png',
-    'Secondo':              'placeholder/product/secondo.png',
-    'Snack':                'placeholder/product/snack.png'
+    'Altro':                '/media/placeholder/product/altro.png',
+    'Antipasto':            '/media/placeholder/product/antipasto.png',
+    'Contorno':             '/media/placeholder/product/contorno.png',
+    'Dessert':              '/media/placeholder/product/dessert.png',
+    'Caffetteria':          '/media/placeholder/product/caffetteria.png',
+    'Panetteria':           '/media/placeholder/product/panetteria.png',
+    'Panini e Piadine':     '/media/placeholder/product/panini_e_piadine.png',
+    'Pizza':                '/media/placeholder/product/pizza.png',
+    'Primo':                '/media/placeholder/product/primo.png',
+    'Secondo':              '/media/placeholder/product/secondo.png',
+    'Snack':                '/media/placeholder/product/snack.png'
+}
+
+FOOD_CATEGORY_CHOICES_THUMBS_IMAGES = {
+    'Altro':                '/media/placeholder/product/thumbs/altro.jpg',
+    'Antipasto':            '/media/placeholder/product/thumbs/antipasto.jpg',
+    'Contorno':             '/media/placeholder/product/thumbs/contorno.jpg',
+    'Dessert':              '/media/placeholder/product/thumbs/dessert.jpg',
+    'Caffetteria':          '/media/placeholder/product/thumbs/caffetteria.jpg',
+    'Panetteria':           '/media/placeholder/product/thumbs/panetteria.jpg',
+    'Panini e Piadine':     '/media/placeholder/product/thumbs/panini_e_piadine.jpg',
+    'Pizza':                '/media/placeholder/product/thumbs/pizza.jpg',
+    'Primo':                '/media/placeholder/product/thumbs/primo.jpg',
+    'Secondo':              '/media/placeholder/product/thumbs/secondo.jpg',
+    'Snack':                '/media/placeholder/product/thumbs/snack.jpg'
 }
 
 DISCOUNT_TYPES_CHOICES = [

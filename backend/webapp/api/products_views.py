@@ -10,7 +10,7 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models import Restaurant, Product, ProductTag, FOOD_CATEGORY_CHOICES
+from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, FOOD_CATEGORY_CHOICES
 from .products_serializers import ReadProductSerializer, WriteProductSerializer, ProductTagSerializer
 
 import json
@@ -31,7 +31,10 @@ class ListProducts(APIView):
 
         # if the restaurant does not have products
         if products.count() == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            products_list = {}
+            for val, category in FOOD_CATEGORY_CHOICES:
+                products_list.update({category: []})
+            return Response(products_list, status=status.HTTP_200_OK)
 
         products_list = {}
         # for each category
@@ -76,9 +79,9 @@ class AddProduct(APIView):
                         return Response(status=status.HTTP_400_BAD_REQUEST)
 
                     try:
-                        image = request.data['image']
+                        image = request.FILES['image']
                         data.update({'image': image})
-                    except KeyError:
+                    except Exception:
                         pass
 
                     serializer = WriteProductSerializer(data=data)
@@ -86,7 +89,8 @@ class AddProduct(APIView):
                         ret_data = {}
                         product = serializer.save(restaurant)
                         ret_data.update(serializer.data)
-                        ret_data.update({'image': product.image.url})
+                        ret_data.update({'image': product.get_image()})
+                        ret_data.update({'thumb_image': product.get_thumb_image()})
                         return Response(ret_data, status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -175,23 +179,33 @@ class UpdateProduct(APIView):
                                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
                             try:
-                                image = request.data['image']
+                                image = request.FILES['image']
                                 data.update({'image': image})
                             except KeyError:
                                 pass
 
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
-
                                 if 'tags' in data:
                                     product.tags.clear()
                                     for t in data['tags']:
-                                        product.tags.add(t)
+                                        for d in data['discounts']:
+                                            try:
+                                                tag = ProductTag.objects.all().get(id=d)
+                                                if tag:
+                                                    product.tags.add(d)
+                                            except ProductTag.DoesNotExist:
+                                                pass
                                     del data['tags']
                                 if 'discounts' in data:
                                     product.discounts.clear()
                                     for d in data['discounts']:
-                                        product.discounts.add(d)
+                                        try:
+                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=d)
+                                            if entry:
+                                                product.discounts.add(d)
+                                        except ProductDiscount.DoesNotExist:
+                                            pass
                                     del data['discounts']
 
                                 for key in data:

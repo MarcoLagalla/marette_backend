@@ -3,17 +3,15 @@ import sendUserAuthentication from '../../services/sendUserAuthentication'
 
 
 const state = {
-  token: getCookie("user-token") || '',
+  token: getTokenCookie() || '',
   status: '',
-  errors: [],
-  id: getCookie("user-id") || ''
+  errors: []
 }
 
 const getters = {
   isAuthenticated: state => !!state.token,
   status: state => state.status,
-  errors: state => state.errors,
-  id: state => state.id,
+  errors: state => state.errors
 }
 
 const actions = {
@@ -33,7 +31,7 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        deleteCookies();
+        deleteTokenCookies();
 
         reject(err)
       })
@@ -54,7 +52,7 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        deleteCookies();
+        deleteTokenCookies();
         reject(err)
       })
     })
@@ -75,7 +73,6 @@ const actions = {
         })
       .catch(err => {
         commit('AUTH_ERROR', err.response)
-        deleteCookies();
         reject(err.response.data)
       })
     })
@@ -85,13 +82,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.logout().then( function(){
           commit('AUTH_LOGOUT')
-          deleteCookies();
+          deleteTokenCookies();
           dispatch("userProfile/logout", null,  { root: true });
           resolve()
         })
       .catch(err => {
         commit('AUTH_LOGOUT')
-        deleteCookies();
+        deleteTokenCookies();
         dispatch("userProfile/logout", null,  { root: true });
         commit('AUTH_ERROR', err.response)
 
@@ -99,7 +96,46 @@ const actions = {
       })
 
     })
-  }
+  },
+
+  AskPasswordreset: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      commit('AUTH_REQUEST')
+      sendUserAuthentication.AskPasswordreset(data)
+          .then(resp => {
+            commit('ASK_PSW_RESET_SUCCESS', resp.data)
+            resolve(resp.data.details)
+
+          })
+          .catch(err => {
+
+            commit('ASK_PSW_RESET_ERROR', err.response)
+            reject(err.response.data.error)
+
+          })
+    })
+  },
+
+  ConfirmPasswordreset: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      commit('AUTH_REQUEST')
+
+          sendUserAuthentication.ConfirmPasswordreset(data)
+          .then(resp => {
+
+            commit('ASK_PSW_RESET_SUCCESS', resp.data)
+            resolve(resp.data.details)
+
+          })
+          .catch(err => {
+
+            commit('ASK_PSW_RESET_ERROR', err.response)
+            reject(err.response.data.error)
+
+          })
+    })
+  },
+
 }
 
 const mutations = {
@@ -120,7 +156,16 @@ const mutations = {
   AUTH_LOGOUT: state => {
     state.token = "";
     state.id = "";
-  }
+  },
+
+  ASK_PSW_RESET_SUCCESS: (state) => {
+    state.status = 'success'
+  },
+
+  ASK_PSW_RESET_ERROR: (state, error) => {
+    state.status = 'error'
+    state.errors = error.data
+  },
 
 
 }
@@ -139,16 +184,14 @@ function setCookies( data) {
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
   document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
-  document.cookie = "user-id=" + data.id + ";" + expires + ";path=/";
 }
 
-function deleteCookies() {
+function deleteTokenCookies() {
   document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "user-id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
-function getCookie(name) {
-  name = name + "=";
+function getTokenCookie() {
+  var name = "user-token=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {

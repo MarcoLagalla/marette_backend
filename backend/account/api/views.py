@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
 import re
@@ -17,7 +19,7 @@ from ..tokens import account_activation_token, passwordreset_token
 from ..views import send_welcome_email, send_reset_email
 from ..permissions import IsCustomer, IsBusiness
 
-from backend.webapp.models import Restaurant
+from backend.webapp.models.models import Restaurant
 
 
 class ListUsersAPIView(APIView):
@@ -42,8 +44,21 @@ class CustomerAPIView(APIView):
     permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
+    @transaction.atomic()
     def post(self, request):
-        serializer = CustomerSerializer(data=request.data)
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except (KeyError, Exception):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        serializer = CustomerSerializer(data=input_data)
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
@@ -67,8 +82,21 @@ class BusinessAPIView(APIView):
     permission_classes = [AllowAny]
 
     # non authenticated users can create a new user
+    @transaction.atomic()
     def post(self, request):
-        serializer = BusinessSerializer(data=request.data)
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except (KeyError, Exception):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        serializer = BusinessSerializer(data=input_data)
         data = {}
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
@@ -98,23 +126,26 @@ class LoginGetToken(APIView):
             password = request.data['password']
             try:
                 user = User.objects.get(email__iexact=email)
-                if user:
-                    if user.check_password(password):
-                        # successfully logged in
-                        update_last_login(None, user)
-                        if not Token.objects.all().filter(user=user):
-                            token = Token.objects.create(user=user).key
-                            data['token'] = token
-                            data['id'] = user.id
-                            return Response(data, status=status.HTTP_200_OK)
-                        else:
-                            token = Token.objects.get(user=user).key
-                            data['token'] = token
-                            data['id'] = user.id
-                            return Response(data, status=status.HTTP_200_OK)
             except User.DoesNotExist:
-                data['error'] = ["L'utente non esiste."]
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                try:
+                    user = User.objects.get(username__iexact=email)
+                except User.DoesNotExist:
+                    data['error'] = ["L'utente non esiste."]
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            if user:
+                if user.check_password(password):
+                    # successfully logged in
+                    update_last_login(None, user)
+                    if not Token.objects.all().filter(user=user):
+                        token = Token.objects.create(user=user).key
+                        data['token'] = token
+                        data['id'] = user.id
+                        return Response(data, status=status.HTTP_200_OK)
+                    else:
+                        token = Token.objects.get(user=user).key
+                        data['token'] = token
+                        data['id'] = user.id
+                        return Response(data, status=status.HTTP_200_OK)
 
         data['error'] = ["Credenziali sbagliate."]
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
@@ -151,7 +182,10 @@ class UpdatePassword(APIView):
 
         if serializer.is_valid():
 
-            user_to_update = get_object_or_404(User, id=id)
+            try:
+                user_to_update = User.objects.all().get(id=id)
+            except User.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             try:
                 token = Token.objects.get(user_id=user_to_update.id).key
@@ -202,15 +236,16 @@ class ActivateUserAPIView(APIView):
     def get(self, request, id, token):
         try:
             user = User.objects.get(pk=id)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-        if user is not None:
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if user:
             try:
                 utente = Customer.objects.get(user=user)
-            except ObjectDoesNotExist:
+            except Customer.DoesNotExist:
                 try:
                     utente = Business.objects.get(user=user)
-                except ObjectDoesNotExist:
+                except Business.DoesNotExist:
                     return Response({'error': ['Token di autorizzazione non valido.']},
                                     status=status.HTTP_401_UNAUTHORIZED)
             if account_activation_token.check_token(user, token) and utente:
@@ -258,32 +293,42 @@ class ResetPasswordAPIView(APIView):
 
                 if passwordreset_token.check_token(user, given_token):
                     if not password == password2:
-                        return Response({'password': 'Le password devono combaciare'},
+                        return Response({'error': 'Le password devono combaciare!'},
                                         status=status.HTTP_400_BAD_REQUEST)
                     user.set_password(password)
                     user.save()
-                    return Response(status=status.HTTP_200_OK)
+                    return Response({'details': 'Password cambiata correttamente!'}, status=status.HTTP_200_OK)
 
-            return Response({'error':  ['Token di autorizzazione non valido.']}, status.HTTP_404_NOT_FOUND)
+            return Response({'error':  'Token di autorizzazione non valido.'}, status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
-        user = get_object_or_404(User, id=id)
 
-        if user and not user.is_superuser:
-            token = get_object_or_404(Token, user=user)
-            if request.user.auth_token.key == token.key:
+        try:
+            user = User.objects.all().get(id=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if user:
+            if request.user.auth_token.key == token or request.user.is_superuser:
                 # check if customer
                 try:
                     data = {}
                     customer = Customer.objects.all().get(user=user)
                     serializer = CustomerSerializer(customer, many=False)
                     data.update(serializer.data)
+                    data.update({'avatar': customer.get_image()})
                     data.update({'type': 'customer'})
                 except Customer.DoesNotExist:
                     try:
@@ -291,6 +336,7 @@ class UserProfileAPIView(APIView):
                         business = Business.objects.all().get(user=user)
                         serializer = BusinessSerializer(business, many=False)
                         data.update(serializer.data)
+                        data.update({'avatar': business.get_image()})
                         data.update({'type': 'business'})
 
                         # retrieve the list of restaurants
@@ -324,8 +370,20 @@ class UpdateCostumerUserProfile(APIView):
         except Customer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        input_data = {}
         try:
-            phone = request.data.pop('phone')
+            input_data = json.loads(request.data['data'])
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
+
+        try:
+            phone = input_data.get('phone')
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -336,54 +394,76 @@ class UpdateCostumerUserProfile(APIView):
             # numero di telefono
             if phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
                 user.phone = phone
-                user.save()
-                return Response(status=status.HTTP_200_OK)
             else:
                 return Response({'phone': 'Il numero di telefono non è valido.'},
                                 status=status.HTTP_400_BAD_REQUEST)
+            if avatar:
+                user.avatar = avatar
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UpdateBusinessUserProfile(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
 
     @transaction.atomic()
     def post(self, request, id):
+
         try:
             user = Business.objects.get(user_id=id)
         except Business.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response("ok",status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=user.user).key
+        except Token.DoesNotExist:
+            return Response("2", status=status.HTTP_404_NOT_FOUND)
+
+        input_data = {}
+        try:
+            input_data = json.loads(request.data['data'])
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            avatar = request.FILES['avatar']
+            input_data.update({'avatar': avatar})
+        except KeyError:
+            pass
 
         missing_keys = False
         value_errors = {}
 
         try:
-            phone = request.data.pop('phone')
+            phone = input_data.pop('phone')
         except KeyError:
             missing_keys = True
             value_errors.update({'phone': 'Il campo non può essere vuoto.'})
 
         try:
-            city = request.data.pop('city')
+            city = input_data.pop('city')
         except KeyError:
             missing_keys = True
             value_errors.update({'city': 'Il campo non può essere vuoto.'})
 
         try:
-            address = request.data.pop('address')
+            address = input_data.pop('address')
         except KeyError:
             missing_keys = True
             value_errors.update({'address': 'Il campo non può essere vuoto.'})
 
         try:
-            n_civ = request.data.pop('n_civ')
+            n_civ = input_data.pop('n_civ')
         except KeyError:
             missing_keys = True
             value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
 
         try:
-            cap = request.data.pop('cap')
+            cap = input_data.pop('cap')
         except KeyError:
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
@@ -397,7 +477,7 @@ class UpdateBusinessUserProfile(APIView):
             validation_errors_ = True
             validation_errors.update({'phone': 'Il numero di telefono deve essere valido'})
 
-        cap_validator = re.match('^[0-9]{5}$', cap)
+        cap_validator = re.match('^[0-9]{5}$', str(cap))
         if not cap_validator:
             validation_errors_ = True
             validation_errors.update({'cap': 'Inserire un CAP valido.'})
@@ -405,9 +485,7 @@ class UpdateBusinessUserProfile(APIView):
         if validation_errors_:
             return Response(validation_errors, status=status.HTTP_400_BAD_REQUEST)
 
-        token = get_object_or_404(Token, user=user.user)
-
-        if request.user.auth_token == token:
+        if request.user.auth_token.key == token:
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
             user.city = city
@@ -415,7 +493,11 @@ class UpdateBusinessUserProfile(APIView):
             user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
+            if avatar:
+                user.avatar = avatar
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+

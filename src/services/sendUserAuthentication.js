@@ -33,6 +33,19 @@ export default {
             delete api.defaults.headers.common['Authorization']
             return response
         })
+  },
 
-  }
+  AskPasswordreset(data){
+        return api.post('v1/account/password/reset', data)
+            .then(response => {
+                return response
+            })
+    },
+
+  ConfirmPasswordreset(data){
+        return api.post('v1/account/password/reset/confirm', data)
+            .then(response => {
+                return response
+            })
+    },
 }
