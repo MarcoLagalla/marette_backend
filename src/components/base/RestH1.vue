@@ -23,7 +23,7 @@ export default {
 <style lang="css" scoped>
 /* Helper classes */
 .basil {
-  background-color: #fff9ec !important;
+  background-color: var(--palesilver) !important;
 }
 .basil--text {
   color: var(--chilli) !important;

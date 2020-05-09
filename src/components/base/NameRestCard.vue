@@ -4,7 +4,7 @@
     <v-list-item three-line>
       <v-list-item-content>
         <div class="overline mb-4"></div>
-        <v-list-item-title class="headline mb-1">{{activity_name}}</v-list-item-title>
+        <v-list-item-title class="title"><h1>{{activity_name}}</h1></v-list-item-title>
         <v-text-field v-if="admin">Ciao</v-text-field>
         <v-list-item-subtitle>{{activity_description}}</v-list-item-subtitle>
       </v-list-item-content>
@@ -21,4 +21,10 @@ export default {
 }
 </script>
 <style scoped>
+  .title {
+    text-transform: capitalize;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
 </style>

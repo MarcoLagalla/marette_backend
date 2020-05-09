@@ -22,8 +22,8 @@
 <style >
 
 :root {
-  --terracotta: #945d60;
-  --herb: #626e60;
+  --palesilver: #CFC0BD;
+  --ming: #3C6E71;
   --chilli: #af473c;
   --charcoal: #3c3c3c;
   --whitesmoke: #F5F5F5;

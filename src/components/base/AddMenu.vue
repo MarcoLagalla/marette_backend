@@ -72,7 +72,7 @@
     }
 
     .blutitle {
-        background: var(--herb);
+        background: var(--ming);
         color: #FFFFFF;
         box-shadow: 0 0 5px black;
         position: sticky;
@@ -85,6 +85,7 @@
         box-shadow: 0 0 10px var(--charcoal);
         background: var(--whitesmoke);
     }
+
     .titlemenu {
         text-transform: uppercase;
         font-size: 1.2em;

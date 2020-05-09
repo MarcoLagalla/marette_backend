@@ -130,7 +130,7 @@ export default {
   background-color: whitesmoke;
 }
 .body {
-  background-color: white;
+  background-color: whitesmoke;
   text-align: center;
   width: 60%;
   box-shadow: inset 0 0 10px #000;
@@ -151,7 +151,7 @@ h1 {
   font-weight: bold;
   border: none;
   cursor: pointer;
-  width: 100%;
+  width: 60%;
   opacity: 0.9;
   transition: 0.6s;
   border-radius: 25px;

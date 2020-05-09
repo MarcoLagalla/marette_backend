@@ -229,14 +229,14 @@ created() {
 }
 .restc {
   box-shadow: 0 0 15 var(--charcoal);
-  background: var(--herb);
+  background: var(--ming);
   width: 100%;
   margin-left: 10px;
   margin-bottom: 10px;;
 }
 .profilc {
   box-shadow: 0 0 15 var(--charcoal);
-  background: var(--herb)
+  background: var(--ming)
 }
 
 .profilo {
@@ -249,7 +249,7 @@ created() {
   margin-bottom: 10px;
   display: flex;
   align-items: left;
-  justify-content: letf;
+  justify-content: left;
 }
 
 .password_btn {
