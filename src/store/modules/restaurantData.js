@@ -39,7 +39,8 @@ const getters = {
     components: state => state.restData.components,
     restData: state => state.restData,
     tags: state => state.tags,
-    discounts: state => state.discounts
+    discounts: state => state.discounts,
+    id: state => state.ID,
 }
 
 const actions = {
@@ -161,12 +162,52 @@ const actions = {
         })
     },
 
+    addMenuEntry: ({commit}, portata) => {
+        return new Promise((resolve, reject) => {
 
+            const payload = {id: state.ID, data: portata}
+            manageRestaurant.addMenuEntry(payload)
+            .then(resp => {
+                commit('ADD_PORTATA_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
 
+    deleteMenuEntry: ({commit}, entryId) => {
+        return new Promise((resolve, reject) => {
 
+            const payload = {restId: state.ID, entryId: entryId}
+            manageRestaurant.deleteMenuEntry(payload)
+            .then(resp => {
+                commit('RMV_PORTATA_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('RMV_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
 }
 
 const mutations = {
+    RMV_PORTATA_SUCCESS: () =>{
+    },
+
+    RMV_PORTATA_ERROR: () =>{
+    },
+
+    ADD_PORTATA_SUCCESS: () =>{
+    },
+
+    ADD_PORTATA_ERROR: () =>{
+    },
+
     REST_ADD_PROD_SUCCESS: () =>{
     },
 

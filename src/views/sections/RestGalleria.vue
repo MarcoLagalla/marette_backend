@@ -19,6 +19,6 @@ export default {
 <style scoped>
 .gallerycont {
   padding: 30px;
-  background: firebrick;
+  background: var(--whitesmoke);
 }
 </style>

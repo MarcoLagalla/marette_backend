@@ -23,9 +23,9 @@ export default {
 <style lang="css" scoped>
 /* Helper classes */
 .basil {
-  background-color: #FFFBE6 !important;
+  background-color: #fff9ec !important;
 }
 .basil--text {
-  color: #356859 !important;
+  color: var(--chilli) !important;
 }
 </style>

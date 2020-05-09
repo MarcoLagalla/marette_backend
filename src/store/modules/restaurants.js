@@ -48,9 +48,10 @@ const actions = {
         })
     },
 
-    updateRestaurant: ({commit}, data) => {
+    updateRestaurant: ({commit, rootGetters}, data) => {
         return new Promise((resolve, reject) => {
-            manageRestaurant.updateRestaurantData(data)
+            var id = rootGetters["restaurantData/id"];
+            manageRestaurant.updateRestaurantData(id, data)
             .then(resp => {
                 const data = resp.data
                 commit('REST_UPDATE_SUCCESS', data)

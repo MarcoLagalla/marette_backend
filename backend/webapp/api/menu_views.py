@@ -211,7 +211,9 @@ class MenuEntryAdd(APIView):
                 if serializer.is_valid():
                     menuentry = serializer.save(restaurant)
                     menuentry.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    data = serializer.data
+                    data.update({'id': menuentry.id})
+                    return Response(data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(data, status=status.HTTP_403_FORBIDDEN)

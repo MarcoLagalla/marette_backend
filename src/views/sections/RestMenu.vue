@@ -45,7 +45,7 @@ export default {
 
 .body {
   margin: 0!important;
-  background:firebrick;
+  background: var(--whitesmoke);
 }
 
 

@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@/store"
 import RestMenu from "../components/base/RestMenu";
-import rest1 from "../views/pages/rest1";
+import restaurant from "../views/pages/restaurant";
 import RestMenuMobile from "../components/base/RestMenuMobile";
 import ManageRest from "../views/pages/manageRest";
 
@@ -123,7 +123,7 @@ const router = new Router({
           path: ':id/:name',
           name: 'RestaurantHome',
           components: {
-            default: rest1,
+            default: restaurant,
             restMenu: RestMenu,
             restMenuMobile: RestMenuMobile
           },

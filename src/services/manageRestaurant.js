@@ -36,8 +36,22 @@ export default {
             })
     },
 
-    updateRestaurantData(payload) {
-        return api.post('v1/webapp/restaurant/' + payload.id + '/update', payload.data)
+    updateRestaurantData(id, data) {
+        return api.post('v1/webapp/restaurant/' + id + '/update', data)
+            .then(response => {
+                return response
+            })
+    },
+
+    addMenuEntry(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/menus/entry/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
+    deleteMenuEntry(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/entry/' + payload.entryId + '/delete')
             .then(response => {
                 return response
             })

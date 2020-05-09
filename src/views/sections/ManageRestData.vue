@@ -53,7 +53,7 @@
             <div class="d-flex flex-no-wrap justify-space-between">
               <div class="quant">
                 <div class>
-                  <v-card-title class="headline" v-text="'Citta'"></v-card-title>
+                  <v-card-title class="headline" v-text="'Città'"></v-card-title>
                   <v-card-subtitle class="pb-0" v-text="restData.city"></v-card-subtitle>
                   <v-expand-transition>
                     <div v-show="show1">
@@ -185,6 +185,27 @@
             </div>
           </v-card>
         </v-col>
+
+        <v-col cols="6">
+          <img ref="restImageOld" :src="restData.image">
+        </v-col>
+
+        <v-col cols="6">
+          <picture-input
+            ref="restImage"
+            @change="onChanged"
+            :width="300"
+            :height="300"
+            size="5"
+            :crop="true"
+            :changeOnClick="false"
+            accept="image/jpeg, image/png, image/gif"
+            buttonClass="ui button primary"
+            :customStrings="{
+            upload: '<h1>Carica immagine</h1>',
+            drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
+          </picture-input>
+        </v-col>
       </v-row>
     </v-container>
     <div class="center">
@@ -194,9 +215,13 @@
 
 <script>
 import {mapActions} from "vuex";
+import PictureInput from "vue-picture-input";
 
 export default {
   name: "ManageRestData",
+  components: {
+    PictureInput,
+  },
   data() {
     return {
       show: false,
@@ -207,7 +232,8 @@ export default {
       show4: false,
       show5: false,
       show6: false,
-      id: this.$route.params.id
+      id: this.$route.params.id,
+      image: ''
     }
   },
   computed: {
@@ -218,20 +244,35 @@ export default {
   methods: {
     ...mapActions('restaurants', ['updateRestaurant']),
     update: function() {
-      this.updateRestaurant({
-        id: this.id,
-        data: {
-          activity_name: this.restData.activity_name,
-          activity_description: this.restData.activity_description,
-          city: this.restData.city,
-          address: this.restData.address,
-          n_civ: this.restData.n_civ,
-          cap: this.restData.cap,
-          restaurant_number: this.restData.restaurant_number,
-          p_iva: this.restData.p_iva,
-        }
-      })
-    }
+      const data = {
+        activity_name: this.restData.activity_name,
+        activity_description: this.restData.activity_description,
+        city: this.restData.city,
+        address: this.restData.address,
+        n_civ: this.restData.n_civ,
+        cap: this.restData.cap,
+        restaurant_number: this.restData.restaurant_number,
+        p_iva: this.restData.p_iva,
+      };
+
+      if(!this.image){
+          this.image = this.$refs.restImageOld.file
+      }
+
+      const formData = new FormData();
+      formData.append('image', this.image);
+      formData.append('data', JSON.stringify(data));
+
+      this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con successo, gestire errori, aggiornare immagine quando cambia e far tornare le cose chiuse dopo aver salvato
+    },
+
+    onChanged() {
+      if (this.$refs.restImage.file) {
+        this.image = this.$refs.restImage.file;
+      } else {
+        console.log("Old browser. No support for Filereader API");
+      }
+    },
   },
 };
 </script>

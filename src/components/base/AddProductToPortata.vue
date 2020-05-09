@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <select v-model="prova">
-      <option v-for="category in categories" :key="category" >{{category}}</option>
-    </select>
+  <div class="portprod">
+    <v-select :items="categories" label="Categoria del prodotto:" v-model="category" @change="choosedCategory = true"></v-select>
+    <v-select :items="menu[category]" item-text="name" item-value="id" label="Selezionare prodotto:" v-model="productId" :disabled="!choosedCategory"></v-select>
+    <v-btn :disabled="productId===''" @click="added_product">Aggiungi</v-btn>
   </div>
 </template>
 
@@ -10,8 +10,24 @@
   export default {
     name: "AddProductToPortata",
     data: () => ({
-      prova: ""
+      category: "",
+      choosedCategory: false,
+      productId: ''
     }),
+    methods: {
+      added_product: function() {
+        var prod = {}
+        const prodId = this.productId
+        this.menu[this.category].forEach(function (product) {
+          if (product.id === prodId)
+            prod = product
+        });
+        this.category = ""
+        this.choosedCategory = false,
+        this.productId = ''
+        this.$emit('added_product', prod)
+      }
+    },
     computed: {
       menu() {
         return this.$store.getters['restaurantData/productList']
@@ -31,5 +47,7 @@
 </script>
 
 <style scoped>
-
+.portprod {
+  ;
+}
 </style>
