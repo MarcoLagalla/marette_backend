@@ -109,27 +109,27 @@
                 v-model="selectedDiscounts"
                 multiple
               >
-                <template v-for="(item, i) in discounts">
+                <template v-for="(campo, i) in discounts">
                   <v-divider
-                    v-if="!item"
+                    v-if="!campo"
                     :key="`divider-${i}`"
                   ></v-divider>
 
                   <v-list-item
                     v-else
                     :key="`item-${i}`"
-                    :value="item.id"
+                    :value="campo.id"
                     active-class="blue--text text--accent-4"
                   >
                     <template v-slot:default="{ active, toggle }">
                       <v-list-item-content>
-                        <v-list-item-title v-text="item.title" ></v-list-item-title>
+                        <v-list-item-title v-text="campo.title" >CIAO</v-list-item-title>
                       </v-list-item-content>
 
                       <v-list-item-action>
                         <v-checkbox
                           :input-value="active"
-                          :true-value="item"
+                          :true-value="campo"
                           color="blue accent-4"
                           @click="toggle"
                         ></v-checkbox>
@@ -233,11 +233,10 @@ export default {
     food_category_choice() {
       return this.$store.getters['manageRestaurant/food_category_choice']
     },
+
     discounts() {
-      return this.$store.getters['manageRestaurant/discounts']
+      return this.$store.getters['restaurantData/discounts']
     },
-
-
     tags() {
       return this.$store.getters['restaurantData/tags']
     },

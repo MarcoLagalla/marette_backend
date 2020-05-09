@@ -23,8 +23,14 @@
                   <div v-text="product.price"></div>
                   <v-icon small class="quant">fas fa-euro-sign</v-icon>
                 </div>
-                <v-btn color="red" class="addtocart">
+                <v-btn color="red" class="managebutton">
                   <i class="fas fa-shopping-basket"></i>
+                </v-btn>
+                <v-btn color="red" class="managebutton">
+                  <i class="fas fa-percent"></i>
+                </v-btn>
+                <v-btn color="red" class="managebutton">
+                  <i class="fas fa-times"></i>
                 </v-btn>
               </v-card-actions>
             </div>
@@ -104,10 +110,10 @@ h1 {
 .description {
   padding: 15px;
 }
-.addtocart {
+.managebutton {
   transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-.addtocart:hover {
+.managebutton:hover {
   scale: 1.1;
   background: rgba(255, 0, 0, 0.9);
 }
@@ -118,4 +124,6 @@ h1 {
 .product:hover{
   box-shadow:0 0 10px black;
 }
+
+
 </style>
