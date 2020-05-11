@@ -56,4 +56,11 @@ export default {
                 return response
             })
     },
+
+    addMenu(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.id + '/menus/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

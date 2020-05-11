@@ -193,6 +193,22 @@ const actions = {
             })
         })
     },
+
+    addMenu: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+
+            const payload = {id: state.ID, data: menu}
+            manageRestaurant.addMenu(payload)
+            .then(resp => {
+                commit('ADD_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
 }
 
 const mutations = {
@@ -206,6 +222,12 @@ const mutations = {
     },
 
     ADD_PORTATA_ERROR: () =>{
+    },
+
+    ADD_MENU_SUCCESS: () =>{
+    },
+
+    ADD_MENU_ERROR: () =>{
     },
 
     REST_ADD_PROD_SUCCESS: () =>{

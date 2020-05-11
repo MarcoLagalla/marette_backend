@@ -12,11 +12,7 @@
             <v-text-field outlined v-model='price' type="number" label="Prezzo del menu completo"
                           required></v-text-field>
             <v-text-field outlined v-model='iva' type="number" label="IVA applicata" required></v-text-field>
-            <base-portata v-for="portata in portate" :key="portata.id" :portata="portata" :delete="true"
-                          @removed="deletePortata(portata)"></base-portata>
-            <v-btn @click="showAddPortata = true" text>Aggiungi portata</v-btn>
-            <base-add-portata v-show="showAddPortata" @added_portata="submitPortata($event)"></base-add-portata>
-            <v-btn @click="submitMenu" :disabled="portate.length===0" text>Salva Menu</v-btn>
+            <v-btn @click="submitMenu" text>Aggiungi Menù</v-btn>
         </div>
     </v-card>
 </template>
@@ -28,39 +24,28 @@
     export default {
         name: "AddMenu",
         data: () => ({
-            portate: [],
             name: '',
             description: '',
             price: '',
             iva: '',
-            showAddPortata: false
         }),
         methods: {
-            ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry']),
-            submitPortata: function (portata) {
-                this.showAddPortata = false
-                this.portate.push(portata)
-                var payload = {
-                    name: portata.name,
-                    num_products: portata.num_products,
-                    products: []
-                }
-                portata.products.forEach(function (item) {
-                    payload.products.push(item.id)
-                });
-                var id
-                this.addMenuEntry(payload).then(function (resp) {
-                    id = resp.id
-                }) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
-
-                this.portate[this.portate.indexOf(portata)].id = id
-            },
-            deletePortata: function (portata) {
-                this.portate.splice(this.portate.indexOf(portata), 1)
-                this.deleteMenuEntry(portata.id) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
-            },
+            ...mapActions('restaurantData', ['addMenu']),
             submitMenu: function () {
-
+                this.addMenu({
+                    name: this.name,
+                    description: this.description,
+                    price: this.price,
+                    iva: this.iva
+                }).then(() =>{
+                    alert('Menù aggiunto con successo')
+                    this.name = ''
+                    this.description = ''
+                    this.price = ''
+                    this.iva = ''
+                }).catch((err) =>{
+                    alert('Errore ' + err)
+                })
             }
         }
     }
