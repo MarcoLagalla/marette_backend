@@ -9,6 +9,7 @@ const state = {
     status: '',
     tags:[],
     discounts:[],
+    menus: [],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -41,6 +42,7 @@ const getters = {
     tags: state => state.tags,
     discounts: state => state.discounts,
     id: state => state.ID,
+    menus: state => state.menus,
 }
 
 const actions = {
@@ -209,6 +211,21 @@ const actions = {
             })
         })
     },
+
+    listMenus: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+
+            manageRestaurant.listMenus(state.ID)
+            .then(resp => {
+                commit('LIST_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('LIST_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
 }
 
 const mutations = {
@@ -228,6 +245,13 @@ const mutations = {
     },
 
     ADD_MENU_ERROR: () =>{
+    },
+
+    LIST_MENU_SUCCESS: (state, menus) =>{
+        state.menus = menus
+    },
+
+    LIST_MENU_ERROR: () =>{
     },
 
     REST_ADD_PROD_SUCCESS: () =>{

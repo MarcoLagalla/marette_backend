@@ -9,7 +9,7 @@
     </div>
     <RestBanner v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestBanner>
 
-    <RestVetrina v-if="activeComponents.vetrina.show"></RestVetrina>
+    <RestVetrina v-if="activeComponents.vetrina.show" :admin="admin"></RestVetrina>
 
     <Restmenu v-if="activeComponents.menu.show" :admin="admin"></Restmenu>
 

@@ -3,18 +3,11 @@
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
-        <v-col  cols="6" md="6">
+        <v-col v-if="admin" cols="6" md="6">
           <base-add-menu></base-add-menu>
         </v-col>
-        <v-col v-for="(item, i) in items2" :key="i" cols="6" md="6">
-          <v-card  color="vetrinacard" width="800" height="800">
-            <v-card-title class="headline" v-text="item.title"></v-card-title>
-            <v-card-subtitle v-text="item.artist"></v-card-subtitle>
-            <v-card-actions>
-              <button class="addtocart">Aggiungi al carrello <i class="fas fa-shopping-basket"></i></button>
-            </v-card-actions>
-          </v-card>
-
+        <v-col v-for="menu in menus" :key="menu.id" cols="6" md="6">
+          <base-menu-vetrina :menu="menu" :admin="admin"></base-menu-vetrina>
         </v-col>
       </v-row>
     </v-container>
@@ -22,23 +15,26 @@
 </template>
 
 <script>
+
 export default {
   name: "restvetrina",
+  props: {
+    admin: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+  },
   data: () => ({
-        items2: [{
-              color: '#1F7087',
-              src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
-              title: 'Supermodel',
-              artist: 'Foster the People',
-            },
-            {
-              color: '#952175',
-              src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-              title: 'Halcyon Days',
-              artist: 'Ellie Goulding',
-            },
-        ],
     }),
+  computed: {
+      menus() {
+          return this.$store.getters['restaurantData/menus']
+      },
+  },
+  created() {
+    this.$store.dispatch("restaurantData/listMenus")
+  },
 
 }
 </script>
@@ -48,14 +44,5 @@ export default {
   margin: 0 !important;
   background: var(--whitesmoke);
 }
-h1 {
-  color: white;
-  text-align: center;
-  padding-top: 20px;
-}
 
-  .vetrinacard {
-    box-shadow: 0 0 10px var(--charcoal);
-
-  }
 </style>

@@ -30,17 +30,15 @@
                 type: Object,
                 required: true
             },
-            basket: {
-              type: Boolean,
-              required: false,
-              default: true
-            },
             admin: {
               type: Boolean,
               required: false,
               default: false
             },
         },
+        data: () => ({
+            showAddPortata:  false
+        }),
         methods: {
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry']),
             submitPortata: function (portata) {
@@ -82,5 +80,14 @@
   border: inset 2px var(--chilli);
   font-weight: bold;
 }
+  h1 {
+  color: white;
+  text-align: center;
+  padding-top: 20px;
+}
 
+  .vetrinacard {
+    box-shadow: 0 0 10px var(--charcoal);
+
+  }
 </style>

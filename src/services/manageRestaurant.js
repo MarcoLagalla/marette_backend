@@ -63,4 +63,11 @@ export default {
                 return response
             })
     },
+
+    listMenus(payload) {
+        return api.get('v1/webapp/restaurant/' + payload + '/menus')
+            .then(response => {
+                return response
+            })
+    },
 }
