@@ -28,7 +28,7 @@
     }),
     methods: {
       addProduct: function(prod) {
-        this.products.push(prod);
+        this.products = this.products.concat(prod);
         this.showAdd =  false
       },
       removeProduct: function(prod){

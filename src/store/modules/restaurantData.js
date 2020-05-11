@@ -166,8 +166,7 @@ const actions = {
 
     addMenuEntry: ({commit}, portata) => {
         return new Promise((resolve, reject) => {
-
-            const payload = {id: state.ID, data: portata}
+            const payload = {restId: state.ID, data: portata.data, menuId: portata.menuId}
             manageRestaurant.addMenuEntry(payload)
             .then(resp => {
                 commit('ADD_PORTATA_SUCCESS', resp.data);
@@ -212,7 +211,7 @@ const actions = {
         })
     },
 
-    listMenus: ({commit}, menu) => {
+    listMenus: ({commit}) => {
         return new Promise((resolve, reject) => {
 
             manageRestaurant.listMenus(state.ID)

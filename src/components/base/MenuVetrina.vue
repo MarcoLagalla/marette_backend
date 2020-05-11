@@ -7,7 +7,7 @@
       </v-card-subtitle>
     </div>
     <div class="addmenu">
-      <base-portata v-for="portata in menu.portate" :key="portata.id" :portata="portata" :delete="admin"
+      <base-portata v-for="portata in menu.entries" :key="portata.id" :portata="portata" :delete="admin"
                     @removed="deletePortata(portata)"></base-portata>
       <template v-if="admin">
         <v-btn @click="showAddPortata = true" text>Aggiungi portata</v-btn>
@@ -43,21 +43,20 @@
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry']),
             submitPortata: function (portata) {
                 this.showAddPortata = false
-                this.portate.push(portata)
+                //this.portate.push(portata)
                 var payload = {
-                    name: portata.name,
-                    num_products: portata.num_products,
-                    products: []
+                    data: {
+                      name: portata.name,
+                      num_products: portata.num_products,
+                      products: []
+                    },
+                    menuId: this.menu.id
                 }
                 portata.products.forEach(function (item) {
-                    payload.products.push(item.id)
+                    payload.data.products.push(item.id)
                 });
-                var id
-                this.addMenuEntry(payload).then(function (resp) {
-                    id = resp.id
-                }) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                this.addMenuEntry(payload)//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
 
-                this.portate[this.portate.indexOf(portata)].id = id
             },
             deletePortata: function (portata) {
                 this.portate.splice(this.portate.indexOf(portata), 1)

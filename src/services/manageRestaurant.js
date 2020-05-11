@@ -44,7 +44,7 @@ export default {
     },
 
     addMenuEntry(payload) {
-        return api.post('v1/webapp/restaurant/' + payload.id + '/menus/entry/add', payload.data)
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/' + payload.menuId + '/entry/add', payload.data)
             .then(response => {
                 return response
             })
