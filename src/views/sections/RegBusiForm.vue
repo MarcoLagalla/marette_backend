@@ -26,7 +26,7 @@
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" id="cf" name="cf" required></v-text-field>
-            <v-text-field label="Data di nascita" :rules="required.concat(validateDate)" :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" id="birth_date" name="birth_date" required></v-text-field>
+            <v-text-field label="Data di nascita" :rules="required" :error-messages="errors.birth_date" @change="errors.birth_date=''" v-model='birth_date' type="date" id="birth_date" name="birth_date" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Numero telefonico" :rules="required" :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" id="phone" name="phone" required></v-text-field>
@@ -34,6 +34,22 @@
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Password" :rules="required" :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" id="psw" name="psw" required></v-text-field>
             <v-text-field label="Ripetere la password" :rules="password2Rules" :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" id="psw-repeat" name="psw-repeat" required></v-text-field>
+          </v-row>
+          <v-row align="center" class="ma-0" justify="center">
+            <picture-input
+              ref="avatar"
+              @change="onChanged"
+              :width="300"
+              :height="300"
+              size="5"
+              :crop="true"
+              :changeOnClick="false"
+              accept="image/jpeg, image/png, image/gif"
+              buttonClass="ui button primary"
+              :customStrings="{
+              upload: '<h1>Carica immagine</h1>',
+              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+            </picture-input>
           </v-row>
         </v-col>
         <hr>
@@ -58,8 +74,13 @@
 import {
   mapActions
 } from 'vuex'
+import PictureInput from "vue-picture-input";
+
 export default {
   name: "Registration",
+  components: {
+    PictureInput,
+  },
   data() {
     return {
       username: '',
@@ -75,6 +96,7 @@ export default {
       n_civ: '',
       city: '',
       cf: '',
+      image: '',
       valid: true,
       required: [
         v => !!v || 'Campo obbligatorio',
@@ -92,7 +114,7 @@ export default {
   methods: {
     ...mapActions('userAuthentication', ['registerBusiness']),
     register: function() {
-      this.registerBusiness({
+      const data = {
         username: this.username,
         email: this.email,
         password: this.password,
@@ -106,7 +128,13 @@ export default {
         address: this.address,
         city: this.city,
         cf: this.cf
-      }).then(() => {
+      };
+
+      const formData = new FormData();
+      formData.append('avatar', this.image);
+      formData.append('data', JSON.stringify(data));
+
+      this.registerBusiness(formData).then(() => {
         this.$router.push('/profile')
       }).catch(error => {
         var id = Object.keys(error)[0];
@@ -116,11 +144,13 @@ export default {
         });
       })
     },
-    /*validateDate(value) {
-      var today = new Date();
-      var bah = new Date(value);
-      return bah.getDate() < today.getDate() || "Sei forse un viaggiatore temporale?"
-    },*/
+    onChanged() {
+      if (this.$refs.avatar.file) {
+        this.image = this.$refs.avatar.file;
+      } else {
+        console.log("Old browser. No support for Filereader API");
+      }
+    },
   },
   computed: {
     status() {
