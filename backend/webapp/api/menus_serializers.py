@@ -70,7 +70,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ('id', 'name', 'description', 'price', 'entries')
+        fields = ('id', 'name', 'description', 'price', 'iva', 'entries')
 
     def get_entries(self, obj):
         return MenuEntrySerializer(obj.get_entries(), many=True).data
