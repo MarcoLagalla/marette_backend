@@ -3,7 +3,7 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" >
-          <base-product :product="product" :delete="true" :price='true' @removed="removeProduct(product)"></base-product>
+          <base-product :product="product" :delete="admin" :basket="!admin" :price='true' @removed="removeProduct(product)"></base-product>
         </v-col>
       </v-row>
     </v-container>
@@ -12,7 +12,7 @@
 <script>
 export default {
   name: "BaseProdList",
-  props: ["products"],
+  props: ["products", 'admin'],
   inheritAttrs: false,
   data: () => ({
 
