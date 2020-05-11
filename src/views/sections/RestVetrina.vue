@@ -7,7 +7,7 @@
           <base-add-menu></base-add-menu>
         </v-col>
         <v-col v-for="menu in menus" :key="menu.id" cols="6" md="6">
-          <base-menu-vetrina :menu="menu" :admin="admin"></base-menu-vetrina>
+          <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu($event)"></base-menu-vetrina>
         </v-col>
       </v-row>
     </v-container>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+
+import {mapActions} from "vuex";
 
 export default {
   name: "restvetrina",
@@ -28,13 +30,20 @@ export default {
   data: () => ({
     }),
   computed: {
-      menus() {
-          return this.$store.getters['restaurantData/menus']
-      },
+    menus() {
+      return this.$store.getters['restaurantData/menus']
+    },
   },
   created() {
     this.$store.dispatch("restaurantData/listMenus")
   },
+  methods: {
+    ...mapActions('restaurantData', ['deleteMenu']),
+    removeMenu: function (menu) {
+      this.menus.splice(this.menus.indexOf(menu), 1)
+      this.deleteMenu(menu.id) //TODO: se sbaglia ad eliminare devo gestire
+    },
+  }
 
 }
 </script>

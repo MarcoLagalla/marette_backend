@@ -211,6 +211,22 @@ const actions = {
         })
     },
 
+    deleteMenu: ({commit}, menuId) => {
+        return new Promise((resolve, reject) => {
+
+            const payload = {restId: state.ID, menuId: menuId}
+            manageRestaurant.deleteMenu(payload)
+            .then(resp => {
+                commit('ADD_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
+
     listMenus: ({commit}) => {
         return new Promise((resolve, reject) => {
 
