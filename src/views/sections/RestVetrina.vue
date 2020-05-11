@@ -53,17 +53,7 @@ h1 {
   text-align: center;
   padding-top: 20px;
 }
-.addtocart {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: var(--chilli);
-  padding: 10px;
-  color: white;
-  border-radius: 25px;
-  border: inset 2px var(--chilli);
-  font-weight: bold;
-}
+
   .vetrinacard {
     box-shadow: 0 0 10px var(--charcoal);
 
