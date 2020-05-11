@@ -211,17 +211,33 @@ const actions = {
         })
     },
 
+    editMenu: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+
+            const payload = {id: state.ID, data: menu}
+            manageRestaurant.editMenu(payload)
+            .then(resp => {
+                commit('EDIT_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('EDIT_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
+
     deleteMenu: ({commit}, menuId) => {
         return new Promise((resolve, reject) => {
 
             const payload = {restId: state.ID, menuId: menuId}
             manageRestaurant.deleteMenu(payload)
             .then(resp => {
-                commit('ADD_MENU_SUCCESS', resp.data);
+                commit('RMV_MENU_SUCCESS', resp.data);
                 resolve(resp.data)
             })
             .catch(err => {
-                commit('ADD_MENU_ERROR');
+                commit('RMV_MENU_ERROR');
                 reject(err)
             })
         })
@@ -260,6 +276,18 @@ const mutations = {
     },
 
     ADD_MENU_ERROR: () =>{
+    },
+
+    EDIT_MENU_SUCCESS: () =>{
+    },
+
+    EDIT_MENU_ERROR: () =>{
+    },
+
+    RMV_MENU_SUCCESS: () =>{
+    },
+
+    RMV_MENU_ERROR: () =>{
     },
 
     LIST_MENU_SUCCESS: (state, menus) =>{

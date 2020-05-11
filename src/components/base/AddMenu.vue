@@ -1,5 +1,5 @@
 <template>
-    <v-card dark width="800" height="800" class="scrollovf">
+    <v-card id="AddMenu" dark width="800" height="800" class="scrollovf">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -13,6 +13,7 @@
                           required></v-text-field>
             <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
             <v-btn @click="submitMenu" text>{{submit}}</v-btn>
+            <v-btn v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
     </v-card>
 </template>
@@ -55,7 +56,19 @@
         },
         methods: {
             submitMenu: function () {
-                this.$emit('new_menu', this.menu)
+                if (this.menu.edit)
+                    this.$emit('new_menu', this.menu)
+                else
+                    this.$emit('edit_menu', this.menu)
+                this.menu = {
+                    name: '',
+                    description: '',
+                    price: '',
+                    iva: '',
+                    edit: false
+                }
+            },
+            reset: function () {
                 this.menu = {
                     name: '',
                     description: '',

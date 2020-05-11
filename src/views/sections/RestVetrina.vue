@@ -4,10 +4,10 @@
     <v-container>
       <v-row>
         <v-col v-if="admin" cols="6" md="6">
-          <base-add-menu @new_menu="submitMenu($event)"></base-add-menu>
+          <base-add-menu  :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
         </v-col>
         <v-col v-for="menu in menus" :key="menu.id" cols="6" md="6">
-          <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="editMenu(menu)"></base-menu-vetrina>
+          <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="askEditMenu(menu)"></base-menu-vetrina>
         </v-col>
       </v-row>
     </v-container>
@@ -28,6 +28,13 @@ export default {
     },
   },
   data: () => ({
+      menuToManage: {
+          name: '',
+          description: '',
+          price: '',
+          iva: '',
+          edit: false
+      }
     }),
   computed: {
     menus() {
@@ -38,14 +45,32 @@ export default {
     this.$store.dispatch("restaurantData/listMenus")
   },
   methods: {
-    ...mapActions('restaurantData', ['deleteMenu', 'addMenu']),
+    ...mapActions('restaurantData', ['deleteMenu', 'addMenu', 'editMenu']),
     removeMenu: function (menu) {
       this.menus.splice(this.menus.indexOf(menu), 1)
       this.deleteMenu(menu.id) //TODO: se sbaglia ad eliminare devo gestire
     },
-    editMenu: function (menu) {
-      this.menus.splice(this.menus.indexOf(menu), 1)
-      this.deleteMenu(menu.id) //TODO: se sbaglia ad eliminare devo gestire
+    askEditMenu: function (menu) {
+        menu.edit = true
+        this.menuToManage = menu
+        document.getElementById('AddMenu').scrollIntoView(false)
+        document.getElementById('AddMenu').focus({
+          preventScroll: true
+        });
+    },
+    submitEditMenu: function (menu) {
+      this.editMenu({
+        name: menu.name,
+        description: menu.description,
+        price: menu.price,
+        iva: menu.iva,
+        entries: menu.entries
+      }).then((newMenu) =>{
+        this.menus[this.menus.indexOf(menu)] = newMenu
+        alert('Menù aggiornato con successo')
+      }).catch((err) =>{
+        alert('Errore ' + err)
+      })
     },
     submitMenu: function (menu) {
       this.addMenu({
