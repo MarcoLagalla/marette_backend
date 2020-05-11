@@ -29,6 +29,9 @@
         <v-btn name="delete" v-if="this.delete" @click="$emit('removed')" class="managebutton">
           <i class="fas fa-times"></i>
         </v-btn>
+        <v-btn name="edit" v-if="this.edit" @click="$emit('edited')" class="managebutton">
+          <i class="far fa-edit"></i>
+        </v-btn>
         </div>
       </v-card-actions>
     </div>
@@ -49,6 +52,11 @@
             default: false
           },
           basket: {
+            type: Boolean,
+            required: false,
+            default: false
+          },
+          edit: {
             type: Boolean,
             required: false,
             default: false
