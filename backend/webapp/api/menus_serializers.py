@@ -9,10 +9,14 @@ from .products_serializers import ProductTagSerializer
 
 class MenuEntryProductSerializer(serializers.ModelSerializer):
     tags = ProductTagSerializer(many=True)
+    image = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'image', 'tags')
+
+    def get_image(self, obj):
+        return obj.get_image()
 
 
 class MenuEntrySerializer(serializers.ModelSerializer):
