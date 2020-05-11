@@ -51,7 +51,7 @@ export default {
     },
 
     deleteMenuEntry(payload) {
-        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/entry/' + payload.entryId + '/delete')
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/' + payload.menuId + '/entry/' + payload.entryId + '/delete')
             .then(response => {
                 return response
             })

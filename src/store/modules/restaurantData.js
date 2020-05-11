@@ -179,10 +179,10 @@ const actions = {
         })
     },
 
-    deleteMenuEntry: ({commit}, entryId) => {
+    deleteMenuEntry: ({commit}, data) => {
         return new Promise((resolve, reject) => {
 
-            const payload = {restId: state.ID, entryId: entryId}
+            const payload = {restId: state.ID, entryId: data.entryId, menuId: data.menuId}
             manageRestaurant.deleteMenuEntry(payload)
             .then(resp => {
                 commit('RMV_PORTATA_SUCCESS', resp.data);

@@ -43,7 +43,7 @@
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry']),
             submitPortata: function (portata) {
                 this.showAddPortata = false
-                //this.portate.push(portata)
+                this.menu.entries.push(portata)
                 var payload = {
                     data: {
                       name: portata.name,
@@ -59,8 +59,9 @@
 
             },
             deletePortata: function (portata) {
-                this.portate.splice(this.portate.indexOf(portata), 1)
-                this.deleteMenuEntry(portata.id) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
+                const payload = {menuId: this.menu.id, entryId: portata.id}
+                this.deleteMenuEntry(payload) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
             },
         }
     }
