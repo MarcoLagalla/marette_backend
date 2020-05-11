@@ -2,6 +2,9 @@
   <v-card dark width="800" height="800" class="scrollovf">
     <div class="blutitle">
       <v-card-title class="titlemenu" v-text="menu.name"></v-card-title>
+      <div class="quant">
+        <div v-text="menu.price"></div><v-icon small class="quant">fas fa-euro-sign</v-icon>
+      </div>
       <v-card-subtitle
               v-text="menu.description">
       </v-card-subtitle>
