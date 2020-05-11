@@ -21,7 +21,7 @@
       <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
         Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
       </v-btn>
-      <v-btn name="delete" v-if="admin" @click="$emit('removed', menu)" class="managebutton">
+      <v-btn name="delete" v-if="admin" @click="$emit('removed')" class="managebutton">
         Elimina Menù <i class="fas fa-times"></i>
       </v-btn>
       <v-btn name="delete" v-if="admin" @click="$emit('edited')" class="managebutton">
