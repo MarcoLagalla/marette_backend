@@ -219,12 +219,12 @@ class ListRestaurantDiscounts(APIView):
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
-        except Restaurant.DoesNotExist():
+        except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             discounts = RestaurantDiscount.objects.all().filter(restaurant=restaurant)
-        except RestaurantDiscount.DoesNotExist():
+        except RestaurantDiscount.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = RestaurantDiscountSerializer(discounts, many=True)
@@ -237,12 +237,12 @@ class DetailsRestaurantDiscounts(APIView):
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
-        except Restaurant.DoesNotExist():
+        except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             discounts = RestaurantDiscount.objects.all().filter(restaurant=restaurant).get(id=d_id)
-        except RestaurantDiscount.DoesNotExist():
+        except RestaurantDiscount.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = RestaurantDiscountSerializer(discounts)
