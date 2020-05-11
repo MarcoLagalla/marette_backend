@@ -1,5 +1,5 @@
 <template>
-  <v-card color="mx-auto" width="800" height="800">
+  <v-card color="mx-auto">
     <v-card-title class="headline" v-text="portata.name"></v-card-title>
     <v-card-subtitle v-text="'Puoi scegliere ' + portata.num_products + ' di questi prodotti:'"> </v-card-subtitle>
     <base-product v-for="product in portata.products" :key="product.id" :product="product"></base-product>
