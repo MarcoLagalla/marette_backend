@@ -36,7 +36,10 @@ const ifBusiness = (to, from, next) => {
 const ifOwner = (to, from, next) => {
   if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
      store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
-       next();
+        if (store.getters['restaurantData/slug'] === to.params.name)
+          next();
+        else
+          next("/404");
      }).catch(()=>{
        next("/404");
      })
@@ -47,7 +50,10 @@ const ifOwner = (to, from, next) => {
 
 const ifExist = (to, from, next) => {
   store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
-    next();
+    if (store.getters['restaurantData/slug'] === to.params.name)
+      next();
+    else
+      next("/404");
   }).catch(()=>{
     next("/404");
   })

@@ -43,6 +43,8 @@ const getters = {
     discounts: state => state.discounts,
     id: state => state.ID,
     menus: state => state.menus,
+    slug: state => state.restData.slug,
+
 }
 
 const actions = {
