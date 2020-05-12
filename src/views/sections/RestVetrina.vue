@@ -89,8 +89,7 @@ export default {
           description: menu.description,
           price: menu.price,
           iva: menu.iva
-      }).then((newMenu) =>{
-          this.menus.push(newMenu)
+      }).then(() =>{
           alert('Menù aggiunto con successo')
       }).catch((err) =>{
           alert('Errore ' + err)

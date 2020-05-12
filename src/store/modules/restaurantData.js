@@ -293,7 +293,8 @@ const mutations = {
     ADD_PORTATA_ERROR: () =>{
     },
 
-    ADD_MENU_SUCCESS: () =>{
+    ADD_MENU_SUCCESS: (stete, menu) =>{
+        stete.menus.push(menu)
     },
 
     ADD_MENU_ERROR: () =>{
