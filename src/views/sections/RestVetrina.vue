@@ -47,8 +47,7 @@ export default {
   methods: {
     ...mapActions('restaurantData', ['deleteMenu', 'addMenu', 'editMenu']),
     removeMenu: function (menu) {
-      this.menus.splice(this.menus.indexOf(menu), 1)
-      this.deleteMenu(menu.id) //TODO: se sbaglia ad eliminare devo gestire
+      this.deleteMenu(menu) //TODO: se sbaglia ad eliminare devo gestire
     },
     askEditMenu: function (menu) {
         menu.edit = true

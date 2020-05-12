@@ -243,14 +243,13 @@ const actions = {
         })
     },
 
-    deleteMenu: ({commit}, menuId) => {
+    deleteMenu: ({commit}, menu) => {
         return new Promise((resolve, reject) => {
-
-            const payload = {restId: state.ID, menuId: menuId}
+            const payload = {restId: state.ID, menuId: menu.id}
             manageRestaurant.deleteMenu(payload)
             .then(resp => {
                 commit('RMV_MENU_SUCCESS', resp.data);
-                resolve(resp.data)
+                resolve(menu)
             })
             .catch(err => {
                 commit('RMV_MENU_ERROR');
@@ -306,7 +305,8 @@ const mutations = {
     EDIT_MENU_ERROR: () =>{
     },
 
-    RMV_MENU_SUCCESS: () =>{
+    RMV_MENU_SUCCESS: (state, menu) =>{
+      state.menus.splice(state.menus.indexOf(menu), 1)
     },
 
     RMV_MENU_ERROR: () =>{
