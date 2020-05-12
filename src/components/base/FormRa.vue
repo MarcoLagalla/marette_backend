@@ -39,6 +39,22 @@
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field :rules="password2Rules" :error-messages="errors.password2" @change="errors.password2=''" solo filed v-model="password2" label="Repeat password*" id="password2" type="password" required></v-text-field>
                   </v-col>
+                  <v-col cols="12">
+                    <picture-input
+                      ref="avatar"
+                      @change="onChanged"
+                      :width="300"
+                      :height="300"
+                      size="5"
+                      :crop="true"
+                      :changeOnClick="false"
+                      accept="image/jpeg, image/png, image/gif"
+                      buttonClass="ui button primary"
+                      :customStrings="{
+                      upload: '<h1>Carica immagine</h1>',
+                      drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                    </picture-input>
+                  </v-col>
                 </v-row>
               </v-container>
               <small style="color:white">*indica i campi obbligatori</small>
@@ -68,8 +84,12 @@
   import {
     mapActions
   } from 'vuex'
+  import PictureInput from "vue-picture-input";
   export default {
     name: 'BaseForm',
+    components: {
+      PictureInput,
+    },
     mixins: [Heading],
     data: () => ({
       dialog: false,
@@ -81,6 +101,7 @@
       last_name: '',
       birth_date: '',
       phone: '',
+      image: '',
       valid: true,
       nameRules: [
         v => !!v || 'Campo obbligatorio',
@@ -103,17 +124,23 @@
       ...mapActions('userAuthentication', ['registerUser']),
       register: function() {
         if (!this.first_name && !this.last_name) {
-          this.registerUser({
+          const data = {
             username: this.username,
             email: this.email,
             password: this.password,
             password2: this.password2,
             phone: this.phone
-          }).then(() => {
+          };
+
+          const formData = new FormData();
+          formData.append('avatar', this.image);
+          formData.append('data', JSON.stringify(data));
+
+          this.registerUser(formData).then(() => {
             this.$router.push('/profile')
           })
         } else {
-          this.registerUser({
+            const data = {
             username: this.username,
             email: this.email,
             password: this.password,
@@ -122,11 +149,24 @@
             first_name: this.first_name,
             last_name: this.last_name,
             birth_date: this.birth_date
-          }).then(() => {
+          };
+
+          const formData = new FormData();
+          formData.append('avatar', this.image);
+          formData.append('data', JSON.stringify(data));
+
+          this.registerUser(formData).then(() => {
             this.$router.push('/profile')
           })
         }
-      }
+      },
+      onChanged() {
+        if (this.$refs.avatar.file) {
+          this.image = this.$refs.avatar.file;
+        } else {
+          console.log("Old browser. No support for Filereader API");
+        }
+      },
     },
     computed: {
       status() {
