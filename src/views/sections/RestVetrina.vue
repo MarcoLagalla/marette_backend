@@ -68,8 +68,7 @@ export default {
           entries: menu.entries
         }
       })
-      .then((newMenu) =>{
-        this.menus[this.menus.indexOf(menu)] = newMenu
+      .then(() =>{
         alert('Menù aggiornato con successo')
       })
       .catch((err) =>{

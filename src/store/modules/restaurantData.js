@@ -233,7 +233,7 @@ const actions = {
             const payload = {restId: state.ID, data: menu.data, menuId: menu.menuId}
             manageRestaurant.editMenu(payload)
             .then(resp => {
-                commit('EDIT_MENU_SUCCESS', resp.data);
+                commit('EDIT_MENU_SUCCESS', menu);
                 resolve(resp.data)
             })
             .catch(err => {
@@ -299,7 +299,11 @@ const mutations = {
     ADD_MENU_ERROR: () =>{
     },
 
-    EDIT_MENU_SUCCESS: () =>{
+    EDIT_MENU_SUCCESS: (state, newMenu) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === newMenu.id)
+            state.menus[state.menus.indexOf(menu)] = newMenu
+        });
     },
 
     EDIT_MENU_ERROR: () =>{
