@@ -49,7 +49,7 @@
             portataToManage: {
               name: '',
               num_products: 1,
-              showAdd: false,
+              showAddPortata: false,
               products: [],
               edit: false
             }
@@ -57,19 +57,20 @@
         methods: {
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry', 'editMenuEntry']),
             submitPortata: function (portata) {
-                this.menu.entries.push(portata)
                 var payload = {
-                    data: {
-                      name: portata.name,
-                      num_products: portata.num_products,
-                      products: []
-                    },
+                    data: portata,
                     menuId: this.menu.id
                 }
-                portata.products.forEach(function (item) {
-                    payload.data.products.push(item.id)
-                });
-                this.addMenuEntry(payload)//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                this.addMenuEntry(payload)
+                .then(
+                  this.portataToManage= {
+                    name: '',
+                    num_products: 1,
+                    showAddPortata: false,
+                    products: [],
+                    edit: false
+                  }
+                )//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
             },
 
             deletePortata: function (portata) {
@@ -79,7 +80,7 @@
             },
 
             askEditPortata: function (portata) {
-                this.showAddPortata = true
+                portata.showAddPortata = true
                 portata.edit = true
                 this.portataToManage = portata
                 document.getElementById('AddPortata').scrollIntoView(false)
@@ -114,7 +115,7 @@
               this.portataToManage= {
                 name: '',
                 num_products: 1,
-                showAdd: false,
+                showAddPortata: false,
                 products: [],
                 edit: false
               }

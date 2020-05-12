@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn @click="showAddPortata = true" text>{{addBtn}}</v-btn>
-    <div v-show="showAddPortata || portata.edit" class="addportata" id="AddPortata">
+    <v-btn @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
+    <div v-show="portata.showAddPortata" class="addportata" id="AddPortata">
       <v-text-field outlined v-model='portata.name' type="text" label="Nome della portata" required></v-text-field>
       <v-text-field outlined v-model='portata.num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
 
@@ -31,13 +31,13 @@
           name: '',
           num_products: 1,
           products: [],
-          edit: false
+          edit: false,
+          showAddPortata: false,
         })
       },
     },
     data: () => ({
         showAddProduct: false,
-        showAddPortata: false,
         addBtnNew: 'Aggiungi portata',
         addBtnEdit: 'Modifica portata',
         submitBtnNew: 'Salva portata',

@@ -166,10 +166,21 @@ const actions = {
 
     addMenuEntry: ({commit}, portata) => {
         return new Promise((resolve, reject) => {
-            const payload = {restId: state.ID, data: portata.data, menuId: portata.menuId}
+            var payload = {
+                    data: {
+                      name: portata.data.name,
+                      num_products: portata.data.num_products,
+                      products: []
+                    },
+                    restId: state.ID,
+                    menuId: portata.menuId
+                }
+                portata.data.products.forEach(function (item) {
+                    payload.data.products.push(item.id)
+                });
             manageRestaurant.addMenuEntry(payload)
             .then(resp => {
-                commit('ADD_PORTATA_SUCCESS', resp.data);
+                commit('ADD_PORTATA_SUCCESS', portata);
                 resolve(resp.data)
             })
             .catch(err => {
@@ -287,7 +298,11 @@ const mutations = {
     EDIT_PORTATA_ERROR: () =>{
     },
 
-    ADD_PORTATA_SUCCESS: () =>{
+    ADD_PORTATA_SUCCESS: (state, data) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === data.menuId)
+            state.menus[state.menus.indexOf(menu)].entries.push(data.data)
+        });
     },
 
     ADD_PORTATA_ERROR: () =>{
