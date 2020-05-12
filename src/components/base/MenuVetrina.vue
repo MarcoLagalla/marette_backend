@@ -10,7 +10,7 @@
       </v-card-subtitle>
     </div>
     <div class="addmenu">
-      <base-portata v-for="portata in menu.entries" :key="portata.id" :portata="portata" :delete="admin"
+      <base-portata v-for="portata in menu.entries" :key="portata.id" :portata="portata" :admin="admin"
                     @removed="deletePortata(portata)"></base-portata>
       <template v-if="admin">
         <v-btn @click="showAddPortata = true" text>Aggiungi portata</v-btn>
@@ -21,10 +21,10 @@
       <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
         Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
       </v-btn>
-      <v-btn name="delete" v-if="admin" @click="$emit('removed')" class="managebutton">
+      <v-btn name="delete" v-if="admin" color="red" @click="$emit('removed')" class="managebutton">
         Elimina Menù <i class="fas fa-times"></i>
       </v-btn>
-      <v-btn name="edit" v-if="admin" @click="$emit('edited')" class="managebutton">
+      <v-btn name="edit" v-if="admin" color="blue" @click="$emit('edited')" class="managebutton">
         Modifica Menù<i class="far fa-edit"></i>
       </v-btn>
     </v-card-actions>

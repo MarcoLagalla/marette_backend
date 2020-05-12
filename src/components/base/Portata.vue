@@ -4,7 +4,11 @@
     <v-card-subtitle v-text="'Puoi scegliere ' + portata.num_products + ' di questi prodotti:'"> </v-card-subtitle>
     <base-product v-for="product in portata.products" :key="product.id" :product="product"></base-product>
     <v-card-actions class="pos1">
-      <v-btn v-if="this.delete" color="red" @click="$emit('removed')">Elimina portata<i class="fas fa-times"></i>
+      <v-btn name="delete" v-if="admin" color="red" @click="$emit('removed')">
+        Elimina portata<i class="fas fa-times"></i>
+      </v-btn>
+      <v-btn name="edit" v-if="admin" color="blue" @click="$emit('edited')" class="managebutton">
+        Modifica portata<i class="far fa-edit"></i>
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -18,7 +22,7 @@
             type: Object,
             required: true
           },
-          delete: {
+          admin: {
             type: Boolean,
             required: false,
             default: false
