@@ -14,6 +14,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/account/', include('backend.account.api.urls', 'account_api')),
     path('api/v1/webapp/', include('backend.webapp.api.urls')),
-    path('api/v1/message/', include('backend.message.urls')),
-
 ]
