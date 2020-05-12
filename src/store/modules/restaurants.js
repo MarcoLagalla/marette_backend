@@ -17,13 +17,14 @@ const getters = {
 }
 
 const actions = {
-    newRestaurant: ({commit}, restaurant) => {
+    newRestaurant: ({commit, dispatch}, restaurant) => {
         return new Promise((resolve, reject) => {
             commit('REG_REST_REQUEST')
             manageRestaurant.postRegisterRestaurant(restaurant)
             .then(resp => {
                 const data = resp.data
                 commit('REG_REST_SUCCESS', data.id_restaurant)
+                dispatch("userProfile/addRestaurant", data.id_restaurant, {root: true});
                 resolve(resp.data)
             })
             .catch(err => {

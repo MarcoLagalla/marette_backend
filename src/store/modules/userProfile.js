@@ -56,6 +56,10 @@ const actions = {
     commit('USER_PROF_LOGOUT')
   },
 
+  addRestaurant: ({commit}, restID) => {
+    commit('USER_ADD_REST', restID)
+  },
+
   changePassword: ({commit}, data) => {
     return new Promise((resolve, reject) => {
       commit('USER_REQUEST')
@@ -123,7 +127,10 @@ const mutations = {
 
   USER_ERROR: (state) => {
     state.status = 'error'
+  },
 
+  USER_ADD_REST: (state, restId) => {
+    state.user_private.restaurants.push(restId)
   },
 }
 
