@@ -57,16 +57,10 @@
         methods: {
             submitMenu: function () {
                 if (this.menu.edit)
-                    this.$emit('new_menu', this.menu)
-                else
                     this.$emit('edit_menu', this.menu)
-                this.menu = {
-                    name: '',
-                    description: '',
-                    price: '',
-                    iva: '',
-                    edit: false
-                }
+                else
+                    this.$emit('new_menu', this.menu)
+
             },
             reset: function () {
                 this.menu = {

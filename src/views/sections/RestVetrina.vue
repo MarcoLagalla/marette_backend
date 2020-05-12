@@ -60,17 +60,30 @@ export default {
     },
     submitEditMenu: function (menu) {
       this.editMenu({
-        name: menu.name,
-        description: menu.description,
-        price: menu.price,
-        iva: menu.iva,
-        entries: menu.entries
-      }).then((newMenu) =>{
+        menuId: menu.id,
+        data: {
+          name: menu.name,
+          description: menu.description,
+          price: menu.price,
+          iva: menu.iva,
+          entries: menu.entries
+        }
+      })
+      .then((newMenu) =>{
         this.menus[this.menus.indexOf(menu)] = newMenu
         alert('Menù aggiornato con successo')
-      }).catch((err) =>{
+      })
+      .catch((err) =>{
         alert('Errore ' + err)
       })
+
+      this.menuToManage = {
+          name: '',
+          description: '',
+          price: '',
+          iva: '',
+          edit: false
+      }
     },
     submitMenu: function (menu) {
       this.addMenu({

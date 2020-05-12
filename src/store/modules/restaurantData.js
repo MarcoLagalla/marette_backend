@@ -214,7 +214,7 @@ const actions = {
     editMenu: ({commit}, menu) => {
         return new Promise((resolve, reject) => {
 
-            const payload = {id: state.ID, data: menu}
+            const payload = {restId: state.ID, data: menu.data, menuId: menu.menuId}
             manageRestaurant.editMenu(payload)
             .then(resp => {
                 commit('EDIT_MENU_SUCCESS', resp.data);
