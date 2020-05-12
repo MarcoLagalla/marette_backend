@@ -24,7 +24,7 @@
       <v-btn name="delete" v-if="admin" @click="$emit('removed')" class="managebutton">
         Elimina Menù <i class="fas fa-times"></i>
       </v-btn>
-      <v-btn name="delete" v-if="admin" @click="$emit('edited')" class="managebutton">
+      <v-btn name="edit" v-if="admin" @click="$emit('edited')" class="managebutton">
         Modifica Menù<i class="far fa-edit"></i>
       </v-btn>
     </v-card-actions>
