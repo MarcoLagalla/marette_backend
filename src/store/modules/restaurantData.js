@@ -182,14 +182,30 @@ const actions = {
     deleteMenuEntry: ({commit}, data) => {
         return new Promise((resolve, reject) => {
 
-            const payload = {restId: state.ID, entryId: data.entryId, menuId: data.menuId}
-            manageRestaurant.deleteMenuEntry(payload)
+            data.restId =  state.ID
+            manageRestaurant.deleteMenuEntry(data)
             .then(resp => {
                 commit('RMV_PORTATA_SUCCESS', resp.data);
                 resolve(resp.data)
             })
             .catch(err => {
                 commit('RMV_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    editMenuEntry: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+
+            data.restId =  state.ID
+            manageRestaurant.editMenuEntry(data)
+            .then(resp => {
+                commit('EDIT_PORTATA_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('EDIT_PORTATA_ERROR');
                 reject(err)
             })
         })
@@ -264,6 +280,12 @@ const mutations = {
     },
 
     RMV_PORTATA_ERROR: () =>{
+    },
+
+    EDIT_PORTATA_SUCCESS: () =>{
+    },
+
+    EDIT_PORTATA_ERROR: () =>{
     },
 
     ADD_PORTATA_SUCCESS: () =>{

@@ -57,6 +57,13 @@ export default {
             })
     },
 
+    editMenuEntry(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/menus/' + payload.menuId + '/entry/' + payload.entryId + '/edit', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
     addMenu(payload) {
         return api.post('v1/webapp/restaurant/' + payload.id + '/menus/add', payload.data)
             .then(response => {

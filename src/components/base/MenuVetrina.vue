@@ -11,11 +11,9 @@
     </div>
     <div class="addmenu">
       <base-portata v-for="portata in menu.entries" :key="portata.id" :portata="portata" :admin="admin"
-                    @removed="deletePortata(portata)"></base-portata>
-      <template v-if="admin">
-        <v-btn @click="showAddPortata = true" text>Aggiungi portata</v-btn>
-        <base-add-portata v-show="showAddPortata" @added_portata="submitPortata($event)"></base-add-portata>
-      </template>
+                    @removed="deletePortata(portata)" @edited="askEditPortata(portata)"></base-portata>
+      <base-add-portata v-if="admin" :portata="portataToManage"
+                        @new_portata="submitPortata($event)" @edit_portata="submitEditPortata($event)"></base-add-portata>
     </div>
     <v-card-actions>
       <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
@@ -48,12 +46,17 @@
             },
         },
         data: () => ({
-            showAddPortata:  false
+            portataToManage: {
+              name: '',
+              num_products: 1,
+              showAdd: false,
+              products: [],
+              edit: false
+            }
         }),
         methods: {
-            ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry']),
+            ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry', 'editMenuEntry']),
             submitPortata: function (portata) {
-                this.showAddPortata = false
                 this.menu.entries.push(portata)
                 var payload = {
                     data: {
@@ -67,12 +70,54 @@
                     payload.data.products.push(item.id)
                 });
                 this.addMenuEntry(payload)//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
-
             },
+
             deletePortata: function (portata) {
                 this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
                 const payload = {menuId: this.menu.id, entryId: portata.id}
                 this.deleteMenuEntry(payload) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+            },
+
+            askEditPortata: function (portata) {
+                this.showAddPortata = true
+                portata.edit = true
+                this.portataToManage = portata
+                document.getElementById('AddPortata').scrollIntoView(false)
+                document.getElementById('AddPortata').focus({
+                  preventScroll: true
+                });
+            },
+
+            submitEditPortata: function (portata) {
+              var payload = {
+                menuId: this.menu.id,
+                entryId: portata.id,
+                data: {
+                  name: portata.name,
+                  num_products: portata.num_products,
+                  products: []
+                }
+              }
+              portata.products.forEach(function (item) {
+                    payload.data.products.push(item.id)
+                });
+
+              this.editMenuEntry(payload)
+              .then((newPortata) =>{
+                this.menu.entries[this.menu.entries.indexOf(portata)] = newPortata
+                alert('Portata aggiornata con successo')
+              })
+              .catch((err) =>{
+                alert('Errore ' + err)
+              })
+
+              this.portataToManage= {
+                name: '',
+                num_products: 1,
+                showAdd: false,
+                products: [],
+                edit: false
+              }
             },
         }
     }
