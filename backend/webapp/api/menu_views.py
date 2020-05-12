@@ -30,6 +30,7 @@ class ListMenus(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class AddMenu(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
@@ -54,7 +55,9 @@ class AddMenu(APIView):
                 if serializer.is_valid():
                     menu = serializer.save(restaurant)
                     menu.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    data = serializer.data
+                    data.update({'id': menu.id, 'iva': menu.iva})
+                    return Response(data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(data, status=status.HTTP_403_FORBIDDEN)
