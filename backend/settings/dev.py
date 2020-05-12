@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_cleanup',
 ]
 
+
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
     'django.middleware.security.SecurityMiddleware',
@@ -204,7 +205,7 @@ ADMIN_REORDER = (
                 'webapp.GalleriaComponent',
                 'webapp.VetrinaComponent',
                 'webapp.ContattaciComponent',)},
-    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order',)}
+    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order', 'orders.OrderNotification',)},
 )
 
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
