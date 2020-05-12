@@ -60,7 +60,6 @@
                     this.$emit('edit_menu', this.menu)
                 else
                     this.$emit('new_menu', this.menu)
-
             },
             reset: function () {
                 this.menu = {
