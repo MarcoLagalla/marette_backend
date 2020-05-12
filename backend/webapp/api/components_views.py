@@ -264,6 +264,7 @@ class GalleryAddImage(APIView):
             if serializer.is_valid():
                 img = serializer.save(restaurant)
                 data = serializer.validated_data
+                data.update({'id': img.id})
                 data.update({'restaurant': img.restaurant.id})
                 data.update({'image': img.get_image()})
                 return Response(serializer.validated_data, status=status.HTTP_200_OK)
