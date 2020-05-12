@@ -94,9 +94,11 @@ export default {
 
       this.newRestaurant(formData)
         .then((response) => {
-          this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
+          this.$router.push('/profile/' + response.id_restaurant + '/' + response.slug)
         })
         .catch(error => {
+            console.log('error')
+            console.log(error)
           var id = Object.keys(error)[0];
           document.getElementById(id).scrollIntoView(false)
           document.getElementById(id).focus({
