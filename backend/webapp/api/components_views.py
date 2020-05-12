@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,6 +13,8 @@ from ..models.models import Restaurant
 from ..models.components import MenuComponent, GalleriaComponent, EventiComponent, \
     VetrinaComponent, HomeComponent, ContattaciComponent
 
+from .serializers import HomeSerializer, VetrinaSerializer, ContattaciSerializer, EventiSerializer, \
+    MenuSerializer, GalleriaSerializer, PictureSerializer
 
 class ActivateComponent(APIView):
     permission_classes = [SessionAuthentication, TokenAuthentication]
@@ -140,3 +144,152 @@ class DeactivateComponent(APIView):
                 return Response({type: 'disattivato'}, status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateHomeComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        restaurant = action_authorized(request, id)
+        if restaurant:
+            try:
+                home = HomeComponent.objects.all().get(restaurant=restaurant)
+            except HomeComponent.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                data = json.loads(request.data['data'])
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                image = request.data['image']
+                data.update({'image': image})
+            except KeyError:
+                pass
+
+            for key in data:
+                setattr(home, key, data[key])
+            home.save()
+
+            serializer = HomeSerializer(home)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateGalleriaComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        restaurant = action_authorized(request, id)
+        if restaurant:
+            try:
+                galleria = GalleriaComponent.objects.all().get(restaurant=restaurant)
+            except GalleriaComponent.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                data = json.loads(request.data['data'])
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateVetrinaComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        pass
+
+
+class UpdateEventiComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        pass
+
+
+class UpdateContattaciComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        pass
+
+
+class UpdateMenuComponent(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        pass
+
+
+class GalleryAddImage(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+
+        restaurant = action_authorized(request, id)
+        if restaurant:
+
+            try:
+                data = json.loads(request.data['data'])
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                image = request.data['image']
+                data.update({'image': image})
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = PictureSerializer(data=data)
+            if serializer.is_valid():
+                img = serializer.save(restaurant)
+                data = serializer.validated_data
+                data.update({'restaurant': img.restaurant.id})
+                data.update({'image': img.get_image()})
+                return Response(serializer.validated_data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
+def action_authorized(request, id):
+    # controllo se gli oggetti esistono
+    try:
+        restaurant = Restaurant.objects.get(id=id)
+    except Restaurant.DoesNotExist:
+        return Response({'error': 'Ristorante non trovato'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        token = Token.objects.all().get(user=restaurant.owner.user).key
+    except Token.DoesNotExist:
+        return Response({'error': 'Token non valido'}, status.HTTP_401_UNAUTHORIZED)
+
+    if request.user.auth_token.key != token:
+        return Response({'error': 'Token non valido'}, status.HTTP_401_UNAUTHORIZED)
+
+    if request.user == restaurant.owner.user:
+        return restaurant
+
+    return False

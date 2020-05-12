@@ -24,6 +24,7 @@ def home_component(instance, filename):
          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
     return file_path
 
+
 class HomeComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='home', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)

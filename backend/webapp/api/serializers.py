@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount
+from ..models.models import Restaurant, RestaurantDiscount, Picture
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
@@ -171,3 +171,24 @@ class RestaurantComponentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestaurantComponents
         fields = ('home', 'vetrina', 'menu', 'galleria', 'eventi', 'contattaci')
+
+
+class PictureSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Picture
+        fields = ('id', 'name', 'description', 'image')
+
+    @transaction.atomic
+    def save(self, restaurant=None, **kwargs):
+        if restaurant:
+            try:
+
+                picture = Picture.objects.create(restaurant=restaurant, **self.validated_data)
+                return picture
+
+            except Exception as err:
+                pass
+
+        return None

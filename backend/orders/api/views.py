@@ -1,8 +1,11 @@
+from collections import OrderedDict
+
 import django
+from rest_framework.utils.urls import remove_query_param, replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from backend.account.permissions import IsBusiness
@@ -26,7 +29,7 @@ class AllNotifications(APIView):
         except Business.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        notifications = OrderNotification.objects.all().filter(recipient=business.user).order_by('issued')
+        notifications = OrderNotification.objects.all().filter(recipient=business.user).order_by('-issued')
         # -----------------------------------------------------------
         page_number = request.query_params.get('page_number', 1)
         page_size = request.query_params.get('page_size', 10)
@@ -40,7 +43,62 @@ class AllNotifications(APIView):
         serializer = OrderNotificationSerialzier(page, many=True, context={'request': request})
         # -----------------------------------------------------------
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        navigator = NavigationLinks(self.request, paginator, page_number)
+
+        data = {
+            'first': navigator.get_first_link(),
+            'previous': navigator.get_previous_link(),
+            'next': navigator.get_next_link(),
+            'last': navigator.get_last_link()
+        }
+
+        data.update({'results': serializer.data})
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class NavigationLinks:
+
+    paginator = None
+    page_number = None
+    request = None
+
+    def __init__(self, request, paginator, page_number):
+
+        self.request = request
+        self.paginator = paginator
+        self.page_number = page_number
+
+    def get_first_link(self):
+        # page_number is the current page
+        if int(self.page_number) == 1:
+            return None
+        url = self.request.build_absolute_uri()
+        return replace_query_param(url, 'page_number', 1)
+
+    def get_last_link(self):
+        if int(self.page_number) == self.paginator.num_pages:
+            return None
+        url = self.request.build_absolute_uri()
+        return replace_query_param(url, 'page_number', self.paginator.num_pages)
+
+    def get_previous_link(self):
+        url = self.request.build_absolute_uri()
+        page = self.paginator.page(self.page_number)
+        if page.has_previous():
+            url = replace_query_param(url, 'page_number', page.previous_page_number())
+        else:
+            url = None
+        return url
+
+    def get_next_link(self):
+        url = self.request.build_absolute_uri()
+        page = self.paginator.page(self.page_number)
+        if page.has_next():
+            url = replace_query_param(url, 'page_number', page.next_page_number())
+        else:
+            url = None
+        return url
 
 
 class UnReadCount(APIView):
