@@ -60,7 +60,7 @@ export default {
   background-color: var(--palesilver) !important;
 }
 .basil--text {
-  color: var(--chilli) !important;
+  color: var(--emerald) !important;
 }
 .tabcat {
   background-color: var(--palesilver);

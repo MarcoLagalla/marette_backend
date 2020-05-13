@@ -1,5 +1,5 @@
 <template>
-    <v-card id="AddMenu" dark width="800" height="800" class="scrollovf">
+    <v-card id="AddMenu" width="800" max-height="800" class="scrollovf">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -76,11 +76,11 @@
 <style scoped>
     .addmenu {
         padding: 10px !important;
-        background: var(--charcoal);
+        background: var(--palesilver);
     }
 
     .blutitle {
-        background: var(--ming);
+        background: var(--emerald);
         color: #FFFFFF;
         box-shadow: 0 0 5px black;
         position: sticky;

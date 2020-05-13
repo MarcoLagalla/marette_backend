@@ -20,7 +20,7 @@
           <v-icon small class="quant">fas fa-euro-sign</v-icon>
         </div>
         <div class="mngbtn">
-        <v-btn name="basket" v-if="this.basket" @click="$emit('added')" class="managebutton">
+        <v-btn name="basket" v-if="this.basket" @click="$emit('added')" class="cartbutton">
           <i class="fas fa-shopping-basket"></i>
         </v-btn>
         <v-btn class="managebutton">
@@ -74,40 +74,52 @@
 </script>
 
 <style scoped>
+  h1 {
+    color: white;
+    margin-bottom: 10px;
+    margin-left: 10px;
+  }
+
+  .menubody {
+    position: relative;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: var(--whitesmoke);
+  }
   .quant {
-  padding: 5px;
-  display: flex;
-  align-items: center;
-}
-.description {
-  padding: 15px;
-}
-.managebutton {
-  transition: 0.3s ease-in-out;
-  background: var(--chilli)!important;
-  display: block;
-  margin-top: 5px;
-}
-.managebutton:hover {
-  scale: 1.1;
-}
-.product {
-  transition: ease-in-out 0.4s;
-  box-shadow: 0 0 2px black;
-}
-.product:hover{
-  box-shadow:0 0 10px black;
-}
-.pos1 {
-  position: absolute;
-  bottom: 0 !important;
-  right: 0;
-}
-.pos2 {
-  position: relative;
-  top: 0 !important;
-  right: 0;
-  padding: 15px;
-}
+    padding: 5px;
+    display: flex;
+    align-items: center;
+  }
+  .description {
+    padding: 15px;
+  }
+  .managebutton {
+    transition: 0.3s ease-in-out;
+    background: var(--emerald)!important;
+    display: block;
+    margin-top: 5px;
+  }
+  .managebutton:hover {
+    scale: 1.1;
+  }
+  .cartbutton {
+    transition: 0.3s ease-in-out;
+    background: var(--emerald)!important;
+    display: block;
+    margin-top: 5px;
+  }
+  .cartbutton:hover {
+    scale: 1.1;
+  }
+  .product {
+    transition: ease-in-out 0.4s;
+    box-shadow: 0 0 2px black;
+  }
+  .product:hover{
+    box-shadow:0 0 10px black;
+  }
 
 </style>

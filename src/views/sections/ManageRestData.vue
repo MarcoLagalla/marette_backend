@@ -1,9 +1,8 @@
 <template>
     <div class="box">
         <form @submit.prevent="update">
-
             <v-row dense>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -27,7 +26,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -53,7 +52,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -77,7 +76,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -101,7 +100,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -125,7 +124,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -149,7 +148,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -173,7 +172,7 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                     <v-card color="var(--ming)" dark class="product">
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div class="quant">
@@ -197,11 +196,13 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="6">
-                    <img ref="restImageOld" :src="restData.image">
+                <v-col cols="12" md="3">
+
+                        <img class="profimg" ref="restImageOld" :src="restData.image">
+
                 </v-col>
-            </v-row>
-            <div class="center">
+                <v-col cols="12" md="3"></v-col>
+                <v-col cols="12" md="6">
 
                 <picture-input
                         ref="restImage"
@@ -209,6 +210,7 @@
                         :width="300"
                         :height="300"
                         size="5"
+                        zIndex="0"
                         :crop="true"
                         :changeOnClick="false"
                         accept="image/jpeg, image/png, image/gif"
@@ -217,6 +219,9 @@
             upload: '<h1>Carica immagine</h1>',
             drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
                 </picture-input>
+                </v-col>
+            </v-row>
+            <div class="center">
                 <div class="centerbut">
                     <button type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
                 </div>
@@ -291,40 +296,64 @@
 
 <style scoped>
     .box {
-        margin: 20px;
-        padding: 40px;
+        margin: 2vmax;
+        padding: 4vmax;
         border: solid var(--charcoal) 1px;
         box-shadow: 0 0 10px inset black;
         border-radius: 25px;
-        margin-left: 100px;
-        margin-right: 100px;
+        margin-left: 10vmax;
+        margin-right: 10vmax;
         background: var(--whitesmoke);
     }
-
+    @media only screen and (max-width: 768px) {
+        /* For mobile phones: */
+        .product {
+            width: 100%;
+            margin: 0;
+        }
+        .quant {
+            margin: 5%;
+        }
+        .box {
+            margin: 5%;
+            padding: 5%;
+        }
+        .headline {
+            font-size: 1.1em!important;
+            letter-spacing: normal!important;
+        }
+    }
+    .product {
+    }
+    .profimg {
+        margin: auto;
+        width: 100%;
+        height: auto;
+    }
     .center {
         margin: auto;
     }
 
     .centerbut {
         margin: auto;
-        width: 400px;
+        width: auto;
     }
 
     .save {
         padding: 10px;
         border-radius: 25px;
-        background: var(--chilli);
-        margin: 10px;
+        background: var(--darkslate);
+        margin: auto;
         color: aliceblue;
         font-weight: bold;
         font-size: 1.5em;
-        box-shadow: 0 0 4px var(--chilli);
+        box-shadow: 0 0 4px var(--darkslate);
         transition: ease-in-out 0.5s;
-        width: 100%;
+        width: auto;
     }
 
     .save:hover {
-        box-shadow: 0 0 10px var(--chilli);
+        box-shadow: 0 0 10px var(--darkslate);
     }
 
     .description {
@@ -332,6 +361,6 @@
     }
 
     .addtocart {
-        background: var(--chilli) !important;
+        background: var(--darkslate) !important;
     }
 </style>

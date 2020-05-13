@@ -10,7 +10,7 @@
     width="100"
     >
     <v-icon
-    color="red"
+    class="proficon"
     large>
     mdi-account
   </v-icon>
@@ -68,6 +68,9 @@ export default {
   left: 90%;
   width: 0.5em;
   transform: rotate(45deg);
+}
+.proficon {
+  color: var(--darkslate);
 }
 a {
   text-decoration: none;

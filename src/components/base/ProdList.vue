@@ -39,6 +39,30 @@ h1 {
   width: 100%;
   background: var(--whitesmoke);
 }
+.quant {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+.description {
+  padding: 15px;
+}
+.managebutton {
+  transition: 0.3s ease-in-out;
+  background: var(--emerald)!important;
+  display: block;
+  margin-top: 5px;
+}
+.managebutton:hover {
+  scale: 1.1;
+}
+.product {
+  transition: ease-in-out 0.4s;
+  box-shadow: 0 0 2px black;
+}
+.product:hover{
+  box-shadow:0 0 10px black;
+}
 
 
 </style>

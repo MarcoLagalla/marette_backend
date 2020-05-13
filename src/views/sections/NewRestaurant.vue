@@ -34,6 +34,7 @@
               :width="300"
               :height="300"
               size="5"
+              zIndex="0"
               :crop="true"
               :changeOnClick="false"
               accept="image/jpeg, image/png, image/gif"
@@ -126,7 +127,7 @@ export default {
 </script>
 <style scoped>
 .icfood {
-  color: var(--chilli)
+  color: var(--darkslate)
 }
 .background {
   background-color: whitesmoke;
@@ -140,13 +141,13 @@ export default {
   border-radius: 25px;
 }
 h1 {
-  color: var(--chilli)
+  color: var(--darkslate)
 }
 .v-text-field {
   padding: 10px;
 }
 .registerbtn {
-  background-color: var(--chilli);
+  background-color: var(--darkslate);
   color: white;
   padding: 16px 20px;
   margin: 8px 0;
