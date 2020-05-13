@@ -50,6 +50,8 @@ urlpatterns = [
 
 
     path('restaurant/<int:id>/components/galleria/images/add', GalleryAddImage.as_view(), name='add_picture_gallery'),
+    path('restaurant/<int:id>/components/galleria/images/<int:i_id>/edit', GalleryEditImage.as_view(), name='edit_picture_gallery'),
+    path('restaurant/<int:id>/components/galleria/images/<int:i_id>/delete', GalleryDeleteImage.as_view(), name='delete_picture_gallery'),
 
     path('restaurant/list', ListRestaurantsAPIView.as_view(), name='list_restaurants'),
     path('restaurant/new', CreateRestaurantAPIView.as_view(), name='register_restaurant'),

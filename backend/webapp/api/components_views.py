@@ -9,7 +9,7 @@ from django.db import transaction
 from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
-from ..models.models import Restaurant
+from ..models.models import Restaurant, Picture
 from ..models.components import MenuComponent, GalleriaComponent, EventiComponent, \
     VetrinaComponent, HomeComponent, ContattaciComponent
 
@@ -267,12 +267,79 @@ class GalleryAddImage(APIView):
                 data.update({'id': img.id})
                 data.update({'restaurant': img.restaurant.id})
                 data.update({'image': img.get_image()})
+                return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class GalleryEditImage(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id, i_id):
+
+        try:
+            picture = Picture.objects.all().get(id=i_id)
+        except Picture.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        restaurant = action_authorized(request, id)
+
+        if restaurant:
+
+            try:
+                data = json.loads(request.data['data'])
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                image = request.data['image']
+                data.update({'image': image})
+            except KeyError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = PictureSerializer(data=data)
+            if serializer.is_valid():
+
+                for key in data:
+                    setattr(picture, key, data[key])
+
+                picture.save()
+
+                data = serializer.validated_data
+                data.update({'id': picture.id})
+                data.update({'restaurant': picture.restaurant.id})
+                data.update({'image': picture.get_image()})
                 return Response(serializer.validated_data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+class GalleryDeleteImage(APIView):
+
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsBusiness, IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id, i_id):
+
+        try:
+            picture = Picture.objects.all().get(id=i_id)
+        except Picture.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        restaurant = action_authorized(request, id)
+
+        if restaurant:
+            picture.delete()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 def action_authorized(request, id):
