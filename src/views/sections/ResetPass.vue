@@ -145,7 +145,7 @@ export default {
 h1 {
   text-align: center;
   padding: 20px;
-  color: var(--chilli);
+  color: var(--darkslate);
 }
 
 .password_btn {

@@ -34,6 +34,6 @@ a {
   text-decoration: none;
 }
 .body {
-  background: #3c3c3c !important;
+  background: var(--charcoal) !important;
 }
 </style>

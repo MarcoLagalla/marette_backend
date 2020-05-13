@@ -1,5 +1,5 @@
 <template>
-  <v-footer id="home-footer" color="#3c3c3c" dark min-height="72">
+  <v-footer id="home-footer" class="footer" dark min-height="72">
     <v-container>
       <v-row>
         <v-col cols="12" md="6">
@@ -31,7 +31,11 @@ export default {
   }),
 }
 </script>
-  <style lang="sass">
-    #home-footer a
-      text-decoration: none
+  <style scoped>
+    #home-footer a {
+      text-decoration: none;
+    }
+    .footer {
+      background: var(--charcoal);
+    }
       </style>

@@ -39,9 +39,10 @@
             <picture-input
               ref="avatar"
               @change="onChanged"
-              :width="300"
-              :height="300"
+              :width="200"
+              :height="200"
               size="5"
+              zIndex="0"
               :crop="true"
               :changeOnClick="false"
               accept="image/jpeg, image/png, image/gif"
