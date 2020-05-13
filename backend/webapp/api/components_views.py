@@ -193,12 +193,33 @@ class UpdateGalleriaComponent(APIView):
             except GalleriaComponent.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
-            try:
-                data = json.loads(request.data['data'])
-            except KeyError:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer = GalleriaSerializer(data=request.data)
+            if serializer.is_valid():
+                data = request.data
+                try:
+                    images = data.pop('immagini', None)
+                except KeyError:
+                    pass
 
-            return Response(status=status.HTTP_200_OK)
+                if images:
+
+                    galleria.immagini.clear()
+                    for i in images:
+                        try:
+                            img = Picture.objects.all().filter(restaurant=restaurant).get(id=i)
+                            galleria.immagini.add(img)
+                        except Picture.DoesNotExist:
+                            pass
+
+                for key in data:
+                    print(key, data[key])
+                    setattr(galleria, key, data[key])
+
+                galleria.save()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

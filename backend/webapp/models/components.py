@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django_resized import ResizedImageField
 from PIL import Image
 
-from .models import Restaurant
+from .models import Restaurant, Picture
 
 MAX_IMAGE_SIZE = 600000  # 600 KB for image
 
@@ -92,7 +92,6 @@ class MenuComponent(models.Model):
 class GalleriaComponent(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='galleria_component', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    immagini = models.ManyToManyField('Picture', related_name='immagini', blank=True)
     show = models.BooleanField(default=False)
 
     class Meta:
@@ -103,6 +102,9 @@ class GalleriaComponent(models.Model):
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
+
+    def get_images(self):
+        return Picture.objects.all().filter(restaurant=self.restaurant)
 
 
 class EventiComponent(models.Model):
