@@ -112,7 +112,7 @@ class UpdateRestaurantAPIView(APIView):
             image = request.FILES['image']
             input_data.update({'image': image})
         except Exception as err:
-            input_data.update({'image': None})
+            pass
 
         try:
             activity_name = input_data.get('activity_name')
@@ -188,7 +188,6 @@ class UpdateRestaurantAPIView(APIView):
             return Response(validation_errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-        print(input_data)
         if request.user == restaurant.owner.user:
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
@@ -197,6 +196,8 @@ class UpdateRestaurantAPIView(APIView):
             for key in input_data:
                 setattr(restaurant, key, input_data[key])
 
+            if image == '':
+                restaurant.image = None
             restaurant.save()
 
             rest_data = ListRestaurantSerializer(restaurant)
