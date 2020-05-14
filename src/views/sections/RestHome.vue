@@ -10,6 +10,12 @@
 
       </v-col>
     </v-row>
+    <template v-if="admin">
+      <v-btn name="delete" color="red" @click="deleteImage()">
+        Elimina immagine di sfondo <i class="fas fa-times"></i>
+      </v-btn>
+      <base-add-home-image  @edited="submitImage($event)"></base-add-home-image>
+    </template>
   </div>
 </template>
 <script>
@@ -28,6 +34,7 @@ export default {
       }
   },
   data: () => ({
+      modImage: false
   }),
   methods: {
     ...mapActions('restaurantData', ['editHomeComponent']),
@@ -39,6 +46,18 @@ export default {
       formData.append('data', JSON.stringify(data));
       this.editHomeComponent(formData)
     },
+    submitImage: function(img) {
+      const formData = new FormData();
+      formData.append('data','{}');
+      formData.append('image',img);
+      this.editHomeComponent(formData)
+    },
+    deleteImage: function() {
+      const formData = new FormData();
+      formData.append('image', '');
+      formData.append('data', '{}');
+      this.editHomeComponent(formData)
+    },
 
   },
   computed: {
@@ -48,7 +67,7 @@ export default {
     },
     description(){
       return this.$store.getters['restaurantData/home'].description
-    }
+    },
   }
 }
 </script>
