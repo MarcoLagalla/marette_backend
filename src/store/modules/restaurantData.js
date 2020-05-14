@@ -44,6 +44,7 @@ const getters = {
     id: state => state.ID,
     menus: state => state.menus,
     slug: state => state.restData.slug,
+    home: state => state.restData.components.home
 
 }
 

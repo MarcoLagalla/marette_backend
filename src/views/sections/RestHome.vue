@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="HOME">
+  <div :style="image" class="body" id="HOME">
     <v-row align="center" class="ma-0 pa-8" justify="center">
       <v-col cols="6" md="4">
       </v-col>
@@ -25,7 +25,13 @@ export default {
       }
   },
   data: () => ({
-  })
+  }),
+  computed: {
+    image() {
+        const imageURL = this.$store.getters['restaurantData/home'].image;
+        return { backgroundImage: "url(/media/" + imageURL + ") " }
+    },
+  }
 }
 </script>
 <style scoped>
@@ -37,7 +43,7 @@ export default {
   right: 0!important;
   height: 100%;
   width: 100%;
-  background: url("https://images6.alphacoders.com/609/609345.jpg") no-repeat center center fixed;
+  background: no-repeat center center fixed ;
   background-size: cover;
 
 
