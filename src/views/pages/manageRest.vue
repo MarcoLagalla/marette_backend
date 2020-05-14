@@ -27,7 +27,7 @@ import View from '@/views/View'
 
 // Components
 import Restmenu from "../sections/RestMenu";
-import RestBanner from "../sections/RestBanner";
+import RestBanner from "../sections/RestHome";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
 import RestInfo from "../sections/RestInfo";
