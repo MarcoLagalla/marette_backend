@@ -210,6 +210,7 @@ class SearchRestaurantAPIView(APIView):
     def post(self, request):
         queried_name = None
         queried_city = None
+        restaurant = []
 
         try:
             queried_name = request.data['activity_name']
@@ -231,12 +232,15 @@ class SearchRestaurantAPIView(APIView):
             elif queried_city:
                 restaurant = Restaurant.objects.filter(city__icontains=queried_city)
             else:
-                restaurant = []
+
+                return Response({'error': ["Non hai specificato alcun filtro."]},
+                                status.HTTP_400_BAD_REQUEST)
 
             serializer = ListRestaurantSerializer(instance=restaurant, many=True)
             data = serializer.data
 
         except Restaurant.DoesNotExist:
-            return Response({'error': ["Nessun Ristorante trovato che rispecchia i filtri specificati."]}, status.HTTP_404_NOT_FOUND)
+            return Response({'error': ["Nessun Ristorante trovato che rispecchia i filtri specificati."]},
+                            status.HTTP_404_NOT_FOUND)
 
         return Response(data, status.HTTP_200_OK)
