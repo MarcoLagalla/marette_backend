@@ -75,7 +75,7 @@
                         @change="onChanged"
                         :width="300"
                         :height="300"
-                        zIndex="0"
+                        :zIndex="0"
                         size="5"
                         :crop="true"
                         :changeOnClick="false"
