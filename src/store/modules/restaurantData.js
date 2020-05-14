@@ -108,7 +108,7 @@ const actions = {
 
             manageProduct.addProduct(payload)
             .then(resp => {
-                commit('REST_ADD_PROD_SUCCESS')
+                commit('REST_ADD_PROD_SUCCESS', resp.data)
                 resolve(resp)
             })
             .catch(err => {
@@ -341,7 +341,7 @@ const mutations = {
     LIST_MENU_ERROR: () =>{
     },
 
-    REST_ADD_PROD_SUCCESS: () =>{
+    REST_ADD_PROD_SUCCESS: (state, prodotto) =>{
     },
 
     REST_ADD_PROD_ERROR: () =>{
