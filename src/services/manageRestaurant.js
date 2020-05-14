@@ -91,4 +91,11 @@ export default {
                 return response
             })
     },
+
+    editHomeComponent(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/home/edit', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

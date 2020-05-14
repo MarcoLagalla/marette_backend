@@ -2,18 +2,21 @@
   <div :style="image" class="body" id="HOME">
     <v-row align="center" class="ma-0 pa-8" justify="center">
       <v-col cols="6" md="4">
+        <base-name-rest-card :description="description" :name="restData.activity_name" :admin="admin" @edited="submitDescription($event)"></base-name-rest-card>
       </v-col>
       <v-col cols="6" md="4">
       </v-col>
       <v-col cols="12" md="4">
-        <base-name-rest-card :activity_description="restData.activity_description" :activity_name="restData.activity_name" :admin="admin"></base-name-rest-card>
+
       </v-col>
     </v-row>
   </div>
 </template>
 <script>
+import {mapActions} from "vuex";
+
 export default {
-  name: "restban",
+  name: "restHome",
   props: {
     restData: {
       type: Object,
@@ -26,12 +29,26 @@ export default {
   },
   data: () => ({
   }),
+  methods: {
+    ...mapActions('restaurantData', ['editHomeComponent']),
+    submitDescription: function(des) {
+      const data = {
+        description: des
+      };
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(data));
+      this.editHomeComponent(formData)
+    },
+
+  },
   computed: {
     image() {
         const imageURL = this.$store.getters['restaurantData/home'].image;
-        console.log(imageURL)
         return { backgroundImage: "url(" + imageURL + ") " }
     },
+    description(){
+      return this.$store.getters['restaurantData/home'].description
+    }
   }
 }
 </script>

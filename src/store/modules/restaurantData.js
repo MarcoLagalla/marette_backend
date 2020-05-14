@@ -57,8 +57,8 @@ const actions = {
                     commit('REST_ADD_COMPONENT', componentName)
                  })
          })
-
     },
+
     deactivateComponent: ({commit}, componentName) =>{
          return new Promise((resolve, reject) => {
              var payload = {id: state.ID, component: componentName}
@@ -67,8 +67,19 @@ const actions = {
                     commit('REST_RMV_COMPONENT', componentName)
                  })
          })
-
     },
+
+    editHomeComponent: ({commit}, data) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, data: data}
+             manageRestaurant.editHomeComponent(payload)
+                 .then(respRes => {
+                    commit('MOD_HOME_COMPONENT', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
             commit('REST_DATA_REQUEST', restaurantID)
@@ -289,6 +300,10 @@ const actions = {
 }
 
 const mutations = {
+    MOD_HOME_COMPONENT: (state, home) =>{
+        state.restData.components.home = home
+    },
+
     RMV_PORTATA_SUCCESS: () =>{
     },
 
