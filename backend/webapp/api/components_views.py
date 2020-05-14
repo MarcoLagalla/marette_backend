@@ -167,12 +167,17 @@ class UpdateHomeComponent(APIView):
 
             try:
                 image = request.data['image']
-                data.update({'image': image})
             except KeyError:
-                pass
+                image = None
 
             for key in data:
                 setattr(home, key, data[key])
+
+            if image == '':
+                home.image = None
+            elif image:
+                home.image = image
+                
             home.save()
 
             serializer = HomeSerializer(home)

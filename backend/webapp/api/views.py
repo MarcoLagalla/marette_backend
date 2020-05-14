@@ -27,7 +27,6 @@ class ListRestaurantsAPIView(ListAPIView):
     serializer_class = ListRestaurantSerializer
 
 
-
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
@@ -101,107 +100,36 @@ class UpdateRestaurantAPIView(APIView):
         except Restaurant.DoesNotExist:
             return Response({'error': ["Ristorante non trovato."]}, status.HTTP_404_NOT_FOUND)
 
-        missing_keys = False
-        value_errors = {}
         try:
             input_data = json.loads(request.data['data'])
-        except Exception:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except json.JSONDecodeError as err:
+            return Response(err, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            image = request.FILES['image']
-            input_data.update({'image': image})
+            image = request.data['image']
         except Exception as err:
-            pass
-
-        try:
-            activity_name = input_data.get('activity_name')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'activity_name': 'Il campo non può essere vuoto.'})
-
-        try:
-            activity_description = input_data.get('activity_description')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'activity_description': 'Il campo non può essere vuoto.'})
-
-        try:
-            restaurant_number = input_data.get('restaurant_number')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'restaurant_number': 'Il campo non può essere vuoto.'})
-
-        try:
-            city = input_data.get('city')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'city': 'Il campo non può essere vuoto.'})
-
-        try:
-            address = input_data.get('address')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'address': 'Il campo non può essere vuoto.'})
-
-        try:
-            n_civ = input_data.get('n_civ')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'n_civ': 'Il campo non può essere vuoto.'})
-
-        try:
-            cap = input_data.get('cap')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'cap': 'Il campo non può essere vuoto.'})
-
-        try:
-            p_iva = input_data.get('p_iva')
-        except KeyError:
-            missing_keys = True
-            value_errors.update({'p_iva': 'Il campo non può essere vuoto.'})
-
-        if missing_keys:
-            return Response(value_errors, status=status.HTTP_400_BAD_REQUEST)
-
-        validation_errors_ = False
-        validation_errors = {}
-        if not phonenumbers.is_valid_number(phonenumbers.parse(restaurant_number, "IT")):
-            validation_errors_ = True
-            validation_errors.update({'restaurant_number': 'Il numero di telefono deve essere valido'})
-
-        cap_validator = re.match('^[0-9]{5}$', str(cap))
-        if not cap_validator:
-            validation_errors_ = True
-            validation_errors.update({'cap': 'Inserire un CAP valido.'})
-
-        try:
-            if not vat_number_validation(p_iva):
-                validation_errors_ = True
-                validation_errors.update({'p_iva': 'La partita iva non è valida'})
-        except Exception:
-            validation_errors_ = True
-            validation_errors.update({'p_iva': 'La partita iva non è valida'})
-
-        if validation_errors_:
-            return Response(validation_errors, status=status.HTTP_400_BAD_REQUEST)
-
+            image = None
 
         if request.user == restaurant.owner.user:
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
             # numero di telefono del ristorante, city, address, cap
 
-            for key in input_data:
-                setattr(restaurant, key, input_data[key])
+            serializer = CreateRestaurantSerializer(data=input_data)
 
-            if image == '':
-                restaurant.image = None
-            restaurant.save()
+            if serializer.is_valid():
+                for key in input_data:
+                    setattr(restaurant, key, input_data[key])
 
-            rest_data = ListRestaurantSerializer(restaurant)
-            return Response(rest_data.data, status=status.HTTP_200_OK)
+                if image == '':
+                    restaurant.image = None
+                elif image:
+                    restaurant.image = image
+                restaurant.save()
 
+                rest_data = ListRestaurantSerializer(restaurant)
+                return Response(rest_data.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)

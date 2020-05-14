@@ -179,10 +179,9 @@ class UpdateProduct(APIView):
                                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
                             try:
-                                image = request.FILES['image']
-                                data.update({'image': image})
+                                image = request.data['image']
                             except KeyError:
-                                pass
+                                image = None
 
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
@@ -210,6 +209,12 @@ class UpdateProduct(APIView):
 
                                 for key in data:
                                     setattr(product, key, data[key])
+
+                                if image == '':
+                                    product.image = None
+                                elif image:
+                                    product.image = image
+
                                 product.save()
                                 return Response(status=status.HTTP_200_OK)
                             else:
