@@ -17,6 +17,7 @@ from ..models.components import MenuComponent, GalleriaComponent, EventiComponen
 from .serializers import HomeSerializer, VetrinaSerializer, ContattaciSerializer, EventiSerializer, \
     MenuSerializer, GalleriaSerializer, PictureSerializer
 
+
 class ActivateComponent(APIView):
     permission_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
