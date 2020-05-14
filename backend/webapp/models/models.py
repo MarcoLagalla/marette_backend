@@ -287,7 +287,6 @@ class Picture(models.Model):
         return self.name
 
     def get_image(self):
-        print(self.image)
         return self.image.url
 
 
