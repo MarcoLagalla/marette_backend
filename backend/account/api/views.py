@@ -370,17 +370,15 @@ class UpdateCostumerUserProfile(APIView):
         except Customer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        input_data = {}
         try:
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            avatar = request.FILES['avatar']
-            input_data.update({'avatar': avatar})
+            avatar = request.data['avatar']
         except KeyError:
-            pass
+            avatar = None
 
         try:
             phone = input_data.get('phone')
@@ -397,8 +395,12 @@ class UpdateCostumerUserProfile(APIView):
             else:
                 return Response({'phone': 'Il numero di telefono non è valido.'},
                                 status=status.HTTP_400_BAD_REQUEST)
-            if avatar:
+
+            if avatar == '':
+                user.avatar = None
+            elif avatar:
                 user.avatar = avatar
+
             user.save()
             return Response(status=status.HTTP_200_OK)
 
@@ -416,24 +418,22 @@ class UpdateBusinessUserProfile(APIView):
         try:
             user = Business.objects.get(user_id=id)
         except Business.DoesNotExist:
-            return Response("ok",status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             token = Token.objects.all().get(user=user.user).key
         except Token.DoesNotExist:
-            return Response("2", status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        input_data = {}
         try:
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            avatar = request.FILES['avatar']
-            input_data.update({'avatar': avatar})
+            avatar = request.data['avatar']
         except KeyError:
-            pass
+            avatar = None
 
         missing_keys = False
         value_errors = {}
@@ -473,7 +473,9 @@ class UpdateBusinessUserProfile(APIView):
 
         validation_errors_ = False
         validation_errors = {}
-        if not phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
+        try:
+            phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT"))
+        except phonenumbers.phonenumberutil.NumberParseException:
             validation_errors_ = True
             validation_errors.update({'phone': 'Il numero di telefono deve essere valido'})
 
@@ -488,13 +490,18 @@ class UpdateBusinessUserProfile(APIView):
         if request.user.auth_token.key == token:
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
+
             user.city = city
             user.address = address
             user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
-            if avatar:
+
+            if avatar == '':
+                user.avatar = None
+            elif avatar:
                 user.avatar = avatar
+
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:
