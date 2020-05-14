@@ -4,7 +4,7 @@ from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProdu
 from .discounts_views import *
 from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu, MenuEntryAdd, MenuEntryDetail, \
     MenuEntryEdit, MenuEntryDelete
-from .components_views import ActivateComponent, DeactivateComponent
+from .components_views import *
 app_name = 'webapp'
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
     path('restaurant/<int:id>/discounts/add', AddRestaurantDiscounts.as_view(), name='add_restaurant_discounts'),
     path('restaurant/<int:id>/discounts/<int:d_id>/details', DetailsRestaurantDiscounts.as_view(), name='details_restaurant_discounts'),
     path('restaurant/<int:id>/discounts/<int:d_id>/edit', EditRestaurantDiscounts.as_view(), name='edit_restaurant_discounts'),
-    path('restaurant/<int:id>/discounts/<int:d_id>/delete', DeleteRestaurantDiscounts.as_view(),name='delete_restaurant_discounts'),
+    path('restaurant/<int:id>/discounts/<int:d_id>/delete', DeleteRestaurantDiscounts.as_view(), name='delete_restaurant_discounts'),
 
     path('restaurant/<int:id>/products/discounts', ListDiscounts.as_view(), name='list_discounts'),
     path('restaurant/<int:id>/products/discounts/add', AddDiscounts.as_view(), name='add_discounts'),
@@ -40,6 +40,19 @@ urlpatterns = [
 
     path('restaurant/<int:id>/components/<str:type>/activate', ActivateComponent.as_view(), name='on_component'),
     path('restaurant/<int:id>/components/<str:type>/deactivate', DeactivateComponent.as_view(), name='off_component'),
+
+    path('restaurant/<int:id>/components/home/edit', UpdateHomeComponent.as_view(), name='edit_home_component'),
+    path('restaurant/<int:id>/components/vetrina/edit', UpdateVetrinaComponent.as_view(), name='edit_vetrina_component'),
+    path('restaurant/<int:id>/components/eventi/edit', UpdateEventiComponent.as_view(), name='edit_eventi_component'),
+    path('restaurant/<int:id>/components/contattaci/edit', UpdateContattaciComponent.as_view(), name='edit_contattaci_component'),
+    # CREDO CHE QUESTA NON SERVA, BASTA ADD/EDIT/REMOVE PICTURE
+    # path('restaurant/<int:id>/components/galleria/edit', UpdateGalleriaComponent.as_view(), name='edit_galleria_component'),
+    path('restaurant/<int:id>/components/menu/edit', UpdateMenuComponent.as_view(), name='edit_menu_component'),
+
+
+    path('restaurant/<int:id>/components/galleria/images/add', GalleryAddImage.as_view(), name='add_picture_gallery'),
+    path('restaurant/<int:id>/components/galleria/images/<int:i_id>/edit', GalleryEditImage.as_view(), name='edit_picture_gallery'),
+    path('restaurant/<int:id>/components/galleria/images/<int:i_id>/delete', GalleryDeleteImage.as_view(), name='delete_picture_gallery'),
 
     path('restaurant/list', ListRestaurantsAPIView.as_view(), name='list_restaurants'),
     path('restaurant/new', CreateRestaurantAPIView.as_view(), name='register_restaurant'),

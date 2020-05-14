@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount
+from ..models.models import Restaurant, RestaurantDiscount, Picture
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
@@ -11,6 +11,27 @@ from ...account.api.serializers import BusinessSerializer
 from django.db import transaction, IntegrityError
 from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
+
+
+class PictureSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Picture
+        fields = ('id', 'name', 'description', 'image')
+
+    @transaction.atomic
+    def save(self, restaurant=None, **kwargs):
+        if restaurant:
+            try:
+
+                picture = Picture.objects.create(restaurant=restaurant, **self.validated_data)
+                return picture
+
+            except Exception as err:
+                pass
+
+        return None
 
 
 class RestaurantDiscountSerializer(serializers.ModelSerializer):
@@ -129,6 +150,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
 class GalleriaSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    immagini = serializers.SerializerMethodField()
 
     class Meta:
         model = GalleriaComponent
@@ -136,6 +158,9 @@ class GalleriaSerializer(serializers.ModelSerializer):
 
     def get_name(self, instance):
         return instance.get_name()
+
+    def get_immagini(self, instance):
+        return PictureSerializer(instance.get_images(), many=True).data
 
 
 class EventiSerializer(serializers.ModelSerializer):
@@ -171,3 +196,6 @@ class RestaurantComponentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestaurantComponents
         fields = ('home', 'vetrina', 'menu', 'galleria', 'eventi', 'contattaci')
+
+
+

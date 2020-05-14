@@ -103,7 +103,7 @@ def generate_order_code(id):
 
 def validate_transitions(old, new):
     try:
-        old_index = ORDER_STATUS.index((old,old))
+        old_index = ORDER_STATUS.index((old, old))
     except ValueError:
         old_index = -1
 

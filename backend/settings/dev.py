@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
     'rest_framework',
-    'backend.message',
+    'backend.orders',
     'django_extensions',
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_resized',
     'django_cleanup',
 ]
+
 
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
@@ -204,7 +205,10 @@ ADMIN_REORDER = (
                 'webapp.GalleriaComponent',
                 'webapp.VetrinaComponent',
                 'webapp.ContattaciComponent',)},
-    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order',)}
+    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order', 'orders.OrderNotification',)},
 )
 
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

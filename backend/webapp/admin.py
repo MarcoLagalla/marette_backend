@@ -113,10 +113,11 @@ class MyAdmin(ModelAdmin):
                 'valid',
             )}),
     )
-    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva', )
+    # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva', )
 
     # when in production
-    # readonly_fields = ('all')
+    readonly_fields = ('discount', 'total', 'imposable', 'iva', 'date_created')
+
     def total(self, obj):
         return obj.get_total()
 
