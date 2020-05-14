@@ -1,8 +1,8 @@
 <template>
 <div>
-  <RestBanner v-if="activeComponents.home.show" :restData="restData"></RestBanner>
+  <RestHome v-if="activeComponents.home.show" :restData="restData"></RestHome>
   <RestVetrina v-if="activeComponents.vetrina.show"></RestVetrina>
-  <Restmenu v-if="activeComponents.menu.show" ></Restmenu>
+  <RestMenu v-if="activeComponents.menu.show" ></RestMenu>
   <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
   <RestInfo v-if="activeComponents.contattaci.show"></RestInfo>
   <Info></Info>
@@ -15,8 +15,8 @@
 import View from '@/views/View'
 
 // Components
-import Restmenu from "../sections/RestMenu";
-import RestBanner from "../sections/RestHome";
+import RestMenu from "../sections/RestMenu";
+import RestHome from "../sections/RestHome";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
 import RestInfo from "../sections/RestInfo";
@@ -28,8 +28,8 @@ import {
 export default {
   name: 'restaurant',
   components: {
-    Restmenu,
-    RestBanner,
+    RestMenu,
+    RestHome,
     RestVetrina,
     RestGalleria,
     RestInfo,

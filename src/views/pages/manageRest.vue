@@ -7,11 +7,11 @@
       <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button>
       <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button>
     </div>
-    <RestBanner v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestBanner>
+    <RestHome v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestHome>
 
     <RestVetrina v-if="activeComponents.vetrina.show" :admin="admin"></RestVetrina>
 
-    <Restmenu v-if="activeComponents.menu.show" :admin="admin"></Restmenu>
+    <RestMenu v-if="activeComponents.menu.show" :admin="admin"></RestMenu>
 
     <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
 
@@ -26,8 +26,8 @@
 import View from '@/views/View'
 
 // Components
-import Restmenu from "../sections/RestMenu";
-import RestBanner from "../sections/RestHome";
+import RestMenu from "../sections/RestMenu";
+import RestHome from "../sections/RestHome";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
 import RestInfo from "../sections/RestInfo";
@@ -39,8 +39,8 @@ import {
 export default {
   name: 'manageRest',
   components: {
-    Restmenu,
-    RestBanner,
+    RestMenu,
+    RestHome,
     RestVetrina,
     RestGalleria,
     RestInfo,
