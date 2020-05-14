@@ -69,7 +69,7 @@
                                             :width="200"
                                             :height="200"
                                             size="3"
-                                            zIndex="0"
+                                            :zIndex="0"
                                             :crop="true"
                                             :changeOnClick="false"
                                             accept="image/jpeg, image/png, image/gif"
