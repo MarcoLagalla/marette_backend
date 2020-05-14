@@ -29,7 +29,8 @@ export default {
   computed: {
     image() {
         const imageURL = this.$store.getters['restaurantData/home'].image;
-        return { backgroundImage: "url(/media/" + imageURL + ") " }
+        console.log(imageURL)
+        return { backgroundImage: "url(" + imageURL + ") " }
     },
   }
 }
