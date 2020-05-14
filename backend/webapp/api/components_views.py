@@ -177,7 +177,7 @@ class UpdateHomeComponent(APIView):
                 home.image = None
             elif image:
                 home.image = image
-                
+
             home.save()
 
             serializer = HomeSerializer(home)
