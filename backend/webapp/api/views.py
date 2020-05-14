@@ -144,10 +144,10 @@ class SearchRestaurantAPIView(APIView):
     def get(self, request):
         queried_name = None
         queried_city = None
-        restaurant = []
+        restaurants = []
 
         try:
-            queried_name = request.data['activity_name']
+            queried_name = request.data['query']
         except KeyError:
             pass
         try:
@@ -157,18 +157,20 @@ class SearchRestaurantAPIView(APIView):
 
         try:
             if queried_name and queried_city:
-                restaurant = Restaurant.objects.filter(city__icontains=queried_city).filter(
-                    activity_name__icontains=queried_name, activity_description__icontains=queried_name).order_by('-id')
+                activity_name_queryset = Restaurant.objects.filter(city__icontains=queried_city).filter(
+                    activity_name__icontains=queried_name).order_by('-id')
+                activity_description_queryset = Restaurant.objects.filter(city__icontains=queried_city).filter(activity_description__icontains=queried_name).order_by('-id')
+                restaurants = activity_name_queryset | activity_description_queryset
 
             elif queried_name:
-                restaurant = Restaurant.objects.filter(activity_name__icontains=queried_name,
-                                                             activity_description__icontains=queried_name).order_by('-id')
-            elif queried_city:
-                restaurant = Restaurant.objects.filter(city__icontains=queried_city).order_by('-id')
-            else:
+                activity_name_queryset = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
+                activity_description_queryset = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
+                restaurants = activity_name_queryset | activity_description_queryset
 
-                return Response({'error': ["Non hai specificato alcun filtro."]},
-                                status.HTTP_400_BAD_REQUEST)
+            elif queried_city:
+                restaurants = Restaurant.objects.filter(city__icontains=queried_city).order_by('-id')
+            else:
+                return Response({'error': ["Non hai specificato alcun filtro."]}, status.HTTP_400_BAD_REQUEST)
 
         except Restaurant.DoesNotExist:
             return Response({'error': ["Nessun Ristorante trovato che rispecchia i filtri specificati."]},
@@ -176,10 +178,10 @@ class SearchRestaurantAPIView(APIView):
 
         # -----------------------------------------------------------
         page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 1)
+        page_size = request.query_params.get('page_size', 10)
 
         try:
-            paginator = Paginator(restaurant, page_size)
+            paginator = Paginator(restaurants, page_size)
             page = paginator.page(page_number)
         except django.core.paginator.EmptyPage:
             page = paginator.page(1)
