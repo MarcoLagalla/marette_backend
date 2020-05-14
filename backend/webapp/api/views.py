@@ -133,3 +133,45 @@ class UpdateRestaurantAPIView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class SearchRestaurantAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        queried_name = None
+        queried_city = None
+        restaurant = []
+
+        try:
+            queried_name = request.data['activity_name']
+        except KeyError:
+            pass
+        try:
+            queried_city = request.data['city']
+        except KeyError:
+            pass
+
+        try:
+            if queried_name and queried_city:
+                restaurant = Restaurant.objects.filter(city__icontains=queried_city).filter(
+                    activity_name__icontains=queried_name, activity_description__icontains=queried_name)
+
+            elif queried_name:
+                restaurant = Restaurant.objects.filter(activity_name__icontains=queried_name,
+                                                             activity_description__icontains=queried_name)
+            elif queried_city:
+                restaurant = Restaurant.objects.filter(city__icontains=queried_city)
+            else:
+
+                return Response({'error': ["Non hai specificato alcun filtro."]},
+                                status.HTTP_400_BAD_REQUEST)
+
+            serializer = ListRestaurantSerializer(instance=restaurant, many=True)
+            data = serializer.data
+
+        except Restaurant.DoesNotExist:
+            return Response({'error': ["Nessun Ristorante trovato che rispecchia i filtri specificati."]},
+                            status.HTTP_404_NOT_FOUND)
+
+        return Response(data, status.HTTP_200_OK)
