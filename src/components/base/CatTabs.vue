@@ -1,5 +1,5 @@
 <template>
-  <v-card color="basil">
+  <v-card class="basil" elevation="6">
     <v-card-title class="text-center justify-center py-6">
       <h1 class="font-weight-bold display-3 basil--text">Categorie</h1>
     </v-card-title>
@@ -57,12 +57,15 @@ export default {
 <style lang="css" scoped>
 /* Helper classes */
 .basil {
-  background-color: var(--palesilver) !important;
+  background-color: var(--ghostwhite) !important;
+
 }
 .basil--text {
   color: var(--emerald) !important;
+  text-shadow: 0 0 2px grey;
+
 }
 .tabcat {
-  background-color: var(--palesilver);
+  background-color: var(--ghostwhite);
 }
 </style>
