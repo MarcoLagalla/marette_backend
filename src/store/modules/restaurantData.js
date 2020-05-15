@@ -44,7 +44,8 @@ const getters = {
     id: state => state.ID,
     menus: state => state.menus,
     slug: state => state.restData.slug,
-    home: state => state.restData.components.home
+    home: state => state.restData.components.home,
+    galleria: state => state.restData.components.galleria
 
 }
 
@@ -75,6 +76,39 @@ const actions = {
              manageRestaurant.editHomeComponent(payload)
                  .then(respRes => {
                     commit('MOD_HOME_COMPONENT', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    addGalleryImage: ({commit}, data) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, data: data}
+             manageRestaurant.addGalleryImage(payload)
+                 .then(respRes => {
+                    commit('ADD_GALLERY_IMG', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    removeGalleryImage: ({commit}, imageId) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, imageId: imageId}
+             manageRestaurant.deleteGalleryImage(payload)
+                 .then(respRes => {
+                    commit('RMV_GALLERY_IMG', imageId)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    editGalleryImage: ({commit}, payload) =>{
+         return new Promise((resolve, reject) => {
+             payload.restId= state.ID
+             manageRestaurant.editGalleryImage(payload)
+                 .then(respRes => {
+                    commit('EDIT_GALLERY_IMG', respRes.data)
                      resolve(respRes.data)
                  })
          })
@@ -302,6 +336,24 @@ const actions = {
 const mutations = {
     MOD_HOME_COMPONENT: (state, home) =>{
         state.restData.components.home = home
+    },
+
+    ADD_GALLERY_IMG: (state, img) =>{
+        state.restData.components.galleria.immagini.push(img)
+    },
+
+    RMV_GALLERY_IMG: (state, imgId) =>{
+        state.restData.components.galleria.immagini.forEach( (img) =>{
+          if (img.id === imgId)
+            state.restData.components.galleria.immagini.splice(state.restData.components.galleria.immagini.indexOf(img), 1)
+        });
+    },
+
+    EDIT_GALLERY_IMG: (state, newImg) =>{
+        state.restData.components.galleria.immagini.forEach( (img) =>{
+          if (img.id === newImg.id)
+            state.restData.components.galleria.immagini[state.restData.components.galleria.immagini.indexOf(img)] = newImg
+        });
     },
 
     RMV_PORTATA_SUCCESS: () =>{

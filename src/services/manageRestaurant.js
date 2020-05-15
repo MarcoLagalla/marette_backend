@@ -98,4 +98,25 @@ export default {
                 return response
             })
     },
+
+    addGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
+    deleteGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/' + payload.imageId + '/delete')
+            .then(response => {
+                return response
+            })
+    },
+
+    editGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/' + payload.imageId + '/edit', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

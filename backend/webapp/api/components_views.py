@@ -191,6 +191,8 @@ class UpdateHomeComponent(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateGalleriaComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
