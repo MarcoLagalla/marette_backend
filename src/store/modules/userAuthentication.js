@@ -64,7 +64,7 @@ const actions = {
           sendUserAuthentication.postRegisterBusiness(user)
         .then(resp => {
           const data = resp.data
-          setCookies(data.token);
+          setCookies(data);
           commit('AUTH_SUCCESS', data)
 
           dispatch("userProfile/getUserData", data.id,  { root: true });
@@ -183,11 +183,11 @@ function setCookies( data) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + data.token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  document.cookie = "user-token=" + data.token + ";" + expires + " ; SameSite=Lax ;path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
 }
 
 function deleteTokenCookies() {
-  document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "user-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
 }
 
 function getTokenCookie() {

@@ -1,17 +1,21 @@
 <template>
   <div>
+    <div class="buttons">
+      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button>
+      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button>
+      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button>
+      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button>
+      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button>
+    </div>
+    <RestHome v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestHome>
 
-    <button @click="manageComponents('Home')">{{getButtonMessageFor('Home')}}</button><br>
-    <RestBanner v-if="activeComponents.includes('Home')" :restData="restData" :admin="admin"></RestBanner>
+    <RestVetrina v-if="activeComponents.vetrina.show" :admin="admin"></RestVetrina>
 
-    <button @click="manageComponents('Vetrina')">{{getButtonMessageFor('Vetrina')}}</button><br>
-    <RestVetrina v-if="activeComponents.includes('Vetrina')"></RestVetrina>
+    <RestMenu v-if="activeComponents.menu.show" :admin="admin"></RestMenu>
 
-    <button @click="manageComponents('Menu')">{{getButtonMessageFor('Menu')}}</button><br>
-    <Restmenu v-if="activeComponents.includes('Menu')" :admin="admin"></Restmenu>
+    <RestGalleria v-if="activeComponents.galleria.show" :admin="admin" ></RestGalleria>
 
-    <button @click="manageComponents('Galleria')">{{getButtonMessageFor('Galleria')}}</button><br>
-    <RestGalleria v-if="activeComponents.includes('Galleria')" ></RestGalleria>
+    <RestInfo v-if="activeComponents.contattaci.show" ></RestInfo>
     <Info></Info>
   </div>
 </template>
@@ -22,10 +26,11 @@
 import View from '@/views/View'
 
 // Components
-import Restmenu from "../sections/RestMenu";
-import RestBanner from "../sections/RestBanner";
+import RestMenu from "../sections/RestMenu";
+import RestHome from "../sections/RestHome";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
+import RestInfo from "../sections/RestInfo";
 import Info from "../sections/Info";
 import {
   mapActions
@@ -34,10 +39,11 @@ import {
 export default {
   name: 'manageRest',
   components: {
-    Restmenu,
-    RestBanner,
+    RestMenu,
+    RestHome,
     RestVetrina,
     RestGalleria,
+    RestInfo,
     Info
   },
   metaInfo: {
@@ -50,32 +56,26 @@ export default {
     return {
       restID: this.$route.params.id,
       name: this.$route.params.name,
-      admin: true
+      admin: true,
 
     }
   },
   methods: {
-    ...mapActions('restaurantData', ['getRestaurantData', 'addComponent', 'removeComponent']),
+    ...mapActions('restaurantData', ['getRestaurantData', 'activateComponent', 'deactivateComponent']),
       manageComponents(nameComponent){
-        if (this.activeComponents.includes(nameComponent)){
-            this.removeComponent(nameComponent);
+        if (this.activeComponents[nameComponent].show){
+            this.deactivateComponent(nameComponent);
         }
         else {
-            this.addComponent(nameComponent)
+            this.activateComponent(nameComponent)
         }
       },
       getButtonMessageFor(nameComponent){
-        if (this.activeComponents.includes(nameComponent))
+        if (this.activeComponents[nameComponent].show)
             return 'Disattiva ' + nameComponent
           else
               return 'Attiva ' + nameComponent
       }
-  },
-  created() {
-    this.getRestaurantData(this.restID).catch(error => {
-      if (error.status === 404)
-        this.$router.push('/404')
-    })
   },
   computed: {
     activeComponents() {
@@ -87,3 +87,22 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .buttons {
+    position: fixed;
+    z-index: 100;
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: grey;
+  }
+  button {
+    padding: 10px;
+    
+    border: solid white 1px;
+    transition: 0.4s
+  }
+  button:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+</style>

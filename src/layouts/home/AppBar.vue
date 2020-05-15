@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar id="home-app-bar" app color="#FFF8DC" height="80">
+    <v-app-bar id="home-app-bar" app color="var(--palesilver)" height="80">
       <router-link to="/">
         <base-img :src="require('@/assets/logo_small.png')" contain max-width="80" />
       </router-link>

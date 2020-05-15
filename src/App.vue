@@ -9,8 +9,8 @@
     name: 'App',
     metaInfo: {
       title: 'App',
-      titleTemplate: '%s | Daedal Multi-Purpose Theme',
-      htmlAttrs: { lang: 'en' },
+      titleTemplate: '%s | Marette',
+      htmlAttrs: { lang: 'it' },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -22,13 +22,15 @@
 <style >
 
 :root {
-  --terracotta: #945d60;
-  --herb: #626e60;
-  --chilli: #af473c;
-  --charcoal: #3c3c3c;
+  --palesilver: #CFC0BD;
+  --ming: #3C6E71;
+  --darkslate: #384D48;
+  --charcoal: #272D2D;
+  --whitesmoke: #F5F5F5;
+  --emerald: #00916E;
 }
 html {
-  
+
 	scroll-behavior: smooth;
 }
 </style>

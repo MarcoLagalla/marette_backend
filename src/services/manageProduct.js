@@ -20,4 +20,25 @@ export default {
             })
     },
 
+    listTags(){
+                return api.get('v1/webapp/restaurant/product/tags')
+            .then(response => {
+                return response
+            })
+    },
+
+    listDiscounts(id){
+                return api.get('v1/webapp/restaurant/' + id + '/products/discounts')
+            .then(response => {
+                return response
+            })
+    },
+
+    addDiscount(discount, id){
+                    return api.post('v1/webapp/restaurant/' + id + '/products/discounts/add', discount)
+            .then(response => {
+                return response
+            })
+    }
+
 }

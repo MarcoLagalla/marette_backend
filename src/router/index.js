@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@/store"
 import RestMenu from "../components/base/RestMenu";
-import rest1 from "../views/pages/rest1";
+import restaurant from "../views/pages/restaurant";
 import RestMenuMobile from "../components/base/RestMenuMobile";
 import ManageRest from "../views/pages/manageRest";
 
@@ -35,10 +35,28 @@ const ifBusiness = (to, from, next) => {
 
 const ifOwner = (to, from, next) => {
   if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
-     next();
+     store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
+        if (store.getters['restaurantData/slug'] === to.params.name)
+          next();
+        else
+          next("/404");
+     }).catch(()=>{
+       next("/404");
+     })
     return;
   }
   next("/");
+};
+
+const ifExist = (to, from, next) => {
+  store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
+    if (store.getters['restaurantData/slug'] === to.params.name)
+      next();
+    else
+      next("/404");
+  }).catch(()=>{
+    next("/404");
+  })
 };
 
 const router = new Router({
@@ -86,6 +104,12 @@ const router = new Router({
           beforeEnter:  ifAuthenticated,
         },
         {
+          path: 'profile/manage/:id/:name',
+          name: 'ManageRestData',
+          component: () => import('@/views/pages/manageRestData.vue'),
+          beforeEnter:  ifOwner,
+        },
+        {
           path: 'profile/:id/:name',
           name: 'ManageRest',
           components: {
@@ -105,10 +129,11 @@ const router = new Router({
           path: ':id/:name',
           name: 'RestaurantHome',
           components: {
-            default: rest1,
+            default: restaurant,
             restMenu: RestMenu,
             restMenuMobile: RestMenuMobile
-          }
+          },
+          beforeEnter: ifExist,
         },
 
         {

@@ -27,6 +27,23 @@
             </v-text-field>
             <v-text-field label="Partita iva associata al locale*" :error-messages="errors.p_iva" @change="errors.p_iva=''" v-model='p_iva' type="number" id="p_iva" name="p_iva" required></v-text-field>
           </v-row>
+          <v-row align="center" class="ma-0" justify="center">
+            <picture-input
+              ref="restImage"
+              @change="onChanged"
+              :width="300"
+              :height="300"
+              size="5"
+              zIndex="0"
+              :crop="true"
+              :changeOnClick="false"
+              accept="image/jpeg, image/png, image/gif"
+              buttonClass="ui button primary"
+              :customStrings="{
+              upload: '<h1>Carica immagine</h1>',
+              drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
+            </picture-input>
+          </v-row>
         </v-col>
         <button type="submit" class="registerbtn">Aggiungi ristorante</button>
       </form>
@@ -38,8 +55,13 @@
 import {
   mapActions
 } from 'vuex'
+import PictureInput from "vue-picture-input";
+
 export default {
   name: "NewRestaurant",
+  components: {
+    PictureInput,
+  },
   data() {
     return {
       activity_name: '',
@@ -49,13 +71,14 @@ export default {
       n_civ: '',
       cap: '',
       restaurant_number: '',
-      p_iva: ''
+      p_iva: '',
+      image: '',
     }
   },
   methods: {
     ...mapActions('restaurants', ['newRestaurant']),
     register: function() {
-      this.newRestaurant({
+      const data = {
         activity_name: this.activity_name,
         activity_description: this.activity_description,
         city: this.city,
@@ -64,16 +87,36 @@ export default {
         cap: this.cap,
         restaurant_number: this.restaurant_number,
         p_iva: this.p_iva
-      }).then((response) => {
-        this.$router.push('/profile/' + response.id + '/patata') //TODO: aggiungrere scope
-      }).catch(error => {
-        var id = Object.keys(error)[0];
-        document.getElementById(id).scrollIntoView(false)
-        document.getElementById(id).focus({
-          preventScroll: true
-        });
-      })
-    }
+      };
+
+      const formData = new FormData();
+      formData.append('image', this.image);
+      formData.append('data', JSON.stringify(data));
+
+      this.newRestaurant(formData)
+        .then((response) => {
+          this.$router.push('/profile/' + response.id_restaurant + '/' + response.slug)
+        })
+        .catch(error => {
+            console.log('error')
+            console.log(error)
+          var id = Object.keys(error)[0];
+          document.getElementById(id).scrollIntoView(false)
+          document.getElementById(id).focus({
+            preventScroll: true
+          });
+        })
+    },
+
+    onChanged() {
+      if (this.$refs.restImage.file) {
+        this.image = this.$refs.restImage.file;
+      } else {
+        console.log("Old browser. No support for Filereader API");
+      }
+    },
+
+
   },
   computed: {
     errors() {
@@ -84,13 +127,13 @@ export default {
 </script>
 <style scoped>
 .icfood {
-  color: var(--chilli)
+  color: var(--darkslate)
 }
 .background {
   background-color: whitesmoke;
 }
 .body {
-  background-color: white;
+  background-color: whitesmoke;
   text-align: center;
   width: 60%;
   box-shadow: inset 0 0 10px #000;
@@ -98,20 +141,20 @@ export default {
   border-radius: 25px;
 }
 h1 {
-  color: var(--chilli)
+  color: var(--darkslate)
 }
 .v-text-field {
   padding: 10px;
 }
 .registerbtn {
-  background-color: var(--chilli);
+  background-color: var(--darkslate);
   color: white;
   padding: 16px 20px;
   margin: 8px 0;
   font-weight: bold;
   border: none;
   cursor: pointer;
-  width: 100%;
+  width: 60%;
   opacity: 0.9;
   transition: 0.6s;
   border-radius: 25px;

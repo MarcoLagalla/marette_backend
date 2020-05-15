@@ -145,13 +145,13 @@ export default {
 h1 {
   text-align: center;
   padding: 20px;
-  color: var(--chilli);
+  color: var(--darkslate);
 }
 
 .password_btn {
-  background-color: var(--herb);
+  background-color: var(--ming);
   color: white;
-  border: inset var(--herb) 2px !important;
+  border: inset var(--ming) 2px !important;
   padding: 16px 20px;
   margin: 4px 0;
   border: none;

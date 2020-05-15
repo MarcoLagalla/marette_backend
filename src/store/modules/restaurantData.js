@@ -7,13 +7,9 @@ const state = {
     productList: {},
     restData: {},
     status: '',
-    components: [
-        'Home',
-        'Vetrina',
-        'Menu',
-        'Galleria',
-        'Info'
-    ],
+    tags:[],
+    discounts:[],
+    menus: [],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -29,28 +25,95 @@ const state = {
         'Snack'
     ],
 
-    DISCOUNT_TYPE_CHOICE: [
+    DISCOUNT_TYPE_CHOICES : [
         'Fisso',
         'Percentuale'
     ],
+
 
 }
 
 const getters = {
     food_category_choice: state => state.food_category_choice,
-    discount_type_choice: state => state.discount_type_choice,
+    discount_type_choices: state => state.DISCOUNT_TYPE_CHOICES,
     productList: state => state.productList,
-    components: state => state.components,
+    components: state => state.restData.components,
     restData: state => state.restData,
+    tags: state => state.tags,
+    discounts: state => state.discounts,
+    id: state => state.ID,
+    menus: state => state.menus,
+    slug: state => state.restData.slug,
+    home: state => state.restData.components.home,
+    galleria: state => state.restData.components.galleria
+
 }
 
 const actions = {
-    addComponent: ({commit}, componentName) =>{
-        commit('REST_ADD_COMPONENT', componentName)
+    activateComponent: ({commit}, componentName) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {id: state.ID, component: componentName}
+             manageRestaurant.activateComponent(payload)
+                 .then(respRes => {
+                    commit('REST_ADD_COMPONENT', componentName)
+                 })
+         })
     },
-    removeComponent: ({commit}, componentName) =>{
-        commit('REST_RMV_COMPONENT', componentName)
+
+    deactivateComponent: ({commit}, componentName) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {id: state.ID, component: componentName}
+             manageRestaurant.deactivateComponent(payload)
+                 .then(respRes => {
+                    commit('REST_RMV_COMPONENT', componentName)
+                 })
+         })
     },
+
+    editHomeComponent: ({commit}, data) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, data: data}
+             manageRestaurant.editHomeComponent(payload)
+                 .then(respRes => {
+                    commit('MOD_HOME_COMPONENT', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    addGalleryImage: ({commit}, data) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, data: data}
+             manageRestaurant.addGalleryImage(payload)
+                 .then(respRes => {
+                    commit('ADD_GALLERY_IMG', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    removeGalleryImage: ({commit}, imageId) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, imageId: imageId}
+             manageRestaurant.deleteGalleryImage(payload)
+                 .then(respRes => {
+                    commit('RMV_GALLERY_IMG', imageId)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
+    editGalleryImage: ({commit}, payload) =>{
+         return new Promise((resolve, reject) => {
+             payload.restId= state.ID
+             manageRestaurant.editGalleryImage(payload)
+                 .then(respRes => {
+                    commit('EDIT_GALLERY_IMG', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
             commit('REST_DATA_REQUEST', restaurantID)
@@ -64,17 +127,8 @@ const actions = {
 
                 manageProduct.getProductList(restaurantID)
                 .then(respMenu => {
-                    var dataMenu = {}
-                    if (respMenu.status === 204){
-                        state.FOOD_CATEGORY_CHOICES.forEach((category)=>{
-                            dataMenu[category]=[]
-                        })
-                    }
-                    else {
-                        dataMenu = respMenu.data
-                    }
-                    commit('REST_MENU_SUCCESS', dataMenu)
-                    resolve()
+                    commit('REST_MENU_SUCCESS', respMenu.data)
+                    resolve(respRes.data.components)
                 })
                 .catch(err => {
                     commit('REST_MENU_ERROR', err.response)
@@ -88,15 +142,19 @@ const actions = {
         })
     },
 
+
+
     addProduct: ({commit}, product) => {
         return new Promise((resolve, reject) => {
+
             var payload = {}
             payload['id'] = state.ID
             payload['data'] = product
+            console.log(product)
 
             manageProduct.addProduct(payload)
             .then(resp => {
-                commit('REST_ADD_PROD_SUCCESS')
+                commit('REST_ADD_PROD_SUCCESS', resp.data)
                 resolve(resp)
             })
             .catch(err => {
@@ -106,21 +164,263 @@ const actions = {
         })
     },
 
+    getListTag: ({commit}) => {
+        return new Promise((resolve, reject) => {
+
+            manageProduct.listTags()
+            .then(resp => {
+                commit('LIST_TAGS_SUCCESS', resp.data)
+                console.log(resp)
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('LIST_TAGS_ERROR')
+                reject(err)
+            })
+        })
+    },
+
+    getListDiscounts: ({commit}) => {
+        return new Promise((resolve, reject) => {
+
+            manageProduct.listDiscounts(state.ID)
+            .then(resp => {
+                commit('LIST_DISCOUNTS_SUCCESS', resp.data)
+                console.log(resp.data)
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('LIST_DISCOUNTS_ERROR')
+                reject(err)
+            })
+        })
+    },
+    addDiscount: ({commit}, discount) => {
+        return new Promise((resolve, reject) => {
+
+
+            manageProduct.addDiscount(discount, state.ID)
+            .then(resp => {
+                commit('ADD_DISCOUNT_SUCCESS', resp.data);
+                console.log(resp);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_DISCOUNT_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    addMenuEntry: ({commit}, portata) => {
+        return new Promise((resolve, reject) => {
+            var payload = {
+                    data: {
+                      name: portata.data.name,
+                      num_products: portata.data.num_products,
+                      products: []
+                    },
+                    restId: state.ID,
+                    menuId: portata.menuId
+                }
+                portata.data.products.forEach(function (item) {
+                    payload.data.products.push(item.id)
+                });
+            manageRestaurant.addMenuEntry(payload)
+            .then(resp => {
+                commit('ADD_PORTATA_SUCCESS', portata);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    deleteMenuEntry: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+
+            data.restId =  state.ID
+            manageRestaurant.deleteMenuEntry(data)
+            .then(resp => {
+                commit('RMV_PORTATA_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('RMV_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    editMenuEntry: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+
+            data.restId =  state.ID
+            manageRestaurant.editMenuEntry(data)
+            .then(resp => {
+                commit('EDIT_PORTATA_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('EDIT_PORTATA_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    addMenu: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+
+            const payload = {id: state.ID, data: menu}
+            manageRestaurant.addMenu(payload)
+            .then(resp => {
+                commit('ADD_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    editMenu: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+
+            const payload = {restId: state.ID, data: menu.data, menuId: menu.menuId}
+            manageRestaurant.editMenu(payload)
+            .then(resp => {
+                commit('EDIT_MENU_SUCCESS', menu);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('EDIT_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    deleteMenu: ({commit}, menu) => {
+        return new Promise((resolve, reject) => {
+            const payload = {restId: state.ID, menuId: menu.id}
+            manageRestaurant.deleteMenu(payload)
+            .then(resp => {
+                commit('RMV_MENU_SUCCESS', resp.data);
+                resolve(menu)
+            })
+            .catch(err => {
+                commit('RMV_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    listMenus: ({commit}) => {
+        return new Promise((resolve, reject) => {
+
+            manageRestaurant.listMenus(state.ID)
+            .then(resp => {
+                commit('LIST_MENU_SUCCESS', resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('LIST_MENU_ERROR');
+                reject(err)
+            })
+        })
+    },
 }
 
 const mutations = {
-    REST_ADD_PROD_SUCCESS: () =>{
+    MOD_HOME_COMPONENT: (state, home) =>{
+        state.restData.components.home = home
+    },
+
+    ADD_GALLERY_IMG: (state, img) =>{
+        state.restData.components.galleria.immagini.push(img)
+    },
+
+    RMV_GALLERY_IMG: (state, imgId) =>{
+        state.restData.components.galleria.immagini.forEach( (img) =>{
+          if (img.id === imgId)
+            state.restData.components.galleria.immagini.splice(state.restData.components.galleria.immagini.indexOf(img), 1)
+        });
+    },
+
+    EDIT_GALLERY_IMG: (state, newImg) =>{
+        state.restData.components.galleria.immagini.forEach( (img) =>{
+          if (img.id === newImg.id)
+            state.restData.components.galleria.immagini[state.restData.components.galleria.immagini.indexOf(img)] = newImg
+        });
+    },
+
+    RMV_PORTATA_SUCCESS: () =>{
+    },
+
+    RMV_PORTATA_ERROR: () =>{
+    },
+
+    EDIT_PORTATA_SUCCESS: () =>{
+    },
+
+    EDIT_PORTATA_ERROR: () =>{
+    },
+
+    ADD_PORTATA_SUCCESS: (state, data) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === data.menuId)
+            state.menus[state.menus.indexOf(menu)].entries.push(data.data)
+        });
+    },
+
+    ADD_PORTATA_ERROR: () =>{
+    },
+
+    ADD_MENU_SUCCESS: (stete, menu) =>{
+        stete.menus.push(menu)
+    },
+
+    ADD_MENU_ERROR: () =>{
+    },
+
+    EDIT_MENU_SUCCESS: (state, newMenu) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === newMenu.id)
+            state.menus[state.menus.indexOf(menu)] = newMenu
+        });
+    },
+
+    EDIT_MENU_ERROR: () =>{
+    },
+
+    RMV_MENU_SUCCESS: (state, menu) =>{
+      state.menus.splice(state.menus.indexOf(menu), 1)
+    },
+
+    RMV_MENU_ERROR: () =>{
+    },
+
+    LIST_MENU_SUCCESS: (state, menus) =>{
+        state.menus = menus
+    },
+
+    LIST_MENU_ERROR: () =>{
+    },
+
+    REST_ADD_PROD_SUCCESS: (state, prodotto) =>{
     },
 
     REST_ADD_PROD_ERROR: () =>{
     },
 
     REST_RMV_COMPONENT: (state, componentName) =>{
-        state.components.splice(state.components.indexOf(componentName), 1);
+        state.restData.components[componentName].show=false;
     },
 
     REST_ADD_COMPONENT: (state, componentName) =>{
-        state.components.push(componentName);
+        state.restData.components[componentName].show=true;
     },
 
     REST_DATA_REQUEST: (state, ID) => {
@@ -150,6 +450,38 @@ const mutations = {
         state.status = 'error'
         state.error = error
     },
+
+    LIST_TAGS_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.tags = data
+    },
+
+    LIST_TAGS_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+    LIST_DISCOUNTS_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.discounts = data
+    },
+
+    LIST_DISCOUNTS_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+    ADD_DISCOUNT_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.discounts = state.discounts + data
+    },
+
+    ADD_DISCOUNT_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+
 }
 
 export default {
@@ -159,3 +491,5 @@ export default {
   actions,
   mutations
 }
+
+

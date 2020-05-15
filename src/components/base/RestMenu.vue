@@ -1,7 +1,7 @@
 <template>
 <v-row>
   <v-col>
-    <router-link v-for="(name, i) in items" :key="i" :to="'#'+name" :ripple="false" min-width="96" tag="button"><a>{{ name }}</a></router-link>
+    <router-link v-for="(name, i) in items" :key="i" :to="'#'+name.name" :ripple="false" min-width="96" tag="button" ><a v-if="name.show">{{ name.name }}</a></router-link>
   </v-col>
 </v-row>
 </template>
