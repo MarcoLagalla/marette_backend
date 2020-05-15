@@ -64,7 +64,7 @@ class CustomerAPIView(APIView):
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
                 activation_token = account_activation_token.make_token(customer.user)
-                send_welcome_email(customer.user, activation_token)
+                #send_welcome_email(customer.user, activation_token)
                 data['response'] = "Utente corretamente registrato."
                 data['username'] = customer.user.username
                 data['id'] = customer.user.id
