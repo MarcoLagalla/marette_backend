@@ -5,7 +5,7 @@
     <div class="gallerycont">
 
       <base-rest-galleria :admin="admin" @removed="removeImage($event)" @edited="askForEdit($event)"> </base-rest-galleria>
-      <base-add-gallery-image v-if="admin" :imagePrefill="imagePrefill" @added="submitImage($event)"></base-add-gallery-image>
+      <base-add-gallery-image v-if="admin" :key="componentKey" :imagePrefill="imagePrefill" @added="submitImage($event)"></base-add-gallery-image>
     </div>
   </div>
 </template>
@@ -27,8 +27,11 @@ export default {
         image: '',
         name: '',
         description: '',
-        edit: false
+        edit: false,
+
       },
+      componentKey: 0,
+      imageToEdit: {}
 
     }
   },
@@ -38,10 +41,14 @@ export default {
     submitImage: function (img) {
       if(this.imagePrefill.edit){
           const payload = {data: img, imageId: this.imagePrefill.id}
-          this.editGalleryImage(payload)
+          this.editGalleryImage(payload).then((resp) =>{
+              this.imageToEdit.image = resp.image
+          })
       }
-      else
-        this.addGalleryImage(img)
+      else{
+          this.addGalleryImage(img)
+      }
+
 
       this.imagePrefill = {
         image: '',
@@ -49,16 +56,28 @@ export default {
         description: '',
         edit: false
       }
+      this.componentKey += 1;
     },
     removeImage: function (imgId) {
       this.removeGalleryImage(imgId)
     },
     askForEdit: function (img) {
+        this.imageToEdit = img
         img.edit = true
-        this.imagePrefill = img
+        this.imagePrefill = clone(img)
     },
   }
 
+}
+
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
 }
 </script>
 
