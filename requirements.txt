@@ -34,3 +34,4 @@ whitenoise==5.0.1
 zipp==3.1.0
 django-modeladmin-reorder
 django-cleanup
+django-cors-headers
