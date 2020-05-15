@@ -14,7 +14,7 @@
       <v-btn name="delete" color="red" @click="deleteImage()">
         Elimina immagine di sfondo <i class="fas fa-times"></i>
       </v-btn>
-      <base-add-home-image  @edited="submitImage($event)"></base-add-home-image>
+      <base-add-home-image :imageUrl="imageURL" @edited="submitImage($event)"></base-add-home-image>
     </template>
   </div>
 </template>
@@ -33,9 +33,11 @@ export default {
         default: false,
       }
   },
-  data: () => ({
-      modImage: false
-  }),
+  data: function() {
+      return {
+          modImage: false,
+      }
+  },
   methods: {
     ...mapActions('restaurantData', ['editHomeComponent']),
     submitDescription: function(des) {
@@ -62,8 +64,11 @@ export default {
   },
   computed: {
     image() {
-        const imageURL = this.$store.getters['restaurantData/home'].image;
-        return { backgroundImage: "url(" + imageURL + ") " }
+        const imgUrl = this.$store.getters['restaurantData/home'].image;
+        return { backgroundImage: "url(" + imgUrl + ") " }
+    },
+    imageURL() {
+        return this.$store.getters['restaurantData/home'].image;
     },
     description(){
       return this.$store.getters['restaurantData/home'].description
