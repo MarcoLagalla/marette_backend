@@ -10,6 +10,7 @@ from backend.account.permissions import IsBusiness
 from rest_framework.authtoken.models import Token
 
 from ..models.models import Restaurant, Picture
+from ..models.menu import Menu
 from ..models.components import MenuComponent, GalleriaComponent, EventiComponent, \
     VetrinaComponent, HomeComponent, ContattaciComponent
 
@@ -170,6 +171,11 @@ class UpdateHomeComponent(APIView):
             except KeyError:
                 image = None
 
+            try:
+                del data['name']
+            except KeyError:
+                pass
+
             for key in data:
                 setattr(home, key, data[key])
 
@@ -219,8 +225,12 @@ class UpdateGalleriaComponent(APIView):
                         except Picture.DoesNotExist:
                             pass
 
+                try:
+                    del data['name']
+                except KeyError:
+                    pass
+
                 for key in data:
-                    print(key, data[key])
                     setattr(galleria, key, data[key])
 
                 galleria.save()
@@ -238,7 +248,46 @@ class UpdateVetrinaComponent(APIView):
 
     @transaction.atomic()
     def post(self, request, id):
-        pass
+        restaurant = action_authorized(request, id)
+        if restaurant:
+            try:
+                vetrina = VetrinaComponent.objects.all().get(restaurant=restaurant)
+            except VetrinaComponent.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            serializer = VetrinaSerializer(data=request.data)
+            if serializer.is_valid():
+                data = request.data
+                try:
+                    menu_id = data.pop('menu_giorno', None)
+                except KeyError:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                if menu_id == "":
+                    # remove menu
+                    vetrina.menu_giorno = None
+                elif menu_id:
+                    try:
+                        menu = Menu.objects.all().filter(restaurant=restaurant).get(id=menu_id)
+                        vetrina.menu_giorno = menu
+                    except Menu.DoesNotExist:
+                        return Response(status=status.HTTP_404_NOT_FOUND)
+                try:
+                    del data['name']
+                except KeyError:
+                    pass
+
+                for key in data:
+                    setattr(vetrina, key, data[key])
+
+                vetrina.save()
+                model_data = VetrinaSerializer(vetrina)
+                return Response(model_data.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateEventiComponent(APIView):
