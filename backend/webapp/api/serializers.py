@@ -29,7 +29,7 @@ class PictureSerializer(serializers.ModelSerializer):
                 return picture
 
             except Exception as err:
-                pass
+                raise serializers.ValidationError({'error': err})
 
         return None
 
