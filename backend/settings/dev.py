@@ -50,11 +50,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_resized',
     'django_cleanup',
+    'storages',
 ]
 
 
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -86,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
+],
         },
     },
 ]
@@ -144,7 +146,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 # Place static in the same location as webpack build files
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATICFILES_DIRS = []
