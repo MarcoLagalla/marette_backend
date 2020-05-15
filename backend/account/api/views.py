@@ -102,7 +102,7 @@ class BusinessAPIView(APIView):
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
                 activation_token = account_activation_token.make_token(business.user)
-                send_welcome_email(business.user, activation_token)
+                #send_welcome_email(business.user, activation_token)
                 data['response'] = "Utente correttamente registrato."
                 data['username'] = business.user.username
                 data['id'] = business.user.id
