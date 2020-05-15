@@ -98,4 +98,11 @@ export default {
                 return response
             })
     },
+
+    addGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

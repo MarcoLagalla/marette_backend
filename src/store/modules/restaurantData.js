@@ -80,6 +80,17 @@ const actions = {
          })
     },
 
+    addGalleryImage: ({commit}, data) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, data: data}
+             manageRestaurant.addGalleryImage(payload)
+                 .then(respRes => {
+                    commit('ADD_GALLERY_IMG', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
             commit('REST_DATA_REQUEST', restaurantID)
@@ -302,6 +313,10 @@ const actions = {
 const mutations = {
     MOD_HOME_COMPONENT: (state, home) =>{
         state.restData.components.home = home
+    },
+
+    ADD_GALLERY_IMG: (state, img) =>{
+        state.restData.components.galleria.immagini.push(img)
     },
 
     RMV_PORTATA_SUCCESS: () =>{
