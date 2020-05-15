@@ -279,7 +279,7 @@ class Picture(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='gallery', on_delete=models.CASCADE)
 
     image = ResizedImageField(size=[600, 600], upload_to=gallery_component, quality=95,
-                              crop=['middle', 'center'], keep_meta=False, force_format='JPEG')
+                              crop=['middle', 'center'], keep_meta=False, force_format='PNG')
     name = models.CharField(max_length=100, default='')
     description = models.TextField(blank=True, null=True, default='')
 
