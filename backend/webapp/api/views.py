@@ -181,7 +181,7 @@ class SearchRestaurantAPIView(APIView):
         page_size = request.query_params.get('page_size', 10)
 
         try:
-            paginator = Paginator(restaurants, page_size)
+            paginator = Paginator(restaurants.distinct(), page_size)
             page = paginator.page(page_number)
         except django.core.paginator.EmptyPage:
             page = paginator.page(1)
