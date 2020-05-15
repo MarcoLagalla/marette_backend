@@ -1,12 +1,13 @@
 <template>
   <div class="body" id="GALLERIA">
 
-  <base-rest-h1> Galleria </base-rest-h1>
-  <div class="gallerycont">
+    <base-rest-h1> Galleria </base-rest-h1>
+    <div class="gallerycont">
 
- <base-rest-galleria :admin="admin"> </base-rest-galleria>
-    <base-add-gallery-image v-if="admin" @added="submitImage($event)"></base-add-gallery-image>
-   </div> </div>
+      <base-rest-galleria :admin="admin" @removed="removeImage($event)"> </base-rest-galleria>
+      <base-add-gallery-image v-if="admin" @added="submitImage($event)"></base-add-gallery-image>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -22,9 +23,12 @@ export default {
   },
 
   methods: {
-    ...mapActions('restaurantData', ['addGalleryImage']),
+    ...mapActions('restaurantData', ['addGalleryImage', 'removeGalleryImage']),
     submitImage: function (img) {
       this.addGalleryImage(img)
+    },
+    removeImage: function (imgId) {
+      this.removeGalleryImage(imgId)
     }
   }
 

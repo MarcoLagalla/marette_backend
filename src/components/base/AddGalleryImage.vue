@@ -7,29 +7,30 @@
             Aggiungi immagine <i class="far fa-edit"></i>
           </v-btn>
         </div>
-        </template>
-        <v-card justify="center">
+      </template>
+      <v-card justify="center">
 
-          <v-text-field v-model="name" label="Titolo*" type="text" required></v-text-field>
-          <v-textarea v-model="description" label="Descrizione" type="text" ></v-textarea>
+        <v-text-field v-model="name" label="Titolo*" type="text" required></v-text-field>
+        <v-textarea v-model="description" label="Descrizione" type="text" ></v-textarea>
 
-          <picture-input
-            ref="background"
-            @change="onChanged"
-            :width="400"
-            :height="400"
-            size="3"
-            :zIndex="0"
-            :crop="true"
-            :changeOnClick="true"
-            accept="image/jpeg, image/png, image/gif"
-            buttonClass="ui button primary"
-            :customStrings="{
-            upload: '<h1>Carica immagine</h1>',
-            drag: 'Trascina qui la un immagine o clicca per selezionarla'}">
-          </picture-input>
-          <v-btn color="green" :disabled="image==='' || name===''" @click="submitImage" text>Salva immagine</v-btn>
-        </v-card>
+        <picture-input
+          ref="background"
+          @change="onChanged"
+          :width="400"
+          :height="400"
+          size="3"
+          :zIndex="0"
+          :crop="true"
+          :changeOnClick="true"
+          :prefill="imagePrefill.image"
+          accept="image/jpeg, image/png, image/gif"
+          buttonClass="ui button primary"
+          :customStrings="{
+          upload: '<h1>Carica immagine</h1>',
+          drag: 'Trascina qui la un immagine o clicca per selezionarla'}">
+        </picture-input>
+        <v-btn color="green" :disabled="image==='' || name===''" @click="submitImage" text>Salva immagine</v-btn>
+      </v-card>
     </v-dialog>
   </v-row>
 </template>
@@ -40,14 +41,27 @@
 
     export default {
         name: "AddGalleryImage",
+        props: {
+          imagePrefill: {
+            type: Object,
+            required: false,
+            default:() => ({
+              image: '',
+              name: '',
+              description: '',
+            })
+          }
+        },
         components: {
             PictureInput,
         },
-        data: () => ({
+        data: function () {
+          return {
             image: '',
-            name: '',
-            description: '',
-        }),
+            name: this.imagePrefill.name,
+            description: this.imagePrefill.description,
+          }
+        },
         methods: {
             onChanged() {
                 if (this.$refs.background.file) {

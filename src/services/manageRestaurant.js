@@ -105,4 +105,11 @@ export default {
                 return response
             })
     },
+
+    deleteGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/' + payload.imageId + '/delete')
+            .then(response => {
+                return response
+            })
+    },
 }
