@@ -10,8 +10,8 @@
       </template>
       <v-card justify="center">
 
-        <v-text-field v-model="name" label="Titolo*" type="text" required></v-text-field>
-        <v-textarea v-model="description" label="Descrizione" type="text" ></v-textarea>
+        <v-text-field v-model="imagePrefill.name" label="Titolo*" type="text" required></v-text-field>
+        <v-textarea v-model="imagePrefill.description" label="Descrizione" type="text" ></v-textarea>
 
         <picture-input
           ref="background"
@@ -29,7 +29,7 @@
           upload: '<h1>Carica immagine</h1>',
           drag: 'Trascina qui la un immagine o clicca per selezionarla'}">
         </picture-input>
-        <v-btn color="green" :disabled="image==='' || name===''" @click="submitImage" text>Salva immagine</v-btn>
+        <v-btn color="green" :disabled="image==='' || imagePrefill.name===''" @click="submitImage" text>Salva immagine</v-btn>
       </v-card>
     </v-dialog>
   </v-row>
@@ -49,6 +49,7 @@
               image: '',
               name: '',
               description: '',
+              edit: false
             })
           }
         },
@@ -58,8 +59,6 @@
         data: function () {
           return {
             image: '',
-            name: this.imagePrefill.name,
-            description: this.imagePrefill.description,
           }
         },
         methods: {
@@ -72,13 +71,15 @@
             },
             submitImage() {
                 const data = {
-                  name: this.name,
-                  description: this.description
+                  name: this.imagePrefill.name,
+                  description: this.imagePrefill.description
                 };
                 const formData = new FormData();
                 formData.append('data',JSON.stringify(data));
                 formData.append('image',this.image);
                 this.$emit('added', formData)
+                this.image = ''
+                this.imagePrefill.image = ''
             }
         },
 

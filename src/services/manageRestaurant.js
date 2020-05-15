@@ -112,4 +112,11 @@ export default {
                 return response
             })
     },
+
+    editGalleryImage(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/' + payload.imageId + '/edit', payload.data)
+            .then(response => {
+                return response
+            })
+    },
 }

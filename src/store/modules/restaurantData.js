@@ -103,6 +103,17 @@ const actions = {
          })
     },
 
+    editGalleryImage: ({commit}, payload) =>{
+         return new Promise((resolve, reject) => {
+             payload.restId= state.ID
+             manageRestaurant.editGalleryImage(payload)
+                 .then(respRes => {
+                    commit('EDIT_GALLERY_IMG', respRes.data)
+                     resolve(respRes.data)
+                 })
+         })
+    },
+
     getRestaurantData: ({commit}, restaurantID) => {
         return new Promise((resolve, reject) => {
             commit('REST_DATA_REQUEST', restaurantID)
@@ -335,6 +346,13 @@ const mutations = {
         state.restData.components.galleria.immagini.forEach( (img) =>{
           if (img.id === imgId)
             state.restData.components.galleria.immagini.splice(state.restData.components.galleria.immagini.indexOf(img), 1)
+        });
+    },
+
+    EDIT_GALLERY_IMG: (state, newImg) =>{
+        state.restData.components.galleria.immagini.forEach( (img) =>{
+          if (img.id === newImg.id)
+            state.restData.components.galleria.immagini[state.restData.components.galleria.immagini.indexOf(img)] = newImg
         });
     },
 
