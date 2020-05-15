@@ -146,7 +146,7 @@ function updateTokenCookie( token ) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ;path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
 }
 
 function setCookiesUserPrivate( data) {
@@ -160,11 +160,11 @@ function setCookiesUserPrivate( data) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + ";path=/";
+  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function deleteUserPrivateCookies() {
-  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
 }
 
 
