@@ -1,9 +1,7 @@
 <template>
 
     <div class="body">
-        <a href="https://www.facebook.com/dialog/oauth?client_id=3088012607926243&redirect_uri={http://localhost:8080}">Premi
-            qui Larco</a>
-        <p>{{this.$route.query.code}}</p>
+        <!-- p>{{this.$route.query.code}}</p -->
 
         <base-section id="">
             <div class="title-center">
