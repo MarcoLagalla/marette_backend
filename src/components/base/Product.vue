@@ -10,7 +10,14 @@
         <div class>
           <v-card-title class="headline" v-text="product.name"></v-card-title>
           <v-card-subtitle class="pb-0" v-text="product.category"></v-card-subtitle>
-          <div class="description" v-text="product.description"></div>
+
+            <v-tooltip v-model="show" left color="var(--emerald)">
+              <template v-slot:activator="{ on }">
+                <div class="description" v-text="product.description" v-on="on"></div>
+              </template>
+              <span v-text="product.description"></span>
+            </v-tooltip>
+
         </div>
       </div>
       <div class="pos2" v-for="(item, j) in product.tags" :key="j" v-text="item.name"></div>
@@ -41,6 +48,11 @@
 <script>
     export default {
         name: "Product",
+        data () {
+          return {
+           show: false,
+         }
+        },
         props:{
           product: {
             type: Object,
@@ -95,7 +107,13 @@
   }
   .description {
     padding: 15px;
+    overflow: hidden!important;
+    width: 500px;
+    height: 50px;
+    transition: ease-in-out 0.3s;
+    margin-bottom: 10px;
   }
+
   .managebutton {
     transition: 0.3s ease-in-out;
     background: var(--emerald)!important;
@@ -117,7 +135,6 @@
   .product {
     transition: ease-in-out 0.4s;
     box-shadow: 0 0 2px black;
-    width: 80vmax;
     margin: -5px;
   }
   .product:hover{
