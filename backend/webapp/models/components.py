@@ -18,6 +18,7 @@ def randomString(stringLength=8):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(stringLength))
 
+
 def home_component(instance, filename):
     name, ext = filename.split('.')
     file_path = 'components/home/{restaurant_id}/{rand}/{name}.{ext}'.format(
@@ -45,13 +46,13 @@ class HomeComponent(models.Model):
     def get_name(self):
         return self.name.upper()
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-
-            if len(img.fp.read()) > MAX_IMAGE_SIZE:
-                compress_image(self.image.path, 70)
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if self.image:
+    #         img = Image.open(self.image.path)
+    #
+    #         if len(img.fp.read()) > MAX_IMAGE_SIZE:
+    #             compress_image(self.image.path, 70)
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name
