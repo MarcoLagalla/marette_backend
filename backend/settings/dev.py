@@ -146,7 +146,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
-#STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 # Place static in the same location as webpack build files
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATICFILES_DIRS = []
