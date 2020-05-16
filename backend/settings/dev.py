@@ -146,7 +146,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
-#STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 # Place static in the same location as webpack build files
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATICFILES_DIRS = []
@@ -175,13 +175,13 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'IT'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'marette.dev@gmail.com'  # config('EM_ACCOUNT')
-EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = 'marette.dev@gmail.com'  # config('EM_ACCOUNT')
+# EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 ADMIN_REORDER = (

@@ -37,3 +37,4 @@ django-cleanup
 django-cors-headers
 boto3
 django-storages
+django-ses
