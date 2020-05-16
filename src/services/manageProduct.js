@@ -20,6 +20,14 @@ export default {
             })
     },
 
+
+    removeProduct(payload){
+        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/'+ payload['p_id']+ '/delete\n', payload)
+                    .then(response => {
+                return response
+            })
+    },
+
     listTags(){
                 return api.get('v1/webapp/restaurant/product/tags')
             .then(response => {

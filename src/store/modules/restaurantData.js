@@ -150,11 +150,10 @@ const actions = {
             var payload = {}
             payload['id'] = state.ID
             payload['data'] = product
-            console.log(state.productList.category)
 
             manageProduct.addProduct(payload)
             .then(resp => {
-                commit('REST_ADD_PROD_SUCCESS', resp.data, resp.data.category)
+                commit('REST_ADD_PROD_SUCCESS', resp.data)
                 resolve(resp)
             })
             .catch(err => {
@@ -164,13 +163,28 @@ const actions = {
         })
     },
 
+    removeProduct: ({commit}, product_id) => {
+        return new Promise((resolve, reject) => {
+            let payload = {id: state.ID, p_id: product_id}
+            manageProduct.removeProduct(payload)
+            .then(resp => {
+                commit('REST_REMOVE_PROD_SUCCESS', resp.data)
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('REST_REMOVE_PROD_ERROR')
+                reject(err.response.data)
+            })
+        })
+    },
+
     getListTag: ({commit}) => {
         return new Promise((resolve, reject) => {
 
             manageProduct.listTags()
             .then(resp => {
-                commit('LIST_TAGS_SUCCESS', resp.data)
-                resolve(resp.data)
+                commit('LIST_TAGS_SUCCESS', resp)
+                resolve(resp)
             })
             .catch(err => {
                 commit('LIST_TAGS_ERROR')
@@ -406,13 +420,26 @@ const mutations = {
     LIST_MENU_ERROR: () =>{
     },
 
-    REST_ADD_PROD_SUCCESS: (state, prodotto, category) =>{
-        //state.productList.category.push(prodotto)
-        // category.push(prodotto)
+    REST_ADD_PROD_SUCCESS: (state, product) =>{
+        state.productList[product.category].push(product)
     },
 
     REST_ADD_PROD_ERROR: () =>{
     },
+
+    REST_REMOVE_PROD_SUCCESS: (state) =>{
+        state.status = 'success'
+
+      // this.products.splice(this.products.indexOf(product), 1);
+       // state.productList[product.category].splice(state.productList[product.category].product, 1)
+
+
+    },
+
+    REST_REMOVE_PROD_ERROR: () =>{
+    },
+
+
 
     REST_RMV_COMPONENT: (state, componentName) =>{
         state.restData.components[componentName].show=false;
