@@ -150,11 +150,11 @@ const actions = {
             var payload = {}
             payload['id'] = state.ID
             payload['data'] = product
-            console.log(product)
+            console.log(state.productList.category)
 
             manageProduct.addProduct(payload)
             .then(resp => {
-                commit('REST_ADD_PROD_SUCCESS', resp.data)
+                commit('REST_ADD_PROD_SUCCESS', resp.data, resp.data.category)
                 resolve(resp)
             })
             .catch(err => {
@@ -170,7 +170,6 @@ const actions = {
             manageProduct.listTags()
             .then(resp => {
                 commit('LIST_TAGS_SUCCESS', resp.data)
-                console.log(resp)
                 resolve(resp.data)
             })
             .catch(err => {
@@ -186,7 +185,6 @@ const actions = {
             manageProduct.listDiscounts(state.ID)
             .then(resp => {
                 commit('LIST_DISCOUNTS_SUCCESS', resp.data)
-                console.log(resp.data)
                 resolve(resp.data)
             })
             .catch(err => {
@@ -202,7 +200,6 @@ const actions = {
             manageProduct.addDiscount(discount, state.ID)
             .then(resp => {
                 commit('ADD_DISCOUNT_SUCCESS', resp.data);
-                console.log(resp);
                 resolve(resp.data)
             })
             .catch(err => {
@@ -409,7 +406,9 @@ const mutations = {
     LIST_MENU_ERROR: () =>{
     },
 
-    REST_ADD_PROD_SUCCESS: (state, prodotto) =>{
+    REST_ADD_PROD_SUCCESS: (state, prodotto, category) =>{
+        //state.productList.category.push(prodotto)
+        // category.push(prodotto)
     },
 
     REST_ADD_PROD_ERROR: () =>{
