@@ -26,7 +26,7 @@
                               name="price"
                               required
                 ></v-text-field>
-                <button class="manage" @click="toggleShowTags">Inserisci i tag</button>
+                <button class="manage" @click.prevent="toggleShowTags">Inserisci i tag</button>
                 <br>
                 <v-card
                         v-show="showTags"
