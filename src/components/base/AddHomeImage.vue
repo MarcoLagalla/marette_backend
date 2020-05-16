@@ -3,7 +3,7 @@
     <v-dialog v-model="active" overlay-opacity="0.8" >
       <template v-slot:activator="{ on }">
         <div class="rel">
-          <v-btn name="edit" color="blue" v-on="on"  class="managebutton">
+          <v-btn name="edit" color="white" v-on="on"  class="managebutton">
             Modifica immagine di sfondo <i class="far fa-edit"></i>
           </v-btn>
         </div>
