@@ -13,7 +13,9 @@
 
             <v-tooltip v-model="show" left color="var(--emerald)">
               <template v-slot:activator="{ on }">
-                <div class="description" v-text="product.description" v-on="on"></div>
+                <div class="description" >
+                  <span v-text="product.description" v-on="on"></span>
+                </div>
               </template>
               <span v-text="product.description"></span>
             </v-tooltip>
@@ -108,7 +110,7 @@
   .description {
     padding: 15px;
     overflow: hidden!important;
-    width: 500px;
+    width: 20vmax;
     height: 50px;
     transition: ease-in-out 0.3s;
     margin-bottom: 10px;
@@ -140,5 +142,9 @@
   .product:hover{
     box-shadow:0 0 10px black;
   }
-
+.pos1 {
+  position: absolute;
+  right: 0;
+  height: 100%;
+}
 </style>
