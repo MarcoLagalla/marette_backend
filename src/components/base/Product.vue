@@ -117,6 +117,8 @@
   .product {
     transition: ease-in-out 0.4s;
     box-shadow: 0 0 2px black;
+    width: 80vmax;
+    margin: -5px;
   }
   .product:hover{
     box-shadow:0 0 10px black;

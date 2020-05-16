@@ -39,6 +39,7 @@ h1 {
   width: 100%;
   background: var(--whitesmoke);
 }
+
 .quant {
   padding: 5px;
   display: flex;

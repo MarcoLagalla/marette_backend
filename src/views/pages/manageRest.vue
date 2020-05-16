@@ -91,19 +91,19 @@ export default {
   .buttons {
     position: fixed;
     right: 0;
-    top: 11vmax;
+    top: 300px;
     z-index: 100;
     color: white;
     font-weight: bold;
     -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: grey;
   }
-  @media only screen and (max-width: 600px) {
+ /* @media only screen and (max-width: 600px) {
     .buttons {
       left: 0;
       width: 50%;
     }
-  }
+  }  */
   button {
     padding: 10px;
     width: 100%;
