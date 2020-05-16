@@ -2,7 +2,7 @@
   <div class="menubody">
     <v-container>
       <v-row >
-        <v-col v-for="(product, i) in products" :key="i" cols="12" >
+        <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" >
           <base-product :product="product" :delete="admin" :basket="!admin" :price='true' @removed="removeProduct(product)"></base-product>
         </v-col>
       </v-row>
@@ -39,6 +39,7 @@ h1 {
   width: 100%;
   background: var(--whitesmoke);
 }
+
 .quant {
   padding: 5px;
   display: flex;

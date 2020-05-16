@@ -91,24 +91,25 @@ export default {
   .buttons {
     position: fixed;
     right: 0;
-    top: 11vmax;
+    top: 300px;
     z-index: 100;
     color: white;
     font-weight: bold;
     -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: grey;
   }
-  @media only screen and (max-width: 600px) {
+ /* @media only screen and (max-width: 600px) {
     .buttons {
       left: 0;
       width: 50%;
     }
-  }
+  }  */
   button {
     padding: 10px;
     width: 100%;
     border: solid white 1px;
-    transition: 0.4s
+    transition: 0.4s;
+    background: rgba(5,5,5,0.5);
   }
   button:hover {
     background: rgba(255, 255, 255, 0.5);

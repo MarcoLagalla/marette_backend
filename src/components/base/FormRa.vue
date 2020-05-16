@@ -1,106 +1,110 @@
 <template>
     <v-row justify="center">
-        <v-dialog v-model="dialog" overlay-opacity="0.8" max-width="600px">
+        <v-dialog v-model="dialog" overlay-opacity="0.8" max-width="600px" class="dial" scrollable="false">
             <template v-slot:activator="{ on }">
                 <div class="rel">
                     <button class="btn-6" v-on="on"><span>signup</span></button>
                 </div>
             </template>
-            <v-card class="pa-auto">
-                <v-form @submit.prevent="register" v-model="valid">
-                    <div class="cardtitle">
-                        <h1>REGISTRATI</h1>
-                    </div>
-                    <v-divider></v-divider>
-                    <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
-                    <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field :rules="nameRules" :error-messages="errors.username"
-                                                  @change="errors.username=''" prepend-icon="mdi-account" solo filed
-                                                  id="username" v-model="username" label="Username*"
-                                                  required></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
-                                                  solo filed v-model="first_name" label="Nome"
-                                                  id="first_name"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''" solo
-                                                  filed v-model="last_name" label="Cognome"
-                                                  id="last_name"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field :rules="phoneRules" :error-messages="errors.phone"
-                                                  @change="errors.phone=''" prepend-icon="mdi-phone" solo filed
-                                                  id="phone" name="phone" label="Numero di telefono*" v-model="phone"
-                                                  type="tel" require></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field :error-messages="errors.birth_date" @change="errors.birth_date=''"
-                                                  prepend-icon="mdi-calendar-range" solo filed id="birth_date"
-                                                  label="Data di nascita" v-model="birth_date"
-                                                  type="date"></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field :rules="emailRules" :error-messages="errors.email"
-                                                  @change="errors.email=''" prepend-icon="mdi-email" solo filed
-                                                  v-model="email" label="Email*" id="email" type="email"
-                                                  required></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="6">
-                                    <v-text-field :rules="passwordRules" :error-messages="errors.password"
-                                                  @change="errors.password=''" prepend-icon="mdi-key" solo filed
-                                                  v-model="password" label="Password*" id="password" type="password"
-                                                  required></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="6">
-                                    <v-text-field :rules="password2Rules" :error-messages="errors.password2"
-                                                  @change="errors.password2=''" solo filed v-model="password2"
-                                                  label="Repeat password*" id="password2" type="password"
-                                                  required></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <picture-input
-                                            ref="avatar"
-                                            @change="onChanged"
-                                            :width="200"
-                                            :height="200"
-                                            size="3"
-                                            :zIndex="0"
-                                            :crop="true"
-                                            :changeOnClick="false"
-                                            accept="image/jpeg, image/png, image/gif"
-                                            buttonClass="ui button primary"
-                                            :customStrings="{
+            <v-card class="regcard">
+                <vue-custom-scrollbar class="scroll-area" :settings="settings" @ps-scroll-y="scrollHanle">
+                    <v-form @submit.prevent="register" v-model="valid">
+                        <div class="cardtitle">
+                            <h1>REGISTRATI</h1>
+                        </div>
+                        <v-divider></v-divider>
+                        <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field :rules="nameRules" :error-messages="errors.username"
+                                                      @change="errors.username=''" prepend-icon="mdi-account" solo filed
+                                                      id="username" v-model="username" label="Username*"
+                                                      required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
+                                                      solo filed v-model="first_name" label="Nome"
+                                                      id="first_name"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
+                                                      solo
+                                                      filed v-model="last_name" label="Cognome"
+                                                      id="last_name"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6">
+                                        <v-text-field :rules="phoneRules" :error-messages="errors.phone"
+                                                      @change="errors.phone=''" prepend-icon="mdi-phone" solo filed
+                                                      id="phone" name="phone" label="Numero di telefono*"
+                                                      v-model="phone"
+                                                      type="tel" require></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6">
+                                        <v-text-field :error-messages="errors.birth_date" @change="errors.birth_date=''"
+                                                      prepend-icon="mdi-calendar-range" solo filed id="birth_date"
+                                                      label="Data di nascita" v-model="birth_date"
+                                                      type="date"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field :rules="emailRules" :error-messages="errors.email"
+                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
+                                                      v-model="email" label="Email*" id="email" type="email"
+                                                      required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="6">
+                                        <v-text-field :rules="passwordRules" :error-messages="errors.password"
+                                                      @change="errors.password=''" prepend-icon="mdi-key" solo filed
+                                                      v-model="password" label="Password*" id="password" type="password"
+                                                      required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="6">
+                                        <v-text-field :rules="password2Rules" :error-messages="errors.password2"
+                                                      @change="errors.password2=''" solo filed v-model="password2"
+                                                      label="Repeat password*" id="password2" type="password"
+                                                      required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <picture-input
+                                                ref="avatar"
+                                                @change="onChanged"
+                                                :width="200"
+                                                :height="200"
+                                                size="3"
+                                                :zIndex="0"
+                                                :crop="true"
+                                                :changeOnClick="false"
+                                                accept="image/jpeg, image/png, image/gif"
+                                                buttonClass="ui button primary"
+                                                :customStrings="{
                       upload: '<h1>Carica immagine</h1>',
                       drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
-                                    </picture-input>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                        <small style="color:white">*indica i campi obbligatori</small>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                    <v-card-text style="color:white">Registrando un account accetti i nostri
-                        <router-link to="/termini">Terms & Privacy</router-link>
-                        .
-                    </v-card-text>
-                    <div class="regbtn2">
-                        <div class="center">
-                            <button class="btn" type="submit" :disabled="!valid">
-                                <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
-                                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
-                                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
-                                </svg>
-                                <span>Submit</span>
-                            </button>
+                                        </picture-input>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            <small style="color:white">*indica i campi obbligatori</small>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-text style="color:white">Registrando un account accetti i nostri
+                            <router-link to="/termini">Terms & Privacy</router-link>
+                            .
+                        </v-card-text>
+                        <div class="regbtn2">
+                            <div class="center">
+                                <button class="btn" type="submit" :disabled="!valid">
+                                    <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
+                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
+                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
+                                    </svg>
+                                    <span>Submit</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <v-card-text></v-card-text>
-                </v-form>
+                        <v-card-text></v-card-text>
+                    </v-form>
+                </vue-custom-scrollbar>
             </v-card>
         </v-dialog>
     </v-row>
@@ -112,15 +116,20 @@
         mapActions
     } from 'vuex'
     import PictureInput from "vue-picture-input";
+    import vueCustomScrollbar from 'vue-custom-scrollbar';
 
     export default {
         name: 'BaseForm',
         components: {
             PictureInput,
+            vueCustomScrollbar,
         },
         mixins: [Heading],
         data: () => ({
             dialog: false,
+            settings: {
+                maxScrollbarLength: 60
+            },
             username: '',
             email: '',
             password: '',
@@ -190,6 +199,9 @@
                 } else {
                     console.log("Old browser. No support for Filereader API");
                 }
+            },
+            scrollHanle(evt) {
+                console.log(evt)
             },
         },
         computed: {
@@ -383,5 +395,14 @@
 
     .btn:disabled {
         background: grey;
+    }
+    .regcard {
+        overflow: hidden!important;
+    }
+    .dial {
+        overflow: hidden!important;
+    }
+    body {
+        overflow: hidden!important;
     }
 </style>

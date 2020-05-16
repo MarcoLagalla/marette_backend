@@ -87,7 +87,8 @@
         width: 100%;
         background: no-repeat center center fixed;
         background-size: cover;
-
+        z-index: 10;
+        margin-bottom: -10px!important;
 
     }
 

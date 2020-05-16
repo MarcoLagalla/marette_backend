@@ -40,7 +40,7 @@ function getToken() {
 function delSessionid() {
   var user = getCookie("sessionid");
   if (user !== "") {
-    document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax ; Secure ; path=/;";
   }
 }
 
