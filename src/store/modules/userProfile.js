@@ -146,7 +146,11 @@ function updateTokenCookie( token ) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ;path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function setCookiesUserPrivate( data) {
@@ -160,11 +164,19 @@ function setCookiesUserPrivate( data) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ;path=/";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function deleteUserPrivateCookies() {
-  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; Secure ; path=/;";
+  }
+  else
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
 }
 
 
