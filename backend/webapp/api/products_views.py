@@ -51,10 +51,10 @@ class ListProducts(APIView):
 
 
 class AddProduct(APIView):
-
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
     parser_class = (MultiPartParser, FormParser, FileUploadParser)
+
     @transaction.atomic()
     def post(self, request, id):
 
@@ -104,7 +104,6 @@ class AddProduct(APIView):
 
 
 class DeleteProduct(APIView):
-
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
 
@@ -128,24 +127,24 @@ class DeleteProduct(APIView):
 
                     # verifico che il prodotto sia un prodotto del mio ristorante
                     try:
-                        product = Product.objects.all()\
+                        product = Product.objects.all() \
                             .filter(restaurant=restaurant).get(id=p_id)
                         if product:
                             product.delete()
-                            return Response(status=status.HTTP_200_OK)
+                            return Response({'message': 'Prodotto eliminato correttamente'},
+                                            status=status.HTTP_200_OK)
                     except Product.DoesNotExist:
-                        return Response(status=status.HTTP_404_NOT_FOUND)
+                        return Response({'error': 'Prodotto non trovato'}, status=status.HTTP_404_NOT_FOUND)
                 else:
-                    return Response(status=status.HTTP_401_UNAUTHORIZED)
+                    return Response({'error': 'Non hai i Permessi necessari'}, status=status.HTTP_401_UNAUTHORIZED)
 
             except Restaurant.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'Ristorante non trovato'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UpdateProduct(APIView):
-
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness]
 
@@ -200,7 +199,8 @@ class UpdateProduct(APIView):
                                     product.discounts.clear()
                                     for d in data['discounts']:
                                         try:
-                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=d)
+                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(
+                                                id=d)
                                             if entry:
                                                 product.discounts.add(d)
                                         except ProductDiscount.DoesNotExist:
@@ -232,7 +232,6 @@ class UpdateProduct(APIView):
 
 
 class ProductDetails(APIView):
-
     permission_classes = [AllowAny]
 
     def get(self, request, id, p_id):
