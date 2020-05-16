@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="buttons">
-      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button>
-      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button>
-      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button>
-      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button>
-      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button>
+      <button @click="manageComponents('home')">{{getButtonMessageFor('home')}}</button><hr>
+      <button @click="manageComponents('vetrina')">{{getButtonMessageFor('vetrina')}}</button><hr>
+      <button @click="manageComponents('menu')">{{getButtonMessageFor('menu')}}</button><hr>
+      <button @click="manageComponents('galleria')">{{getButtonMessageFor('galleria')}}</button><hr>
+      <button @click="manageComponents('contattaci')">{{getButtonMessageFor('contattaci')}}</button><hr>
     </div>
     <RestHome v-if="activeComponents.home.show" :restData="restData" :admin="admin"></RestHome>
 
@@ -90,15 +90,23 @@ export default {
 <style scoped>
   .buttons {
     position: fixed;
+    right: 0;
+    top: 11vmax;
     z-index: 100;
     color: white;
     font-weight: bold;
     -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: grey;
   }
+  @media only screen and (max-width: 600px) {
+    .buttons {
+      left: 0;
+      width: 50%;
+    }
+  }
   button {
     padding: 10px;
-    
+    width: 100%;
     border: solid white 1px;
     transition: 0.4s
   }

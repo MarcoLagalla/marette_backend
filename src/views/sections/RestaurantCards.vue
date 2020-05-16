@@ -1,7 +1,7 @@
 <template>
 
     <div class="body">
-        <p>{{this.$route.query.code}}</p>
+        <!-- p>{{this.$route.query.code}}</p -->
 
         <base-section id="">
             <div class="title-center">
