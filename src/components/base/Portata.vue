@@ -3,13 +3,13 @@
     <v-card-title class="headline" v-text="portata.name"></v-card-title>
     <v-card-subtitle v-text="'Puoi scegliere ' + portata.num_products + ' di questi prodotti:'"> </v-card-subtitle>
     <div class="portate" v-for="product in portata.products" :key="product.id">
-    <base-product :product="product"></base-product>
+    <base-portata-product :product="product"></base-portata-product>
     </div>
     <div class="actions">
-      <v-btn name="delete" v-if="admin" color="red" @click="$emit('removed')">
+      <v-btn name="delete" v-if="admin" color="white" @click="$emit('removed')" class="managebutton">
         Elimina portata<i class="fas fa-times"></i>
       </v-btn>
-      <v-btn name="edit" v-if="admin" color="blue" @click="$emit('edited')" class="managebutton">
+      <v-btn name="edit" v-if="admin" color="white" @click="$emit('edited')" class="managebutton">
         Modifica portata<i class="far fa-edit"></i>
       </v-btn>
     </div>
@@ -39,5 +39,10 @@
 }
   .portate {
     margin: 10px;
+  }
+  .managebutton {
+    color: #1a1a1a!important;
+    background: aliceblue!important;
+    margin: 5px;
   }
 </style>
