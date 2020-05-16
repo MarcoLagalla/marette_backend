@@ -1,6 +1,7 @@
 import random
 import string
 from io import BytesIO
+from pathlib import Path
 
 from PIL import Image
 from django.conf import settings
@@ -26,21 +27,18 @@ def randomString(stringLength=8):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def gallery_component(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'components/gallery/{rand}/{name}.{ext}'.format(
-          rand=randomString(10), name=name, ext=ext)
+    file_path = 'components/gallery/{rand}/{filename}'.format(
+          rand=randomString(10), filename=filename)
     return file_path
 
 def products_image(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    file_path = 'products/{restaurant_id}/{rand}/{filename}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
 def products_image_thumb(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{filename}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
 class Restaurant(models.Model):
