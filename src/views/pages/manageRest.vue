@@ -108,7 +108,8 @@ export default {
     padding: 10px;
     width: 100%;
     border: solid white 1px;
-    transition: 0.4s
+    transition: 0.4s;
+    background: rgba(5,5,5,0.5);
   }
   button:hover {
     background: rgba(255, 255, 255, 0.5);
