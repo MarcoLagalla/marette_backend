@@ -1,4 +1,4 @@
-from sys import path
+from pathlib import Path
 import os
 from django.conf import settings
 from django.db import models
@@ -18,8 +18,9 @@ def randomString(stringLength=8):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(stringLength))
 
+
 def content_file_name(instance, filename):
-    name, ext = filename.split('.')
+    ext = Path(filename).suffix
     file_path = 'avatars/{customer_id}/{rand}/avatar.{ext}'.format(
          customer_id=instance.user.id, rand=randomString(5), ext=ext)
     return file_path
