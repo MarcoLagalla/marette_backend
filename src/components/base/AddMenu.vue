@@ -13,7 +13,7 @@
                           required></v-text-field>
             <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
             <v-btn color="green"  @click="submitMenu" text>{{submit}}</v-btn>
-            <v-btn color="red" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
+            <v-btn color="var(--ming)" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
     </v-card>
 </template>
@@ -76,7 +76,7 @@
 <style scoped>
     .addmenu {
         padding: 10px !important;
-        background: var(--palesilver);
+        background: var(--ghostwhite);
     }
 
     .blutitle {
@@ -89,7 +89,7 @@
     }
 
     .scrollovf {
-        overflow: scroll;
+
         box-shadow: 0 0 10px var(--charcoal);
         background: var(--whitesmoke);
     }

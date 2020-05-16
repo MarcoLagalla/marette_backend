@@ -22,7 +22,7 @@
 <style >
 
 :root {
-  --palesilver: #CFC0BD;
+  --ghostwhite: #FBFFFE;
   --ming: #3C6E71;
   --darkslate: #384D48;
   --charcoal: #272D2D;
