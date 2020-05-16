@@ -1,7 +1,7 @@
 import json
 import django
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -117,6 +117,14 @@ class UpdateRestaurantAPIView(APIView):
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
             # numero di telefono del ristorante, city, address, cap
+
+            try:
+                p_iva = request.data['p_iva']
+                if not vat_number_validation(p_iva):
+                    raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
+            except ValueError:
+                raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
+
 
             serializer = CreateRestaurantSerializer(data=input_data)
 
