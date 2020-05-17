@@ -20,7 +20,7 @@
 
     <base-btn
       :color="!theme.isDark ? 'accent' : 'white'"
-      href="mailto:shop@vuetifyjs.com?subject=Daedal%20Theme%20Question"
+      href=""
       outlined
       target="_blank"
     >

@@ -2,26 +2,53 @@
   <div class="menubody">
     <v-container>
       <v-row >
-        <v-col v-for="(product, i) in products" :key="i" cols="12" >
-          <base-product :product="product" :delete="admin" :basket="!admin" :price='true' @removed="removeProduct(product)"></base-product>
+        <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" >
+          <base-product :product="product" :delete="admin" :basket="!admin" :price='true' @removed="del_Product(product)"></base-product>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
 <script>
+    import {mapActions} from "vuex";
+
 export default {
   name: "BaseProdList",
   props: ["products", 'admin'],
   inheritAttrs: false,
-  data: () => ({
 
-  }),
-    methods: {
-      removeProduct: function(prod){
-        this.products.splice(this.products.indexOf(prod), 1); //TODO: rimuoverlo veramente dai prodotti
+
+  data() {
+      return{
       }
-    }
+
+
+
+
+  },
+    methods: {
+                  ...mapActions('restaurantData', ['removeProduct']),
+
+      del_Product: function(prod){
+        let x = this.products.indexOf(prod);
+        let prod_id = this.products[x].id;
+        this.removeProduct(
+          prod_id
+        ).then(resp => {
+
+            this.products.splice(this.products.indexOf(prod), 1);
+            alert(resp.message)
+
+        })
+
+        .catch(error => {
+
+          alert(error.error)
+        });
+
+
+      },
+    },
 };
 </script>
 <style scoped>
@@ -39,6 +66,7 @@ h1 {
   width: 100%;
   background: var(--whitesmoke);
 }
+
 .quant {
   padding: 5px;
   display: flex;

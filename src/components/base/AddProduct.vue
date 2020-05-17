@@ -26,7 +26,7 @@
                               name="price"
                               required
                 ></v-text-field>
-                <button class="manage" @click="toggleShowTags">Inserisci i tag</button>
+                <button class="manage" @click.prevent="toggleShowTags">Inserisci i tag</button>
                 <br>
                 <v-card
                         v-show="showTags"
@@ -131,7 +131,7 @@
                     </v-list>
                 </v-card>
                 <br>
-
+<!-- DA QUA IN POI CI SONO GLI SCONTI CHE VANNO PASSATTI SU PRODUCT E FARLI COMBACIARE COL PULSANTE CORRISPONDENTE -->
                 <button class="manage" @click="toggleAddDiscount"> Inserisci nuovo sconto</button>
                 <v-card
                         v-show="showAddDiscount"
@@ -170,16 +170,13 @@
                     </v-form>
                 </v-card>
             </div>
-            <!--vue-anka-cropper></vue-anka-cropper-->
         </div>
     </div>
 </template>
 <script>
     import {mapActions} from "vuex";
-    //import vueAnkaCropper from 'vue-anka-cropper';
     import PictureInput from "vue-picture-input";
 
-    // DATA URI TO FILE FORSE PUò essere usato per passare da URI a file object
 
 
     export default {
@@ -187,7 +184,6 @@
         props: ['category'],
 
         components: {
-            // vueAnkaCropper,
             PictureInput,
 
 
