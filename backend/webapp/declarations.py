@@ -54,3 +54,21 @@ RESTAURANT_COMPONENTS = [
     ('Contattaci', 'Contattaci'),
     ('Eventi', 'Eventi'),
 ]
+
+
+RESTAURANT_CATEGORY_CHOICES = [
+    ('Pizzeria', 'Pizzeria'),
+    ('Ristorante', 'Ristorante'),
+    ('Fast food', 'Fast food'),
+    ('Gourmet', 'Gourmet'),
+    ('Birrificio', 'Birrificio'),
+    ('Mensa', 'Mensa'),
+    ('Paninoteca', 'Paninoteca'),
+    ('Bar', 'Bar'),
+    ('Piadineria', 'Piadineria'),
+    ('Osteria', 'Osteria'),
+    ('Trattoria', 'Trattoria'),
+    ('Tavola calda', 'Tavola calda'),
+    ('Pasticceria', 'Pasticceria'),
+    ('Cinese', 'Cinese'),
+]
