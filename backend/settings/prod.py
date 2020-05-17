@@ -13,7 +13,7 @@ DATABASES = {
         'NAME': 'marette_db',
         'USER': 'marette',
         'PASSWORD': 'marette_password_123',
-        'HOST': 'ls-396698a44ff6bd681eefdd494452ba939b2513fe.coqd0e1zy3qu.eu-central-1.rds.amazonaws.com',
+        'HOST': 'database-1.clpdfv8kxhlx.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
