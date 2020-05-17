@@ -19,7 +19,7 @@ from django_resized import ResizedImageField
 from django.utils.text import slugify
 import os
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
-    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES
+    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES
 
 
 def randomString(stringLength=8):
@@ -31,18 +31,15 @@ def gallery_component(instance, filename):
           rand=randomString(10), filename=filename)
     return file_path
 
-
 def products_image(instance, filename):
     file_path = 'products/{restaurant_id}/{rand}/{filename}'.format(
           restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
-
 def products_image_thumb(instance, filename):
     file_path = 'products/thumbnails/{restaurant_id}/{rand}/{filename}'.format(
           restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
-
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
@@ -56,7 +53,6 @@ class Restaurant(models.Model):
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False)
-    restaurant_category = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'),]))
 
     image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
                               upload_to='restaurant', blank=True, null=True, force_format='PNG')

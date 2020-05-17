@@ -61,7 +61,7 @@ class ListRestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'image',
-                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts', 'restaurant_category']
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
 
     def get_image(self, obj):
         return obj.get_image()
@@ -73,7 +73,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'activity_name', 'activity_description', 'city', 'image',
-                  'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'restaurant_category']
+                  'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
 
     @transaction.atomic
     def save(self, owner):
