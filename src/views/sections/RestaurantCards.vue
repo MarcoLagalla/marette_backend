@@ -14,14 +14,14 @@
                 <v-row>
                     <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="4">
                         <router-link :to="restaurant.url">
-                            <v-card v-bind="restaurant" class="restcard" max-width="400">
+                            <v-card v-bind="restaurant" class="restcard" max-width="400" max-height="400">
                                 <v-img class="white--text align-end imag" height="200px"
                                        :src="restaurant.image">
                                     <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
                                 </v-img>
 
-                                <v-card-text class="text--primary">
-                                    <div>{{ restaurant.activity_description }}</div>
+                                <v-card-text >
+                                    <div class="description">{{ restaurant.activity_description }}</div>
                                 </v-card-text>
                                 <v-divider/>
                                 <div class="actions">
@@ -143,5 +143,9 @@
 
     h2 {
         text-transform: capitalize;
+    }
+    .description {
+        overflow: hidden!important;
+        height: 50px;
     }
 </style>
