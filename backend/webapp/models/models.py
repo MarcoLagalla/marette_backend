@@ -41,6 +41,7 @@ def products_image_thumb(instance, filename):
           restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
+
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
     slug = models.SlugField(unique=False, default='', null=True, blank=True)
@@ -60,7 +61,11 @@ class Restaurant(models.Model):
     discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
 
     class Meta:
-        unique_together = ('id', 'owner', 'p_iva')
+        unique_together = (('id', 'owner', 'p_iva'), )
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(fields=['id', 'owner', 'p_iva'], name='unique_activity')
+    #     ]
 
     def __str__(self):
         return self.activity_name
