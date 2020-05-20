@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 
 def send_welcome_email(user, activation_token):
 
-    subject, from_email, to = 'Welcome email', '"Marette" <staff@marette.ovh>', user.email
+    subject, from_email, to = 'Benvenuto', '"Marette" <staff@marette.ovh>', user.email
 
     html_content = render_to_string('welcome.html', {'username': user.username,
                                                      'id': user.id,
