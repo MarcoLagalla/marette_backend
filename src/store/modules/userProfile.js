@@ -99,6 +99,7 @@ const mutations = {
     state.user.Cognome = data.last_name
     state.user.Anno_di_Nascita = data.birth_date
     state.user.Numero_di_Telefono = data.phone
+    state.user.avatar = data.avatar
 
     if (state.user_private.type === 'business')
     {

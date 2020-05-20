@@ -1,6 +1,6 @@
 <template>
     <v-row justify="center">
-        <v-dialog v-model="dialog" overlay-opacity="0.8" max-width="600px" class="dial" scrollable="false">
+        <v-dialog v-model="dialog" overlay-opacity="0.8" max-width="600px" class="dial" scrollable>
             <template v-slot:activator="{ on }">
                 <div class="rel">
                     <button class="btn-6" v-on="on"><span>signup</span></button>

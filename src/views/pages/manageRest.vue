@@ -72,9 +72,9 @@ export default {
       },
       getButtonMessageFor(nameComponent){
         if (this.activeComponents[nameComponent].show)
-            return 'Disattiva ' + nameComponent
+            return ' - ' + nameComponent
           else
-              return 'Attiva ' + nameComponent
+              return ' + ' + nameComponent
       }
   },
   computed: {
