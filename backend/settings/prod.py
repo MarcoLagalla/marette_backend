@@ -58,4 +58,9 @@ STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'backend.settings.storage_backends.MediaStorage'
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
+
+AWS_SES_ACCESS_KEY_ID = 'AKIAQNN5ZBLSYTGMMBVR'
+AWS_SES_SECRET_ACCESS_KEY = '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'
+
+AWS_SES_REGION = 'eu-central-1'
