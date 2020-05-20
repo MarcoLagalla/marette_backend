@@ -9,6 +9,10 @@
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
 
+    .share:hover {
+        color: var(--ming);
+        opacity: 1;
+    }
 
             <v-container>
                 <v-row>
