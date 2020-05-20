@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from backend.account.permissions import IsBusiness
+from backend.account.permissions import IsBusiness, BusinessActivated
 from rest_framework.authtoken.models import Token
 
 from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, RestaurantDiscount
@@ -47,7 +47,7 @@ class DetailsDiscounts(APIView):
 
 class AddDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -88,7 +88,7 @@ class AddDiscounts(APIView):
 class EditDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -137,7 +137,7 @@ class EditDiscounts(APIView):
 class DeleteDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -177,7 +177,7 @@ class DeleteDiscounts(APIView):
 
 class AddRestaurantDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -251,7 +251,7 @@ class DetailsRestaurantDiscounts(APIView):
 
 class EditRestaurantDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -299,7 +299,7 @@ class EditRestaurantDiscounts(APIView):
 class DeleteRestaurantDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):

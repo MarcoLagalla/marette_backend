@@ -1,23 +1,21 @@
+import os
 import random
 import string
 from io import BytesIO
-from pathlib import Path
 
 from PIL import Image
-from django.conf import settings
 from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.text import slugify
+from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
 
 from backend.account.models import Business
-from django_resized import ResizedImageField
-from django.utils.text import slugify
-import os
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES
 
@@ -50,7 +48,7 @@ class Restaurant(models.Model):
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
     address = models.CharField(max_length=100, blank=False)
-    n_civ = models.PositiveIntegerField(blank=False)
+    n_civ = models.CharField(max_length=10, blank=False)
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False)
@@ -63,10 +61,6 @@ class Restaurant(models.Model):
 
     class Meta:
         unique_together = (('id', 'owner', 'p_iva'), )
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=['id', 'owner', 'p_iva'], name='unique_activity')
-    #     ]
 
     def __str__(self):
         return self.activity_name
@@ -108,7 +102,7 @@ class RestaurantDiscount(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        unique_together = ('restaurant', 'title', 'type', 'category', 'value')
+        unique_together = (('restaurant', 'title', 'type', 'category', 'value'),)
 
     def __str__(self):
         return "[{0}] {1}".format(self.restaurant.url, self.title)
@@ -128,7 +122,7 @@ class ProductDiscount(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        unique_together = ('restaurant', 'title', 'type', 'value')
+        unique_together = (('restaurant', 'title', 'type', 'value'), )
 
     def __str__(self):
         return "[{0}] {1}".format(self.restaurant.url, self.title)
@@ -291,7 +285,6 @@ class Picture(models.Model):
         return self.name
 
     def get_image(self):
-        print(self.image)
         return self.image.url
 
 

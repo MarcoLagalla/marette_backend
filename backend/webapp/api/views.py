@@ -1,27 +1,23 @@
 import json
+
 import django
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import status, serializers
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-
-from django.shortcuts import get_object_or_404
-from django.db import transaction
-from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
-from ..models.models import Restaurant
-from ..models.components import RestaurantComponents
-from ...account.models import Business
-from ...account.permissions import IsBusiness
-from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
-
-import phonenumbers
-import re
+from django.db import transaction
 from localflavor.it.util import vat_number_validation
+from rest_framework import status, serializers
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.utils.urls import replace_query_param
+from rest_framework.views import APIView
+
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from ..models.components import RestaurantComponents
+from ..models.models import Restaurant
+from ...account.models import Business
+from ...account.permissions import IsBusiness, BusinessActivated
 
 
 class ListRestaurantsAPIView(ListAPIView):
@@ -32,7 +28,7 @@ class ListRestaurantsAPIView(ListAPIView):
 
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     # only authenticated business users can create a new restaurant
     @transaction.atomic()
@@ -94,7 +90,7 @@ class ShowRestaurantAPIView(APIView):
 
 
 class UpdateRestaurantAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):

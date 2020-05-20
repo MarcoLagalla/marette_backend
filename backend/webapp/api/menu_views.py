@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from backend.account.permissions import IsBusiness
+from backend.account.permissions import IsBusiness, BusinessActivated
 from rest_framework.authtoken.models import Token
 
 from ..models.models import Restaurant, Product
@@ -33,7 +33,7 @@ class ListMenus(APIView):
 
 class AddMenu(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -87,7 +87,7 @@ class DetailsMenu(APIView):
 
 class DeleteMenu(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, m_id):
@@ -127,7 +127,7 @@ class DeleteMenu(APIView):
 
 class EditMenu(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, m_id):
@@ -177,7 +177,7 @@ class EditMenu(APIView):
 
 class MenuEntryAdd(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, m_id):
@@ -213,7 +213,7 @@ class MenuEntryAdd(APIView):
 
 class MenuEntryDelete(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, m_id, me_id):
@@ -258,7 +258,7 @@ class MenuEntryDelete(APIView):
 
 class MenuEntryEdit(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, m_id, me_id):
@@ -323,7 +323,8 @@ class MenuEntryEdit(APIView):
 
 
 class MenuEntryDetail(APIView):
-
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [AllowAny]
     def get(self, request, id, m_id, me_id):
 
         try:
