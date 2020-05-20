@@ -58,6 +58,38 @@ class IsBusiness(permissions.BasePermission):
         return request.user or request.user.is_superuser
 
 
+class BusinessActivated(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+
+        try:
+            business = Business.objects.get(user=request.user)
+        except Business.DoesNotExist:
+            return False
+
+        if business.email_activated or request.user.is_superuser:
+            return True
+
+        return False
+
+
+class CustomerActivated(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+
+        try:
+            customer = Customer.objects.get(user=request.user)
+        except Customer.DoesNotExist:
+            return False
+
+        if customer.email_activated or request.user.is_superuser:
+            return True
+
+        return False
+
+
 class IsCustomer(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:

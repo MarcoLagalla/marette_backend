@@ -63,15 +63,8 @@ class CustomerAPIView(APIView):
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
-                activation_token = account_activation_token.make_token(customer.user)
-
-                try:
-                    send_welcome_email(customer.user, activation_token)
-                except Exception:
-                    data = {'error': ["Qualcosa è andato storto, riprova!"]}
-                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
-                data['response'] = "Utente corretamente registrato."
+                send_welcome_email(customer.user, customer.activation_token)
+                data['response'] = "Utente correttamente registrato."
                 data['username'] = customer.user.username
                 data['id'] = customer.user.id
                 data['email'] = customer.user.email
@@ -107,14 +100,7 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
-                activation_token = account_activation_token.make_token(business.user)
-
-                try:
-                    send_welcome_email(business.user, activation_token)
-                except Exception:
-                    data = {'error': ["Qualcosa è andato storto, riprova!"]}
-                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
+                send_welcome_email(business.user, business.activation_token)
                 data['response'] = "Utente correttamente registrato."
                 data['username'] = business.user.username
                 data['id'] = business.user.id
@@ -325,6 +311,10 @@ class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
+        try:
+            req_token = request.user.auth_token.key
+        except (Exception, ObjectDoesNotExist):
+            req_token = None
 
         try:
             user = User.objects.all().get(id=id)
@@ -337,7 +327,7 @@ class UserProfileAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if user:
-            if request.user.auth_token.key == token or request.user.is_superuser:
+            if req_token == token or request.user.is_superuser:
                 # check if customer
                 try:
                     data = {}
@@ -524,3 +514,34 @@ class UpdateBusinessUserProfile(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
+class ResendActivationToken(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness]
+
+    @transaction.atomic()
+    def post(self, request, id):
+
+        try:
+            user = User.objects.all().get(id=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            extended_user = Customer.objects.all().get(user=user)
+        except Customer.DoesNotExist:
+            try:
+                extended_user = Business.objects.all().get(user=user)
+            except Business.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if extended_user.email_activated:
+            return Response({'error': "L'utente ha già verificato l'indirizzo email"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            send_welcome_email(user, extended_user.activation_token)
+            return Response({'data': 'Email inviata!'}, status=status.HTTP_200_OK)
+        except Exception:
+            pass
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)

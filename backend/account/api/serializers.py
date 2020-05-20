@@ -9,6 +9,7 @@ from codicefiscale import isvalid as cf_isvalid
 
 from ..models import User
 from .validators import SetCustomErrorMessagesMixin
+from ..tokens import account_activation_token
 
 
 class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerializer):
@@ -64,7 +65,9 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         del self.validated_data['user']
         del self.validated_data['password2']
 
-        customer = Customer.objects.create(user=user, **self.validated_data)
+        activation_token = account_activation_token.make_token(user)
+
+        customer = Customer.objects.create(user=user, activation_token=activation_token, **self.validated_data)
         return customer
 
 
@@ -98,10 +101,16 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         my_fields = {'avatar'}
         data = super().to_representation(instance)
         for field in my_fields:
-            try:
-                    data[field] = instance.get_image()
-            except KeyError:
-                pass
+            if field == 'avatar':
+                try:
+                        data[field] = instance.get_image()
+                except KeyError:
+                    pass
+            elif field == 'cf':
+                try:
+                        data[field] = instance.get_cf()
+                except KeyError:
+                    pass
         return data
 
     @transaction.atomic
@@ -124,7 +133,9 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         del self.validated_data['user']
         del self.validated_data['password2']
 
-        business = Business.objects.create(user=user, **self.validated_data)
+        activation_token = account_activation_token.make_token(user)
+
+        business = Business.objects.create(user=user, activation_token=activation_token, **self.validated_data)
         return business
 
 

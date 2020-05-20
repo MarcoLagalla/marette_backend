@@ -8,11 +8,11 @@ def send_welcome_email(user, activation_token):
 
     html_content = render_to_string('welcome.html', {'username': user.username,
                                                      'id': user.id,
-                                                     'token': activation_token})
+                                                     'activation_token': activation_token})
 
     msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
     msg.content_subtype = "html"  # Main content is now text/html
-    msg.send()
+    msg.send(fail_silently=True)
 
 
 def send_reset_email(user, token):
@@ -25,4 +25,4 @@ def send_reset_email(user, token):
 
     msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
     msg.content_subtype = "html"  # Main content is now text/html
-    msg.send()
+    msg.send(fail_silently=True)
