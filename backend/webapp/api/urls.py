@@ -27,6 +27,8 @@ urlpatterns = [
     path('restaurant/<int:id>/products/discounts/<int:d_id>/details', DetailsDiscounts.as_view(), name='details_discounts'),
     path('restaurant/<int:id>/products/discounts/<int:d_id>/edit', EditDiscounts.as_view(), name='edit_discounts'),
     path('restaurant/<int:id>/products/discounts/<int:d_id>/delete', DeleteDiscounts.as_view(), name='delete_discounts'),
+    path('restaurant/<int:id>/products/<int:p_id>/setdiscounts', SetDiscounts.as_view(), name='set_discounts'),
+
 
     path('restaurant/<int:id>/menus', ListMenus.as_view(), name='list_menus'),
     path('restaurant/<int:id>/menus/add', AddMenu.as_view(), name='add_menu'),
