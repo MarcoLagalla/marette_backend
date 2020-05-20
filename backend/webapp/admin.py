@@ -14,6 +14,11 @@ from .models.orders import Order
 class RestaurantAdmin(admin.ModelAdmin):
     readonly_fields = ('url', 'slug', )
 
+    def save_model(self, request, obj, form, change):
+        super(RestaurantAdmin, self).save_model(request, obj, form, change)
+        obj.set_url()
+        super(RestaurantAdmin, self).save_model(request, obj, form, change)
+
 admin.site.register(Restaurant, RestaurantAdmin)
 
 

@@ -1,13 +1,9 @@
-import os
 import random
 import string
 
-from django.conf import settings
-from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django_resized import ResizedImageField
 from PIL import Image
+from django.db import models
+from django_resized import ResizedImageField
 
 from .models import Restaurant, Picture
 
@@ -45,14 +41,6 @@ class HomeComponent(models.Model):
 
     def get_name(self):
         return self.name.upper()
-
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     if self.image:
-    #         img = Image.open(self.image.path)
-    #
-    #         if len(img.fp.read()) > MAX_IMAGE_SIZE:
-    #             compress_image(self.image.path, 70)
 
     def __str__(self):
         return self.restaurant.__str__() + " : " + self.name

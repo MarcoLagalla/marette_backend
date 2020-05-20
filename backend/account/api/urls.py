@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import CustomerAPIView, LoginGetToken, LogoutAPI, ListUsersAPIView, \
     BusinessAPIView, UpdatePassword, ActivateUserAPIView, ResetPasswordAPIView, AskPasswordAPIView, \
-    UserProfileAPIView, UpdateCostumerUserProfile, UpdateBusinessUserProfile
+    UserProfileAPIView, UpdateCostumerUserProfile, UpdateBusinessUserProfile, ResendActivationToken
 
 app_name = 'account'
 
@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('list', ListUsersAPIView.as_view(), name='list'),
 
+    path('activate/resend/<int:id>', ResendActivationToken.as_view(), name='resend_token'),
     path('activate/<int:id>/<str:token>', ActivateUserAPIView.as_view(), name='activate_email'),
 
     path('password/<int:id>/change', UpdatePassword.as_view(), name='change_password'),

@@ -35,6 +35,7 @@ class Customer(models.Model):
     birth_date = models.DateField(blank=True, null=True)
     phone = PhoneNumberField(unique=True, error_messages={'unique': 'Esiste già un utente con questo numero.'})
     email_activated = models.BooleanField(default=False, auto_created=True)
+    activation_token = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.user.username
@@ -44,6 +45,7 @@ class Customer(models.Model):
             return 'media/placeholder/avatars/user.png'
         else:
             return self.avatar.url
+
 
 class Business(models.Model):
     user = models.OneToOneField(User, related_name='business', on_delete=models.CASCADE)
@@ -55,13 +57,18 @@ class Business(models.Model):
     birth_date = models.DateField()
     city = models.CharField(max_length=50, blank=False)
     address = models.CharField(max_length=150, blank=False)
-    n_civ = models.IntegerField(blank=False)
+    n_civ = models.CharField(max_length=10, blank=False)
     cap = models.IntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     phone = PhoneNumberField(unique=True, error_messages={'unique': 'Esiste già un utente con questo numero.'})
     email_activated = models.BooleanField(default=False, auto_created=True)
 
+    activation_token = models.CharField(max_length=200, unique=True)
+
     def __str__(self):
         return self.user.username
+
+    def get_cf(self):
+        return self.cf.upper()
 
     def get_image(self):
         if not (self.avatar and hasattr(self.avatar, 'url')):
