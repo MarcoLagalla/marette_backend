@@ -38,3 +38,4 @@ django-cors-headers
 boto3
 django-storages
 django-ses
+django-amazon-ses
