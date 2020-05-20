@@ -126,6 +126,11 @@ const router = new Router({
           beforeEnter: ifNotAuthenticated,
         },
         {
+          path: 'activate/:id/:token',
+          name: 'ValidateEmail',
+          component: () => import('@/views/pages/validateEmail.vue'),
+        },
+        {
           path: ':id/:name',
           name: 'RestaurantHome',
           components: {

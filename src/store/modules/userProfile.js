@@ -79,10 +79,37 @@ const actions = {
 
           })
     })
-  }
+  },
+
+
+  validateEmail: ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ValidateEmail(payload)
+      .then(resp => {
+
+        commit('VALID_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('VALID_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
 }
 
 const mutations = {
+
+  VALID_EMAIL_SUCCESS: (state) => {
+    state.user_private.email_activated = true
+  },
+  VALID_EMAIL_ERROR: (state) => {
+    state.user_private.email_activated = false
+  },
+
   USER_REQUEST: (state) => {
     state.status = 'loading'
   },
@@ -93,6 +120,7 @@ const mutations = {
     state.user_private.id = data.id
     state.user_private.is_superuser = data.is_superuser
     state.user_private.avatar = data.avatar
+    state.user_private.email_activated = data.email_activated
 
     state.user.Username = data.username
     state.user.Email = data.email

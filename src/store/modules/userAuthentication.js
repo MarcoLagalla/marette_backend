@@ -139,7 +139,6 @@ const actions = {
 }
 
 const mutations = {
-
   AUTH_REQUEST: (state) => {
     state.status = 'loading'
   },

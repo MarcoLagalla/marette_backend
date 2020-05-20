@@ -43,9 +43,16 @@ export default {
     },
 
   ConfirmPasswordreset(data){
-        return api.post('v1/account/password/reset/confirm', data)
-            .then(response => {
-                return response
-            })
-    },
+    return api.post('v1/account/password/reset/confirm', data)
+      .then(response => {
+        return response
+      })
+  },
+
+  ValidateEmail(payload){
+    return api.get('v1/account/activate/' + payload.id + '/' + payload.token)
+      .then(response => {
+        return response
+      })
+  },
 }
