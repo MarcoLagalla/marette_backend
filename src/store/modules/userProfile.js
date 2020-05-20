@@ -56,6 +56,10 @@ const actions = {
     commit('USER_PROF_LOGOUT')
   },
 
+  addRestaurant: ({commit}, restID) => {
+    commit('USER_ADD_REST', restID)
+  },
+
   changePassword: ({commit}, data) => {
     return new Promise((resolve, reject) => {
       commit('USER_REQUEST')
@@ -123,7 +127,10 @@ const mutations = {
 
   USER_ERROR: (state) => {
     state.status = 'error'
+  },
 
+  USER_ADD_REST: (state, restId) => {
+    state.user_private.restaurants.push(restId)
   },
 }
 
@@ -139,7 +146,11 @@ function updateTokenCookie( token ) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function setCookiesUserPrivate( data) {
@@ -153,11 +164,19 @@ function setCookiesUserPrivate( data) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + ";path=/";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function deleteUserPrivateCookies() {
-  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; Secure ; path=/;";
+  }
+  else
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
 }
 
 
