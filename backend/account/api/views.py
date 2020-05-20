@@ -64,7 +64,13 @@ class CustomerAPIView(APIView):
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
                 activation_token = account_activation_token.make_token(customer.user)
-                #send_welcome_email(customer.user, activation_token)
+
+                try:
+                    send_welcome_email(customer.user, activation_token)
+                except Exception:
+                    data = {'error': ["Qualcosa è andato storto, riprova!"]}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
                 data['response'] = "Utente corretamente registrato."
                 data['username'] = customer.user.username
                 data['id'] = customer.user.id
@@ -102,7 +108,13 @@ class BusinessAPIView(APIView):
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
                 activation_token = account_activation_token.make_token(business.user)
-                #send_welcome_email(business.user, activation_token)
+
+                try:
+                    send_welcome_email(business.user, activation_token)
+                except Exception:
+                    data = {'error': ["Qualcosa è andato storto, riprova!"]}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
                 data['response'] = "Utente correttamente registrato."
                 data['username'] = business.user.username
                 data['id'] = business.user.id
@@ -272,7 +284,11 @@ class AskPasswordAPIView(APIView):
                 return Response({'error': 'Email non esistente!'}, status.HTTP_404_NOT_FOUND)
 
             reset_token = passwordreset_token.make_token(user)
-            send_reset_email(user, reset_token)
+            try:
+                send_reset_email(user, reset_token)
+            except Exception:
+                data = {'error': ["Qualcosa è andato storto, riprova!"]}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             return Response({'details': 'Email inviata correttamente!'}, status.HTTP_200_OK)
         else:
             return Response({'error': 'Parametri non validi!'}, status.HTTP_400_BAD_REQUEST)

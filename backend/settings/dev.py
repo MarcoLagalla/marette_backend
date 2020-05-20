@@ -175,15 +175,6 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'IT'
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_HOST_USER = 'marette.dev@gmail.com'  # config('EM_ACCOUNT')
-# EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
 ADMIN_REORDER = (
     # Keep original label and models
     'sites',
@@ -215,3 +206,11 @@ DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
+
+AWS_SES_ACCESS_KEY_ID = 'AKIAQNN5ZBLSYTGMMBVR'
+AWS_SES_SECRET_ACCESS_KEY = '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'
+
+AWS_SES_REGION = 'eu-central-1'
