@@ -21,17 +21,13 @@
         id: this.$route.params.id,
         token: this.$route.params.token
       })
-      .then(result => {
+      .then(() => {
         this.success = true
-        console.log('success')
-        console.log(result)
       }
 
       )
-      .catch(error => {
+      .catch(() => {
         this.success = false
-        console.log('error')
-        console.log(error)
       }
 
       )
