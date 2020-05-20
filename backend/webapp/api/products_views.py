@@ -199,8 +199,7 @@ class UpdateProduct(APIView):
                                     product.discounts.clear()
                                     for d in data['discounts']:
                                         try:
-                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(
-                                                id=d)
+                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=d)
                                             if entry:
                                                 product.discounts.add(d)
                                         except ProductDiscount.DoesNotExist:

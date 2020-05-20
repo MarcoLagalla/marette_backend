@@ -21,7 +21,7 @@ def randomString(stringLength=8):
 
 def content_file_name(instance, filename):
     ext = Path(filename).suffix
-    file_path = 'avatars/{customer_id}/{rand}/avatar.{ext}'.format(
+    file_path = 'avatars/{customer_id}/{rand}/avatar{ext}'.format(
          customer_id=instance.user.id, rand=randomString(5), ext=ext)
     return file_path
 
