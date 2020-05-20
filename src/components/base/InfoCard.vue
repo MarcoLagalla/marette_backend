@@ -32,7 +32,7 @@
             space="1"
           />
 
-          <base-divider color="red darken-3" />
+          <base-divider class="divider" />
 
           <base-body
             v-if="text || $slots.default"
@@ -80,3 +80,9 @@
     },
   }
 </script>
+<style scoped>
+  .divider {
+    color: var(--darkslate)!important;
+    background: var(--ming);
+  }
+</style>

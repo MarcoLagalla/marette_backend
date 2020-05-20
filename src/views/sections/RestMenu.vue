@@ -1,5 +1,5 @@
 <template>
-  <div class="body" id="Menu">
+  <div class="body" id="MENU">
     <v-row>
       <v-col>
         <base-cat-tabs :menu="menu" :admin="admin"/>
@@ -45,7 +45,7 @@ export default {
 
 .body {
   margin: 0!important;
-  background: #35302D;
+  background: var(--whitesmoke);
 }
 
 

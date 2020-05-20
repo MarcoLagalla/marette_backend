@@ -17,13 +17,14 @@ const getters = {
 }
 
 const actions = {
-    newRestaurant: ({commit}, restaurant) => {
+    newRestaurant: ({commit, dispatch}, restaurant) => {
         return new Promise((resolve, reject) => {
             commit('REG_REST_REQUEST')
             manageRestaurant.postRegisterRestaurant(restaurant)
             .then(resp => {
                 const data = resp.data
                 commit('REG_REST_SUCCESS', data.id_restaurant)
+                dispatch("userProfile/addRestaurant", data.id_restaurant, {root: true});
                 resolve(resp.data)
             })
             .catch(err => {
@@ -43,6 +44,22 @@ const actions = {
             })
             .catch(err => {
                 commit('REST_LIST_ERROR')
+                reject(err)
+            })
+        })
+    },
+
+    updateRestaurant: ({commit, rootGetters}, data) => {
+        return new Promise((resolve, reject) => {
+            var id = rootGetters["restaurantData/id"];
+            manageRestaurant.updateRestaurantData(id, data)
+            .then(resp => {
+                const data = resp.data
+                commit('REST_UPDATE_SUCCESS', data)
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_UPDATE_ERROR')
                 reject(err)
             })
         })
@@ -99,6 +116,10 @@ const mutations = {
     },
     REST_LIST_ERROR: (state) => {
         state.status = 'error_list'
+    },
+    REST_UPDATE_SUCCESS: () => {
+    },
+    REST_UPDATE_ERROR: () => {
     },
 
 }

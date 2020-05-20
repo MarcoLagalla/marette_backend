@@ -1,75 +1,306 @@
 <template>
-  <div>
-    <v-form @submit.prevent="submitProduct">
-      <v-text-field solo background-color="#486F83" v-model='name' type="text" placeholder=" Inserire nome prodotto" id="name" name="name" required></v-text-field>
-      <v-text-field solo background-color="#486F83" v-model='description' type="text" placeholder=" Inserire descrizione" id="description" name="description" required></v-text-field>
-      <v-text-field solo background-color="#486F83" v-model='price' type="number" placeholder=" Inserire prezzo" id="price" name="price" required></v-text-field>
-      <picture-input
-        ref="productImage"
-        @change="onChanged"
-        :width="300"
-        :height="300"
-        :crop="true"
-        :changeOnClick="false"
-        accept="image/jpeg, image/png, image/gif"
-        buttonClass="ui button primary"
-        :customStrings="{
+    <div>
+        <div class="addprod">
+            <v-form @submit.prevent="submitProduct">
+                <v-text-field outlined
+                              v-model="name"
+                              type="text"
+                              label=" Inserire nome prodotto"
+                              id="name"
+                              name="name"
+                              required
+                ></v-text-field>
+                <v-text-field outlined
+                              v-model="description"
+                              type="text"
+                              label=" Inserire descrizione"
+                              id="description"
+                              name="description"
+                              required
+                ></v-text-field>
+                <v-text-field outlined
+                              v-model="price"
+                              type="number"
+                              label=" Inserire prezzo"
+                              id="price"
+                              name="price"
+                              required
+                ></v-text-field>
+                <button class="manage" @click.prevent="toggleShowTags">Inserisci i tag</button>
+                <br>
+                <v-card
+                        v-show="showTags"
+                        class="mx-auto"
+                        max-width="500"
+                >
+                    <v-list shaped>
+                        <v-list-item-group
+                                v-model="selectedTags"
+                                multiple
+                        >
+                            <template v-for="(item, i) in tags">
+                                <v-divider
+                                        v-if="!item"
+                                        :key="`divider-${i}`"
+                                ></v-divider>
+
+                                <v-list-item
+                                        v-else
+                                        :key="`item-${i}`"
+                                        :value="item.id"
+                                        active-class="blue--text text--accent-4"
+                                >
+                                    <template v-slot:default="{ active, toggle }">
+                                        <v-list-item-content>
+                                            <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        </v-list-item-content>
+
+                                        <v-list-item-action>
+                                            <v-checkbox
+                                                    :input-value="active"
+                                                    :true-value="item"
+                                                    color="blue accent-4"
+                                                    @click="toggle"
+                                            ></v-checkbox>
+                                        </v-list-item-action>
+                                    </template>
+                                </v-list-item>
+                            </template>
+                        </v-list-item-group>
+                    </v-list>
+                </v-card>
+                <br><br>
+                <picture-input
+                        ref="productImage"
+                        @change="onChanged"
+                        :width="300"
+                        :height="300"
+                        :zIndex="0"
+                        size="5"
+                        :crop="true"
+                        :changeOnClick="false"
+                        accept="image/jpeg, image/png, image/gif"
+                        buttonClass="ui button primary"
+                        :customStrings="{
         upload: '<h1>Carica immagine</h1>',
         drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
-      </picture-input>
-      <button type="submit">Aggiungi Prodotto</button>
-    </v-form>
-  </div>
+                </picture-input>
+                <br><br>
+                <button type="submit" class="manage">Aggiungi Prodotto</button>
+            </v-form>
+            <br><br>
+            <button class="manage" @click="toggleShowDiscounts">Mostra lista sconti disponibili</button>
+            <br>
+            <div v-show="showDiscounts">
+                <v-card
+                        class="mx-auto"
+                        max-width="500"
+                >
+                    <v-list shaped>
+                        <v-list-item-group
+                                v-model="selectedDiscounts"
+                                multiple
+                        >
+                            <template v-for="(campo, i) in discounts">
+                                <v-divider
+                                        v-if="!campo"
+                                        :key="`divider-${i}`"
+                                ></v-divider>
+                                <v-list-item
+                                        v-else
+                                        :key="`item-${i}`"
+                                        :value="campo.id"
+                                        active-class="blue--text text--accent-4"
+                                >
+                                    <template v-slot:default="{ active, toggle }">
+                                        <v-list-item-content>
+                                            <v-list-item-title v-text="campo.title">CIAO</v-list-item-title>
+                                        </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-checkbox
+                                                    :input-value="active"
+                                                    :true-value="campo"
+                                                    color="blue accent-4"
+                                                    @click="toggle"
+                                            ></v-checkbox>
+                                        </v-list-item-action>
+                                    </template>
+                                </v-list-item>
+                            </template>
+                        </v-list-item-group>
+                    </v-list>
+                </v-card>
+                <br>
+<!-- DA QUA IN POI CI SONO GLI SCONTI CHE VANNO PASSATTI SU PRODUCT E FARLI COMBACIARE COL PULSANTE CORRISPONDENTE -->
+                <button class="manage" @click="toggleAddDiscount"> Inserisci nuovo sconto</button>
+                <v-card
+                        v-show="showAddDiscount"
+                        class="mx-auto"
+                        max-width="500"
+                ><br>
+                    <v-form @submit.prevent="submitDiscount">
+                        <v-text-field outlined
+                                      v-model="discount_name"
+                                      type="text"
+                                      label=" Inserire nome sconto"
+                                      id="discount_name"
+                                      name="discount_name"
+                                      required
+                        ></v-text-field>
+                        Tipo di sconto:
+                        <v-radio-group v-model="discount_type" row>
+                            <v-radio
+                                    :label="'Fisso'"
+                                    :value="'Fisso'"
+                            ></v-radio>
+                            <v-radio
+                                    :label="'Percentuale'"
+                                    :value="'Percentuale'"
+                            ></v-radio>
+                        </v-radio-group>
+                        <v-text-field outlined
+                                      v-model="discount_price"
+                                      type="number"
+                                      label=" Inserire sconto in decimale o percentuale"
+                                      id="discount_price"
+                                      name="discount_price"
+                                      required
+                        ></v-text-field>
+                        <button type="submit" class="addconf">Aggiungi Sconto</button>
+                    </v-form>
+                </v-card>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
-  import PictureInput from 'vue-picture-input'
-  import {mapActions} from "vuex";
-export default {
-  name: "AddProduct",
-  props: ['category'],
+    import {mapActions} from "vuex";
+    import PictureInput from "vue-picture-input";
 
-  components: {
-    PictureInput
-  },
 
-  data() {
-    return {
-        name: '',
-        description: '',
-        price: '',
-        image: ''
+
+    export default {
+        name: "AddProduct",
+        props: ['category'],
+
+        components: {
+            PictureInput,
+
+
+        },
+
+        data() {
+            return {
+                name: '',
+                description: '',
+                price: '',
+                image: '',
+                discount_name: '',
+                discount_price: '',
+                discount_type: '',
+                showTags: false,
+                showDiscounts: false,
+                showAddDiscount: false,
+                selectedTags: [],
+                selectedDiscounts: [],
+
+            }
+        },
+        computed: {
+            food_category_choice() {
+                return this.$store.getters['manageRestaurant/food_category_choice']
+            },
+
+            discounts() {
+                return this.$store.getters['restaurantData/discounts']
+            },
+            tags() {
+                return this.$store.getters['restaurantData/tags']
+            },
+        },
+
+
+        created() {
+            this.$store.dispatch("restaurantData/getListTag")
+            this.$store.dispatch("restaurantData/getListDiscounts")
+        },
+
+
+        methods: {
+            ...mapActions('restaurantData', ['addProduct']),
+            ...mapActions('restaurantData', ['addDiscount']),
+
+            onChanged() {
+                console.log("New picture loaded");
+                if (this.$refs.productImage.file) {
+                    this.image = this.$refs.productImage.file;
+                } else {
+                    console.log("Old browser. No support for Filereader API");
+                }
+            },
+
+            submitProduct: function () {
+                const data = {
+                    "name": this.name,
+                    "description": this.description,
+                    "category": this.category,
+                    "price": this.price,
+                    "tags": this.selectedTags
+
+                };
+                const formData = new FormData();
+                formData.append('image', this.image);
+                formData.append('data', JSON.stringify(data));
+                this.addProduct(formData)
+            },
+
+            submitDiscount: function () {
+                let data = {
+                    "title": this.discount_name,
+                    "type": this.discount_type,
+                    "value": this.discount_price,
+                };
+                this.addDiscount(data)
+            },
+
+            toggleShowTags() {
+                this.showTags = !this.showTags;
+            },
+
+            toggleShowDiscounts() {
+                this.showDiscounts = !this.showDiscounts;
+            },
+
+            toggleAddDiscount() {
+                this.showAddDiscount = !this.showAddDiscount;
+            },
+
+
+        },
+
+
     }
-  },
-  computed: {
-    food_category_choice() {
-      return this.$store.getters['manageRestaurant/food_category_choice']
-    }
-  },
-  methods: {
-      ...mapActions('restaurantData', ['addProduct']),
-      onChanged() {
-        console.log("New picture loaded");
-        if (this.$refs.productImage.file) {
-          this.image = this.$refs.productImage.file;
-        } else {
-          console.log("Old browser. No support for Filereader API");
-        }
-      },
-      submitProduct: function() {
-          const data = {
-              "name": this.name,
-              "description": this.description,
-              "category": this.category,
-              "price": this.price,
-          };
-          const formData = new FormData();
-        formData.append('image', this.image);
-        formData.append('data', JSON.stringify(data));
-        this.addProduct(formData)
-      }
-
-  }
-}
 </script>
 <style scoped>
+    .addprod {
+        margin: auto;
+        width: 50%;
+        padding: 20px;
+    }
+
+    .manage {
+        padding: 10px;
+        border-radius: 25px;
+        border: inset 2px var(--emerald);
+        background: var(--emerald);
+        transition: ease 0.4s;
+        color: white;
+    }
+
+    .manage:hover {
+        box-shadow: 0 0 10px black;
+    }
+    picture-input {
+        z-index: 0!important;
+    }
 </style>

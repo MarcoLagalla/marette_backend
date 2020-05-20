@@ -5,17 +5,21 @@
       <div class="infocart">
         <v-row justify="center">
           <v-col cols="10">
-            <base-title :space="$vuetify.breakpoint.mdAndUp ? 0 : 4" title="HAVE QUESTIONS? LET US KNOW!" />
+            <base-title :space="$vuetify.breakpoint.mdAndUp ? 0 : 4" title="Hai dei dubbi? Contattaci" />
 
             <base-body space="0">
               <span class="">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor itaque modi ab accusantium architecto voluptates ipsa molestiae.
+                Siamo un gruppo di studenti della facoltà di ingegneria dell'università di Pavia.
               </span>
             </base-body>
           </v-col>
 
-          <v-col cols="12" md="2">
-
+          <v-col cols="12" md="6">
+            -Giuseppe Dispenzieri
+            -Marco Lagalla
+            -Dominik Lietavec
+            -Marco Prina
+            -Michele Reina
 
           </v-col>
         </v-row>
