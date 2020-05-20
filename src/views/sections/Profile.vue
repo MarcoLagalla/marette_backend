@@ -8,7 +8,7 @@
                             <v-toolbar-title>Il Tuo Profilo</v-toolbar-title>
                         </v-toolbar>
                         <v-avatar class="profimag" size="155" tile>
-                            <v-img :src="user.avatar"></v-img>
+                            <v-img :src="user_private.avatar"></v-img>
                         </v-avatar>
                         <v-divider></v-divider>
                         <v-tabs vertical>

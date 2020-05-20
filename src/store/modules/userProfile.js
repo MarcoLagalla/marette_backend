@@ -92,6 +92,7 @@ const mutations = {
     state.user_private.type = data.type
     state.user_private.id = data.id
     state.user_private.is_superuser = data.is_superuser
+    state.user_private.avatar = data.avatar
 
     state.user.Username = data.username
     state.user.Email = data.email
@@ -99,7 +100,7 @@ const mutations = {
     state.user.Cognome = data.last_name
     state.user.Anno_di_Nascita = data.birth_date
     state.user.Numero_di_Telefono = data.phone
-    state.user.avatar = data.avatar
+
 
     if (state.user_private.type === 'business')
     {
