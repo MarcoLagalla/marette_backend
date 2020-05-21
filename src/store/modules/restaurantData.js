@@ -147,17 +147,16 @@ const actions = {
     addProduct: ({commit}, product) => {
         return new Promise((resolve, reject) => {
 
-            var payload = {}
-            payload['id'] = state.ID
-            payload['data'] = product
-
+            let payload = {};
+            payload['id'] = state.ID;
+            payload['data'] = product;
             manageProduct.addProduct(payload)
             .then(resp => {
-                commit('REST_ADD_PROD_SUCCESS', resp.data)
+                commit('REST_ADD_PROD_SUCCESS', resp.data);
                 resolve(resp)
             })
             .catch(err => {
-                commit('REST_ADD_PROD_ERROR')
+                commit('REST_ADD_PROD_ERROR');
                 reject(err)
             })
         })
@@ -172,7 +171,7 @@ const actions = {
                 resolve(resp.data)
             })
             .catch(err => {
-                commit('REST_REMOVE_PROD_ERROR')
+                commit('REST_REMOVE_PROD_ERROR');
                 reject(err.response.data)
             })
         })
@@ -207,17 +206,33 @@ const actions = {
             })
         })
     },
-    addDiscount: ({commit}, discount) => {
+    addNewDiscount: ({commit}, discount) => {
         return new Promise((resolve, reject) => {
 
 
-            manageProduct.addDiscount(discount, state.ID)
+            manageProduct.addNewDiscount(discount, state.ID)
             .then(resp => {
                 commit('ADD_DISCOUNT_SUCCESS', resp.data);
                 resolve(resp.data)
             })
             .catch(err => {
                 commit('ADD_DISCOUNT_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+    addDiscountToProduct: ({commit}, payload) => {
+        return new Promise((resolve, reject) => {
+            console.log(payload);
+            manageProduct.addNewDiscountToProduct(payload, state.ID)
+            .then(resp => {
+                commit('ADD_DISCOUNT_TO_PRODUCT_SUCCESS', resp.data);
+                    console.log(resp.data);
+                resolve(resp.data)
+            })
+            .catch(err => {
+                commit('ADD_DISCOUNT_TO_PRODUCT_ERROR');
                 reject(err)
             })
         })
@@ -499,13 +514,25 @@ const mutations = {
 
     ADD_DISCOUNT_SUCCESS: (state, data) => {
         state.status = 'success'
-        state.discounts = state.discounts + data
+        state.discounts.push(data)
     },
 
     ADD_DISCOUNT_ERROR: (state, error) => {
         state.status = 'error'
         state.error = error
     },
+
+    ADD_DISCOUNT_TO_PRODUCT_SUCCESS: (state, data) => {
+        state.status = 'success'
+        state.discounts.push(data)
+    },
+
+    ADD_DISCOUNT_TO_PRODUCT_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+
 
 
 }
