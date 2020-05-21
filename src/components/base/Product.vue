@@ -1,30 +1,22 @@
 <template>
-  <v-card  class="product">
-    <div class="d-flex flex-no-wrap justify-space-between">
-      <div class="quant">
-        <div class>
-          <v-avatar class="ma-3" size="100" tile>
-            <v-img :src="product.image"></v-img>
-          </v-avatar>
-        </div>
-        <div class>
-          <v-card-title class="headline" v-text="product.name"></v-card-title>
-          <v-card-subtitle class="pb-0" v-text="product.category"></v-card-subtitle>
 
-            <v-tooltip v-model="show" left color="var(--emerald)">
-              <template v-slot:activator="{ on }">
-                <div class="description" >
-                  <span v-text="product.description" v-on="on"></span>
-                </div>
-              </template>
-              <span v-text="product.description"></span>
-            </v-tooltip>
-
+    <div class="product">
+        <div class="cardpos">
+            <v-avatar class="imag" size="100" tile>
+                <v-img :src="product.image"></v-img>
+            </v-avatar>
+            <span class="title" v-text="product.name"></span>
+            <p class="description" v-text="product.description"></p>
+            <div class="pos2">tag tag tag</div>
+            <v-row v-if="this.price" class="quant">
+                <div v-text="product.price"></div>
+                <v-icon small class="eur">fas fa-euro-sign</v-icon>
+            </v-row>
         </div>
-      </div>
-      <div class="pos2" v-for="(item, j) in product.tags" :key="j" v-text="item.name"></div>
-      <v-card-actions class="pos1">
-        <div v-if="this.price" class="quant">
+    </div>
+  <!--
+                                                   pulsanti vecchi della card
+  <div v-if="this.price" class="quant">
           <div v-text="product.price" ></div>
           <v-icon small class="quant">fas fa-euro-sign</v-icon>
         </div>
@@ -42,8 +34,7 @@
           <i class="fas fa-times"></i>
         </v-btn>
         </div>
-      </v-card-actions>
-    </div>
+                                          expand transition
   <v-expand-transition>
     <div v-show="showDiscounts" :style="{width:'300px',margin:'0 auto'}">
       <p>Lista sconti disponibili:</p>
@@ -90,7 +81,9 @@
         <v-btn class="managebutton" name="new_discount_add" v-if="this.new_discount_add" @click="$emit('new_discount')" > Inserisci nuovo sconto</v-btn>
     </div>
     </v-expand-transition>
-  </v-card>
+
+    -->
+
 </template>
 
 <script>
@@ -176,59 +169,98 @@
 </script>
 
 <style scoped>
-  h1 {
-    color: white;
-    margin-bottom: 10px;
-    margin-left: 10px;
-  }
+    .imag {
+        border-radius: 10px;
+        box-shadow: 0 0 2px black;
+    }
 
-  .menubody {
-    position: relative;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    background: var(--whitesmoke);
-  }
-  .quant {
-    padding: 5px;
-    display: flex;
-    align-items: center;
-  }
-  .description {
-    padding: 15px;
-    overflow: hidden!important;
-    width: 20vmax;
-    height: 50px;
-    transition: ease-in-out 0.3s;
-    margin-bottom: 10px;
-  }
+    h1 {
+        color: white;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
 
-  .mngbtn{
-    position: absolute!important;
-  }
+    .eur {
+        padding-left: 5px;
+        padding-right: 10px;
+    }
 
-  .managebutton {
-    transition: 0.3s ease-in-out;
-    display: block;
-    margin-top: 5px;
-    padding:0px;
-  }
-  .managebutton:hover {
-    scale: 1.1;
-  }
+    .title {
+        font-size: 1.3em !important;
+        position: absolute;
+        top: 0;
+        left: 100px;
+        padding: 8px;
+        text-transform: capitalize;
+        font-weight: normal !important;
+    }
 
-  .product {
-    transition: ease-in-out 0.4s;
-    box-shadow: 0 0 2px black;
-    margin: -5px;
-  }
-  .product:hover{
-    box-shadow:0 0 10px black;
-  }
-.pos1 {
-  position: absolute;
-  right: 0;
-  height: 100%;
-}
+    .description {
+        position: absolute;
+        color: darkslategrey;
+        letter-spacing: 2px;
+        font-size: 0.9em;
+        top: 35px;
+        left: 100px;
+        padding: 10px;
+        width: 50%;
+        height: 50px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .quant {
+        position: absolute;
+        top: 30px;
+        right: 0px;
+        padding: 10px;
+    }
+
+    .cardpos {
+        position: relative;
+
+    }
+
+    .managebutton {
+        transition: 0.3s ease-in-out;
+        background: var(--emerald) !important;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .managebutton:hover {
+        scale: 1.1;
+    }
+
+    .cartbutton {
+        transition: 0.3s ease-in-out;
+        background: var(--emerald) !important;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .cartbutton:hover {
+        scale: 1.1;
+    }
+
+    .product {
+        transition: ease-in-out 0.4s;
+        box-shadow: 0 0 2px black;
+        margin: -5px;
+        background: var(--ghostwhite);
+        padding: 5px;
+    }
+
+    .product:hover {
+        box-shadow: 0 0 10px black;
+    }
+
+    .pos2 {
+        position: absolute;
+        bottom: 0;
+
+        width: 50%;
+        left: 50%;
+    }
 </style>

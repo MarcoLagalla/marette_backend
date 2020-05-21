@@ -20,8 +20,9 @@
 
                                         <form @submit.prevent="register" class="px-8">
                                             <p class="error" v-if="errors" id="detail">{{errors.detail}}</p>
-                                            <v-col>
+                                            <v-col class="center">
                                                 <v-row align="center" class="ma-0" justify="center">
+                                                    <v-col cols="12">
                                                     <v-text-field label="Nome del locale*"
                                                                   :error-messages="errors.activity_name"
                                                                   @change="errors.activity_name=''"
@@ -29,6 +30,7 @@
                                                                   type="text" id="activity_name"
                                                                   name="activity_name"
                                                                   required></v-text-field>
+                                                    </v-col>
                                                     <v-textarea outlined label="Fornisci una breve descrizione del locale*"
                                                                 :error-messages="errors.activity_description"
                                                                 @change="errors.activity_description=''"
@@ -96,7 +98,7 @@
                                                     </picture-input>
                                                 </v-row>
                                             </v-col>
-                                            <button type="submit" class="registerbtn">Aggiungi ristorante</button>
+                                            <button type="submit" class="registerbtn">Conferma</button>
                                         </form>
 
                                 </v-col>
@@ -187,8 +189,12 @@
     }
 </script>
 <style scoped>
-    .icfood {
-        color: var(--darkslate)
+
+    @media only screen and (min-width: 1000px) {
+        .center {
+            width: 80%;
+            margin: auto;
+        }
     }
 
     .shownr {
@@ -232,7 +238,7 @@
         font-weight: bold;
         border: none;
         cursor: pointer;
-        width: 60%;
+        width: 250px;
         opacity: 0.9;
         transition: 0.6s;
         border-radius: 25px;

@@ -44,8 +44,9 @@ export default {
 <style scoped>
 
 .body {
-  margin: 0!important;
+  margin: auto;
   background: var(--whitesmoke);
+
 }
 
 

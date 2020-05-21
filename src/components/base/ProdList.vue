@@ -2,7 +2,7 @@
   <div class="menubody">
     <v-container>
       <v-row >
-        <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" >
+        <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
           <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
         </v-col>
       </v-row>

@@ -1,11 +1,11 @@
 <template>
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
-            <div class="products">
+            <div class="products" v-on="on">
                 <div class="title" v-text="product.name"></div>
                 <div class="buttons">
                     <button class="select"><i class="fas fa-cart-arrow-down"></i></button>
-                    <i class="fas fa-eye" v-on="on"></i>
+
                 </div>
             </div>
         </template>
