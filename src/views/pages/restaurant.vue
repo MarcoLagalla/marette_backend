@@ -5,7 +5,6 @@
   <RestMenu v-if="activeComponents.menu.show" ></RestMenu>
   <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
   <RestInfo v-if="activeComponents.contattaci.show"></RestInfo>
-  <Info></Info>
 </div>
 </template>
 
@@ -20,7 +19,6 @@ import RestHome from "../sections/RestHome";
 import RestVetrina from "../sections/RestVetrina";
 import RestGalleria from "../sections/RestGalleria";
 import RestInfo from "../sections/RestInfo";
-import Info from "../sections/Info";
 import {
   mapActions
 } from "vuex";
@@ -33,7 +31,6 @@ export default {
     RestVetrina,
     RestGalleria,
     RestInfo,
-    Info
   },
   metaInfo: {
     title: 'Restaurant'

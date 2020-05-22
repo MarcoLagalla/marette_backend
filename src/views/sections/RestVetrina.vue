@@ -1,5 +1,6 @@
 <template>
-  <div class="body" id="VETRINA">
+  <div class="body">
+  <div class="body2" id="VETRINA">
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
@@ -11,6 +12,7 @@
         </v-col>
       </v-row>
     </v-container>
+  </div>
   </div>
 </template>
 
@@ -102,8 +104,12 @@ export default {
 
 <style scoped>
 .body {
-  margin: 0 !important;
+
   background: var(--whitesmoke);
+}
+.body2 {
+  margin: auto;
+  width: 90%;
 }
 h1 {
   color: white;

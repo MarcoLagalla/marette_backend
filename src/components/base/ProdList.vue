@@ -173,13 +173,7 @@ h1 {
 .managebutton:hover {
   scale: 1.1;
 }
-.product {
-  transition: ease-in-out 0.4s;
-  box-shadow: 0 0 2px black;
-}
-.product:hover{
-  box-shadow:0 0 10px black;
-}
+
 
 
 </style>

@@ -18,7 +18,6 @@ export default {
     LoadSections([
       'Profile',
       'NewRestaurant',
-      'info',
     ]),
   ],
 

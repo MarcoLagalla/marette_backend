@@ -1,8 +1,10 @@
 <template>
-<div id="CONTATTACI">
+    <div class="body">
+<div id="CONTATTACI" class="contattaci">
     <base-rest-h1> Info </base-rest-h1>
     <base-rest-info> </base-rest-info>
 </div>
+    </div>
 </template>
 <script>
 export default {
@@ -10,5 +12,12 @@ export default {
 }
 </script>
 <style scoped>
+.contattaci {
+    margin: auto;
+    width: 90%;
+}
 
+.body {
+    background: var(--whitesmoke);
+}
 </style>
