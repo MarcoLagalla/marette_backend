@@ -11,7 +11,7 @@
                             <v-img :src="user_private.avatar"></v-img>
                         </v-avatar>
                         <v-divider></v-divider>
-                        <v-tabs vertical>
+                        <v-tabs :vertical="$vuetify.breakpoint.mdAndUp">
                             <v-tab>
                                 <v-icon left>mdi-account</v-icon>
                                 Profilo
@@ -24,12 +24,10 @@
                             <v-tab-item>
                                 <v-card flat>
                                     <div class="bodyprofile">
-
-
                                         <v-card-subtitle>
                                             <v-row v-for="(campo, i) in user" :key="i">
                                                 <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
-                                                <v-col cols="4">{{campo}}</v-col>
+                                                <v-col cols="9">{{campo}}</v-col>
                                             </v-row>
                                         </v-card-subtitle>
                                     </div>
@@ -113,7 +111,13 @@
                                                 <v-img :src="restaurant.image"></v-img>
                                             </v-avatar>
                                         </v-col>
+
                                     </v-row>
+                                    <base-manage-rest-data
+
+                                    >
+
+                                    </base-manage-rest-data>
                                 </v-card>
                             </v-tab-item>
                         </v-tabs>

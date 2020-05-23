@@ -6,9 +6,9 @@
 
 <script>
   export default {
-    name: 'App',
+    name: 'Marette',
     metaInfo: {
-      title: 'App',
+      title: 'Marette',
       titleTemplate: '%s | Marette',
       htmlAttrs: { lang: 'it' },
       meta: [
@@ -23,7 +23,7 @@
 
 :root {
   --ghostwhite: #FBFFFE;
-  --ming: #3C6E71;
+  --ming: #AF473C;
   --darkslate: #384D48;
   --charcoal: #272D2D;
   --whitesmoke: #F5F5F5;

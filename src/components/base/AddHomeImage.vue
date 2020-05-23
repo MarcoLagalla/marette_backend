@@ -3,9 +3,9 @@
     <v-dialog v-model="active" overlay-opacity="0.8" >
       <template v-slot:activator="{ on }">
         <div class="rel">
-          <v-btn name="edit" color="white" v-on="on"  class="managebutton">
-            Modifica immagine di sfondo <i class="far fa-edit"></i>
-          </v-btn>
+          <button name="edit" v-on="on"  class="managebtn">
+            Modifica immagine <i class="far fa-edit"></i>
+          </button>
         </div>
         </template>
         <v-card justify="center">
@@ -63,5 +63,14 @@
 </script>
 
 <style scoped>
-
+  .managebtn {
+    width: 100% !important;
+    padding: 10px;
+    background: rgba(250,250,250,0.8);
+    text-transform: uppercase;
+    transition: 0.3s ease-in-out;
+  }
+  .managebtn:hover {
+    background: rgba(250,250,250,1);
+  }
 </style>

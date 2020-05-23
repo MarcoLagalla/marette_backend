@@ -12,17 +12,14 @@
 
             <v-container>
                 <v-row>
-                    <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="4">
+                    <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="3">
                         <router-link :to="restaurant.url">
-                            <v-card v-bind="restaurant" class="restcard" max-width="400" max-height="400">
+                            <div v-bind="restaurant" class="restcard">
                                 <v-img class="white--text align-end imag" height="200px"
                                        :src="restaurant.image">
                                     <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
                                 </v-img>
 
-                                <v-card-text >
-                                    <div class="description">{{ restaurant.activity_description }}</div>
-                                </v-card-text>
                                 <v-divider/>
                                 <div class="actions">
                                     <button class="share">
@@ -33,7 +30,7 @@
                                         <v-icon color="var(--ming)"> mdi-heart</v-icon>
                                     </button>
                                 </div>
-                            </v-card>
+                            </div>
                         </router-link>
                     </v-col>
                 </v-row>
@@ -67,9 +64,8 @@
         width: 50px;
         background: var(--ming);
         height: 5px;
-        margin: auto;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 10px auto;
+        filter: blur(2px);
     }
 
     .title-center {
@@ -106,27 +102,24 @@
         opacity: 1;
     }
 
-    .shalikere:hover {
-        color: var(--ming);
-        opacity: 1;
-    }
-
     .restcard {
-        box-shadow: 0 0 5px var(--charcoal);
+        width: 80%;
         transition: 0.4s;
         margin: 10px;
-
+        background: rgba(250,250,250,0) !important;
     }
 
-    .restcard:hover {
-        box-shadow: 0 0 20px var(--charcoal);
-    }
+
 
     .imag {
-        box-shadow: 0 2px 2px var(--charcoal);
+        box-shadow: 0 10px 4px grey;
         text-shadow: 0 0 2px black;
+        border-radius:15px;
+        transition: 0.3s ease-in-out;
     }
-
+    .restcard:hover > .imag {
+        transform: scale(1.05);
+    }
     a {
         text-decoration: none
     }

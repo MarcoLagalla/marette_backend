@@ -1,12 +1,12 @@
 <template>
-  <body>
+  <div class="body">
 
   <div class="hero-image">
       <div class="hero-text">
         <img class="logo" src="@/assets/logo_small.png">
       </div>
   </div>
-  </body>
+  </div>
 </template>
 
 <script>
@@ -22,8 +22,8 @@ export default {
 </script>
 
 <style scoped>
-  body {
-    margin: 0;
+  .body {
+    margin: auto;
 
   }
 

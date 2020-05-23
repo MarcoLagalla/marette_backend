@@ -18,7 +18,6 @@ export default {
   mixins: [
     LoadSections([
       'ResetPass',
-      'info',
     ]),
   ],
 
