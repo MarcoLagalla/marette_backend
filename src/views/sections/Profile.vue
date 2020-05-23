@@ -113,7 +113,7 @@
                                         </v-col>
 
                                     </v-row>
-                                    <base-manage-rest-data
+                                    <base-manage-rest-data :id="restaurant.id"
 
                                     >
 

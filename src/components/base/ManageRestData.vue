@@ -4,7 +4,7 @@
     <form @submit.prevent="update">
     <v-row>
       <v-col cols="12" md="4">
-        <v-text-field outlined placeholder="Nome del locale" v-model="model" v-text="restData.activity_name"></v-text-field>
+        <v-text-field outlined placeholder="Nome del locale" v-text="restData.activity_name"></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
         <p class="title" v-text="'Descrizione del locale'"></p>
@@ -39,7 +39,7 @@
         <v-card-subtitle class="pb-0" v-text="restData.p_iva"></v-card-subtitle>
       </v-col>
       <v-col cols="12" md="4">
-        <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
+        <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
             upload: '<h1>Carica immagine</h1>',
             drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
         </picture-input>
@@ -60,14 +60,17 @@
   export default {
 
     name: 'BaseManageRestData',
+    props: ['id'],
     components: {
       PictureInput,
     },
     data() {
       return {
-        id: this.$route.params.id,
         image: ''
       }
+    },
+    created() {
+      this.$store.dispatch("restaurantData/getRestaurantData", this.id)
     },
     computed: {
       restData() {
