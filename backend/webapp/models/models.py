@@ -15,7 +15,7 @@ from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
 
-from backend.account.models import Business
+from backend.account.models import Business, Customer
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES
 
@@ -54,6 +54,9 @@ class Restaurant(models.Model):
     p_iva = models.CharField(max_length=11, blank=False)
     restaurant_category = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'), ]))
 
+    restaurant_rank = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    customer_vote_list = models.ManyToManyField('CustomerVote', related_name='customer_vote_list', blank=True)
+
     image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
                               upload_to='restaurant', blank=True, null=True, force_format='PNG')
 
@@ -74,6 +77,9 @@ class Restaurant(models.Model):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
 
+    def set_restaurant_rank(self, rank):
+        self.restaurant_rank = rank
+
     def discounts_count(self):
         return self.discounts.all().count()
 
@@ -82,6 +88,18 @@ class Restaurant(models.Model):
             return '/media/placeholder/restaurant/placeholder.png'
         else:
             return self.image.url
+
+
+class CustomerVote(models.Model):
+    vote = models.IntegerField(blank=False, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    customer = models.ForeignKey(Customer, related_name='customer_who_voted', on_delete=models.DO_NOTHING)
+    restaurant = models.ForeignKey(Restaurant, related_name='restaurant_vote', on_delete=models.CASCADE)
+
+    class Meta:
+    #     unique_together = (('customer', 'restaurant'), )
+        constraints = [
+            models.UniqueConstraint(fields=['customer', 'restaurant'], name='unique_vote_for_user_at_rest')
+        ]
 
 
 class ProductTag(models.Model):
