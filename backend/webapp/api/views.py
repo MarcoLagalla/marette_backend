@@ -12,12 +12,14 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
-from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
+    VoteRestaurantSerializer
 from ..models.components import RestaurantComponents
-from ..models.models import Restaurant
-from ...account.models import Business
-from ...account.permissions import IsBusiness, BusinessActivated
+from ..models.models import Restaurant, CustomerVote
+from ...account.models import Business, Customer
+from ...account.permissions import IsBusiness, BusinessActivated, IsCustomer, CustomerActivated
 
 
 class ListRestaurantsAPIView(ListAPIView):
@@ -121,7 +123,6 @@ class UpdateRestaurantAPIView(APIView):
             except ValueError:
                 raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-
             serializer = CreateRestaurantSerializer(data=input_data)
 
             if serializer.is_valid():
@@ -140,3 +141,55 @@ class UpdateRestaurantAPIView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class VoteRestaurantAPIView(APIView):
+   # authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsCustomer, CustomerActivated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+        try:
+            customer = Customer.objects.all().get(user=self.request.user)
+        except Customer.DoesNotExist:
+            return Response({'error': ["Utente non trovato."]}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response({'error': ["Ristorante non trovato."]}, status.HTTP_404_NOT_FOUND)
+
+        if restaurant and customer:
+            serializer = VoteRestaurantSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                new_vote = serializer.validated_data['vote']
+                rank = 0
+                has_vote = None
+
+                try:
+                    all_past_vote = CustomerVote.objects.all().filter(restaurant__exact=restaurant)
+                    has_vote = all_past_vote.get(customer__exact=customer)
+                except CustomerVote.DoesNotExist:
+                    pass
+
+                try:
+                    if all_past_vote:
+                        sum_vote = sum([cust_vote.vote for cust_vote in all_past_vote])
+                        rank = round((sum_vote + new_vote) / (len(all_past_vote)+1))
+                    else:
+                        rank = serializer.validated_data['vote']
+                except ZeroDivisionError:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                print(rank)
+                if has_vote:
+                    return Response({'error': ["Hai già votato questo ristorante."]},
+                                    status=status.HTTP_401_UNAUTHORIZED)
+                else:
+                    serializer.save(customer, restaurant, rank)
+                    return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response({'error': ["Voto non registrato."]}, status=status.HTTP_401_UNAUTHORIZED)
