@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from backend.account.permissions import IsBusiness
+from backend.account.permissions import IsBusiness, BusinessActivated
 from rest_framework.authtoken.models import Token
 
 from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, FOOD_CATEGORY_CHOICES
@@ -52,7 +52,7 @@ class ListProducts(APIView):
 
 class AddProduct(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
     parser_class = (MultiPartParser, FormParser, FileUploadParser)
 
     @transaction.atomic()
@@ -105,7 +105,7 @@ class AddProduct(APIView):
 
 class DeleteProduct(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, p_id):
@@ -146,7 +146,7 @@ class DeleteProduct(APIView):
 
 class UpdateProduct(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, p_id):
@@ -199,8 +199,7 @@ class UpdateProduct(APIView):
                                     product.discounts.clear()
                                     for d in data['discounts']:
                                         try:
-                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(
-                                                id=d)
+                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=d)
                                             if entry:
                                                 product.discounts.add(d)
                                         except ProductDiscount.DoesNotExist:

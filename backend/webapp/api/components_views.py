@@ -1,26 +1,24 @@
 import json
 
+from django.db import transaction
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from django.db import transaction
-from backend.account.permissions import IsBusiness
-from rest_framework.authtoken.models import Token
 
-from ..models.models import Restaurant, Picture
-from ..models.menu import Menu
+from backend.account.permissions import IsBusiness, BusinessActivated
+from .serializers import HomeSerializer, VetrinaSerializer, GalleriaSerializer, PictureSerializer
 from ..models.components import MenuComponent, GalleriaComponent, EventiComponent, \
     VetrinaComponent, HomeComponent, ContattaciComponent
-
-from .serializers import HomeSerializer, VetrinaSerializer, ContattaciSerializer, EventiSerializer, \
-    MenuSerializer, GalleriaSerializer, PictureSerializer
+from ..models.menu import Menu
+from ..models.models import Restaurant, Picture
 
 
 class ActivateComponent(APIView):
-    permission_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, type):
@@ -84,8 +82,8 @@ class ActivateComponent(APIView):
 
 
 class DeactivateComponent(APIView):
-    permission_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, type):
@@ -150,7 +148,7 @@ class DeactivateComponent(APIView):
 
 class UpdateHomeComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -196,7 +194,7 @@ class UpdateHomeComponent(APIView):
 
 class UpdateGalleriaComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -244,7 +242,7 @@ class UpdateGalleriaComponent(APIView):
 
 class UpdateVetrinaComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -292,7 +290,7 @@ class UpdateVetrinaComponent(APIView):
 
 class UpdateEventiComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -301,7 +299,7 @@ class UpdateEventiComponent(APIView):
 
 class UpdateContattaciComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -310,7 +308,7 @@ class UpdateContattaciComponent(APIView):
 
 class UpdateMenuComponent(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -319,7 +317,7 @@ class UpdateMenuComponent(APIView):
 
 class GalleryAddImage(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -354,7 +352,7 @@ class GalleryAddImage(APIView):
 
 class GalleryEditImage(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, i_id):
@@ -401,7 +399,7 @@ class GalleryEditImage(APIView):
 class GalleryDeleteImage(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness, IsAuthenticated]
+    permission_classes = [IsBusiness, IsAuthenticated, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, i_id):

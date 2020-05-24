@@ -5,7 +5,13 @@ from backend.account.tokens import account_activation_token
 from backend.account.views import send_welcome_email
 
 
+class BusinessAdmin(admin.ModelAdmin):
+    readonly_fields = ('activation_token', )
+
+
 class CustomerAdmin(admin.ModelAdmin):
+
+    readonly_fields = ('activation_token', )
 
     def save_model(self, request, obj, form, change):
         super(CustomerAdmin, self).save_model(request, obj, form, change)
@@ -14,5 +20,6 @@ class CustomerAdmin(admin.ModelAdmin):
         send_welcome_email(customer.user, activation_token)
         super(CustomerAdmin, self).save_model(request, obj, form, change)
 
+
 admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Business)
+admin.site.register(Business, BusinessAdmin)

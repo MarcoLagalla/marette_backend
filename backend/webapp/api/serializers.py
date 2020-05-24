@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount, Picture
+from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
@@ -61,7 +61,8 @@ class ListRestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['business', 'id', 'slug', 'url', 'activity_name', 'activity_description', 'image',
-                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts']
+                  'city', 'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'discounts', 'restaurant_category',
+                  'restaurant_rank']
 
     def get_image(self, obj):
         return obj.get_image()
@@ -73,7 +74,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'activity_name', 'activity_description', 'city', 'image',
-                  'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva']
+                  'address', 'n_civ', 'cap', 'restaurant_number', 'p_iva', 'restaurant_category']
 
     @transaction.atomic
     def save(self, owner):
@@ -198,4 +199,17 @@ class RestaurantComponentsSerializer(serializers.ModelSerializer):
         fields = ('home', 'vetrina', 'menu', 'galleria', 'eventi', 'contattaci')
 
 
+class VoteRestaurantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerVote
+        fields = ('id', 'vote')
+
+    @transaction.atomic
+    def save(self, customer, restaurant, rank):
+        vote = CustomerVote.objects.create(customer=customer, restaurant=restaurant, **self.validated_data)
+        vote.save()
+       # update vote in restaurants
+
+        restaurant.set_restaurant_rank(rank)
+        restaurant.save()
 

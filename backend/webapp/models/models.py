@@ -1,24 +1,23 @@
+import os
 import random
 import string
 from io import BytesIO
 
 from PIL import Image
-from django.conf import settings
 from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.text import slugify
+from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
 
-from backend.account.models import Business
-from django_resized import ResizedImageField
-from django.utils.text import slugify
-import os
+from backend.account.models import Business, Customer
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
-    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES
+    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES
 
 
 def randomString(stringLength=8):
@@ -26,22 +25,20 @@ def randomString(stringLength=8):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def gallery_component(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'components/gallery/{rand}/{name}.{ext}'.format(
-          rand=randomString(10), name=name, ext=ext)
+    file_path = 'components/gallery/{rand}/{filename}'.format(
+          rand=randomString(10), filename=filename)
     return file_path
 
 def products_image(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    file_path = 'products/{restaurant_id}/{rand}/{filename}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
 def products_image_thumb(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{filename}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
+
 
 class Restaurant(models.Model):
     owner = models.ForeignKey(Business, related_name='restaurant', on_delete=models.CASCADE)
@@ -51,10 +48,14 @@ class Restaurant(models.Model):
     activity_description = models.TextField(blank=False)
     city = models.CharField(max_length=30, blank=False)
     address = models.CharField(max_length=100, blank=False)
-    n_civ = models.PositiveIntegerField(blank=False)
+    n_civ = models.CharField(max_length=10, blank=False)
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False)
+    restaurant_category = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'), ]))
+
+    restaurant_rank = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    customer_vote_list = models.ManyToManyField('CustomerVote', related_name='customer_vote_list', blank=True)
 
     image = ResizedImageField(size=[300, 300], crop=['middle', 'center'], quality=95, keep_meta=False,
                               upload_to='restaurant', blank=True, null=True, force_format='PNG')
@@ -62,7 +63,7 @@ class Restaurant(models.Model):
     discounts = models.ManyToManyField('RestaurantDiscount', related_name='rest_discounts', blank=True)
 
     class Meta:
-        unique_together = ('id', 'owner', 'p_iva')
+        unique_together = (('id', 'owner', 'p_iva'), )
 
     def __str__(self):
         return self.activity_name
@@ -76,6 +77,9 @@ class Restaurant(models.Model):
         self.slug = slugify(self.activity_name)
         self.url = str(self.id) + str('/') + slugify(self.activity_name)
 
+    def set_restaurant_rank(self, rank):
+        self.restaurant_rank = rank
+
     def discounts_count(self):
         return self.discounts.all().count()
 
@@ -84,6 +88,18 @@ class Restaurant(models.Model):
             return '/media/placeholder/restaurant/placeholder.png'
         else:
             return self.image.url
+
+
+class CustomerVote(models.Model):
+    vote = models.IntegerField(blank=False, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    customer = models.ForeignKey(Customer, related_name='customer_who_voted', on_delete=models.DO_NOTHING)
+    restaurant = models.ForeignKey(Restaurant, related_name='restaurant_vote', on_delete=models.CASCADE)
+
+    class Meta:
+    #     unique_together = (('customer', 'restaurant'), )
+        constraints = [
+            models.UniqueConstraint(fields=['customer', 'restaurant'], name='unique_vote_for_user_at_rest')
+        ]
 
 
 class ProductTag(models.Model):
@@ -104,7 +120,7 @@ class RestaurantDiscount(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        unique_together = ('restaurant', 'title', 'type', 'category', 'value')
+        unique_together = (('restaurant', 'title', 'type', 'category', 'value'),)
 
     def __str__(self):
         return "[{0}] {1}".format(self.restaurant.url, self.title)
@@ -124,7 +140,7 @@ class ProductDiscount(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-        unique_together = ('restaurant', 'title', 'type', 'value')
+        unique_together = (('restaurant', 'title', 'type', 'value'), )
 
     def __str__(self):
         return "[{0}] {1}".format(self.restaurant.url, self.title)
@@ -287,7 +303,6 @@ class Picture(models.Model):
         return self.name
 
     def get_image(self):
-        print(self.image)
         return self.image.url
 
 

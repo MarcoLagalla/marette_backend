@@ -86,3 +86,9 @@
     background: var(--ming);
   }
 </style>
+<style scoped>
+  .divider {
+    color: var(--darkslate)!important;
+    background: var(--ming);
+  }
+</style>

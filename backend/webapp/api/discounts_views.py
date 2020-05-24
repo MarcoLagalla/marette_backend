@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -8,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from backend.account.permissions import IsBusiness
+from backend.account.permissions import IsBusiness, BusinessActivated
 from rest_framework.authtoken.models import Token
 
 from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, RestaurantDiscount
@@ -47,7 +49,7 @@ class DetailsDiscounts(APIView):
 
 class AddDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -88,7 +90,7 @@ class AddDiscounts(APIView):
 class EditDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -137,7 +139,7 @@ class EditDiscounts(APIView):
 class DeleteDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -177,7 +179,7 @@ class DeleteDiscounts(APIView):
 
 class AddRestaurantDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -251,7 +253,7 @@ class DetailsRestaurantDiscounts(APIView):
 
 class EditRestaurantDiscounts(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -299,7 +301,7 @@ class EditRestaurantDiscounts(APIView):
 class DeleteRestaurantDiscounts(APIView):
 
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsBusiness]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
     def post(self, request, id, d_id):
@@ -339,3 +341,57 @@ class DeleteRestaurantDiscounts(APIView):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class SetDiscounts(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
+
+    @transaction.atomic()
+    def post(self, request, id, p_id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            product = Product.objects.all().filter(restaurant=restaurant).get(id=p_id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key and request.user == restaurant.owner.user:
+
+            try:
+                data = request.data
+            except json.JSONDecodeError as err:
+                return Response(err, status=status.HTTP_400_BAD_REQUEST)
+
+            for id in data['discounts']:
+                try:
+                    ProductDiscount.objects.get(id=id)
+                except ProductDiscount.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            product.discounts.clear()
+            for id in data['discounts']:
+                try:
+                    discount = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=id)
+                    product.discounts.add(discount)
+                except ProductDiscount.DoesNotExist:
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+            product.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+
+

@@ -9,7 +9,6 @@
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
 
-
             <v-container>
                 <v-row>
                     <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="3">

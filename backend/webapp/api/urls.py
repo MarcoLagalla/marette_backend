@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, SearchRestaurantAPIView
+from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, \
+    VoteRestaurantAPIView
+from .search_views import SearchRestaurantAPIView, SearchRestaurantByCategoryAPIView
 from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProduct, ProductDetails, ListProductTags
 from .discounts_views import *
 from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu, MenuEntryAdd, MenuEntryDetail, \
@@ -26,6 +28,8 @@ urlpatterns = [
     path('restaurant/<int:id>/products/discounts/<int:d_id>/details', DetailsDiscounts.as_view(), name='details_discounts'),
     path('restaurant/<int:id>/products/discounts/<int:d_id>/edit', EditDiscounts.as_view(), name='edit_discounts'),
     path('restaurant/<int:id>/products/discounts/<int:d_id>/delete', DeleteDiscounts.as_view(), name='delete_discounts'),
+    path('restaurant/<int:id>/products/<int:p_id>/setdiscounts', SetDiscounts.as_view(), name='set_discounts'),
+
 
     path('restaurant/<int:id>/menus', ListMenus.as_view(), name='list_menus'),
     path('restaurant/<int:id>/menus/add', AddMenu.as_view(), name='add_menu'),
@@ -55,8 +59,10 @@ urlpatterns = [
     path('restaurant/list', ListRestaurantsAPIView.as_view(), name='list_restaurants'),
     path('restaurant/new', CreateRestaurantAPIView.as_view(), name='register_restaurant'),
     path('restaurant/search', SearchRestaurantAPIView.as_view(), name='search_restaurant'),
+    path('restaurant/category', SearchRestaurantByCategoryAPIView.as_view(), name='search_restaurant'),
     path('restaurant/product/tags', ListProductTags.as_view(), name='list_product_tags'),
     path('restaurant/<int:id>', ShowRestaurantAPIView.as_view(), name='show_restaurant'),
     path('restaurant/<int:id>/update', UpdateRestaurantAPIView.as_view(), name='update_restaurant'),
+    path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
 
 ]
