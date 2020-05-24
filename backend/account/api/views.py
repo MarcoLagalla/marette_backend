@@ -516,7 +516,7 @@ class UpdateBusinessUserProfile(APIView):
 
 class ResendActivationToken(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated]
 
     @transaction.atomic()
     def post(self, request, id):
