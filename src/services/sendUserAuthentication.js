@@ -55,4 +55,11 @@ export default {
         return response
       })
   },
+
+  ResendValidateEmail(payload){
+    return api.post('v1/account/activate/resend/' + payload)
+      .then(response => {
+        return response
+      })
+  },
 }

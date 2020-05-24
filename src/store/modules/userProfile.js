@@ -99,9 +99,34 @@ const actions = {
       })
     })
   },
+
+
+  resendEmailValidation: ({commit}) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ResendValidateEmail(state.user_private.id)
+      .then(resp => {
+
+        commit('RESEND_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('RESEND_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
 }
 
 const mutations = {
+
+  RESEND_EMAIL_SUCCESS: () => {
+  },
+
+  RESEND_EMAIL_ERROR: () => {
+  },
 
   VALID_EMAIL_SUCCESS: (state) => {
     state.user_private.email_activated = true
