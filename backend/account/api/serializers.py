@@ -137,6 +137,16 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         if password != password2:
             raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
 
+        try:
+            # validate the password and catch the exception
+            validate_password(password=password, user=user)
+
+            # the exception raised here is different than serializers.ValidationError
+        except exceptions.ValidationError as e:
+            errors = dict()
+            errors['password'] = list(e.messages)
+            raise serializers.ValidationError(errors)
+
         if not cf_isvalid(cf):
             raise serializers.ValidationError({'cf': ['Il codice fiscale non è valido.']})
 
