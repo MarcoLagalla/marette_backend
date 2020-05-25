@@ -181,7 +181,10 @@ ADMIN_REORDER = (
                 'webapp.EventiComponent',
                 'webapp.GalleriaComponent',
                 'webapp.VetrinaComponent',
-                'webapp.ContattaciComponent',)},
+                'webapp.ContattaciComponent',
+                'webapp.OrarioApertura',
+                'webapp.GiornoApertura',
+                'webapp.FasciaOraria')},
     {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order', 'orders.OrderNotification',)},
 )
 

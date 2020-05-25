@@ -4,7 +4,8 @@ from django.contrib.admin.utils import flatten_fieldsets
 import django.forms
 from rest_framework.exceptions import ValidationError
 
-from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount, CustomerVote
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount, CustomerVote, \
+    OrarioApertura, GiornoApertura, FasciaOraria
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -135,3 +136,7 @@ admin.site.register(Order, MyAdmin)
 
 admin.site.register(RestaurantDiscount)
 admin.site.register(CustomerVote)
+
+admin.site.register(OrarioApertura)
+admin.site.register(GiornoApertura)
+admin.site.register(FasciaOraria)
