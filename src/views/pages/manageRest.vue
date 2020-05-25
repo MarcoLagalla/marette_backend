@@ -16,7 +16,6 @@
     <RestGalleria v-if="activeComponents.galleria.show" :admin="admin" ></RestGalleria>
 
     <RestInfo v-if="activeComponents.contattaci.show" ></RestInfo>
-    <Info></Info>
   </div>
 </template>
 
