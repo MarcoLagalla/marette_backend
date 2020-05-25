@@ -22,7 +22,7 @@
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Indirizzo" :rules="required" :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" id="address" name="address" required></v-text-field>
-            <v-text-field label="Numero civico" :rules="required" :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="number" id="n_civ" name="n_civ" required></v-text-field>
+            <v-text-field label="Numero civico" :rules="required" :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="text" id="n_civ" name="n_civ" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" id="cf" name="cf" required></v-text-field>
@@ -179,7 +179,7 @@ export default {
   margin: 5%;
 }
 h1 {
-  color: red;
+  color: var(--ming);
   font-size: 2em;
   text-align: center;
 }
@@ -248,7 +248,11 @@ a {
   color: dodgerblue;
 }
 .btn:disabled {
-  background: red;
+  background: grey;
   cursor: not-allowed;
+}
+.btn:disabled > span{
+  cursor: not-allowed;
+  color: white;
 }
 </style>

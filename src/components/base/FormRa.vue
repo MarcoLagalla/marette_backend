@@ -17,22 +17,47 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="6" md="4">
+                                    <v-col cols="12" md="6">
+                                        <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
+                                                      solo filed v-model="first_name" label="Nome"
+                                                      prepend-icon="mdi-account-cowboy-hat"
+                                                      id="first_name"></v-text-field>
+
+                                        <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
+                                                      solo prepend-icon="mdi-account-cowboy-hat"
+                                                      filed v-model="last_name" label="Cognome"
+                                                      id="last_name"></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="6">
+                                        <picture-input
+                                                ref="avatar"
+                                                @change="onChanged"
+                                                :width="150"
+                                                :height="150"
+                                                size="3"
+                                                :zIndex="0"
+                                                :crop="true"
+                                                :changeOnClick="false"
+                                                accept="image/jpeg, image/png, image/gif"
+                                                buttonClass="ui button primary"
+                                                :customStrings="{
+                      upload: '<h1>Carica immagine</h1>',
+                      drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                                        </picture-input>
+
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="nameRules" :error-messages="errors.username"
                                                       @change="errors.username=''" prepend-icon="mdi-account" solo filed
                                                       id="username" v-model="username" label="Username*"
                                                       required></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
-                                                      solo filed v-model="first_name" label="Nome"
-                                                      id="first_name"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
-                                                      solo
-                                                      filed v-model="last_name" label="Cognome"
-                                                      id="last_name"></v-text-field>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field :rules="emailRules" :error-messages="errors.email"
+                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
+                                                      v-model="email" label="Email*" id="email" type="email"
+                                                      required></v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6">
                                         <v-text-field :rules="phoneRules" :error-messages="errors.phone"
@@ -47,12 +72,7 @@
                                                       label="Data di nascita" v-model="birth_date"
                                                       type="date"></v-text-field>
                                     </v-col>
-                                    <v-col cols="12">
-                                        <v-text-field :rules="emailRules" :error-messages="errors.email"
-                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
-                                                      v-model="email" label="Email*" id="email" type="email"
-                                                      required></v-text-field>
-                                    </v-col>
+
                                     <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="passwordRules" :error-messages="errors.password"
                                                       @change="errors.password=''" prepend-icon="mdi-key" solo filed
@@ -65,23 +85,7 @@
                                                       label="Repeat password*" id="password2" type="password"
                                                       required></v-text-field>
                                     </v-col>
-                                    <v-col cols="12">
-                                        <picture-input
-                                                ref="avatar"
-                                                @change="onChanged"
-                                                :width="200"
-                                                :height="200"
-                                                size="3"
-                                                :zIndex="0"
-                                                :crop="true"
-                                                :changeOnClick="false"
-                                                accept="image/jpeg, image/png, image/gif"
-                                                buttonClass="ui button primary"
-                                                :customStrings="{
-                      upload: '<h1>Carica immagine</h1>',
-                      drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
-                                        </picture-input>
-                                    </v-col>
+
                                 </v-row>
                             </v-container>
                             <small style="color:white">*indica i campi obbligatori</small>
@@ -252,8 +256,8 @@
     }
 
     .v-card {
-        background: #3c3c3c;
-        opacity: 0.9
+        background: var(--emerald);
+        opacity: 0.8
     }
 
     .center {
