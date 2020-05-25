@@ -11,7 +11,7 @@
                             <v-img :src="user_private.avatar"></v-img>
                         </v-avatar>
                         <v-divider></v-divider>
-                        <v-tabs :vertical="$vuetify.breakpoint.mdAndUp">
+                        <v-tabs show-arrows :vertical="$vuetify.breakpoint.mdAndUp">
                             <v-tab>
                                 <v-icon left>mdi-account</v-icon>
                                 Profilo
@@ -45,8 +45,7 @@
                                                 <v-row align="center" class="ma-0 mt-8" justify="center">
                                                     <v-col cols="12" sm="6" md="4">
                                                         <v-text-field light :error-messages="errors.old_password"
-                                                                      @change="errors.old_password=''" solo
-                                                                      background-color="#FFF8DC" v-model='old_password'
+                                                                      @change="errors.old_password=''"  v-model='old_password'
                                                                       type="password"
                                                                       placeholder=" Inserire vecchia password"
                                                                       id="old_password"
@@ -56,8 +55,7 @@
                                                     <v-col cols="12" sm="6" md="4">
                                                         <v-text-field light :rules="passwordRules"
                                                                       :error-messages="errors.password"
-                                                                      @change="errors.password=''" solo
-                                                                      background-color="#FFF8DC" v-model='new_password'
+                                                                      @change="errors.password=''"  v-model='new_password'
                                                                       type="password"
                                                                       placeholder=" Inserire nuova password"
                                                                       id="new_password" name="new_password" required>
@@ -66,8 +64,7 @@
                                                     <v-col cols="12" sm="6" md="4">
                                                         <v-text-field light :rules="password2Rules"
                                                                       :error-messages="errors.password"
-                                                                      @change="errors.password=''" solo
-                                                                      background-color="#FFF8DC" v-model='new_password2'
+                                                                      @change="errors.password=''" v-model='new_password2'
                                                                       type="password"
                                                                       placeholder=" Reinserire nuova password"
                                                                       id="new_password2" name="new_password2" required>
@@ -235,9 +232,9 @@
     }
 
     .password_btn {
-        background-color: var(--darkslate);
+        background-color: var(--emerald);
         color: white;
-        border: inset var(--darkslate) 2px !important;
+        border: inset var(--emerald) 2px !important;
         padding: 16px 20px;
         margin: 4px 0;
         border: none;

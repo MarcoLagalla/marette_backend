@@ -1,8 +1,11 @@
 <template>
     <div class="background">
     <v-container>
-        <button class="shownr" @click="show = !show" text>Aggiungi Ristorante
+        <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="show = !show" >Aggiungi Ristorante
             <v-icon :class="[ show ? 'rotated' : 'normal']" >fas fa-plus</v-icon>
+        </button>
+        <button v-if="$vuetify.breakpoint.smAndDown" class="shownr" @click="show = !show" >
+            <v-icon x-large :class="[ show ? 'rotated' : 'normal']" >fas fa-plus</v-icon>
         </button>
         <v-row dense>
             <v-col cols="12">
@@ -213,11 +216,12 @@
         bottom: 0;
         padding: 10px;
         border-radius: 25px;
+        border: 4px inset var(--ming);
         margin: 10px;
         font-weight: bold;
         z-index: 200;
         color: white;
-        background: var(--emerald);
+        background: var(--ming);
         transition: ease-in-out 0.3s;
     }
 
