@@ -1,3 +1,4 @@
+from django.contrib.auth import validators
 from django.contrib.auth.models import update_last_login
 from django.core.validators import RegexValidator
 from rest_framework import serializers
@@ -5,6 +6,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from backend.account.models import Customer, Business
 from django.db import transaction
+from django.core import exceptions
 from codicefiscale import isvalid as cf_isvalid
 
 from ..models import User
@@ -58,6 +60,18 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
         if password != password2:
             raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
+
+        try:
+            # validate the password and catch the exception
+            validate_password(password=password, user=user)
+
+            # the exception raised here is different than serializers.ValidationError
+        except exceptions.ValidationError as e:
+            errors = dict()
+            errors['password'] = list(e.messages)
+            raise serializers.ValidationError(errors)
+
+
         user.set_password(password)
         user.save()
         update_last_login(None, user)

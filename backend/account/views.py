@@ -2,6 +2,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
+
 def send_welcome_email(user, activation_token):
 
     subject, from_email, to = 'Benvenuto', '"Marette" <staff@marette.ovh>', user.email
