@@ -70,17 +70,19 @@ const actions = {
             commit('REST_USR_LIST_REQUEST')
             var restaurants = rootGetters["userProfile/restaurants"];
 
-            restaurants.forEach((restaurantID) =>{
-                manageRestaurant.getRestaurantData(restaurantID).then(resp => {
-                    const data = resp.data
-                    commit('REST_USR_LIST_ADD', data)
+            if (restaurants) {
+                restaurants.forEach((restaurantID) => {
+                    manageRestaurant.getRestaurantData(restaurantID).then(resp => {
+                        const data = resp.data
+                        commit('REST_USR_LIST_ADD', data)
 
+                    })
+                      .catch(err => {
+                          commit('REST_USR_LIST_ERROR')
+                          reject(err)
+                      })
                 })
-                .catch(err => {
-                    commit('REST_USR_LIST_ERROR')
-                    reject(err)
-                })
-            })
+            }
             resolve(state.userList)
 
         })
