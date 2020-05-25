@@ -38,7 +38,7 @@
                                 v-model="selectedTags"
                                 multiple
                         >
-                            <template v-for="(item, i) in tags">
+                            <template v-for="(item, i) in tags.data">
                                 <v-divider
                                         v-if="!item"
                                         :key="`divider-${i}`"

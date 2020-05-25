@@ -4,7 +4,7 @@
     <h1 v-show="submitted">EMAIL INVIATA CON SUCCESSO</h1>
     <h1 v-show="error">C'è stato un imprevisto, riprova più tardi</h1>
     <p>Indirizzo email: {{userEmail}}</p>
-    <v-btn :loading="loading" @click="submitEmail">Invia nuova Email di verifica</v-btn>
+    <v-btn :loading="loading" :disabled="loading" @click="submitEmail">Invia nuova Email di verifica</v-btn>
   </div>
 </template>
 
@@ -37,10 +37,10 @@
             this.loading = false
             this.submitted = true
           })
-        .catch(()=>{
-          this.loading = false
-          this.error = true
-        })
+          .catch(()=>{
+            this.loading = false
+            this.error = true
+          })
 
 
       }

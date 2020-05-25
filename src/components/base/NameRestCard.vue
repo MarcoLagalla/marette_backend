@@ -2,7 +2,7 @@
 <div class="infocard">
         <h1>{{name}}</h1>
         <div class="divider"></div>
-          <v-text-area class="descript"  dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-text-area>
+          <v-textarea class="descript"  dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
           <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="managebutton">
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
