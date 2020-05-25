@@ -25,10 +25,12 @@
                                 <v-card flat>
                                     <div class="bodyprofile">
                                         <v-card-subtitle>
-                                            <v-row v-for="(campo, i) in user" :key="i">
-                                                <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
-                                                <v-col cols="9">{{campo}}</v-col>
-                                            </v-row>
+                                            <template v-for="(campo, i) in user">
+                                                <v-row v-if="campo" :key="i">
+                                                    <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
+                                                    <v-col cols="9">{{campo}}</v-col>
+                                                </v-row>
+                                            </template>
                                         </v-card-subtitle>
                                     </div>
                                     <v-card-actions>
