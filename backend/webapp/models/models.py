@@ -306,6 +306,11 @@ class Picture(models.Model):
         return self.image.url
 
 
+class FasciaOraria(models.Model):
+    pass
+
+
+
 # to make thumb_image coherent with image cross DB modifications
 
 @receiver(pre_save, sender=Product)
