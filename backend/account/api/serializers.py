@@ -132,10 +132,12 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
         del self.validated_data['user']
         del self.validated_data['password2']
+        del self.validated_data['cf']
 
         activation_token = account_activation_token.make_token(user)
 
-        business = Business.objects.create(user=user, activation_token=activation_token, **self.validated_data)
+        business = Business.objects.create(user=user, activation_token=activation_token,
+                                           cf=cf, **self.validated_data)
         return business
 
 
