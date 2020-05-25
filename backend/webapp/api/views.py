@@ -20,12 +20,44 @@ from ..models.components import RestaurantComponents
 from ..models.models import Restaurant, CustomerVote
 from ...account.models import Business, Customer
 from ...account.permissions import IsBusiness, BusinessActivated, IsCustomer, CustomerActivated
+from ...utils import NavigationLinks
 
 
 class ListRestaurantsAPIView(ListAPIView):
     permission_classes = [AllowAny]
-    queryset = Restaurant.objects.all()
-    serializer_class = ListRestaurantSerializer
+
+    def get(self, request):
+        restaurants = Restaurant.objects.all()
+
+        if not restaurants:
+            return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]}, status.HTTP_404_NOT_FOUND)
+
+        # -----------------------------------------------------------
+        page_number = request.query_params.get('page_number', 1)
+        page_size = request.query_params.get('page_size', 10)
+
+        try:
+            paginator = Paginator(restaurants.distinct(), page_size)
+            page = paginator.page(page_number)
+        except django.core.paginator.EmptyPage:
+            page = paginator.page(1)
+
+        serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
+        # -----------------------------------------------------------
+
+        navigator = NavigationLinks(self.request, paginator, page_number)
+
+        data = {
+            'first': navigator.get_first_link(),
+            'previous': navigator.get_previous_link(),
+            'next': navigator.get_next_link(),
+            'last': navigator.get_last_link()
+        }
+
+        data.update({'results': serializer.data})
+
+        return Response(data, status=status.HTTP_200_OK)
+
 
 
 class CreateRestaurantAPIView(APIView):

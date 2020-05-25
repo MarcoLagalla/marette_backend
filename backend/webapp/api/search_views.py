@@ -87,7 +87,7 @@ class SearchRestaurantByCategoryAPIView(APIView):
         restaurants = []
 
         try:
-            queried_category = request.data['restaurant_category']
+            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
         except KeyError:
             pass
 
