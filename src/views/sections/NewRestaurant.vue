@@ -30,6 +30,14 @@
                                                                   type="text" id="activity_name"
                                                                   name="activity_name"
                                                                   required></v-text-field>
+
+                                                        <v-text-field label="Categoria del locale* (Pizzeria, Ristorante, etc..)"
+                                                                  :error-messages="errors.restaurant_category"
+                                                                  @change="errors.restaurant_category=''"
+                                                                  v-model='restaurant_category'
+                                                                  type="text" id="restaurant_category"
+                                                                  name="restaurant_category"
+                                                                  required></v-text-field>
                                                     </v-col>
                                                     <v-textarea outlined label="Fornisci una breve descrizione del locale*"
                                                                 :error-messages="errors.activity_description"
@@ -133,6 +141,7 @@
                 n_civ: '',
                 cap: '',
                 restaurant_number: '',
+                restaurant_category: '',
                 p_iva: '',
                 image: '',
                 show: false,
@@ -143,6 +152,7 @@
             register: function () {
                 const data = {
                     activity_name: this.activity_name,
+                    restaurant_category: this.restaurant_category,
                     activity_description: this.activity_description,
                     city: this.city,
                     address: this.address,
