@@ -67,4 +67,4 @@ AWS_SES_REGION = 'eu-central-1'
 
 DOMAIN = 'marette.ovh'
 EMAIL_RESET_PASSWORD_BASE_URL = f'https://{DOMAIN}/resetpass'
-EMAIL_ACTIVATE_ACCOUNT_BASE_URL = f'https://{DOMAIN}/activate'
+EMAIL_ACTIVATE_ACCOUNT_BASE_URL = f'https://{DOMAIN}/activate/'

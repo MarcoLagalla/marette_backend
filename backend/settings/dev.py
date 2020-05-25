@@ -217,4 +217,4 @@ AWS_SES_SECRET_ACCESS_KEY = 'HkJrTMTdzQBBep2aw/YLGC1/f6LlXB7aMEVdrnHV'
 AWS_SES_REGION = 'eu-central-1'
 
 EMAIL_RESET_PASSWORD_BASE_URL = 'http://localhost:8080/resetpass'
-EMAIL_ACTIVATE_ACCOUNT_BASE_URL = 'http://localhost:8080/activate'
+EMAIL_ACTIVATE_ACCOUNT_BASE_URL = 'http://localhost:8080/activate/'
