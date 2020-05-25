@@ -97,7 +97,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
         eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
         menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTACI')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTI')
 
         RestaurantComponents.objects.create(
             restaurant=restaurant,
