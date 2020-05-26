@@ -204,8 +204,8 @@
                     console.log("Old browser. No support for Filereader API");
                 }
             },
-            scrollHanle(evt) {
-                console.log(evt)
+            scrollHanle() {
+                //console.log(evt)
             },
         },
         computed: {
