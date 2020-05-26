@@ -11,7 +11,7 @@
 
             <v-container>
                 <v-row>
-                    <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="3">
+                    <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" sm="6" md="4" lg="4">
                         <router-link :to="restaurant.url">
                             <div v-bind="restaurant" class="restcard">
                                 <v-img class="white--text align-end imag" height="200px"
@@ -103,8 +103,9 @@
 
     .restcard {
         width: 80%;
+        max-width: 350px;
         transition: 0.4s;
-        margin: 10px;
+        margin: auto;
         background: rgba(250,250,250,0) !important;
     }
 
@@ -135,6 +136,8 @@
 
     h2 {
         text-transform: capitalize;
+        word-break: keep-all;
+        font-size: 1vmax;
     }
     .description {
         overflow: hidden!important;

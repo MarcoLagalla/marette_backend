@@ -2,50 +2,50 @@
 <div class="restdatabox">
   <div class="restdatafields">
     <form @submit.prevent="update">
-    <v-row>
+      <v-row>
       <v-col cols="12" md="4">
-        <v-text-field outlined placeholder="Nome del locale" v-text="restData.activity_name"></v-text-field>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.activity_name}}</span>
+        <v-text-field light class="field"  outlined label="Nome attività" v-if="editing" v-model='restData.activity_name'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.activity_description}}</span>
+        <v-text-field light class="field"  outlined label="Descrizione" v-if="editing" v-model='restData.activity_description'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.address}}</span>
+        <v-text-field light class="field"  outlined label="Indirizzo" v-if="editing" v-model='restData.address'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.n_civ}}</span>
+        <v-text-field light class="field"  outlined label="Numero civico" v-if="editing" v-model='restData.n_civ'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.cap}}</span>
+        <v-text-field light class="field"  outlined label="cap" v-if="editing" v-model='restData.cap'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.restaurant_number}}</span>
+        <v-text-field light class="field"  outlined label="Numero di telefono" v-if="editing" v-model='restData.restaurant_number'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.p_iva}}</span>
+        <v-text-field light class="field"  outlined label="Partita IVA" v-if="editing" v-model='restData.p_iva'></v-text-field>
+        </v-row>
+        <v-row>
+        <span class="datatit" v-if="!editing" >{{restData.city}}</span>
+        <v-text-field light class="field"  outlined label="Città" v-if="editing" v-model='restData.city'></v-text-field>
+        </v-row>
       </v-col>
       <v-col cols="12" md="4">
-        <p class="title" v-text="'Descrizione del locale'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.activity_description"></v-card-subtitle>
-      </v-col>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Città'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.city"></v-card-subtitle>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Indirizzo'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.address"></v-card-subtitle>
-      </v-col>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Numero civico'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.n_civ"></v-card-subtitle>
-      </v-col>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Cap'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.cap"></v-card-subtitle>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Numero di telefono'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.restaurant_number"></v-card-subtitle>
-      </v-col>
-      <v-col cols="12" md="4">
-        <p class="title" v-text="'Partita IVA'"></p>
-        <v-card-subtitle class="pb-0" v-text="restData.p_iva"></v-card-subtitle>
-      </v-col>
-      <v-col cols="12" md="4">
-        <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
+      <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
             upload: '<h1>Carica immagine</h1>',
             drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
-        </picture-input>
+      </picture-input>
       </v-col>
-    </v-row>
-    <button type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
+      </v-row>
+
+    <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
     </form>
   </div>
 </div>
@@ -66,7 +66,8 @@
     },
     data() {
       return {
-        image: ''
+        image: '',
+        editing:true
       }
     },
     created() {
@@ -118,4 +119,24 @@
 .title {
   font-weight: lighter;
 }
+.datatit {
+ padding: 10px;
+  text-transform: capitalize;
+}
+.field {
+  color: #1a1a1a!important;
+  z-index: 100;
+}
+  .save {
+    padding: 10px;
+    background: var(--ming);
+    border-radius: 25px;
+    margin: 10px auto;
+    color: white;
+    transition: 0.4s;
+    font-weight: bold;
+  }
+  .save:hover {
+    transform: scale(1.1);
+  }
 </style>

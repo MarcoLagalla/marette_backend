@@ -3,7 +3,7 @@
 
   <div class="hero-image">
       <div class="hero-text">
-        <img class="logo" src="@/assets/logo_small.png">
+        <img class="logo" src="@/assets/logo_small_icon_only_inverted.png">
       </div>
   </div>
   </div>
@@ -28,12 +28,10 @@ export default {
   }
 
   .hero-image {
-    background-image: url("../../assets/logo-2.jpg");
-    background-color: darkcyan;
+    background-image: url("../../assets/pattern3.png");
+
     height: 300px;
-    background-position: initial;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: repeat;
     position: relative;
      border-bottom: 4px solid var(--ming);
   }
