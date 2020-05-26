@@ -158,7 +158,7 @@ export default {
       return this.$store.getters['userAuthentication/status']
     },
     errors() {
-      return this.$store.getters['userAuthentication/errors']
+      return this.$store.getters['userAuthentication/errorsB']
     }
   }
 }

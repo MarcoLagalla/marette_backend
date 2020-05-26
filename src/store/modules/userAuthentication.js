@@ -5,13 +5,17 @@ import sendUserAuthentication from '../../services/sendUserAuthentication'
 const state = {
   token: getTokenCookie() || '',
   status: '',
-  errors: []
+  errorsL: [],
+  errorsR: [],
+  errorsB: [],
 }
 
 const getters = {
   isAuthenticated: state => !!state.token,
   status: state => state.status,
-  errors: state => state.errors
+  errorsL: state => state.errorsL,
+  errorsR: state => state.errorsR,
+  errorsB: state => state.errorsB,
 }
 
 const actions = {
@@ -30,7 +34,7 @@ const actions = {
           resolve(resp)
         })
       .catch(err => {
-        commit('AUTH_ERROR', err.response)
+        commit('LOG_AUTH_ERROR', err.response)
         deleteTokenCookies();
 
         reject(err)
@@ -51,7 +55,7 @@ const actions = {
           resolve(resp)
         })
       .catch(err => {
-        commit('AUTH_ERROR', err.response)
+        commit('REG_AUTH_ERROR', err.response)
         deleteTokenCookies();
         reject(err)
       })
@@ -72,7 +76,7 @@ const actions = {
           resolve(resp)
         })
       .catch(err => {
-        commit('AUTH_ERROR', err.response)
+        commit('REG_BUSI_AUTH_ERROR', err.response)
         reject(err.response.data)
       })
     })
@@ -148,9 +152,17 @@ const mutations = {
     state.id = data.id
     state.errors = []
   },
-  AUTH_ERROR: (state, error) => {
+  LOG_AUTH_ERROR: (state, error) => {
     state.status = 'error'
-    state.errors = error.data
+    state.errorsL = error.data
+  },
+  REG_AUTH_ERROR: (state, error) => {
+    state.status = 'error'
+    state.errorsR = error.data
+  },
+  REG_BUSI_AUTH_ERROR: (state, error) => {
+    state.status = 'error'
+    state.errorsB = error.data
   },
   AUTH_LOGOUT: state => {
     state.token = "";
