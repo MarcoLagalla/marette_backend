@@ -32,7 +32,7 @@
             <v-text-field label="Numero telefonico" :rules="required" :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" id="phone" name="phone" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
-            <v-text-field label="Password" :rules="required" :error-messages="errors.password.join('; ')" @change="errors.password=[]" v-model='password' type="password" id="psw" name="psw" required></v-text-field>
+            <v-text-field label="Password" :rules="required" :error-messages="errorPassword" @change="errors.password=''" v-model='password' type="password" id="psw" name="psw" required></v-text-field>
             <v-text-field label="Ripetere la password" :rules="password2Rules" :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" id="psw-repeat" name="psw-repeat" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
@@ -159,6 +159,9 @@ export default {
     },
     errors() {
       return this.$store.getters['userAuthentication/errorsB']
+    },
+    errorPassword() {
+      return this.errors.password? this.errors.password.join('; ') : ''
     }
   }
 }

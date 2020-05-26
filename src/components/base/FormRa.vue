@@ -74,8 +74,8 @@
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="6">
-                                        <v-text-field :rules="passwordRules" :error-messages="errors.password.join('; ')"
-                                                      @change="errors.password=[]" prepend-icon="mdi-key" solo filed
+                                        <v-text-field :rules="passwordRules" :error-messages="errorPassword"
+                                                      @change="errors.password=''" prepend-icon="mdi-key" solo filed
                                                       v-model="password" label="Password*" id="password" type="password"
                                                       required></v-text-field>
                                     </v-col>
@@ -214,6 +214,9 @@
             },
             errors() {
                 return this.$store.getters['userAuthentication/errorsR']
+            },
+            errorPassword() {
+              return this.errors.password? this.errors.password.join('; ') : ''
             }
         }
     }
