@@ -1,5 +1,5 @@
 <template>
-
+<div class="tabella"></div>
 </template>
 
 <script>
@@ -9,5 +9,10 @@
 </script>
 
 <style scoped>
-
+.tabella {
+    border: solid black 1px;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
 </style>
