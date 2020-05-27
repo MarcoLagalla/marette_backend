@@ -309,8 +309,12 @@ class Picture(models.Model):
 
 class FasciaOraria(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='fascia_oraria', on_delete=models.CASCADE)
+    giorno = models.ForeignKey('GiornoApertura', related_name='giorno', on_delete=models.CASCADE)
     start = models.CharField(max_length=5, choices=DAILY_HOURS)
     end = models.CharField(max_length=5, choices=DAILY_HOURS)
+
+    class Meta:
+        unique_together = (('restaurant', 'start', 'end'), )
 
     def clean(self, *args, **kwargs):
         start = datetime.strptime(self.start, '%H:%M')
@@ -326,8 +330,9 @@ class FasciaOraria(models.Model):
 
 class GiornoApertura(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='apertura_giorno', on_delete=models.CASCADE)
+    orario = models.ForeignKey('OrarioApertura', related_name='orario', on_delete=models.CASCADE)
     day = models.CharField(max_length=9, choices=DAYS)
-    fasce = models.ManyToManyField(FasciaOraria)
+    fasce = models.ManyToManyField(FasciaOraria, null=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.restaurant, self.day)

@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .opening_hours_views import CreateOpening
+from .opening_hours_views import CreateOpening, CreateOpeningDay, CreateFasciaOraria, DeleteFasciaOraria, \
+    DeleteOpeningDay, DeleteOpening
 from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, \
     VoteRestaurantAPIView
 from .search_views import SearchRestaurantAPIView, SearchRestaurantByCategoryAPIView
@@ -59,7 +60,14 @@ urlpatterns = [
     path('restaurant/<int:id>/components/galleria/images/<int:i_id>/delete', GalleryDeleteImage.as_view(), name='delete_picture_gallery'),
 
 
-    path('restaurant/<int:id>/opening/add', CreateOpening.as_view, name='create_opening'),
+    path('restaurant/<int:id>/opening/add', CreateOpening.as_view(), name='create_opening'),
+    path('restaurant/<int:id>/opening/delete', DeleteOpening.as_view(), name='delete_opening'),
+    path('restaurant/<int:id>/opening/day/add', CreateOpeningDay.as_view(), name='create_opening_day'),
+    path('restaurant/<int:id>/opening/day/<int:d_id>/delete', DeleteOpeningDay.as_view(), name='delete_opening_day'),
+    path('restaurant/<int:id>/opening/day/<int:d_id>/interval/add', CreateFasciaOraria.as_view(), name='create_opening_interval'),
+    path('restaurant/<int:id>/opening/day/<int:d_id>/interval/<int:f_id>/delete', DeleteFasciaOraria.as_view(), name='delete_opening_interval'),
+
+
 
     path('restaurant/list', ListRestaurantsAPIView.as_view(), name='list_restaurants'),
     path('restaurant/new', CreateRestaurantAPIView.as_view(), name='register_restaurant'),
