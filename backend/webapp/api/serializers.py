@@ -8,6 +8,7 @@ from ..models.components import RestaurantComponents, HomeComponent, VetrinaComp
     EventiComponent, MenuComponent, ContattaciComponent
 
 from ...account.api.serializers import BusinessSerializer
+from ..api.opening_hours_serializers import *
 from django.db import transaction, IntegrityError
 from django.utils.text import slugify
 from localflavor.it.util import vat_number_validation
@@ -97,7 +98,7 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
         eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
         menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTACI')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTI')
 
         RestaurantComponents.objects.create(
             restaurant=restaurant,
