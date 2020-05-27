@@ -5,31 +5,6 @@ from rest_framework import serializers
 from ..models.models import GiornoApertura, OrarioApertura, FasciaOraria, Restaurant
 
 
-class OpeningSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrarioApertura
-        fields = ('restaurant', )
-
-
-class GiornoAperturaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GiornoApertura
-        fields = ('restaurant', 'day', 'fasce', )
-
-    def save(self, **kwargs):
-
-        restaurant = self.validated_data.get('restaurant')
-
-        try:
-            orario = OrarioApertura.objects.all().get(restaurant=restaurant)
-        except OrarioApertura.DoesNotExist:
-            raise serializers.ValidationError({'error': 'Orario non trovato per questo ristorante.'})
-
-        giorno = GiornoApertura.objects.create(orario=orario, **self.validated_data)
-        giorno.save()
-
-        return giorno
-
 
 class FasciaOrariaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,3 +36,33 @@ class FasciaOrariaSerializer(serializers.ModelSerializer):
         giorno.save()
 
         return fascia
+
+
+class GiornoAperturaSerializer(serializers.ModelSerializer):
+
+    fasce = FasciaOrariaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = GiornoApertura
+        fields = ('restaurant', 'day', 'fasce', )
+
+    def save(self, **kwargs):
+
+        restaurant = self.validated_data.get('restaurant')
+
+        try:
+            orario = OrarioApertura.objects.all().get(restaurant=restaurant)
+        except OrarioApertura.DoesNotExist:
+            raise serializers.ValidationError({'error': 'Orario non trovato per questo ristorante.'})
+
+        giorno = GiornoApertura.objects.create(orario=orario, **self.validated_data)
+        giorno.save()
+
+        return giorno
+
+
+class OpeningSerializer(serializers.ModelSerializer):
+    days = GiornoAperturaSerializer(read_only=True)
+    class Meta:
+        model = OrarioApertura
+        fields = ('restaurant', 'days')

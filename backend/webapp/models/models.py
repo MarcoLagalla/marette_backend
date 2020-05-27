@@ -332,7 +332,7 @@ class GiornoApertura(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='apertura_giorno', on_delete=models.CASCADE)
     orario = models.ForeignKey('OrarioApertura', related_name='orario', on_delete=models.CASCADE)
     day = models.CharField(max_length=9, choices=DAYS)
-    fasce = models.ManyToManyField(FasciaOraria, null=True)
+    fasce = models.ManyToManyField(FasciaOraria, blank=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.restaurant, self.day)
@@ -344,7 +344,7 @@ class GiornoApertura(models.Model):
 class OrarioApertura(models.Model):
 
     restaurant = models.ForeignKey(Restaurant, related_name='apertura', on_delete=models.CASCADE, unique=True)
-    days = models.ManyToManyField(GiornoApertura)
+    days = models.ManyToManyField(GiornoApertura, blank=True)
 
     def __str__(self):
         return "{0}".format(self.restaurant)

@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -213,6 +213,36 @@ class DeleteOpening(APIView):
 
             opening.delete()
             return Response(status=status.HTTP_200_OK)
+
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ShowTimeTable(APIView):
+
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request, id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if token == request.user.auth_token.key:
+
+            data = {}
+
+            days = GiornoApertura.objects.all().filter(restaurant=restaurant)
+            serializer = GiornoAperturaSerializer(days, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
