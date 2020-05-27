@@ -3,7 +3,7 @@
   <div class="restdatafields">
     <form @submit.prevent="update">
       <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-row>
         <span class="datatit" v-if="!editing" >{{restData.activity_name}}</span>
         <v-text-field light class="field"  outlined label="Nome attività" v-if="editing" v-model='restData.activity_name'></v-text-field>
@@ -20,33 +20,43 @@
         <span class="datatit" v-if="!editing" >{{restData.n_civ}}</span>
         <v-text-field light class="field"  outlined label="Numero civico" v-if="editing" v-model='restData.n_civ'></v-text-field>
         </v-row>
-        <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.cap}}</span>
-        <v-text-field light class="field"  outlined label="cap" v-if="editing" v-model='restData.cap'></v-text-field>
-        </v-row>
-        <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.restaurant_number}}</span>
-        <v-text-field light class="field"  outlined label="Numero di telefono" v-if="editing" v-model='restData.restaurant_number'></v-text-field>
-        </v-row>
-        <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.p_iva}}</span>
-        <v-text-field light class="field"  outlined label="Partita IVA" v-if="editing" v-model='restData.p_iva'></v-text-field>
-        </v-row>
-        <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.city}}</span>
-        <v-text-field light class="field"  outlined label="Città" v-if="editing" v-model='restData.city'></v-text-field>
-        </v-row>
+
+
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
+        <div class="piccnt">
       <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
             upload: '<h1>Carica immagine</h1>',
             drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
       </picture-input>
+        </div>
       </v-col>
       </v-row>
-
+      <v-row>
+      <v-col cols="12" md="6">
+        <v-row>
+          <span class="datatit" v-if="!editing" >{{restData.p_iva}}</span>
+          <v-text-field light class="field"  outlined label="Partita IVA" v-if="editing" v-model='restData.p_iva'></v-text-field>
+        </v-row>
+        <v-row>
+          <span class="datatit" v-if="!editing" >{{restData.city}}</span>
+          <v-text-field light class="field"  outlined label="Città" v-if="editing" v-model='restData.city'></v-text-field>
+        </v-row>
+      </v-col>
+        <v-col cols="12" md="6">
+        <v-row>
+          <span class="datatit" v-if="!editing" >{{restData.cap}}</span>
+          <v-text-field light class="field"  outlined label="cap" v-if="editing" v-model='restData.cap'></v-text-field>
+        </v-row>
+        <v-row>
+          <span class="datatit" v-if="!editing" >{{restData.restaurant_number}}</span>
+          <v-text-field light class="field"  outlined label="Numero di telefono" v-if="editing" v-model='restData.restaurant_number'></v-text-field>
+        </v-row>
+        </v-col>
+      </v-row>
     <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
     </form>
+
   </div>
 </div>
 </template>
@@ -60,14 +70,14 @@
   export default {
 
     name: 'BaseManageRestData',
-    props: ['id'],
+    props: ['id','editing'],
     components: {
       PictureInput,
     },
     data() {
       return {
         image: '',
-        editing:true
+
       }
     },
     created() {
@@ -122,10 +132,13 @@
 .datatit {
  padding: 10px;
   text-transform: capitalize;
+  letter-spacing: 2px;
+  transition: 0.5s ;
 }
 .field {
   color: #1a1a1a!important;
-  z-index: 100;
+  margin: 0 10px;
+
 }
   .save {
     padding: 10px;
@@ -138,5 +151,20 @@
   }
   .save:hover {
     transform: scale(1.1);
+  }
+  .picture-input {
+    box-shadow: 0 0 2px black;
+
+  }
+  .piccnt {
+    width: 200px;
+    height: 200px!important;
+    margin: auto;
+  }
+  .restdatafields {
+    border: 1px solid lightgray;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
   }
 </style>

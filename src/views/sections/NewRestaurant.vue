@@ -233,12 +233,12 @@
         bottom: 0;
         padding: 10px;
         border-radius: 25px;
-        border: 4px inset var(--ming);
+        border: 4px inset var(--darkslate);
         margin: 10px;
         font-weight: bold;
         z-index: 200;
         color: white;
-        background: var(--ming);
+        background: var(--darkslate);
         transition: ease-in-out 0.3s;
     }
 
@@ -282,7 +282,7 @@
 
     .registerbtn:disabled {
         cursor: not-allowed;
-        background: grey !important;
+
     }
 
     .loadbtn {
@@ -292,7 +292,7 @@
         margin: 8px 0;
         font-weight: bold;
         border: none;
-        cursor: pointer;
+        cursor: not-allowed;
         width: 250px;
         opacity: 0.9;
         transition: 0.6s;

@@ -97,11 +97,8 @@
                                                     <v-icon class="wrench" medium>fas fa-wrench</v-icon>
                                                 </router-link>
 
-                                                <router-link tag="button" class="gestrest"
-                                                             :to="'profile/manage/' + restaurant.url">
-                                                    <span class="butgest"> gestisci dati  </span>
-                                                    <v-icon class="edit" medium>far fa-edit</v-icon>
-                                                </router-link>
+
+                                                <button class="gestrest" @click="editing=!editing"><span class="butgest"> Modifica dati  </span></button>
                                             </v-card-actions>
                                         </v-col>
                                         <v-col cols="12" md="6">
@@ -113,7 +110,7 @@
 
                                     </v-row>
                                     <base-manage-rest-data :id="restaurant.id"
-
+                                    :editing="editing"
                                     >
 
                                     </base-manage-rest-data>
@@ -151,6 +148,7 @@
                     v => v === this.new_password || "Le password devono combaciare"
                 ],
                 show: false,
+                editing:false
             }
         },
         methods: {
