@@ -332,10 +332,13 @@ class GiornoApertura(models.Model):
     def __str__(self):
         return "{0} - {1}".format(self.restaurant, self.day)
 
+    class Meta:
+        unique_together = (('restaurant', 'day'), )
+
 
 class OrarioApertura(models.Model):
 
-    restaurant = models.ForeignKey(Restaurant, related_name='apertura', on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, related_name='apertura', on_delete=models.CASCADE, unique=True)
     days = models.ManyToManyField(GiornoApertura)
 
     def __str__(self):
