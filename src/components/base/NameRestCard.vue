@@ -6,9 +6,14 @@
           <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="managebutton">
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
-  <button class="infoicon">
+  <button class="infoicon" @click="$refs.orarimodal.open()" >
     <i class="fas fa-info-circle"></i>
   </button>
+    <sweet-modal ref="orarimodal">
+        <base-orari>
+
+        </base-orari>
+    </sweet-modal>
         <ul class="orari">
           <li class="infos">
             Categoria
@@ -20,7 +25,12 @@
 </div>
 </template>
 <script>
+    import { SweetModal} from 'sweet-modal-vue';
+
 export default {
+    components: {
+        SweetModal,
+    },
   props: {
     name: {
       type: String,

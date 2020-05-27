@@ -20,7 +20,7 @@
 </script>
 
 <style >
-
+@import './styles/commons.css';
 :root {
   --ghostwhite: #FBFFFE;
   --ming: #AF473C;

@@ -1,6 +1,6 @@
 <template>
 <div id="404" class="body">
-suca
+
 </div>
 </template>
 
@@ -15,9 +15,9 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
   .body {
     height: 500px!important;
-  background: red;
+  background: grey;
   }
 </style>
