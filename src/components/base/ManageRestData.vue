@@ -5,20 +5,16 @@
       <v-row>
       <v-col cols="12" md="6">
         <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.activity_name}}</span>
-        <v-text-field light class="field"  outlined label="Nome attività" v-if="editing" v-model='restData.activity_name'></v-text-field>
+        <v-text-field light class="field"  outlined label="Nome attività" :disabled="!editing"  v-model='restData.activity_name'></v-text-field>
         </v-row>
         <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.activity_description}}</span>
-        <v-text-field light class="field"  outlined label="Descrizione" v-if="editing" v-model='restData.activity_description'></v-text-field>
+        <v-text-field light class="field"  outlined label="Descrizione" :disabled="!editing"  v-model='restData.activity_description'></v-text-field>
         </v-row>
         <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.address}}</span>
-        <v-text-field light class="field"  outlined label="Indirizzo" v-if="editing" v-model='restData.address'></v-text-field>
+        <v-text-field light class="field"  outlined label="Indirizzo" :disabled="!editing"  v-model='restData.address'></v-text-field>
         </v-row>
         <v-row>
-        <span class="datatit" v-if="!editing" >{{restData.n_civ}}</span>
-        <v-text-field light class="field"  outlined label="Numero civico" v-if="editing" v-model='restData.n_civ'></v-text-field>
+        <v-text-field light class="field"  outlined label="Numero civico" :disabled="!editing"  v-model='restData.n_civ'></v-text-field>
         </v-row>
 
 
@@ -35,22 +31,18 @@
       <v-row>
       <v-col cols="12" md="6">
         <v-row>
-          <span class="datatit" v-if="!editing" >{{restData.p_iva}}</span>
-          <v-text-field light class="field"  outlined label="Partita IVA" v-if="editing" v-model='restData.p_iva'></v-text-field>
+          <v-text-field light class="field"  outlined label="Partita IVA" :disabled="!editing"  v-model='restData.p_iva'></v-text-field>
         </v-row>
         <v-row>
-          <span class="datatit" v-if="!editing" >{{restData.city}}</span>
-          <v-text-field light class="field"  outlined label="Città" v-if="editing" v-model='restData.city'></v-text-field>
+          <v-text-field light class="field"  outlined label="Città" :disabled="!editing"  v-model='restData.city'></v-text-field>
         </v-row>
       </v-col>
         <v-col cols="12" md="6">
         <v-row>
-          <span class="datatit" v-if="!editing" >{{restData.cap}}</span>
-          <v-text-field light class="field"  outlined label="cap" v-if="editing" v-model='restData.cap'></v-text-field>
+          <v-text-field light class="field"  outlined label="cap" :disabled="!editing"  v-model='restData.cap'></v-text-field>
         </v-row>
         <v-row>
-          <span class="datatit" v-if="!editing" >{{restData.restaurant_number}}</span>
-          <v-text-field light class="field"  outlined label="Numero di telefono" v-if="editing" v-model='restData.restaurant_number'></v-text-field>
+          <v-text-field light class="field"  outlined label="Numero di telefono" :disabled="!editing" v-model='restData.restaurant_number'></v-text-field>
         </v-row>
         </v-col>
       </v-row>

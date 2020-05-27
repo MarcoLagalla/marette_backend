@@ -26,22 +26,46 @@
                                                 <v-col class="center">
                                                     <v-row align="center" class="ma-0" justify="center">
                                                         <v-col cols="12">
-                                                            <v-text-field label="Nome del locale*"
-                                                                          :error-messages="errors.activity_name"
-                                                                          @change="errors.activity_name=''"
-                                                                          v-model='activity_name'
-                                                                          type="text" id="activity_name"
-                                                                          name="activity_name"
-                                                                          required></v-text-field>
+                                                            <v-row>
+                                                                <v-col cols="12" md="6">
+                                                                    <div class="picinput">
+                                                                <picture-input
+                                                                        ref="restImage"
+                                                                        @change="onChanged"
+                                                                        :width="200"
+                                                                        :height="200"
+                                                                        size="3"
+                                                                        :zIndex="0"
+                                                                        :crop="true"
+                                                                        :changeOnClick="false"
+                                                                        accept="image/jpeg, image/png, image/gif"
+                                                                        buttonClass="ui button primary"
+                                                                        :customStrings="{
+                                                upload: '<h1>Carica immagine</h1>',
+                                                  drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
+                                                                </picture-input>
+                                                                    </div>
+                                                                </v-col>
+                                                                <v-col cols="12" md="6">
+                                                                <v-text-field label="Nome del locale*"
+                                                                              :error-messages="errors.activity_name"
+                                                                              @change="errors.activity_name=''"
+                                                                              v-model='activity_name'
+                                                                              type="text" id="activity_name"
+                                                                              name="activity_name"
+                                                                              required></v-text-field>
 
-                                                            <v-text-field
-                                                                    label="Categoria del locale* (Pizzeria, Ristorante, etc..)"
-                                                                    :error-messages="errors.restaurant_category"
-                                                                    @change="errors.restaurant_category=''"
-                                                                    v-model='restaurant_category'
-                                                                    type="text" id="restaurant_category"
-                                                                    name="restaurant_category"
-                                                                    required></v-text-field>
+                                                                <v-text-field
+                                                                        label="Categoria del locale* (Pizzeria, Ristorante, etc..)"
+                                                                        :error-messages="errors.restaurant_category"
+                                                                        @change="errors.restaurant_category=''"
+                                                                        v-model='restaurant_category'
+                                                                        type="text" id="restaurant_category"
+                                                                        name="restaurant_category"
+                                                                        required></v-text-field>
+                                                                </v-col>
+                                                            </v-row>
+
                                                         </v-col>
                                                         <v-textarea outlined
                                                                     label="Fornisci una breve descrizione del locale*"
@@ -94,21 +118,7 @@
                                                                       required></v-text-field>
                                                     </v-row>
                                                     <v-row align="center" class="ma-0" justify="center">
-                                                        <picture-input
-                                                                ref="restImage"
-                                                                @change="onChanged"
-                                                                :width="300"
-                                                                :height="300"
-                                                                size="5"
-                                                                :zIndex="0"
-                                                                :crop="true"
-                                                                :changeOnClick="false"
-                                                                accept="image/jpeg, image/png, image/gif"
-                                                                buttonClass="ui button primary"
-                                                                :customStrings="{
-                                                upload: '<h1>Carica immagine</h1>',
-                                                  drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
-                                                        </picture-input>
+
                                                     </v-row>
                                                 </v-col>
                                                 <button type="submit" :class="[loading?'loadbtn':'registerbtn']">
@@ -318,6 +328,15 @@
         transition: ease-in-out 0.2s;
         color: white;
         transform: rotate(45deg);
+    }
+
+    .picture-input {
+        padding: 0;
+        border: 1px solid black;
+    }
+    .picinput {
+        width: 200px;
+        margin-left: 0;
     }
 
     .spinner {
