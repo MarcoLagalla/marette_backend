@@ -51,6 +51,8 @@
                                                                               :error-messages="errors.activity_name"
                                                                               @change="errors.activity_name=''"
                                                                               v-model='activity_name'
+                                                                              :rules="rules"
+                                                                              counter="30"
                                                                               type="text" id="activity_name"
                                                                               name="activity_name"
                                                                               required></v-text-field>
@@ -170,6 +172,7 @@
                 image: '',
                 show: false,
                 loading: false,
+                rules: [v => v.length <= 30 || 'Max 30 characters']
             }
         },
         methods: {

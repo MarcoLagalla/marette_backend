@@ -19,7 +19,7 @@
                                     <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
                                 </v-img>
 
-                                <v-divider/>
+
                                 <div class="actions">
                                     <button class="share">
                                         Condividi
@@ -116,6 +116,8 @@
         text-shadow: 0 0 2px black;
         border-radius:15px;
         transition: 0.3s ease-in-out;
+        opacity: 0.9;
+        border: solid 1px darkgrey;
     }
     .restcard:hover > .imag {
         transform: scale(1.05);
@@ -137,7 +139,9 @@
     h2 {
         text-transform: capitalize;
         word-break: keep-all;
-        font-size: 1vmax;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+
     }
     .description {
         overflow: hidden!important;

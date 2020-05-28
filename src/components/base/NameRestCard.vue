@@ -25,12 +25,8 @@
 </div>
 </template>
 <script>
-    import { SweetModal} from 'sweet-modal-vue';
 
 export default {
-    components: {
-        SweetModal,
-    },
   props: {
     name: {
       type: String,

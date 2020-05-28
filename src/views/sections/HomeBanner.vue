@@ -46,6 +46,7 @@ export default {
   }
   .logo {
     width: 40%;
+      opacity: 1;
   }
 
 </style>
