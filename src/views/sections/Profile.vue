@@ -33,6 +33,19 @@
                                             </template>
                                         </v-card-subtitle>
                                     </div>
+                                    <v-alert
+                                      :value="pswSuccess !== ''"
+                                      type="success"
+                                    >
+                                      {{pswSuccess}}
+                                    </v-alert>
+                                    <v-alert
+                                      :value="pswError !== ''"
+                                      type="error"
+                                    >
+                                      {{pswError}}
+                                    </v-alert>
+
                                     <v-card-actions>
                                         <v-btn @click="show = !show" text>Modifica password
                                             <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
@@ -148,7 +161,9 @@
                     v => v === this.new_password || "Le password devono combaciare"
                 ],
                 show: false,
-                editing:false
+                editing:false,
+                pswSuccess: '',
+                pswError: '',
             }
         },
         methods: {
@@ -160,9 +175,13 @@
                     new_password2: this.new_password2,
 
                 }).then(messaggio => {
-
-                    alert(messaggio)
-
+                    this.show = false
+                    this.pswError = ''
+                    this.pswSuccess = messaggio
+                }).catch(messaggio => {
+                    this.show = false
+                    this.pswError = messaggio
+                    this.pswSuccess = ''
                 })
 
             }
