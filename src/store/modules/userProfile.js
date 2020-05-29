@@ -213,6 +213,7 @@ function setCookiesUserPrivate( data) {
     user_private['type']=data.type
     user_private['id'] = data.id
     user_private['is_superuser'] = data.is_superuser
+    user_private['email_activated'] = data.email_activated
     if (data.type === 'business')
        user_private['restaurants'] = data.restaurants
   var d = new Date();
