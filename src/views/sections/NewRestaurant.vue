@@ -32,17 +32,22 @@
                                                                 <picture-input
                                                                         ref="restImage"
                                                                         @change="onChanged"
+                                                                        @remove="onRemoved"
                                                                         :width="200"
                                                                         :height="200"
                                                                         size="3"
                                                                         :zIndex="0"
                                                                         :crop="true"
                                                                         :changeOnClick="false"
+                                                                        :removable="true"
                                                                         accept="image/jpeg, image/png, image/gif"
                                                                         buttonClass="ui button primary"
                                                                         :customStrings="{
-                                                upload: '<h1>Carica immagine</h1>',
-                                                  drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
+                                                                            upload: '<h1>Carica immagine</h1>',
+                                                                            drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla',
+                                                                            change: 'Cambia foto',
+                                                                            remove: 'Elimina foto',
+                                                                        }">
                                                                 </picture-input>
                                                                     </div>
                                                                 </v-col>
@@ -222,6 +227,9 @@
                 }
             },
 
+            onRemoved() {
+                this.image = '';
+            },
 
         },
         computed: {
