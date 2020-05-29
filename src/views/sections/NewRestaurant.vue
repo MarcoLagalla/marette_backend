@@ -1,5 +1,5 @@
 <template>
-    <div class="background">
+    <div v-if="hasPermission" class="background">
         <v-container>
             <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="show = !show">Aggiungi Ristorante
                 <v-icon :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
@@ -227,6 +227,9 @@
         computed: {
             errors() {
                 return this.$store.getters['restaurants/errors']
+            },
+            hasPermission() {
+                return this.$store.getters['userProfile/user_private'].email_activated && this.$store.getters['userProfile/isBusiness']
             }
         }
     }
