@@ -30,6 +30,7 @@
                                                                 <v-col cols="12" md="6">
                                                                     <div class="picinput">
                                                                 <picture-input
+                                                                        v-if="show"
                                                                         ref="restImage"
                                                                         @change="onChanged"
                                                                         @remove="onRemoved"
