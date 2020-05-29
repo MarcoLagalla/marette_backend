@@ -34,21 +34,23 @@ const getters = {
 }
 
 const actions = {
-
-
   getUserData: ({commit, dispatch}, id) => {
-    commit('USER_REQUEST')
-    manageUserProfile.getUserProfile(id)
+    return new Promise((resolve, reject) => {
+      commit('USER_REQUEST')
+      manageUserProfile.getUserProfile(id)
         .then(resp => {
           const data = resp.data
           data.id = id
           setCookiesUserPrivate(data)
           commit('USER_SUCCESS', data)
+          resolve(data)
         })
         .catch(err => {
           dispatch("userAuthentication/logout", null, {root: true});
           commit('USER_ERROR');
+          reject(err)
         })
+    })
   },
 
   logout: ({commit}) => {

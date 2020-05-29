@@ -17,9 +17,23 @@ const ifNotAuthenticated = (to, from, next) => {
   next("/");
 };
 
-const ifAuthenticated = (to, from, next) => {
+/*const ifAuthenticated = (to, from, next) => {
   if (store.getters['userAuthentication/isAuthenticated']) {
     next();
+
+    return;
+  }
+  next("/");
+};*/
+
+const downloadProfileData = (to, from, next) => {
+  if (store.getters['userAuthentication/isAuthenticated']) {
+    store.dispatch("userProfile/getUserData", getID()).then(()=> {
+      next();
+    }).catch(()=>{
+       next("/");
+     })
+
     return;
   }
   next("/");
@@ -101,7 +115,7 @@ const router = new Router({
           path: 'profile',
           name: 'profile',
           component: () => import('@/views/pages/profile.vue'),
-          beforeEnter:  ifAuthenticated,
+          beforeEnter:  downloadProfileData,
         },
         {
           path: 'profile/manage/:id/:name',
@@ -152,5 +166,12 @@ const router = new Router({
 
   ],
 })
+
+function getID() {
+ var result = document.cookie.match(new RegExp('user_private' + '=([^;]+)'));
+ result && (result = JSON.parse(result[1]));
+ return result ? result.id : '';
+}
+
 
 export default router
