@@ -75,7 +75,6 @@ class SearchRestaurantAPIView(APIView):
         }
 
         data.update({'results': serializer.data})
-
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -125,3 +124,86 @@ class SearchRestaurantByCategoryAPIView(APIView):
         data.update({'results': serializer.data})
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+class SearchRestaurantByQueryAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        flag = None
+        queried_name = None
+        queried_city = None
+        queried_category = None
+        queryset = []
+
+        try:
+            queried_name = request.data['restaurant_name']
+        except KeyError:
+            pass
+
+        try:
+            queried_city = request.data['restaurant_city']
+        except KeyError:
+            pass
+
+        try:
+            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
+        except KeyError:
+            pass
+
+        if queried_name:
+            name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
+            description_query = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
+            queryset.append(name_query | description_query)
+
+        if queried_city:
+            city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
+            queryset.append(city_query)
+
+        if queried_category:
+            category_query = Restaurant.objects.filter(restaurant_category__iexact=queried_category).order_by('-id')
+            queryset.append(category_query)
+
+        try:
+            if queryset:
+                results_query = queryset[0]
+                for query in queryset:
+                    results_query = results_query & query
+
+            if results_query:
+                # -----------------------------------------------------------
+                page_number = request.query_params.get('page_number', 1)
+                page_size = request.query_params.get('page_size', 10)
+
+                try:
+                    paginator = Paginator(results_query.distinct(), page_size)
+                    page = paginator.page(page_number)
+                except django.core.paginator.EmptyPage:
+                    page = paginator.page(1)
+
+                serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
+                # -----------------------------------------------------------
+
+                navigator = NavigationLinks(self.request, paginator, page_number)
+
+                data = {
+                    'first': navigator.get_first_link(),
+                    'previous': navigator.get_previous_link(),
+                    'next': navigator.get_next_link(),
+                    'last': navigator.get_last_link()
+                }
+
+                data.update({'results': serializer.data})
+                return Response(data, status=status.HTTP_200_OK)
+
+        except KeyError:
+            return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                            status.HTTP_404_NOT_FOUND)
+
+        return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                        status.HTTP_404_NOT_FOUND)
+
+
+
+
+
