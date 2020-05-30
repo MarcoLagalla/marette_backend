@@ -1,7 +1,8 @@
 <template>
 
-    <div class="product">
-        <div class="cardpos">
+    <div >
+        <div class="product" @click="$emit('open_card')">
+            <button ></button>
             <v-avatar class="imag" size="100" tile>
                 <v-img :src="product.image"></v-img>
             </v-avatar>
@@ -218,7 +219,6 @@
     }
 
     .cardpos {
-        position: relative;
 
     }
 
@@ -249,11 +249,14 @@
         margin: -5px;
         background: var(--ghostwhite);
         padding: 5px;
+        position: relative;
+
 
     }
 
     .product:hover {
         box-shadow: 0 2px 10px #828282;
+        cursor: pointer;
 
     }
 
