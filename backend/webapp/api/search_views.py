@@ -130,7 +130,6 @@ class SearchRestaurantByQueryAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        flag = None
         queried_name = None
         queried_city = None
         queried_category = None
@@ -165,6 +164,8 @@ class SearchRestaurantByQueryAPIView(APIView):
             queryset.append(category_query)
 
         try:
+            results_query = None
+
             if queryset:
                 results_query = queryset[0]
                 for query in queryset:
