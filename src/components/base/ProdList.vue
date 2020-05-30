@@ -3,13 +3,22 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
-          <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
+          <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @open_card="toggleCardModal" @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
         </v-col>
       </v-row>
     </v-container>
 
+      <!--
+        Per inserire un icona presa da fontawesome come icona della tab bisogna passar l'i tag come stringa, quindi come ho fatto
+        sotto basta prendere il tag in questione e sostituire :
 
+        < con &lt
+        > con &gt
+        " con &quot
+
+      -->
       <sweet-modal ref="modal"><br>
+          <sweet-modal-tab  title="Sconta Prodotto" id="sconta_prodotto" icon="&lt;i class=&quot;fas fa-percent&quot;&gt;&lt;i&gt;">
             <v-form @submit.prevent="add_discount_to_list">
                 <v-text-field outlined
                               v-model="discount_name"
@@ -40,13 +49,15 @@
                 ></v-text-field>
                 <v-btn type="submit" class="managebutton">Aggiungi Sconto</v-btn>
             </v-form>
+          </sweet-modal-tab>
+          <sweet-modal-tab title="Modifica Prodotto" id="tab2" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;"></sweet-modal-tab>
         </sweet-modal>
   </div>
 
 </template>
 <script>
     import {mapActions} from "vuex";
-    import {SweetModal} from "sweet-modal-vue";
+    import {SweetModal, SweetModalTab} from "sweet-modal-vue";
 
 
 
@@ -57,6 +68,7 @@ export default {
 
   components: {
       SweetModal,
+      SweetModalTab
   },
 
 
@@ -66,6 +78,7 @@ export default {
           discount_name: '',
           discount_price: '',
           discount_type: '',
+          icons: "<i class=\"far fa-edit\"></i>\n"
       }
 
   },
@@ -134,7 +147,7 @@ export default {
 
       },
 
-      toggleAddDiscount() {
+      toggleCardModal() {
           this.$refs.modal.open()
       },
     },
