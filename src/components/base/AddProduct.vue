@@ -167,6 +167,7 @@
 
             toggleShowTags() {
                 this.showTags = !this.showTags;
+                console.log(this.tags)
             },
 
 
