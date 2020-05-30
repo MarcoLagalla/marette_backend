@@ -1,5 +1,5 @@
 <template>
-    <v-card dark class="vetrinacard" width="800" height="auto">
+    <v-card class="vetrinacard" width="800" height="auto">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="menu.name"></v-card-title>
             <div class="quant">
@@ -143,15 +143,15 @@
     }
 
     .vetrinacard {
-        background: var(--emerald);
+        background: var(--whitesmoke);
 
     }
 
     .blutitle {
-        background: var(--emerald);
-        color: #FFFFFF;
+        background: var(--lightgrey);
+        color: #2e2e2e;
         box-shadow: 0 0 5px black;
-        position: sticky;
+
         top: 0;
         z-index: 1;
     }

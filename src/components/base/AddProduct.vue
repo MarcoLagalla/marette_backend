@@ -26,7 +26,7 @@
                               name="price"
                               required
                 ></v-text-field>
-                <button class="manage" @click.prevent="toggleShowTags">Inserisci i tag</button>
+                <button class="managebutton" @click.prevent="toggleShowTags">Inserisci i tag</button>
                 <br>
                 <v-card
                         v-show="showTags"
@@ -86,7 +86,7 @@
         drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
                 </picture-input>
                 <br><br>
-                <button type="submit" class="manage">Aggiungi Prodotto</button>
+                <button type="submit" class="managebutton">Aggiungi Prodotto</button>
             </v-form>
             <br><br>
 
@@ -183,16 +183,17 @@
         padding: 20px;
     }
 
-    .manage {
+    .managebutton {
         padding: 10px;
         border-radius: 25px;
-        border: inset 2px var(--emerald);
-        background: var(--emerald);
+        border: inset 2px var(--darkslate);
+        font-weight: bold;
+        background: var(--darkslate);
         transition: ease 0.4s;
         color: white;
     }
 
-    .manage:hover {
+    .managebutton:hover {
         box-shadow: 0 0 10px black;
     }
     picture-input {

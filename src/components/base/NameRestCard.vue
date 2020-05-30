@@ -19,7 +19,7 @@
             Categoria
           </li>
           <li class="infos">
-            Orari
+            Aperto ora/Apre alle
           </li>
         </ul>
 </div>

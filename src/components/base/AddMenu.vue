@@ -12,8 +12,8 @@
             <v-text-field outlined v-model='menu.price' type="number" label="Prezzo del menu completo"
                           required></v-text-field>
             <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
-            <v-btn color="green"  @click="submitMenu" text>{{submit}}</v-btn>
-            <v-btn color="var(--ming)" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
+            <v-btn class="managebutton"  @click="submitMenu" text>{{submit}}</v-btn>
+            <v-btn class="managebutton" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
     </v-card>
 </template>
@@ -80,8 +80,8 @@
     }
 
     .blutitle {
-        background: var(--emerald);
-        color: #FFFFFF;
+        background: var(--lightgrey);
+        color: #2e2e2e;
         box-shadow: 0 0 5px black;
         position: sticky;
         top: 0;
@@ -97,5 +97,9 @@
     .titlemenu {
         text-transform: uppercase;
         font-size: 1.2em;
+    }
+    .managebutton {
+        color: var(--darkslate);
+        font-weight: bold;
     }
 </style>

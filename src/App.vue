@@ -27,6 +27,7 @@
   --darkslate: #384D48;
   --charcoal: #272D2D;
   --whitesmoke: #F5F5F5;
+  --lightgrey: #d0d0df ;
   --emerald: #00916E;
 }
 html {
