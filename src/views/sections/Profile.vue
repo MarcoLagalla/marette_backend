@@ -25,12 +25,7 @@
                                 <v-card flat>
                                     <div class="bodyprofile">
                                         <v-card-subtitle>
-                                            <template v-for="(campo, i) in user">
-                                                <v-row v-if="campo" :key="i">
-                                                    <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
-                                                    <v-col cols="9">{{campo}}</v-col>
-                                                </v-row>
-                                            </template>
+                                            <base-manage-user-data :editing="false"></base-manage-user-data>
                                         </v-card-subtitle>
                                     </div>
                                     <base-change-password></base-change-password>
@@ -52,7 +47,7 @@
                                                 </router-link>
 
 
-                                                <button class="gestrest" @click="editing=!editing"><span class="butgest"> Modifica dati  </span></button>
+                                                <button class="gestrest" @click="editingRest=!editingRest"><span class="butgest"> Modifica dati  </span></button>
                                             </v-card-actions>
                                         </v-col>
                                         <v-col cols="12" md="6">
@@ -64,7 +59,7 @@
 
                                     </v-row>
                                     <base-manage-rest-data :id="restaurant.id"
-                                    :editing="editing"
+                                    :editing="editingRest"
                                     >
 
                                     </base-manage-rest-data>
@@ -86,7 +81,7 @@
 
         data() {
             return {
-                editing:false,
+                editingRest:false,
             }
         },
         computed: {
