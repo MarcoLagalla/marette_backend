@@ -77,7 +77,7 @@ const actions = {
           .catch(err => {
 
             commit('PSW_CHANGE_ERROR', err.response)
-            reject(err)
+            reject(err.response.data)
 
           })
     })
