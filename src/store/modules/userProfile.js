@@ -160,7 +160,7 @@ const mutations = {
     if (state.user_private.type === 'business')
     {
       state.user.Codice_Fiscale = data.cf
-      state.user.Indirizzo = data.address + ', ' + data.city + ', ' + data.cap
+      state.user.Indirizzo = data.address + ', ' + data.n_civ + '; ' + data.city + '; ' + data.cap
       state.user_private.restaurants = data.restaurants
     }
 
