@@ -103,7 +103,6 @@ const router = new Router({
           path: 'registrationBusiness',
           name: 'RegBusiness',
           component: () => import('@/views/pages/registrationBusiness.vue'),
-          beforeEnter: ifNotAuthenticated,
         },
         {
           path: 'newRestaurant',

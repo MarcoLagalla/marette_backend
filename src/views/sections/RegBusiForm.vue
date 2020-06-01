@@ -1,7 +1,10 @@
 <template>
 <div class="body">
   <v-row align="center" class="ma-0 pa-8" justify="center">
-    <v-form @submit.prevent="register" v-model="valid">
+    <v-card v-if="isAuthenticated" color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
+      Effettuare il LogOut per poter registrare un business e i relativi ristoranti
+    </v-card>
+    <v-form v-else @submit.prevent="register" v-model="valid">
       <v-card color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
         <h1>Registra il tuo business <v-icon>mdi-account-tie</v-icon>
         </h1>
@@ -154,8 +157,8 @@ export default {
     },
   },
   computed: {
-    status() {
-      return this.$store.getters['userAuthentication/status']
+    isAuthenticated() {
+      return this.$store.getters['userAuthentication/isAuthenticated']
     },
     errors() {
       return this.$store.getters['userAuthentication/errorsB']
