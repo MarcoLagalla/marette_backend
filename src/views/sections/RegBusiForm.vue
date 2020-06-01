@@ -42,6 +42,8 @@
             <picture-input
               ref="avatar"
               @change="onChanged"
+              @remove="onRemoved"
+              :removable="true"
               :width="200"
               :height="200"
               size="5"
@@ -51,13 +53,16 @@
               accept="image/jpeg, image/png, image/gif"
               buttonClass="ui button primary"
               :customStrings="{
-              upload: '<h1>Carica immagine</h1>',
-              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                upload: '<h1>Carica immagine</h1>',
+                drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+                change: 'Cambia foto',
+                remove: 'Elimina foto',
+              }">
             </picture-input>
           </v-row>
         </v-col>
         <hr>
-        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Termini e Condizioni</router-link>.</v-card-text>
         <div class="regbtn2">
           <div class="center">
             <button class="btn" type="submit" :disabled="!valid">
@@ -154,6 +159,9 @@ export default {
       } else {
         console.log("Old browser. No support for Filereader API");
       }
+    },
+    onRemoved() {
+      this.image = '';
     },
   },
   computed: {
