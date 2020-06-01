@@ -7,7 +7,7 @@
 
       <v-row >
           <v-col v-for="(product, i) in portata.products" :key="i" cols="12" >
-            <base-product :product="product" :delete="true" @removed="removeProduct(product)" :discounts_list="[]"></base-product>
+            <base-portata-product :product="product" :delete="true" @removed="removeProduct(product)" :discounts_list="[]"></base-portata-product>
           </v-col>
         </v-row>
 

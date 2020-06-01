@@ -1,4 +1,5 @@
 .managebutton {
+    padding: 10px;
     color: var(--darkslate)!important;
     font-weight: bold!important;
     background: transparent!important;
