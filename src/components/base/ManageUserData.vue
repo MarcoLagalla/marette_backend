@@ -1,47 +1,81 @@
 <template>
-  <form @submit.prevent="update">
-    <template v-for="(campo, i) in user">
-      <v-row v-if="fix.includes(i) && campo" :key="i">
-        <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
-        <v-col  cols="9">{{campo}}</v-col>
-      </v-row>
-    </template>
-    <v-row>
-      <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
-      <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="tel" v-model='user.Numero_di_Telefono'></v-text-field></v-col>
-    </v-row>
-    <template v-if="isBusiness">
-      <v-row v-if="!editing">
-        <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" type="text" :disabled="true" v-model='stringIndirizzo'></v-text-field></v-col>
-      </v-row>
-      <template v-else>
-        <v-row>
-          <v-col cols="3" class="dati"><b>Città:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.Citta'></v-text-field></v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.Indirizzo'></v-text-field></v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="3" class="dati"><b>Numero civico:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.N_civ'></v-text-field></v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="3" class="dati"><b>Cap:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="number" v-model='user.Cap'></v-text-field></v-col>
+  <div>
+    <button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
+    <form @submit.prevent="update">
+      <v-alert :value="success !== ''" type="success">{{success}}</v-alert>
+      <v-alert :value="error !== ''" type="error" >{{error}}</v-alert>
+      <template v-for="(campo, i) in user">
+        <v-row v-if="fix.includes(i) && campo" :key="i">
+          <v-col cols="3" class="dati"><b>{{i.replace(/_/g , ' ')}}:</b></v-col>
+          <v-col  cols="9">{{campo}}</v-col>
         </v-row>
       </template>
-    </template>
-    <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
-  </form>
+      <v-row>
+        <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
+        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="tel" v-model='user.Numero_di_Telefono'></v-text-field></v-col>
+      </v-row>
+      <template v-if="isBusiness">
+        <v-row v-if="!editing">
+          <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
+          <v-col cols="9"><v-text-field light class="field" type="text" :disabled="true" v-model='stringIndirizzo'></v-text-field></v-col>
+        </v-row>
+        <template v-else>
+          <v-row>
+            <v-col cols="3" class="dati"><b>Città:</b></v-col>
+            <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.Citta'></v-text-field></v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
+            <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.Indirizzo'></v-text-field></v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3" class="dati"><b>Numero civico:</b></v-col>
+            <v-col cols="9"><v-text-field light class="field" type="text" v-model='user.N_civ'></v-text-field></v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3" class="dati"><b>Cap:</b></v-col>
+            <v-col cols="9"><v-text-field light class="field" type="number" v-model='user.Cap'></v-text-field></v-col>
+          </v-row>
+        </template>
+      </template>
+
+      <picture-input
+          v-if="editing"
+          ref="avatar"
+          @change="onChanged"
+          @remove="onRemoved"
+          :removable="true"
+          :prefill="avatar"
+          :width="200"
+          :height="200"
+          size="3"
+          :zIndex="0"
+          :crop="true"
+          :changeOnClick="false"
+          accept="image/jpeg, image/png, image/gif"
+          buttonClass="ui button primary"
+          :customStrings="{
+              upload: '<h1>Carica immagine</h1>',
+              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+              change: 'Cambia foto',
+              remove: 'Elimina foto',
+          }"
+      >
+        </picture-input>
+      <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
+    </form>
+  </div>
 </template>
 
 <script>
+  import {mapActions} from "vuex";
+  import PictureInput from "vue-picture-input";
+
   export default {
     name: "ManageUserData",
-    props: ['editing'],
+    components: {
+      PictureInput,
+    },
     data() {
       return {
         fix: [
@@ -52,9 +86,55 @@
           'Anno_di_Nascita',
           'Codice_Fiscale'
         ],
-
-
+        success: '',
+        error: '',
+        editing: false,
+        image: '',
+        deletePhoto: false
       }
+    },
+    methods: {
+      ...mapActions('userProfile', ['updateProfile']),
+      update: function() {
+        var data = {
+          phone: this.user.Numero_di_Telefono,
+        };
+        if(this.isBusiness){
+          data.city = this.user.Citta
+          data.address = this.user.Indirizzo
+          data.n_civ = this.user.N_civ
+          data.cap = this.user.Cap
+        }
+
+        const formData = new FormData();
+        if ( this.image !== '' || this.deletePhoto)
+          formData.append('avatar', this.image);
+        formData.append('data', JSON.stringify(data));
+
+        this.updateProfile(formData)
+        .then(() => {
+          this.editing = false
+          this.success = 'Profilo aggiornato con successo'
+          this.error = ''
+        })
+        .catch(err => {
+          this.success = ''
+          this.error = err
+        })
+      },
+
+      onChanged() {
+        this.deletePhoto = false;
+        if (this.$refs.avatar.file) {
+          this.image = this.$refs.avatar.file;
+        } else {
+          console.log("Old browser. No support for Filereader API");
+        }
+      },
+      onRemoved() {
+          this.image = '';
+          this.deletePhoto = true;
+      },
     },
     computed: {
       user() {
@@ -66,10 +146,50 @@
       stringIndirizzo() {
         return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
       },
+      butText() {
+        return this.editing? 'Visualizza dati' : 'Modifica dati'
+      },
+      avatar() {
+          return this.$store.getters['userProfile/user_private'].avatar
+      },
     }
   }
 </script>
 
 <style scoped>
+
+  .gestrest {
+    background: var(--ming);
+    padding: 10px;
+    border-radius: 25px;
+    transition: ease-in-out 0.3s;
+    margin-right: 10px;
+  }
+
+  .butgest {
+    text-transform: capitalize;
+    color: white;
+    font-weight: bold;
+  }
+
+  .gestrest:hover {
+    transform: scale(1.1);
+  }
+  .gestrest:hover > .wrench {
+    transform: rotate(45deg);
+  }
+
+  .save {
+    padding: 10px;
+    background: var(--ming);
+    border-radius: 25px;
+    margin: 10px auto;
+    color: white;
+    transition: 0.4s;
+    font-weight: bold;
+  }
+  .save:hover {
+    transform: scale(1.1);
+  }
 
 </style>

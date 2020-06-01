@@ -98,12 +98,17 @@ const router = new Router({
           component: () => import('@/views/pages/about.vue'),
           //meta: { src: require('@/assets/about.jpg') },
         },
+        {
+          path: 'termini',
+          name: 'TerminiECondizioni',
+          component: () => import('@/views/pages/TerminiECondizioni.vue'),
+          //meta: { src: require('@/assets/about.jpg') },
+        },
 
         {
           path: 'registrationBusiness',
           name: 'RegBusiness',
           component: () => import('@/views/pages/registrationBusiness.vue'),
-          beforeEnter: ifNotAuthenticated,
         },
         {
           path: 'newRestaurant',

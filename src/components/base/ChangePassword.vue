@@ -1,17 +1,7 @@
 <template>
   <div>
-    <v-alert
-        :value="pswSuccess !== ''"
-        type="success"
-    >
-      {{pswSuccess}}
-    </v-alert>
-    <v-alert
-      :value="pswError !== ''"
-      type="error"
-    >
-      {{pswError}}
-    </v-alert>
+    <v-alert :value="pswSuccess !== ''" type="success">{{pswSuccess}}</v-alert>
+    <v-alert :value="pswError !== ''" type="error" >{{pswError}}</v-alert>
 
     <v-card-actions>
         <v-btn @click="show = !show" text>Modifica password

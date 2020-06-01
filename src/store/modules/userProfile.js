@@ -83,7 +83,6 @@ const actions = {
     })
   },
 
-
   validateEmail: ({commit}, payload) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.ValidateEmail(payload)
@@ -102,7 +101,6 @@ const actions = {
     })
   },
 
-
   resendEmailValidation: ({commit}) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.ResendValidateEmail(state.user_private.id)
@@ -120,9 +118,54 @@ const actions = {
       })
     })
   },
+
+  updateProfile: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      if ( state.user_private.type==='business'){
+        manageUserProfile.updateBusiness(state.user_private.id, data)
+        .then(resp => {
+          commit('BUSINESS_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('BUSINESS_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+      else{
+        manageUserProfile.updateUser(state.user_private.id, data)
+        .then(resp => {
+          commit('USER_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('USER_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+    })
+  },
 }
 
 const mutations = {
+
+  USER_UPDATE: (state) => {
+  },//TODO: fare mutation dei dati quando il back me li passerà
+
+  USER_UPDATE_ERROR: (state) => {
+  },
+
+  BUSINESS_UPDATE: (state) => {
+  },
+
+  BUSINESS_UPDATE_ERROR: (state) => {
+  },
 
   RESEND_EMAIL_SUCCESS: () => {
   },

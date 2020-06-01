@@ -22,12 +22,25 @@
           </v-responsive>
         </div>
       </v-theme-provider>
+      <footer>
+        <cookie-law theme="dark-lime" buttonText="Accetta">
+            <div slot="message">
+              <p>
+                Questo sito usa i biscotti come Hänsel e Gretel per seguirti.<br>
+                Non ti devi preoccupare, qui non ci sono le streghe.
+              </p>
+            </div>
+        </cookie-law>
+      </footer>
     </div>
 
 </template>
 <script>
+  import CookieLaw from 'vue-cookie-law'
+
 export default {
   name: 'HomeFooter',
+  components: { CookieLaw },
   data: () => ({
 
   }),

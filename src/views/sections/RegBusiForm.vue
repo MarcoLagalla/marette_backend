@@ -1,7 +1,10 @@
 <template>
 <div class="body">
   <v-row align="center" class="ma-0 pa-8" justify="center">
-    <v-form @submit.prevent="register" v-model="valid">
+    <v-card v-if="isAuthenticated" color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
+      Effettuare il LogOut per poter registrare un business e i relativi ristoranti
+    </v-card>
+    <v-form v-else @submit.prevent="register" v-model="valid">
       <v-card color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
         <h1>Registra il tuo business <v-icon>mdi-account-tie</v-icon>
         </h1>
@@ -39,6 +42,8 @@
             <picture-input
               ref="avatar"
               @change="onChanged"
+              @remove="onRemoved"
+              :removable="true"
               :width="200"
               :height="200"
               size="5"
@@ -48,22 +53,25 @@
               accept="image/jpeg, image/png, image/gif"
               buttonClass="ui button primary"
               :customStrings="{
-              upload: '<h1>Carica immagine</h1>',
-              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                upload: '<h1>Carica immagine</h1>',
+                drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+                change: 'Cambia foto',
+                remove: 'Elimina foto',
+              }">
             </picture-input>
           </v-row>
         </v-col>
         <hr>
-        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Termini e Condizioni</router-link>.</v-card-text>
         <div class="regbtn2">
           <div class="center">
-            <button class="btn" type="submit" :disabled="!valid">
+            <v-btn :loading="loading" class="btn" type="submit" :disabled="!valid && !loading">
               <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
               </svg>
               <span>Submit</span>
-            </button>
+            </v-btn>
           </div>
         </div>
       </v-card>
@@ -84,6 +92,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       username: '',
       email: '',
       password: '',
@@ -115,6 +124,7 @@ export default {
   methods: {
     ...mapActions('userAuthentication', ['registerBusiness']),
     register: function() {
+      this.loading = true
       const data = {
         username: this.username,
         email: this.email,
@@ -144,6 +154,7 @@ export default {
           preventScroll: true
         });
       })
+      this.loading = false;
     },
     onChanged() {
       if (this.$refs.avatar.file) {
@@ -152,10 +163,13 @@ export default {
         console.log("Old browser. No support for Filereader API");
       }
     },
+    onRemoved() {
+      this.image = '';
+    },
   },
   computed: {
-    status() {
-      return this.$store.getters['userAuthentication/status']
+    isAuthenticated() {
+      return this.$store.getters['userAuthentication/isAuthenticated']
     },
     errors() {
       return this.$store.getters['userAuthentication/errorsB']
