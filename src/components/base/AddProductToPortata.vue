@@ -2,7 +2,7 @@
   <div class="portprod">
     <v-select :items="categories" label="Categoria del prodotto:" v-model="category" @change="choosedCategory = true"></v-select>
     <v-select :items="menu[category]" multiple chips item-text="name" item-value="id" label="Selezionare prodotto:" v-model="productIds" :disabled="!choosedCategory"></v-select>
-    <v-btn :disabled="productIds.length===0" @click="added_products">Aggiungi</v-btn>
+    <v-btn class="managebutton" :disabled="productIds.length===0" @click="added_products">Aggiungi</v-btn>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <v-card id="AddMenu" width="800" max-height="800" class="scrollovf">
+    <v-card id="AddMenu" width="800" max-height="800" class="vetrinacard">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -77,21 +77,6 @@
     .addmenu {
         padding: 10px !important;
         background: var(--ghostwhite);
-    }
-
-    .blutitle {
-        background: var(--lightgrey);
-        color: #2e2e2e;
-        box-shadow: 0 0 5px black;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .scrollovf {
-
-        box-shadow: 0 0 10px var(--charcoal);
-        background: var(--whitesmoke);
     }
 
     .titlemenu {

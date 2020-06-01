@@ -3,7 +3,7 @@
         <h1>{{name}}</h1>
         <div class="divider"></div>
           <v-textarea class="descript"  dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
-          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="managebutton">
+          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="editbutton">
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
   <button class="infoicon" @click="$refs.orarimodal.open()" >

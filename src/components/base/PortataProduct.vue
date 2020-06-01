@@ -73,12 +73,12 @@
         width: 100%;
         height: 50px;
         display: flex;
-       box-shadow: 0 0 4px #2f3942;
+       box-shadow: 0 0 4px var(--lightgrey);
         padding: 10px;
         transition: ease-in-out 0.3s;
     }
     .products:hover {
-        box-shadow: 0 0 10px var(--emerald);
+        box-shadow: 0 0 10px var(--ming);
     }
 
     .buttons {

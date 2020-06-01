@@ -22,10 +22,10 @@
             <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
                 Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
             </v-btn>
-            <v-btn light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton">
+            <v-btn light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton" text>
                 Elimina Menù <i class="fas fa-times"></i>
             </v-btn>
-            <v-btn light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton">
+            <v-btn light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton" text>
                 Modifica Menù<i class="far fa-edit"></i>
             </v-btn>
         </v-card-actions>
@@ -134,26 +134,14 @@
     }
     .addtocart {
         background: var(--ming)!important;
+        color: white;
+        font-weight: bold;
     }
 
     h1 {
         color: white;
         text-align: center;
         padding-top: 20px;
-    }
-
-    .vetrinacard {
-        background: var(--whitesmoke);
-
-    }
-
-    .blutitle {
-        background: var(--lightgrey);
-        color: #2e2e2e;
-        box-shadow: 0 0 5px black;
-
-        top: 0;
-        z-index: 1;
     }
 
     .titlemenu {
@@ -173,7 +161,5 @@
     .euro {
         margin-left: 5px;
     }
-    .managebutton {
-        background: ghostwhite!important;
-    }
+
 </style>

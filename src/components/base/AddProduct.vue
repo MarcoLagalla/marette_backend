@@ -182,20 +182,6 @@
         width: 50%;
         padding: 20px;
     }
-
-    .managebutton {
-        padding: 10px;
-        border-radius: 25px;
-        border: inset 2px var(--darkslate);
-        font-weight: bold;
-        background: var(--darkslate);
-        transition: ease 0.4s;
-        color: white;
-    }
-
-    .managebutton:hover {
-        box-shadow: 0 0 10px black;
-    }
     picture-input {
         z-index: 0!important;
     }
