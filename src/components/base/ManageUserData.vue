@@ -179,4 +179,17 @@
     transform: rotate(45deg);
   }
 
+  .save {
+    padding: 10px;
+    background: var(--ming);
+    border-radius: 25px;
+    margin: 10px auto;
+    color: white;
+    transition: 0.4s;
+    font-weight: bold;
+  }
+  .save:hover {
+    transform: scale(1.1);
+  }
+
 </style>
