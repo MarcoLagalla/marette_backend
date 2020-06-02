@@ -1,5 +1,5 @@
 <template>
-    <v-card id="AddMenu" width="800" max-height="800" class="scrollovf">
+    <v-card id="AddMenu" width="800" max-height="800" class="vetrinacard">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -12,8 +12,8 @@
             <v-text-field outlined v-model='menu.price' type="number" label="Prezzo del menu completo"
                           required></v-text-field>
             <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
-            <v-btn color="green"  @click="submitMenu" text>{{submit}}</v-btn>
-            <v-btn color="var(--ming)" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
+            <v-btn class="managebutton"  @click="submitMenu" text>{{submit}}</v-btn>
+            <v-btn class="managebutton" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
     </v-card>
 </template>
@@ -79,23 +79,12 @@
         background: var(--ghostwhite);
     }
 
-    .blutitle {
-        background: var(--emerald);
-        color: #FFFFFF;
-        box-shadow: 0 0 5px black;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .scrollovf {
-
-        box-shadow: 0 0 10px var(--charcoal);
-        background: var(--whitesmoke);
-    }
-
     .titlemenu {
         text-transform: uppercase;
         font-size: 1.2em;
+    }
+    .managebutton {
+        color: var(--darkslate);
+        font-weight: bold;
     }
 </style>

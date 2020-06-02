@@ -1,7 +1,25 @@
-.testbutton {
-    background: red;
-    color: white;
+.managebutton {
     padding: 10px;
-    margin: 10px;
-    border-radius: 15px;
+    color: var(--darkslate)!important;
+    font-weight: bold!important;
+    background: transparent!important;
+    border: transparent!important;
+    opacity: 1;
+    transition: 0.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+}
+.managebutton:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+.blutitle {
+    background: var(--lightgrey);
+    color: #2e2e2e;
+    box-shadow: 0 0 5px var(--lightgrey);
+    position: relative;
+    top: 0;
+    z-index: 1;
+}
+.vetrinacard {
+    box-shadow: 0 0 16px var(--lightgrey)!important;
+    background: var(--whitesmoke);
 }

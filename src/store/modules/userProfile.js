@@ -77,12 +77,11 @@ const actions = {
           .catch(err => {
 
             commit('PSW_CHANGE_ERROR', err.response)
-            reject(err)
+            reject(err.response.data)
 
           })
     })
   },
-
 
   validateEmail: ({commit}, payload) => {
     return new Promise((resolve, reject) => {
@@ -102,7 +101,6 @@ const actions = {
     })
   },
 
-
   resendEmailValidation: ({commit}) => {
     return new Promise((resolve, reject) => {
       sendUserAuthentication.ResendValidateEmail(state.user_private.id)
@@ -120,9 +118,54 @@ const actions = {
       })
     })
   },
+
+  updateProfile: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      if ( state.user_private.type==='business'){
+        manageUserProfile.updateBusiness(state.user_private.id, data)
+        .then(resp => {
+          commit('BUSINESS_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('BUSINESS_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+      else{
+        manageUserProfile.updateUser(state.user_private.id, data)
+        .then(resp => {
+          commit('USER_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('USER_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+    })
+  },
 }
 
 const mutations = {
+
+  USER_UPDATE: (state) => {
+  },//TODO: fare mutation dei dati quando il back me li passerà
+
+  USER_UPDATE_ERROR: (state) => {
+  },
+
+  BUSINESS_UPDATE: (state) => {
+  },
+
+  BUSINESS_UPDATE_ERROR: (state) => {
+  },
 
   RESEND_EMAIL_SUCCESS: () => {
   },
@@ -160,7 +203,10 @@ const mutations = {
     if (state.user_private.type === 'business')
     {
       state.user.Codice_Fiscale = data.cf
-      state.user.Indirizzo = data.address + ', ' + data.city + ', ' + data.cap
+      state.user.Indirizzo = data.address
+      state.user.N_civ = data.n_civ
+      state.user.Citta = data.city
+      state.user.Cap = data.cap
       state.user_private.restaurants = data.restaurants
     }
 

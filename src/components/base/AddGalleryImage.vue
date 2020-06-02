@@ -3,9 +3,9 @@
     <v-dialog v-model="dialog" overlay-opacity="0.8" >
       <template v-slot:activator="{ on }">
         <div class="rel">
-          <v-btn name="edit" color="blue" v-on="on"  class="managebutton">
+          <button name="edit" class="managebutton" v-on="on" >
             Aggiungi immagine <i class="far fa-edit"></i>
-          </v-btn>
+          </button>
         </div>
       </template>
       <v-card justify="center">
@@ -96,5 +96,11 @@
 </script>
 
 <style scoped>
-
+.managebutton {
+  color: var(--ghostwhite);
+  background: var(--darkslate);
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 25px;
+}
 </style>

@@ -1,20 +1,20 @@
 <template>
   <div>
-    <v-btn @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
+    <v-btn class="managebutton" @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
     <div v-show="portata.showAddPortata" class="addportata" id="AddPortata">
       <v-text-field outlined v-model='portata.name' type="text" label="Nome della portata" required></v-text-field>
       <v-text-field outlined v-model='portata.num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
 
       <v-row >
           <v-col v-for="(product, i) in portata.products" :key="i" cols="12" >
-            <base-product :product="product" :delete="true" @removed="removeProduct(product)" :discounts_list="[]"></base-product>
+            <base-portata-product :product="product" :delete="true" @removed="removeProduct(product)" :discounts_list="[]"></base-portata-product>
           </v-col>
         </v-row>
 
-      <v-btn @click="showAddProduct=true" text>Aggiungi prodotto</v-btn>
+      <v-btn class="managebutton" @click="showAddProduct=true" text>Aggiungi prodotto</v-btn>
       <base-add-product-to-portata v-show="showAddProduct" @added_product="addProduct($event)"></base-add-product-to-portata>
 
-      <v-btn color="green"  @click="submitPortata" :disabled="portata.products.length===0" text>{{submitBtn}}</v-btn>
+      <v-btn class="managebutton"  @click="submitPortata" :disabled="portata.products.length===0" text>{{submitBtn}}</v-btn>
     </div>
   </div>
 </template>

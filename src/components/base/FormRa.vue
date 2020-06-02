@@ -92,7 +92,7 @@
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-text style="color:white">Registrando un account accetti i nostri
-                            <router-link to="/termini">Terms & Privacy</router-link>
+                            <router-link to="/termini">Terms & Condizioni</router-link>
                             .
                         </v-card-text>
                         <div class="regbtn2">
