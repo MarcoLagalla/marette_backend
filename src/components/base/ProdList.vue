@@ -5,6 +5,9 @@
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
           <base-product :product="product"  :price="true" @open_card="toggleCardModal(product)"  @removed="del_Product(product)" ></base-product>
         </v-col>
+          <v-col cols="12" md="6" lg="4">
+              <base-add-new-product></base-add-new-product>
+          </v-col>
           <!--div class="product" >
               <i class="fas fa-plus fa-3x"></i>
           </div-->

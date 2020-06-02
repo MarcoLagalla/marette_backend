@@ -1,6 +1,6 @@
 <template>
-    <div class="body">
-<div id="CONTATTACI" class="contattaci">
+    <div class="body" id="CONTATTACI">
+<div  class="contattaci">
     <base-rest-h1> Info </base-rest-h1>
     <base-rest-info> </base-rest-info>
 </div>

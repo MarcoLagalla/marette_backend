@@ -1,6 +1,6 @@
 <template>
-  <div class="body">
-  <div class="body2" id="VETRINA">
+  <div class="body" id="VETRINA">
+  <div class="body2" >
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>

@@ -1,6 +1,6 @@
 <template>
-  <div class="body">
-  <div class="body2" id="MENU">
+  <div class="body" id="MENU">
+  <div class="body2" >
     <v-row>
       <v-col>
         <base-rest-h1>Menu</base-rest-h1>
