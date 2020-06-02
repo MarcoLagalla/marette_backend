@@ -1,5 +1,7 @@
 <template>
     <div>
+    <v-btn dark color="var(--ming)" @click="toggleCardModal">Aggiungi nuovo Prodotto</v-btn>
+    <sweet-modal ref="modal_add">
         <div class="addprod">
             <v-form @submit.prevent="submitProduct">
                 <v-text-field outlined
@@ -91,11 +93,13 @@
             <br><br>
 
         </div>
+    </sweet-modal>
     </div>
 </template>
 <script>
     import {mapActions} from "vuex";
     import PictureInput from "vue-picture-input";
+    import {SweetModal} from "sweet-modal-vue";
     
 
 
@@ -106,6 +110,7 @@
 
         components: {
             PictureInput,
+            SweetModal,
 
 
         },
@@ -150,6 +155,7 @@
             },
 
             submitProduct: function () {
+                this.toggleShowTags();
                 const data = {
                     "name": this.name,
                     "description": this.description,
@@ -168,6 +174,10 @@
             toggleShowTags() {
                 this.showTags = !this.showTags;
                 console.log(this.tags)
+            },
+
+            toggleCardModal() {
+                this.$refs.modal_add.open()
             },
 
 
