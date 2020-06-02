@@ -50,12 +50,8 @@ export default {
     },
 
     addNewDiscountToProduct(payload, id){
-        const config = {
-            headers: {
-              'content-type': 'multipart/form-data'
-            }
-        };
-        return api.post('v1/webapp/restaurant/' + id + '/products/' + payload['p_id'] + '/update', payload['data'], config)
+
+        return api.post('v1/webapp/restaurant/' + id + '/products/' + payload['p_id'] + '/setdiscounts', payload['data'])
             .then(response => {
                 return response
             })
