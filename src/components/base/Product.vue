@@ -1,8 +1,21 @@
 <template>
 
     <div >
+        <v-btn
+                class="delete_button"
+                name="delete"
+                v-if="this.delete"
+                @click="$emit('removed')"
+                depressed
+                bottom
+                fab
+                dark
+                x-small
+                color="var(--ming)" >
+            <i class="fas fa-times"></i>
+        </v-btn>
+
         <div class="product" @click="$emit('open_card')">
-            <button ></button>
             <v-avatar class="imag" size="100" tile>
                 <v-img :src="product.image"></v-img>
             </v-avatar>
@@ -113,10 +126,6 @@
             required: true
           },
 
-          discounts_list: {
-              type: Array,
-              required: true,
-          },
 
           delete: {
             type: Boolean,
@@ -218,31 +227,13 @@
         padding: 10px;
     }
 
-    .cardpos {
-
+    .delete_button {
+        z-index: 2;
+        top:15px;
+        left:335px;
     }
 
-    .managebutton {
-        transition: 0.3s ease-in-out;
-        background: var(--emerald) !important;
-        display: block;
-        margin-top: 5px;
-    }
 
-    .managebutton:hover {
-        scale: 1.1;
-    }
-
-    .cartbutton {
-        transition: 0.3s ease-in-out;
-        background: var(--emerald) !important;
-        display: block;
-        margin-top: 5px;
-    }
-
-    .cartbutton:hover {
-        scale: 1.1;
-    }
 
     .product {
         transition: ease-in-out 0.4s;
@@ -250,6 +241,7 @@
         background: var(--ghostwhite);
         padding: 5px;
         position: relative;
+        z-index: 1;
 
 
     }
