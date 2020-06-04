@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
+  <div><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
     <form @submit.prevent="update">
       <v-alert :value="success !== ''" type="success">{{success}}</v-alert>
       <v-alert :value="error !== ''" type="error" >{{error}}</v-alert>
@@ -191,5 +190,8 @@
   .save:hover {
     transform: scale(1.1);
   }
-
+  .dati {
+    background: var(--whitesmoke);
+    text-align: center;
+  }
 </style>

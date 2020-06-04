@@ -79,6 +79,7 @@
                 </v-card>
                 <br><br>
                 <picture-input
+                        v-if="toggleCardModal"
                         ref="productImage"
                         @change="onChanged"
                         :width="300"
@@ -123,6 +124,7 @@
                 price: '',
                 image: '',
                 showTags: false,
+                spi: true,
                 selectedTags: [],
 
             }

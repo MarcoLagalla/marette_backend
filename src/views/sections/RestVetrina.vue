@@ -4,6 +4,7 @@
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
+        <v-snackbar top v-model="snackbar" :timeout="timeout" color="green" >{{text}}</v-snackbar>
         <v-col v-if="admin" cols="12" md="6">
           <base-add-menu  :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
         </v-col>
@@ -35,8 +36,11 @@ export default {
           description: '',
           price: '',
           iva: '',
-          edit: false
-      }
+          edit: false,
+      },
+    snackbar: false,
+    timeout: 4000,
+    text: 'Menu creato con successo'
     }),
   computed: {
     menus() {
@@ -92,7 +96,8 @@ export default {
           price: menu.price,
           iva: menu.iva
       }).then(() =>{
-          alert('Menù aggiunto con successo')
+          this.snackbar = true;
+          this.text = 'Menu creato con successo';
       }).catch((err) =>{
           alert('Errore ' + err)
       })

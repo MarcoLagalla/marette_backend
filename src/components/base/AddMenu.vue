@@ -12,7 +12,7 @@
             <v-text-field outlined v-model='menu.price' type="number" label="Prezzo del menu completo"
                           required></v-text-field>
             <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
-            <v-btn class="managebutton"  @click="submitMenu" text>{{submit}}</v-btn>
+            <v-btn class="managebutton"  @click="submitMenu" text><span v-if="!loading">{{submit}}</span><span v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span></v-btn>
             <v-btn class="managebutton" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
     </v-card>
@@ -31,7 +31,7 @@
                     description: '',
                     price: '',
                     iva: '',
-                    edit: false
+                    edit: false,
                 })
             },
         },
@@ -41,7 +41,8 @@
             descriptionNew: 'Potrai creare diverse portate, in ognuna puoi aggiungere più piatti e decidere se il cliente li potrà selezionare tutti o sceglierne uno',
             descriptionEdit: 'Modifica i dati del menù che ti interessano',
             submitNew: 'Aggiungi Menù',
-            submitEdit: 'Salva cambiamenti'
+            submitEdit: 'Salva cambiamenti',
+            loading: false,
         }),
         computed: {
           title() {
@@ -56,10 +57,12 @@
         },
         methods: {
             submitMenu: function () {
+                this.loading=true
                 if (this.menu.edit)
                     this.$emit('edit_menu', this.menu)
                 else
-                    this.$emit('new_menu', this.menu)
+                    this.$emit('new_menu', this.menu);
+                this.loading=false
             },
             reset: function () {
                 this.menu = {

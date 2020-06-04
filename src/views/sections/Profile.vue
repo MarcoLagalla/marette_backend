@@ -149,11 +149,6 @@
 
     }
 
-    .dati {
-        background: var(--whitesmoke);
-        text-align: center;
-    }
-
     .divider {
         width: 100%;
         background: var(--ming);
