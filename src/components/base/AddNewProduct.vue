@@ -158,7 +158,9 @@
             },
 
             submitProduct: function () {
-                this.toggleShowTags();
+                if(this.showTags === true) {
+                    this.toggleShowTags();
+                }
                 const data = {
                     "name": this.name,
                     "description": this.description,
