@@ -85,7 +85,7 @@
         padding: 10px;
         transition: 0.3s ease-in-out;
         opacity: 0.8;
-        text-shadow: 0 4px 2px gray;
+
     }
 
     .share {
@@ -94,7 +94,7 @@
         border-radius: 25px;
         padding: 10px;
         font-size: 1em;
-        text-shadow: 0 4px 2px gray;
+
         transition: 0.3s ease-in-out;
     }
 

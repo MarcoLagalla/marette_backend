@@ -4,11 +4,11 @@
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
       <v-row>
-        <v-snackbar top v-model="snackbar" :timeout="timeout" color="green" >{{text}}</v-snackbar>
-        <v-col v-if="admin" cols="12" md="6">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
+        <v-col v-if="admin" cols="12" md="4">
           <base-add-menu  :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
         </v-col>
-        <v-col v-for="menu in menus" :key="menu.id" cols="12" md="6">
+        <v-col v-for="menu in menus" :key="menu.id" cols="12" md="4">
           <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="askEditMenu(menu)"></base-menu-vetrina>
         </v-col>
       </v-row>
@@ -40,6 +40,7 @@ export default {
       },
     snackbar: false,
     timeout: 4000,
+    color: 'green',
     text: 'Menu creato con successo'
     }),
   computed: {
@@ -75,10 +76,13 @@ export default {
         }
       })
       .then(() =>{
-        alert('Menù aggiornato con successo')
+        this.snackbar = true;
+        this.text = 'Menu modificato con successo';
       })
       .catch((err) =>{
-        alert('Errore ' + err)
+        this.snackbar = true;
+        this.text = 'Errore'+ err;
+        this.color = 'error';
       })
 
       this.menuToManage = {
@@ -99,7 +103,9 @@ export default {
           this.snackbar = true;
           this.text = 'Menu creato con successo';
       }).catch((err) =>{
-          alert('Errore ' + err)
+        this.snackbar = true;
+        this.text = 'Errore'+ err;
+        this.color = 'error';
       })
     }
   }

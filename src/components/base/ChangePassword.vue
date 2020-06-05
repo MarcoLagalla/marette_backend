@@ -4,7 +4,7 @@
     <v-alert :value="pswError !== ''" type="error" >{{pswError}}</v-alert>
 
     <v-card-actions>
-        <v-btn @click="show = !show" text>Modifica password
+        <v-btn class="managebutton" @click="show = !show" text>Modifica password
             <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
     </v-card-actions>
@@ -43,7 +43,7 @@
                 </v-row>
                 <div class="regbtn2">
                     <div class="center">
-                        <button type="submit" class="password_btn">Modifica Password
+                        <button type="submit" class="managebutton2">Modifica Password
                         </button>
                     </div>
                 </div>

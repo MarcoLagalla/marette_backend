@@ -2,10 +2,13 @@
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
             <div class="products" v-on="on">
-                <div class="title" v-text="product.name"></div>
-                <div class="buttons">
-                   <input type="checkbox"><label></label>
-                </div>
+
+
+                    <div class="inputGroup">
+                        <input :id="product.name" name="product.name" type="checkbox"/>
+                        <label :for="product.name"><div class="title" v-text="product.name"></div></label>
+                    </div>
+
             </div>
         </template>
         <v-card color="var(--ming)" dark class="product">
@@ -67,18 +70,7 @@
 </script>
 
 <style scoped>
-    .products {
-        position: relative;
-        width: 100%;
-        height: 50px;
-        display: flex;
-       box-shadow: 0 0 4px var(--lightgrey);
-        padding: 10px;
-        transition: ease-in-out 0.3s;
-    }
-    .products:hover {
-        box-shadow: 0 0 10px var(--ming);
-    }
+
 
     .buttons {
         position: absolute;
@@ -126,47 +118,90 @@
     .product:hover {
         box-shadow: 0 0 10px black;
     }
-    /*Checkboxes styles*/
-    input[type="checkbox"] { display: none; }
 
-    input[type="checkbox"] + label {
+
+    .inputGroup {
+        background-color: #fff;
         display: block;
+        margin: 10px 0;
         position: relative;
-        padding-left: 35px;
-        margin-bottom: 20px;
-        font: 14px/20px 'Open Sans', Arial, sans-serif;
-        color: #ddd;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
+        box-shadow: 0 0 2px lightgrey;
     }
-
-    input[type="checkbox"] + label:last-child { margin-bottom: 0; }
-
-    input[type="checkbox"] + label:before {
-        content: '';
+    .inputGroup label {
+        padding: 12px 30px;
+        width: 100%;
         display: block;
-        width: 20px;
-        height: 20px;
-        border: 1px solid #6cc0e5;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        -webkit-transition: color 200ms ease-in;
+        transition: color 200ms ease-in;
+        overflow: hidden;
+    }
+    .inputGroup label:before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        content: '';
+        background-color: var(--emerald);
         position: absolute;
-        left: 0;
-        top: 0;
-        opacity: .6;
-        -webkit-transition: all .12s, border-color .08s;
-        transition: all .12s, border-color .08s;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        -webkit-transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        z-index: -1;
+    }
+    .inputGroup label:after {
+        width: 32px;
+        height: 32px;
+        content: '';
+        border: 2px solid #D1D7DC;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ");
+        background-repeat: no-repeat;
+        background-position: 2px 3px;
+        border-radius: 50%;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        -webkit-transition: all 200ms ease-in;
+        transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+        color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+        -webkit-transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+        background-color: var(--ming);
+        border-color: var(--ming);
+    }
+    .inputGroup input {
+        width: 32px;
+        height: 32px;
+        -webkit-box-ordinal-group: 2;
+        order: 1;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        visibility: hidden;
     }
 
-    input[type="checkbox"]:checked + label:before {
-        width: 10px;
-        top: -5px;
-        left: 5px;
-        border-radius: 0;
-        opacity: 1;
-        border-top-color: transparent;
-        border-left-color: transparent;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-    }
+
 </style>

@@ -18,17 +18,18 @@
                               @new_portata="submitPortata($event)"
                               @edit_portata="submitEditPortata($event)"></base-add-portata>
         </div>
-        <v-card-actions>
+        <div class="actions">
             <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
                 Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
             </v-btn>
-            <v-btn light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton" text>
+            <button light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton" text>
                 Elimina Menù <i class="fas fa-times"></i>
-            </v-btn>
-            <v-btn light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton" text>
-                Modifica Menù<i class="far fa-edit"></i>
-            </v-btn>
-        </v-card-actions>
+            </button>
+
+            <button light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton" text>
+                Modifica Menù <i class="far fa-edit"></i>
+            </button>
+        </div>
     </v-card>
 </template>
 
