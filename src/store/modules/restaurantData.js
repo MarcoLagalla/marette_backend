@@ -333,8 +333,8 @@ const actions = {
             const payload = {restId: state.ID, menuId: menu.id}
             manageRestaurant.deleteMenu(payload)
             .then(resp => {
-                commit('RMV_MENU_SUCCESS', resp.data);
-                resolve(menu)
+                commit('RMV_MENU_SUCCESS', menu);
+                resolve(resp.data)
             })
             .catch(err => {
                 commit('RMV_MENU_ERROR');

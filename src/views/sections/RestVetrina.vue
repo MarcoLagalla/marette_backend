@@ -3,12 +3,14 @@
   <div class="body2" >
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
-      <base-add-menu :editOnly="menus.length >= 3" :key="newEditMenu" :edit="edit" :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
-      <v-alert v-if="menus.length >= 3" type="info">Puoi creare al massimo 3 menù</v-alert>
+      <template v-if="admin">
+        <base-add-menu :editOnly="menus.length >= 3" :key="newEditMenu" :edit="edit" :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
+        <v-alert v-if="menus.length >= 3" type="info">Puoi creare al massimo 3 menù</v-alert>
+      </template>
       <v-row>
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
 
-        <v-col v-for="menu in menus" :key="menu.id" cols="12" :md="12/menus.length">
+        <v-col v-for="menu in menus" :key="menu.name" cols="12" :md="12/menus.length">
           <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="askEditMenu(menu)"></base-menu-vetrina>
         </v-col>
       </v-row>
