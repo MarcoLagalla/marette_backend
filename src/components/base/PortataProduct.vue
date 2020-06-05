@@ -2,13 +2,10 @@
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
             <div class="products" v-on="on">
-
-
-                    <div class="inputGroup">
-                        <input :id="product.name" name="product.name" type="checkbox"/>
-                        <label :for="product.name"><div class="title" v-text="product.name"></div></label>
-                    </div>
-
+                <div class="inputGroup">
+                    <input  :id="product.id + portata" name="product.name" type="checkbox"/>
+                    <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
+                </div>
             </div>
         </template>
         <v-card color="var(--ming)" dark class="product">
@@ -44,22 +41,17 @@
                 type: Object,
                 required: true
             },
+            portata: {
+                type: String,
+                required: false,
+                default: ''
+            },
             delete: {
                 type: Boolean,
                 required: false,
                 default: false
             },
             basket: {
-                type: Boolean,
-                required: false,
-                default: false
-            },
-            edit: {
-                type: Boolean,
-                required: false,
-                default: false
-            },
-            price: {
                 type: Boolean,
                 required: false,
                 default: false

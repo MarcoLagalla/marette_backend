@@ -1,5 +1,5 @@
 <template>
-    <v-card class="vetrinacard" width="800" height="auto">
+    <v-card class="vetrinacard" max-width="500" height="auto">
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="menu.name"></v-card-title>
@@ -137,6 +137,9 @@
 </script>
 
 <style scoped>
+    .vetrinacard {
+        margin: 0 auto;
+    }
 
     .addmenu {
         height: auto;

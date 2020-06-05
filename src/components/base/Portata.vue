@@ -3,7 +3,7 @@
     <v-card-title class="headline" v-text="portata.name"></v-card-title>
     <v-card-subtitle v-text="'Puoi scegliere ' + portata.num_products + ' di questi prodotti:'"> </v-card-subtitle>
     <div class="portate" v-for="product in portata.products" :key="product.id">
-    <base-portata-product :product="product"></base-portata-product>
+    <base-portata-product :portata="portata.name" :product="product"></base-portata-product>
     </div>
     <div class="actions">
       <button name="delete" v-if="admin" class="manageportata" @click="$emit('removed')" text>
