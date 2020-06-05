@@ -2,7 +2,7 @@
     <div :style="image" class="body" id="HOME">
         <v-row align="center" class="ma-0 pa-8" justify="center">
             <v-col cols="12" md="6">
-                <base-name-rest-card :description="description" :name="restData.activity_name" :admin="admin"
+                <base-name-rest-card :category="restData.restaurant_category" :description="description" :name="restData.activity_name" :admin="admin"
                                      @edited="submitDescription($event)"></base-name-rest-card>
             </v-col>
             <v-col cols="6" md="4">
