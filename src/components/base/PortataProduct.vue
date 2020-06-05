@@ -2,12 +2,12 @@
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
             <div class="products" v-on="on">
-                <div v-if="!delete2" class="inputGroup">
+                <div v-if="!deleteOpt" class="inputGroup">
                     <input  :id="product.id + portata" name="product.name" type="checkbox"/>
                     <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
                 </div>
-                <div v-if="delete2" class="inputGroup2">
-                    <input  :id="product.id + portata" name="product.name" type="checkbox"/>
+                <div v-else class="inputGroup2">
+                    <input  :id="product.id + portata" @click="$emit('removed')" name="product.name" type="checkbox"/>
                     <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
                 </div>
             </div>
@@ -38,7 +38,6 @@
         data() {
             return {
                 show: false,
-                delete2: true
             }
         },
         props: {
@@ -51,7 +50,7 @@
                 required: false,
                 default: ''
             },
-            delete: {
+            deleteOpt: {
                 type: Boolean,
                 required: false,
                 default: false
@@ -256,18 +255,6 @@
         cursor: pointer;
         -webkit-transition: all 200ms ease-in;
         transition: all 200ms ease-in;
-    }
-    .inputGroup2 input:checked ~ label {
-        color: #fff;
-    }
-    .inputGroup2 input:checked ~ label:before {
-        -webkit-transform: translate(-50%, -50%) scale3d(56, 56, 1);
-        transform: translate(-50%, -50%) scale3d(56, 56, 1);
-        opacity: 1;
-    }
-    .inputGroup2 input:checked ~ label:after {
-        background-color: darkorange;
-        border-color: darkorange;
     }
     .inputGroup2 input {
         width: 32px;
