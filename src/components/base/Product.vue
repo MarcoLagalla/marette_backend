@@ -126,7 +126,6 @@
             required: true
           },
 
-
           delete: {
             type: Boolean,
             required: false,
@@ -230,7 +229,7 @@
     .delete_button {
         z-index: 2;
         top:15px;
-        left:335px;
+        left:350px;
     }
 
 

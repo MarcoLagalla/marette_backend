@@ -3,7 +3,7 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
-          <base-product :product="product"  :price="true" @open_card="toggleCardModal(product)"  @removed="del_Product(product)" ></base-product>
+          <base-product :product="product" :delete="admin" :price="true" @open_card="toggleCardModal(product)"  @removed="del_Product(product)" ></base-product>
         </v-col>
           <v-col cols="12" md="6" lg="4">
               <base-add-new-product :category='category' v-if="admin" :admin="admin"></base-add-new-product>
