@@ -3,8 +3,8 @@
   <div class="body2" >
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
-      <base-add-menu v-if="true" :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
-      <v-alert type="info">Puoi creare al massimo 3 menu</v-alert>
+      <base-add-menu :editOnly="menus.length >= 3" :key="newEditMenu" :edit="edit" :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
+      <v-alert v-if="menus.length >= 3" type="info">Puoi creare al massimo 3 menù</v-alert>
       <v-row>
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
 
@@ -38,10 +38,12 @@ export default {
           iva: '',
           edit: false,
       },
+    edit: false,
     snackbar: false,
     timeout: 4000,
     color: 'green',
-    text: 'Menu creato con successo'
+    text: 'Menu creato con successo',
+    newEditMenu: 0,
     }),
   computed: {
     menus() {
@@ -57,12 +59,10 @@ export default {
       this.deleteMenu(menu) //TODO: se sbaglia ad eliminare devo gestire
     },
     askEditMenu: function (menu) {
+        this.edit = true
+        this.newEditMenu ++
         menu.edit = true
         this.menuToManage = menu
-        document.getElementById('AddMenu').scrollIntoView(false)
-        document.getElementById('AddMenu').focus({
-          preventScroll: true
-        });
     },
     submitEditMenu: function (menu) {
       this.editMenu({
