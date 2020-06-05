@@ -307,7 +307,7 @@ const actions = {
             })
             .catch(err => {
                 commit('ADD_MENU_ERROR');
-                reject(err)
+                reject(err.response.data)
             })
         })
     },
@@ -323,7 +323,7 @@ const actions = {
             })
             .catch(err => {
                 commit('EDIT_MENU_ERROR');
-                reject(err)
+                reject(err.response.data)
             })
         })
     },

@@ -8,7 +8,7 @@
       <v-row>
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
 
-        <v-col v-for="menu in menus" :key="menu.id" cols="12" md="4">
+        <v-col v-for="menu in menus" :key="menu.id" cols="12" :md="12/menus.length">
           <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="askEditMenu(menu)"></base-menu-vetrina>
         </v-col>
       </v-row>
@@ -56,7 +56,7 @@ export default {
   methods: {
     ...mapActions('restaurantData', ['deleteMenu', 'addMenu', 'editMenu']),
     removeMenu: function (menu) {
-      this.deleteMenu(menu) //TODO: se sbaglia ad eliminare devo gestire
+      this.deleteMenu(menu)
     },
     askEditMenu: function (menu) {
         this.edit = true
@@ -78,10 +78,17 @@ export default {
       .then(() =>{
         this.snackbar = true;
         this.text = 'Menu modificato con successo';
+        this.color = 'green'
       })
-      .catch((err) =>{
+      .catch((errors) =>{
         this.snackbar = true;
-        this.text = 'Errore'+ err;
+        var errString = ''
+        for (var key in errors) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (!errors.hasOwnProperty(key)) continue;
+          errString += key + ': ' + errors[key].toString() + ' ';
+        }
+        this.text = 'Errore: ' + errString;
         this.color = 'error';
       })
 
@@ -102,9 +109,16 @@ export default {
       }).then(() =>{
           this.snackbar = true;
           this.text = 'Menu creato con successo';
-      }).catch((err) =>{
+          this.color = 'green'
+      }).catch((errors) =>{
         this.snackbar = true;
-        this.text = 'Errore'+ err;
+        var errString = ''
+        for (var key in errors) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (!errors.hasOwnProperty(key)) continue;
+          errString += key + ': ' + errors[key].toString() + ' ';
+        }
+        this.text = 'Errore: ' + errString;
         this.color = 'error';
       })
     }
