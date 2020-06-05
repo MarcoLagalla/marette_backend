@@ -1,16 +1,12 @@
 <template>
-  <div>
+  <div class="body">
     <v-btn class="managebutton" @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
     <div v-show="portata.showAddPortata" class="addportata" id="AddPortata">
       <v-text-field outlined v-model='portata.name' type="text" label="Nome della portata" required></v-text-field>
       <v-text-field outlined v-model='portata.num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
-
-      <v-row >
-          <v-col v-for="(product, i) in portata.products" :key="i" cols="12" >
+          <div v-for="(product, i) in portata.products" :key="i"  >
             <base-portata-product :product="product" :delete="true" @removed="removeProduct(product)" :discounts_list="[]"></base-portata-product>
-          </v-col>
-        </v-row>
-
+          </div>
       <v-btn class="managebutton" @click="showAddProduct=true" text>Aggiungi prodotto</v-btn>
       <base-add-product-to-portata v-show="showAddProduct" @added_product="addProduct($event)"></base-add-product-to-portata>
 
@@ -73,4 +69,7 @@
 .addportata {
 
 }
+  .body {
+    margin: 10px;
+  }
 </style>

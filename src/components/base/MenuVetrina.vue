@@ -1,5 +1,6 @@
 <template>
     <v-card class="vetrinacard" width="800" height="auto">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="menu.name"></v-card-title>
             <div class="quant">
@@ -56,7 +57,11 @@
                 showAddPortata: false,
                 products: [],
                 edit: false
-            }
+            },
+            snackbar: false,
+            timeout: 4000,
+            color: 'green',
+            text: 'Menu aggiornato con successo'
         }),
         methods: {
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry', 'editMenuEntry']),
@@ -110,10 +115,13 @@
                 this.editMenuEntry(payload)
                     .then((newPortata) => {
                         this.menu.entries[this.menu.entries.indexOf(portata)] = newPortata
-                        alert('Portata aggiornata con successo')
+                        this.snackbar = true;
+                        this.text = 'Menu aggiornato con successo';
                     })
                     .catch((err) => {
-                        alert('Errore ' + err)
+                        this.snackbar = true;
+                        this.text = 'Errore'+ err;
+                        this.color = 'error';
                     })
 
                 this.portataToManage = {
@@ -137,6 +145,7 @@
         background: var(--ming)!important;
         color: white;
         font-weight: bold;
+        margin: 10px;
     }
 
     h1 {
@@ -157,7 +166,10 @@
         top: 0;
         margin: 10px;
         display: flex;
-        padding: 5px;
+        padding: 10px;
+        background: var(--ghostwhite);
+        border-radius: 15px;
+        box-shadow: inset 0 0 4px grey;
     }
     .euro {
         margin-left: 5px;

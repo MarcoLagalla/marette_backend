@@ -1,5 +1,8 @@
 <template>
-    <v-card id="AddMenu" width="800" max-height="800" class="vetrinacard">
+    <div>
+    <button :class="loading?'loading':'openmodaladdmenu'" :disabled="loading" @click="toggleMenuModal"><span class="btnmod" v-if="!loading">Nuovo Menu <i class="fas fa-plus fa-1x"></i></span><span v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span> </button>
+    <sweet-modal ref="addmenu">
+    <div id="AddMenu" width="800" max-height="800" class="">
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -15,7 +18,9 @@
             <v-btn class="managebutton"  @click="submitMenu" text><span v-if="!loading">{{submit}}</span><span v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span></v-btn>
             <v-btn class="managebutton" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
         </div>
-    </v-card>
+    </div>
+    </sweet-modal>
+    </div>
 </template>
 
 <script>
@@ -72,7 +77,10 @@
                     iva: '',
                     edit: false
                 }
-            }
+            },
+            toggleMenuModal() {
+                this.$refs.addmenu.open()
+            },
         }
     }
 </script>
@@ -89,5 +97,24 @@
     .managebutton {
         color: var(--darkslate);
         font-weight: bold;
+    }
+    .openmodaladdmenu {
+        background: var(--darkslate);
+        border-radius: 25px;
+        box-shadow: 0 0 2px lightgrey;
+        padding: 10px;
+        margin: 10px auto;
+        transition: 0.3s ease-in-out;
+    }
+    .openmodaladdmenu:hover {
+        transform: scale(1.1);
+    }
+    .btnmod {
+        color: white;
+        font-weight: bold;
+    }
+    .loading {
+        background: transparent;
+        box-shadow: transparent;
     }
 </style>

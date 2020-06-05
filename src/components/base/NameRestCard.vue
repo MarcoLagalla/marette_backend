@@ -16,7 +16,7 @@
     </sweet-modal>
         <ul class="orari">
           <li class="infos">
-            Categoria
+              {{category}}
           </li>
           <li class="infos">
             Aperto ora/Apre alle
