@@ -2,7 +2,11 @@
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
             <div class="products" v-on="on">
-                <div class="inputGroup">
+                <div v-if="!delete2" class="inputGroup">
+                    <input  :id="product.id + portata" name="product.name" type="checkbox"/>
+                    <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
+                </div>
+                <div v-if="delete2" class="inputGroup2">
                     <input  :id="product.id + portata" name="product.name" type="checkbox"/>
                     <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
                 </div>
@@ -34,6 +38,7 @@
         data() {
             return {
                 show: false,
+                delete2: true
             }
         },
         props: {
@@ -181,6 +186,90 @@
         border-color: var(--ming);
     }
     .inputGroup input {
+        width: 32px;
+        height: 32px;
+        -webkit-box-ordinal-group: 2;
+        order: 1;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        visibility: hidden;
+    }
+    /* test */
+
+    .inputGroup2 {
+        background-color: #fff;
+        display: block;
+        margin: 10px 0;
+        position: relative;
+        box-shadow: 0 0 2px lightgrey;
+    }
+    .inputGroup2 label {
+        padding: 12px 30px;
+        width: 100%;
+        display: block;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        -webkit-transition: color 200ms ease-in;
+        transition: color 200ms ease-in;
+        overflow: hidden;
+    }
+    .inputGroup2 label:before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        content: '';
+        background-color: var(--emerald);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        -webkit-transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        z-index: -1;
+    }
+    .inputGroup2 label:after {
+        width: 32px;
+        height: 32px;
+        content: '';
+        border: 2px solid #D1D7DC;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,<svg aria-hidden='true' focusable='false' data-prefix='fas' data-icon='trash' class='svg-inline--fa fa-trash fa-w-14' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='-50 0 600 650'><path fill='grey' d='M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z'></path></svg>");
+        background-repeat: no-repeat;
+        background-position: 2px 3px;
+        border-radius: 50%;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        -webkit-transition: all 200ms ease-in;
+        transition: all 200ms ease-in;
+    }
+    .inputGroup2 input:checked ~ label {
+        color: #fff;
+    }
+    .inputGroup2 input:checked ~ label:before {
+        -webkit-transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        opacity: 1;
+    }
+    .inputGroup2 input:checked ~ label:after {
+        background-color: darkorange;
+        border-color: darkorange;
+    }
+    .inputGroup2 input {
         width: 32px;
         height: 32px;
         -webkit-box-ordinal-group: 2;
