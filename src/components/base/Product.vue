@@ -229,7 +229,7 @@
     .delete_button {
         z-index: 2;
         top:15px;
-        left:350px;
+        left:97%;
     }
 
 
