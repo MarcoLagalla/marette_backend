@@ -254,12 +254,13 @@ const actions = {
                 });
             manageRestaurant.addMenuEntry(payload)
             .then(resp => {
+                portata.data.id = resp.data.id
                 commit('ADD_PORTATA_SUCCESS', portata);
                 resolve(resp.data)
             })
             .catch(err => {
                 commit('ADD_PORTATA_ERROR');
-                reject(err)
+                reject(err.response.data)
             })
         })
     },
@@ -270,12 +271,12 @@ const actions = {
             data.restId =  state.ID
             manageRestaurant.deleteMenuEntry(data)
             .then(resp => {
-                commit('RMV_PORTATA_SUCCESS', resp.data);
+                commit('RMV_PORTATA_SUCCESS', data);
                 resolve(resp.data)
             })
             .catch(err => {
                 commit('RMV_PORTATA_ERROR');
-                reject(err)
+                reject(err.response.data)
             })
         })
     },
@@ -382,7 +383,15 @@ const mutations = {
         });
     },
 
-    RMV_PORTATA_SUCCESS: () =>{
+    RMV_PORTATA_SUCCESS: (state, data) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === data.menuId){
+            menu.entries.forEach((portata) =>{
+                if (portata.id === data.entryId)
+                    menu.entries.splice(menu.entries.indexOf(portata), 1)
+            })
+          }
+        });
     },
 
     RMV_PORTATA_ERROR: () =>{

@@ -71,7 +71,7 @@
                     menuId: this.menu.id
                 }
                 this.addMenuEntry(payload)
-                    .then(
+                    .then(() => {
                         this.portataToManage = {
                             name: '',
                             num_products: 1,
@@ -79,13 +79,44 @@
                             products: [],
                             edit: false
                         }
-                    )//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                        this.snackbar = true;
+                        this.text = 'Portata aggiunta con successo';
+                        this.color = 'green';
+                    })
+                    .catch((errors) => {
+                        this.snackbar = true;
+                        var errString = ''
+                        for (var key in errors) {
+                          // eslint-disable-next-line no-prototype-builtins
+                          if (!errors.hasOwnProperty(key)) continue;
+                          errString += key + ': ' + errors[key].toString() + ' ';
+                        }
+                        this.text = 'Errore: ' + errString;
+                        this.color = 'error';
+                    })
             },
 
             deletePortata: function (portata) {
-                this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
+
                 const payload = {menuId: this.menu.id, entryId: portata.id}
-                this.deleteMenuEntry(payload) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                this.deleteMenuEntry(payload)
+                .then(() => {
+                    this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
+                    this.snackbar = true;
+                    this.text = 'Portata eliminata con successo';
+                    this.color = 'green';
+                })
+                .catch((errors) => {
+                    this.snackbar = true;
+                    var errString = ''
+                    for (var key in errors) {
+                      // eslint-disable-next-line no-prototype-builtins
+                      if (!errors.hasOwnProperty(key)) continue;
+                      errString += key + ': ' + errors[key].toString() + ' ';
+                    }
+                    this.text = 'Errore: ' + errString;
+                    this.color = 'error';
+                })
             },
 
             askEditPortata: function (portata) {
@@ -116,11 +147,18 @@
                     .then((newPortata) => {
                         this.menu.entries[this.menu.entries.indexOf(portata)] = newPortata
                         this.snackbar = true;
-                        this.text = 'Menu aggiornato con successo';
+                        this.text = 'Portata aggiornata con successo';
+                        this.color = 'green';
                     })
-                    .catch((err) => {
+                    .catch((errors) => {
                         this.snackbar = true;
-                        this.text = 'Errore'+ err;
+                        var errString = ''
+                        for (var key in errors) {
+                          // eslint-disable-next-line no-prototype-builtins
+                          if (!errors.hasOwnProperty(key)) continue;
+                          errString += key + ': ' + errors[key].toString() + ' ';
+                        }
+                        this.text = 'Errore: ' + errString;
                         this.color = 'error';
                     })
 
