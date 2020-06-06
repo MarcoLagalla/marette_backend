@@ -17,7 +17,6 @@ from rest_framework import serializers
 from datetime import datetime
 
 from backend.account.models import Business, Customer
-from backend.webapp.models.menu import Menu
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
     DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES, DAYS, DAILY_HOURS
 
@@ -90,11 +89,6 @@ class Restaurant(models.Model):
             return '/media/placeholder/restaurant/placeholder.png'
         else:
             return self.image.url
-
-    def menus(self):
-        menus = Menu.objects.filter(restaurant_id=self.id)
-        return menus.count()
-
 
 
 class CustomerVote(models.Model):
