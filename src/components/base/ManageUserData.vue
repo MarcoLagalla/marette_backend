@@ -9,6 +9,18 @@
           <v-col  cols="9">{{campo}}</v-col>
         </v-row>
       </template>
+      <v-row v-if="user.Nome || editing">
+        <v-col cols="3" class="dati"><b>Nome:</b></v-col>
+        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="text" v-model='user.Nome'></v-text-field></v-col>
+      </v-row>
+      <v-row v-if="user.Cognome || editing">
+        <v-col cols="3" class="dati"><b>Cognome:</b></v-col>
+        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="text" v-model='user.Cognome'></v-text-field></v-col>
+      </v-row>
+      <v-row v-if="user.Anno_di_Nascita || editing">
+        <v-col cols="3" class="dati"><b>Data di nascita:</b></v-col>
+        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="date" v-model='user.Anno_di_Nascita'></v-text-field></v-col>
+      </v-row>
       <v-row>
         <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
         <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="tel" v-model='user.Numero_di_Telefono'></v-text-field></v-col>
@@ -80,9 +92,6 @@
         fix: [
           'Username',
           'Email',
-          'Nome',
-          'Cognome',
-          'Anno_di_Nascita',
           'Codice_Fiscale'
         ],
         success: '',
@@ -97,6 +106,9 @@
       update: function() {
         var data = {
           phone: this.user.Numero_di_Telefono,
+          first_name: this.user.Nome,
+          last_name: this.user.Cognome,
+          birth_date: this.user.Anno_di_Nascita
         };
         if(this.isBusiness){
           data.city = this.user.Citta
