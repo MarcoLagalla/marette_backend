@@ -1,6 +1,6 @@
 <template>
   <v-row >
-    <v-dialog v-model="dialog" overlay-opacity="0.8" >
+    <v-dialog v-model="dialog" overlay-opacity="0.8" max-width="500">
       <template v-slot:activator="{ on }">
         <div class="rel">
           <button name="edit" class="managebutton" v-on="on" >
@@ -26,8 +26,10 @@
           accept="image/jpeg, image/png, image/gif"
           buttonClass="ui button primary"
           :customStrings="{
-          upload: '<h1>Carica immagine</h1>',
-          drag: 'Trascina qui la un immagine o clicca per selezionarla'}">
+            upload: '<h1>Carica immagine</h1>',
+            drag: 'Trascina qui la un immagine o clicca per selezionarla',
+            change: 'Cambia foto',
+          }">
         </picture-input>
         <v-btn color="green" :disabled="(image==='' || imagePrefill.name==='') && (!imagePrefill.edit || imagePrefill.name==='')" @click="submitImage" text>Salva immagine</v-btn>
       </v-card>
@@ -60,7 +62,7 @@
           return {
             image: '',
             dialog: false,
-              passed: false,
+            passed: false,
           }
         },
         methods: {
@@ -83,13 +85,18 @@
             }
         },
         updated() {
-            console.log(this.imagePrefill.edit && !this.passed)
             if(this.imagePrefill.edit && !this.passed) {
                 this.dialog = true
                 this.passed = true
             }
-            if(this.passed && !this.dialog)
-                this.passed = false
+            if(this.passed && !this.dialog){
+              this.passed = false
+              this.imagePrefill.image= ''
+              this.imagePrefill.name= ''
+              this.imagePrefill.description= ''
+              this.imagePrefill.edit= false
+            }
+
         }
 
     }

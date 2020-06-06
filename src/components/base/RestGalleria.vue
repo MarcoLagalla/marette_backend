@@ -1,13 +1,13 @@
 <template>
   <div class="container" id="Galleria">
-    <v-btn name="delete" color="white" v-if="admin" @click="$emit('removed', image.id)" class="managebutton">
-      <i class="fas fa-times"></i>
-    </v-btn>
-    <v-btn name="edit" color="white" v-if="admin" @click="$emit('edited', image)" class="managebutton">
-      <i class="far fa-edit"></i>
-    </v-btn>
     <div class="gallery">
       <div v-for="image in images" :key="image.id" class="gallery-item">
+        <v-btn name="delete" color="white" v-if="admin" @click="$emit('removed', image.id)" class="managebutton">
+          <i class="fas fa-times"></i>
+        </v-btn>
+        <v-btn name="edit" color="white" v-if="admin" @click="$emit('edited', image)" class="managebutton">
+          <i class="far fa-edit"></i>
+        </v-btn>
         <div class="imagname"> {{image.name}} </div>
         <img class="gallery-image" :src="image.image" :alt="image.description">
       </div>

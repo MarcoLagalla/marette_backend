@@ -3,7 +3,6 @@
     <div class="body2">
     <base-rest-h1> Galleria </base-rest-h1>
     <div class="gallerycont">
-
       <base-rest-galleria :admin="admin" @removed="removeImage($event)" @edited="askForEdit($event)"> </base-rest-galleria>
       <base-add-gallery-image v-if="admin" :key="componentKey" :imagePrefill="imagePrefill" @added="submitImage($event)"></base-add-gallery-image>
     </div>
