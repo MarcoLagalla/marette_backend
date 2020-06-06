@@ -424,12 +424,18 @@ class UpdateCostumerUserProfile(APIView):
                 except ValueError:
                     return Response({'birth_date': 'Il formato data non è valido.'},
                                     status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'birth_date': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if first_name:
                 user.user.first_name = first_name
+            else:
+                return Response({'first_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if last_name:
                 user.user.last_name = last_name
+            else:
+                return Response({'last_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if avatar == '':
                 user.avatar = None
