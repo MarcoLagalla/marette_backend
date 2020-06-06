@@ -6,7 +6,7 @@ public/media/*.*
 public/static/*
 /dist
 /venv
-
+**/migrations/*
 
 src-copy
 __pycache__
