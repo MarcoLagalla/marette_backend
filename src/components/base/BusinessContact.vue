@@ -29,14 +29,7 @@
           class="my-2"
         />
       </template>
-      <base-btn
-        class="mb-12"
-        color="white"
-        to="/about"
-        outlined
-      >
-        Chi siamo
-      </base-btn>
+
     </div>
   </v-theme-provider>
 </template>
@@ -56,17 +49,12 @@
         {
           icon: 'mdi-map-marker-outline',
           title: 'Address',
-          text: '8553 N. Beach St. Ste. 227<br>Fort Worth, Texas 76137',
-        },
-        {
-          icon: 'mdi-cellphone',
-          title: 'Phone',
-          text: '01 (800) 433 744<br>01 (800) 433 633',
+          text: 'Via Ferrata 5, 27100 Pavia',
         },
         {
           icon: 'mdi-email',
           title: 'Email',
-          text: 'john@vuetifyjs.com<br>heather@vuetifyjs.com',
+          text: 'info@marette.ovh',
         },
       ],
     }),

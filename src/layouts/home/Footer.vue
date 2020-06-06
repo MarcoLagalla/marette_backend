@@ -6,16 +6,12 @@
           <v-responsive class="mx-auto" max-width="1400">
             <v-container fluid>
               <v-row>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <base-info />
                 </v-col>
-                <v-col cols="12" md="3">
-                  <base-info-card title="Contact" />
+                <v-col cols="12" md="6">
+                  <base-info-card title="Contatti" />
                   <base-business-contact dense />
-                </v-col>
-                <v-col cols="12" md="3">
-                </v-col>
-                <v-col cols="12" md="3">
                 </v-col>
               </v-row>
             </v-container>
