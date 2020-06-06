@@ -59,7 +59,6 @@ class ListRestaurantsAPIView(ListAPIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
