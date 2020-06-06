@@ -516,7 +516,7 @@ class UpdateBusinessUserProfile(APIView):
 
 class ResendActivationToken(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness]
+    permission_classes = [IsAuthenticated]
 
     @transaction.atomic()
     def post(self, request, id):
@@ -527,21 +527,28 @@ class ResendActivationToken(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            extended_user = Customer.objects.all().get(user=user)
-        except Customer.DoesNotExist:
+            token = Token.objects.all().get(user=user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if request.user.auth_token.key == token:
+
             try:
-                extended_user = Business.objects.all().get(user=user)
-            except Business.DoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                extended_user = Customer.objects.all().get(user=user)
+            except Customer.DoesNotExist:
+                try:
+                    extended_user = Business.objects.all().get(user=user)
+                except Business.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if extended_user.email_activated:
-            return Response({'error': "L'utente ha già verificato l'indirizzo email"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            if extended_user.email_activated:
+                return Response({'error': "L'utente ha già verificato l'indirizzo email"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            send_welcome_email(user, extended_user.activation_token)
-            return Response({'data': 'Email inviata!'}, status=status.HTTP_200_OK)
-        except Exception:
-            pass
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            try:
+                send_welcome_email(user, extended_user.activation_token)
+                return Response({'data': 'Email inviata!'}, status=status.HTTP_200_OK)
+            except Exception:
+                pass
+        else:
+            return Response({'error': 'Token not valid.'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -14,10 +14,11 @@ from django.utils.text import slugify
 from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
+from datetime import datetime
 
 from backend.account.models import Business, Customer
 from backend.webapp.declarations import FOOD_CATEGORY_CHOICES, FOOD_CATEGORY_CHOICES_IMAGES, \
-    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES
+    DISCOUNT_TYPES_CHOICES, FOOD_CATEGORY_CHOICES_THUMBS_IMAGES, RESTAURANT_CATEGORY_CHOICES, DAYS, DAILY_HOURS
 
 
 def randomString(stringLength=8):
@@ -304,6 +305,50 @@ class Picture(models.Model):
 
     def get_image(self):
         return self.image.url
+
+
+class FasciaOraria(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='fascia_oraria', on_delete=models.CASCADE)
+    giorno = models.ForeignKey('GiornoApertura', related_name='giorno', on_delete=models.CASCADE)
+    start = models.CharField(max_length=5, choices=DAILY_HOURS)
+    end = models.CharField(max_length=5, choices=DAILY_HOURS)
+
+    class Meta:
+        unique_together = (('restaurant', 'start', 'end'), )
+
+    def clean(self, *args, **kwargs):
+        start = datetime.strptime(self.start, '%H:%M')
+        stop = datetime.strptime(self.end, '%H:%M')
+        dt = stop - start
+        if dt.days < 0:
+            raise serializers.ValidationError({'error': "Orario di fine turno antecedente a quello di inizio."})
+        super(FasciaOraria, self).clean()
+
+    def __str__(self):
+        return "{0} - {1}".format(self.start, self.end)
+
+
+class GiornoApertura(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='apertura_giorno', on_delete=models.CASCADE)
+    orario = models.ForeignKey('OrarioApertura', related_name='orario', on_delete=models.CASCADE)
+    day = models.CharField(max_length=9, choices=DAYS)
+    fasce = models.ManyToManyField(FasciaOraria, blank=True)
+
+    def __str__(self):
+        return "{0} - {1}".format(self.restaurant, self.day)
+
+    class Meta:
+        unique_together = (('restaurant', 'day'), )
+
+
+class OrarioApertura(models.Model):
+
+    restaurant = models.ForeignKey(Restaurant, related_name='apertura', on_delete=models.CASCADE, unique=True)
+    days = models.ManyToManyField(GiornoApertura, blank=True)
+
+    def __str__(self):
+        return "{0}".format(self.restaurant)
+
 
 
 # to make thumb_image coherent with image cross DB modifications

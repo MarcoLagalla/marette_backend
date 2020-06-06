@@ -6,8 +6,10 @@ public/media/*.*
 public/static/*
 /dist
 /venv
-**/migrations/*
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
 src-copy
 __pycache__
 Pipfile
