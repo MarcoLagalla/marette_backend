@@ -123,10 +123,13 @@
                 portata.showAddPortata = true
                 portata.edit = true
                 this.portataToManage = portata
-                document.getElementById('AddPortata').scrollIntoView(false)
-                document.getElementById('AddPortata').focus({
+                setTimeout(()=>{
+                    document.getElementById('AddPortata').scrollIntoView(false)
+                    document.getElementById('AddPortata').focus({
                     preventScroll: true
                 });
+                }, 200)
+
             },
 
             submitEditPortata: function (portata) {
@@ -137,15 +140,15 @@
                         name: portata.name,
                         num_products: portata.num_products,
                         products: []
-                    }
+                    },
+                    portata: portata
                 }
                 portata.products.forEach(function (item) {
                     payload.data.products.push(item.id)
                 });
 
                 this.editMenuEntry(payload)
-                    .then((newPortata) => {
-                        this.menu.entries[this.menu.entries.indexOf(portata)] = newPortata
+                    .then(() => {
                         this.snackbar = true;
                         this.text = 'Portata aggiornata con successo';
                         this.color = 'green';

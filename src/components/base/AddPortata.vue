@@ -1,7 +1,7 @@
 <template>
-  <div class="body">
+  <div class="body" id="AddPortata">
     <v-btn class="managebutton" @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
-    <div v-show="portata.showAddPortata" class="addportata" id="AddPortata">
+    <div v-show="portata.showAddPortata" class="addportata" >
       <v-text-field outlined v-model='portata.name' type="text" label="Nome della portata" required></v-text-field>
       <v-text-field outlined v-model='portata.num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
           <div v-for="(product, i) in portata.products" :key="i"  >

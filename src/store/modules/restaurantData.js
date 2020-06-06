@@ -281,13 +281,13 @@ const actions = {
         })
     },
 
-    editMenuEntry: ({commit}, data) => {
+    editMenuEntry: ({commit}, payload) => {
         return new Promise((resolve, reject) => {
 
-            data.restId =  state.ID
-            manageRestaurant.editMenuEntry(data)
+            payload.restId =  state.ID
+            manageRestaurant.editMenuEntry(payload)
             .then(resp => {
-                commit('EDIT_PORTATA_SUCCESS', resp.data);
+                commit('EDIT_PORTATA_SUCCESS',payload);
                 resolve(resp.data)
             })
             .catch(err => {
@@ -397,7 +397,16 @@ const mutations = {
     RMV_PORTATA_ERROR: () =>{
     },
 
-    EDIT_PORTATA_SUCCESS: () =>{
+    EDIT_PORTATA_SUCCESS: (state, payload) =>{
+        state.menus.forEach( (menu) =>{
+          if (menu.id === payload.menuId){
+            menu.entries.forEach((portata) =>{
+                if (portata.id === payload.entryId) {
+                    menu.entries[menu.entries.indexOf(portata)] = payload.portata
+                }
+            })
+          }
+        });
     },
 
     EDIT_PORTATA_ERROR: () =>{
