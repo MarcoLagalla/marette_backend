@@ -1,5 +1,5 @@
 import json
-
+import datetime
 from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
 import re
@@ -391,6 +391,21 @@ class UpdateCostumerUserProfile(APIView):
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            first_name = input_data.get('fist_name')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            last_name = input_data.get('last_name')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            birth_date = input_data.get('birth_date')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         token = get_object_or_404(Token, user=user.user)
 
         if request.user.auth_token == token:
@@ -402,11 +417,33 @@ class UpdateCostumerUserProfile(APIView):
                 return Response({'phone': 'Il numero di telefono non è valido.'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
+            if birth_date:
+                try:
+                    datetime.datetime.strptime(birth_date, "%d/%m/%Y")
+                    user.birth_date = birth_date
+                except ValueError:
+                    return Response({'birth_date': 'Il formato data non è valido.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'birth_date': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if first_name:
+                user.user.first_name = first_name
+            else:
+                return Response({'first_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if last_name:
+                user.user.last_name = last_name
+            else:
+                return Response({'last_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
+
             if avatar == '':
                 user.avatar = None
             elif avatar:
                 user.avatar = avatar
 
+            # save both base user and extended
+            user.user.save()
             user.save()
             return Response(status=status.HTTP_200_OK)
 
@@ -474,6 +511,25 @@ class UpdateBusinessUserProfile(APIView):
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
 
+
+        try:
+            first_name = input_data.get('fist_name')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'first_name': 'Il campo non può essere vuoto.'})
+
+        try:
+            last_name = input_data.get('last_name')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'last_name': 'Il campo non può essere vuoto.'})
+
+        try:
+            birth_date = input_data.get('birth_date')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'birth_date': 'Il campo non può essere vuoto.'})
+
         if missing_keys:
             return Response(value_errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -497,6 +553,9 @@ class UpdateBusinessUserProfile(APIView):
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
 
+            user.user.first_name = first_name
+            user.user.last_name = last_name
+            user.birth_date = birth_date
             user.city = city
             user.address = address
             user.n_civ = n_civ
@@ -508,6 +567,7 @@ class UpdateBusinessUserProfile(APIView):
             elif avatar:
                 user.avatar = avatar
 
+            user.user.save()
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:

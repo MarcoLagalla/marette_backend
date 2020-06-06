@@ -2,11 +2,12 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
+
 def send_welcome_email(user, activation_token):
 
     subject, from_email, to = 'Benvenuto', '"Marette" <staff@marette.ovh>', user.email
 
-    baseUrl = settings.EMAIL_RESET_PASSWORD_BASE_URL
+    baseUrl = settings.EMAIL_ACTIVATE_ACCOUNT_BASE_URL
 
     html_content = render_to_string('welcome.html', {'username': user.username,
                                                      'baseUrl': baseUrl,

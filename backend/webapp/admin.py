@@ -4,7 +4,8 @@ from django.contrib.admin.utils import flatten_fieldsets
 import django.forms
 from rest_framework.exceptions import ValidationError
 
-from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount, CustomerVote, \
+    OrarioApertura, GiornoApertura, FasciaOraria
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -17,6 +18,26 @@ class RestaurantAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
         obj.set_url()
+
+        restaurant = obj
+
+        home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
+        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
+        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
+        eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
+        menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
+        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTI')
+
+        RestaurantComponents.objects.create(
+            restaurant=restaurant,
+            home=home,
+            vetrina=vetrina,
+            galleria=galleria,
+            eventi=eventi,
+            menu=menu,
+            contattaci=contattaci
+        )
+
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(Restaurant, RestaurantAdmin)
@@ -114,3 +135,8 @@ class MyAdmin(ModelAdmin):
 admin.site.register(Order, MyAdmin)
 
 admin.site.register(RestaurantDiscount)
+admin.site.register(CustomerVote)
+
+admin.site.register(OrarioApertura)
+admin.site.register(GiornoApertura)
+admin.site.register(FasciaOraria)
