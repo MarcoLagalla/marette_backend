@@ -164,38 +164,27 @@
         methods: {
             ...mapActions('userAuthentication', ['registerUser']),
             register: function () {
-                if (!this.first_name && !this.last_name) {
-                    const data = {
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone
-                    };
-                    const formData = new FormData();
-                    formData.append('avatar', this.image);
-                    formData.append('data', JSON.stringify(data));
-                    this.registerUser(formData).then(() => {
-                        this.$router.push('/profile')
-                    })
-                } else {
-                    const data = {
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone,
-                        first_name: this.first_name,
-                        last_name: this.last_name,
-                        birth_date: this.birth_date
-                    };
-                    const formData = new FormData();
-                    formData.append('avatar', this.image);
-                    formData.append('data', JSON.stringify(data));
-                    this.registerUser(formData).then(() => {
-                        this.$router.push('/profile')
-                    })
-                }
+                const data = {
+                    username: this.username,
+                    email: this.email,
+                    password: this.password,
+                    password2: this.password2,
+                    phone: this.phone,
+                };
+                if(this.first_name)
+                    data.first_name = this.first_name
+                if(this.last_name)
+                    data.last_name = this.last_name
+                if(this.birth_date)
+                    data.birth_date = this.birth_date
+
+                const formData = new FormData();
+                formData.append('avatar', this.image);
+                formData.append('data', JSON.stringify(data));
+                this.registerUser(formData).then(() => {
+                    this.$router.push('/profile')
+                })
+
             },
             onChanged() {
                 if (this.$refs.avatar.file) {
