@@ -283,36 +283,42 @@ class MenuEntryEdit(APIView):
                 # verifico che sia proprietario del ristorante
                 if restaurant.owner.user == request.user:
 
-                    # verifico che il menu sia un menu del mio ristorante
-                    try:
-                        menu_entry = MenuEntry.objects.all() \
-                            .filter(restaurant=restaurant).filter(menu=menu).get(id=me_id)
-                        if menu_entry:
+                    # MENUS MAX 3
+                    if restaurant.menus() < 3:
 
-                            serializer = WriteMenuEntrySerializer(data=request.data)
-                            if serializer.is_valid():
-                                data = request.data
-                                if 'products' in data:
-                                    menu_entry.products.clear()
-                                    for d in data['products']:
-                                        try:
-                                            product = Product.objects.all().filter(restaurant=restaurant).get(id=d)
-                                            if product:
-                                                menu_entry.products.add(d)
-                                        except Product.DoesNotExist:
-                                            pass
-                                    del data['products']
+                        # verifico che il menu sia un menu del mio ristorante
+                        try:
+                            menu_entry = MenuEntry.objects.all() \
+                                .filter(restaurant=restaurant).filter(menu=menu).get(id=me_id)
+                            if menu_entry:
 
-                                for key in data:
-                                    setattr(menu_entry, key, data[key])
-                                menu_entry.save()
+                                serializer = WriteMenuEntrySerializer(data=request.data)
+                                if serializer.is_valid():
+                                    data = request.data
+                                    if 'products' in data:
+                                        menu_entry.products.clear()
+                                        for d in data['products']:
+                                            try:
+                                                product = Product.objects.all().filter(restaurant=restaurant).get(id=d)
+                                                if product:
+                                                    menu_entry.products.add(d)
+                                            except Product.DoesNotExist:
+                                                pass
+                                        del data['products']
 
-                                return Response(status=status.HTTP_200_OK)
-                            else:
-                                return Response(status=status.HTTP_400_BAD_REQUEST)
+                                    for key in data:
+                                        setattr(menu_entry, key, data[key])
+                                    menu_entry.save()
 
-                    except MenuEntry.DoesNotExist:
-                        return Response(status=status.HTTP_404_NOT_FOUND)
+                                    return Response(status=status.HTTP_200_OK)
+                                else:
+                                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                        except MenuEntry.DoesNotExist:
+                            return Response(status=status.HTTP_404_NOT_FOUND)
+                    else:
+                        return Response({'error': 'Sono concessi massimo 3 menu'},
+                                        status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
