@@ -284,7 +284,8 @@ class MenuEntryEdit(APIView):
                 if restaurant.owner.user == request.user:
 
                     # MENUS MAX 3
-                    if restaurant.menus() < 3:
+                    menus = Menu.objects.filter(restaurant=restaurant)
+                    if menus.count() < 3:
 
                         # verifico che il menu sia un menu del mio ristorante
                         try:
