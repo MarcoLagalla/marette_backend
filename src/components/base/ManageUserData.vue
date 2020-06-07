@@ -1,5 +1,5 @@
 <template>
-  <div><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
+  <div>
     <form @submit.prevent="update">
       <v-alert :value="success !== ''" type="success">{{success}}</v-alert>
       <v-alert :value="error !== ''" type="error" >{{error}}</v-alert>
@@ -62,7 +62,7 @@
       >
         </picture-input>
       <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
-    </form>
+    </form><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
   </div>
 </template>
 
@@ -160,9 +160,9 @@
   .gestrest {
     background: var(--ming);
     padding: 10px;
-    border-radius: 25px;
+    border-radius: 5px;
     transition: ease-in-out 0.3s;
-    margin-right: 10px;
+    margin-top: 10px;
   }
 
   .butgest {
