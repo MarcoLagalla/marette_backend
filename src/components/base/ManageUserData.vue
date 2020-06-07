@@ -11,12 +11,12 @@
       </template>
       <v-row>
         <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="tel" v-model='user.Numero_di_Telefono'></v-text-field></v-col>
+        <v-col cols="9"><p class="field" >{{user.Numero_di_Telefono}}</p></v-col>
       </v-row>
       <template v-if="isBusiness">
         <v-row v-if="!editing">
           <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="text" :disabled="true" v-model='stringIndirizzo'></v-text-field></v-col>
+          <v-col cols="9"><p class="field">{{stringIndirizzo}}</p></v-col>
         </v-row>
         <template v-else>
           <v-row>
