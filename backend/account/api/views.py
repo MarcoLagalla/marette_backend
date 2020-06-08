@@ -392,7 +392,7 @@ class UpdateCostumerUserProfile(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            first_name = input_data.get('fist_name')
+            first_name = input_data.get('first_name')
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -419,23 +419,17 @@ class UpdateCostumerUserProfile(APIView):
 
             if birth_date:
                 try:
-                    datetime.datetime.strptime(birth_date, "%d/%m/%Y")
+                    datetime.datetime.strptime(birth_date, "%Y-%m-%d")
                     user.birth_date = birth_date
                 except ValueError:
                     return Response({'birth_date': 'Il formato data non è valido.'},
                                     status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'birth_date': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if first_name:
                 user.user.first_name = first_name
-            else:
-                return Response({'first_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if last_name:
                 user.user.last_name = last_name
-            else:
-                return Response({'last_name': 'Campo obbligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
             if avatar == '':
                 user.avatar = None
@@ -445,7 +439,9 @@ class UpdateCostumerUserProfile(APIView):
             # save both base user and extended
             user.user.save()
             user.save()
-            return Response(status=status.HTTP_200_OK)
+            
+            serializer = CustomerSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -511,21 +507,27 @@ class UpdateBusinessUserProfile(APIView):
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
 
-
         try:
-            first_name = input_data.get('fist_name')
+            first_name = input_data.pop('first_name')
         except KeyError:
             missing_keys = True
             value_errors.update({'first_name': 'Il campo non può essere vuoto.'})
 
         try:
-            last_name = input_data.get('last_name')
+            last_name = input_data.pop('last_name')
         except KeyError:
             missing_keys = True
             value_errors.update({'last_name': 'Il campo non può essere vuoto.'})
 
         try:
-            birth_date = input_data.get('birth_date')
+            birth_date = input_data.pop('birth_date')
+            if birth_date:
+                try:
+                    datetime.datetime.strptime(birth_date, "%Y-%m-%d")
+                    user.birth_date = birth_date
+                except ValueError:
+                    return Response({'birth_date': 'Il formato data non è valido.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
             missing_keys = True
             value_errors.update({'birth_date': 'Il campo non può essere vuoto.'})
@@ -553,8 +555,11 @@ class UpdateBusinessUserProfile(APIView):
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
 
-            user.user.first_name = first_name
-            user.user.last_name = last_name
+            if first_name:
+                user.user.first_name = first_name
+            if last_name:
+                user.user.last_name = last_name
+
             user.birth_date = birth_date
             user.city = city
             user.address = address
@@ -569,7 +574,9 @@ class UpdateBusinessUserProfile(APIView):
 
             user.user.save()
             user.save()
-            return Response(status=status.HTTP_200_OK)
+
+            serializer = BusinessSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
