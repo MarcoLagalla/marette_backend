@@ -97,12 +97,13 @@
                         </v-card-text>
                         <div class="regbtn2">
                             <div class="center">
-                                <button class="btn" type="submit" :disabled="!valid">
+                                <button class="btn" type="submit" :disabled="!valid && loading">
                                     <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
                                     </svg>
-                                    <span>Submit</span>
+                                    <span v-if="!loading" >Submit</span>
+                                    <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
                                 </button>
                             </div>
                         </div>
@@ -131,6 +132,7 @@
         mixins: [Heading],
         data: () => ({
             dialog: false,
+            loading: false,
             settings: {
                 maxScrollbarLength: 60
             },
@@ -164,6 +166,7 @@
         methods: {
             ...mapActions('userAuthentication', ['registerUser']),
             register: function () {
+                this.loading = true
                 const data = {
                     username: this.username,
                     email: this.email,
@@ -182,7 +185,14 @@
                 formData.append('avatar', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.registerUser(formData).then(() => {
-                    this.$router.push('/profile')
+                    this.$router.push('/profile').catch(error => {
+                        var id = Object.keys(error)[0];
+                        document.getElementById(id).scrollIntoView(false)
+                        document.getElementById(id).focus({
+                            preventScroll: true
+                        });
+                    })
+                    this.loading = false;
                 })
 
             },

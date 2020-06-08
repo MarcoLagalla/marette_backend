@@ -9,7 +9,7 @@
         </div>
       </template>
       <v-card class="pt-10 px-10 pb-4" justify="center">
-
+        <br>
         <v-text-field rounded filled v-model="imagePrefill.name" label="Titolo*" type="text" required></v-text-field>
         <v-textarea rounded filled v-model="imagePrefill.description" label="Descrizione" type="text" ></v-textarea>
 

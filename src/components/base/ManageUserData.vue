@@ -11,15 +11,15 @@
       </template>
       <v-row v-if="user.Nome || editing">
         <v-col cols="3" class="dati"><b>Nome:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="text" v-model='user.Nome'></v-text-field></v-col>
+        <v-col cols="9"><p class="field" >{{user.Nome}}</p></v-col>
       </v-row>
       <v-row v-if="user.Cognome || editing">
         <v-col cols="3" class="dati"><b>Cognome:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="text" v-model='user.Cognome'></v-text-field></v-col>
+        <v-col cols="9"><p class="field" >{{user.Cognome}}</p></v-col>
       </v-row>
       <v-row v-if="user.Anno_di_Nascita || editing">
         <v-col cols="3" class="dati"><b>Data di nascita:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="date" v-model='user.Anno_di_Nascita'></v-text-field></v-col>
+        <v-col cols="9"><p  class="field">{{user.Anno_di_Nascita}}</p></v-col>
       </v-row>
       <v-row>
         <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
@@ -168,7 +168,10 @@
 </script>
 
 <style scoped>
-
+  .dati {
+    background: var(--whitesmoke);
+    text-align: center;
+  }
   .gestrest {
     background: var(--ming);
     padding: 10px;
