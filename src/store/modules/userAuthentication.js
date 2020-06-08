@@ -50,9 +50,13 @@ const actions = {
           setCookies(data);
           commit('AUTH_SUCCESS', data)
 
-          dispatch("userProfile/getUserData", data.id,  { root: true });
+          dispatch("userProfile/getUserData", data.id,  { root: true }).then(()=>{
+            resolve(resp)
+          })
+            .catch((err)=>{
+              reject(err)
+            });
 
-          resolve(resp)
         })
       .catch(err => {
         commit('REG_AUTH_ERROR', err.response)
