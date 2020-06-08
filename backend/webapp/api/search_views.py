@@ -71,58 +71,12 @@ class SearchRestaurantAPIView(APIView):
             'first': navigator.get_first_link(),
             'previous': navigator.get_previous_link(),
             'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
+            'last': navigator.get_last_link(),
+            'page_size': page_size,
+            'page_number': page_number
         }
 
         data.update({'results': serializer.data})
-        return Response(data, status=status.HTTP_200_OK)
-
-
-class SearchRestaurantByCategoryAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        queried_category = None
-        restaurants = []
-
-        try:
-            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
-        except KeyError:
-            pass
-
-        if queried_category:
-            restaurants = Restaurant.objects.filter(restaurant_category__iexact=queried_category).order_by('-id')
-        else:
-            return Response({'error': ["Non hai specificato alcuna categoria."]}, status.HTTP_400_BAD_REQUEST)
-
-        if not restaurants:
-            return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]},
-                            status.HTTP_404_NOT_FOUND)
-
-        # -----------------------------------------------------------
-        page_number = request.data.get('page_number', 1)
-        page_size = request.data.get('page_size', 10)
-
-        try:
-            paginator = Paginator(restaurants.distinct(), page_size)
-            page = paginator.page(page_number)
-        except django.core.paginator.EmptyPage:
-            page = paginator.page(1)
-
-        serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
-        # -----------------------------------------------------------
-
-        navigator = NavigationLinks(self.request, paginator, page_number)
-
-        data = {
-            'first': navigator.get_first_link(),
-            'previous': navigator.get_previous_link(),
-            'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
-        }
-
-        data.update({'results': serializer.data})
-
         return Response(data, status=status.HTTP_200_OK)
 
 

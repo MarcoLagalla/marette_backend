@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
-    VoteRestaurantSerializer
+    VoteRestaurantSerializer, CategorySerializer
 from ..models.components import RestaurantComponents
 from ..models.models import Restaurant, CustomerVote, Category
 from ...account.models import Business, Customer
@@ -51,7 +51,9 @@ class ListRestaurantsAPIView(ListAPIView):
             'first': navigator.get_first_link(),
             'previous': navigator.get_previous_link(),
             'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
+            'last': navigator.get_last_link(),
+            'page_size': page_size,
+            'page_number': page_number
         }
 
         data.update({'results': serializer.data})
@@ -223,3 +225,12 @@ class VoteRestaurantAPIView(APIView):
 
         else:
             return Response({'error': ["Voto non registrato."]}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RestaurantCategoryAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        category_list = Category.objects.all()
+        serializer = CategorySerializer(instance=category_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

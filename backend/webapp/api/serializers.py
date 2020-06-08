@@ -112,8 +112,6 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
 
-
-
         # create ComponentsPanels (empty)
         home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
         vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
