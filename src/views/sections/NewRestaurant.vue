@@ -129,7 +129,7 @@
 
                                                     </v-row>
                                                 </v-col>
-                                                <button type="submit" :class="[loading?'loadbtn':'managebutton2']">
+                                                <button type="submit" :disabled="loading" :class="[loading?'loadbtn':'managebutton2']">
                                                     <span v-if="!loading">Conferma</span>
                                                     <span v-if="loading"> <div class="spinner">
                                                         <div class="rect1"></div>
