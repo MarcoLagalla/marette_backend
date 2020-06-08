@@ -119,7 +119,7 @@
     .openmodaladdmenu {
         background: var(--darkslate);
         border-radius: 25px;
-        box-shadow: 0 0 2px lightgrey;
+        box-shadow: 0 0 4px grey;
         padding: 10px;
         margin: 10px auto;
         transition: 0.3s ease-in-out;

@@ -8,16 +8,16 @@
           </button>
         </div>
       </template>
-      <v-card justify="center">
+      <v-card class="pt-10 px-10 pb-4" justify="center">
 
-        <v-text-field v-model="imagePrefill.name" label="Titolo*" type="text" required></v-text-field>
-        <v-textarea v-model="imagePrefill.description" label="Descrizione" type="text" ></v-textarea>
+        <v-text-field rounded filled v-model="imagePrefill.name" label="Titolo*" type="text" required></v-text-field>
+        <v-textarea rounded filled v-model="imagePrefill.description" label="Descrizione" type="text" ></v-textarea>
 
         <picture-input
           ref="background"
           @change="onChanged"
-          :width="400"
-          :height="400"
+          :width="200"
+          :height="200"
           size="3"
           :zIndex="0"
           :crop="true"

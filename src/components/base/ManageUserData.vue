@@ -1,5 +1,5 @@
 <template>
-  <div><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
+  <div>
     <form @submit.prevent="update">
       <v-alert :value="success !== ''" type="success">{{success}}</v-alert>
       <v-alert :value="error !== ''" type="error" >{{error}}</v-alert>
@@ -23,12 +23,12 @@
       </v-row>
       <v-row>
         <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
-        <v-col cols="9"><v-text-field light class="field" :disabled="!editing" type="tel" v-model='user.Numero_di_Telefono'></v-text-field></v-col>
+        <v-col cols="9"><p class="field" >{{user.Numero_di_Telefono}}</p></v-col>
       </v-row>
       <template v-if="isBusiness">
         <v-row v-if="!editing">
           <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
-          <v-col cols="9"><v-text-field light class="field" type="text" :disabled="true" v-model='stringIndirizzo'></v-text-field></v-col>
+          <v-col cols="9"><p class="field">{{stringIndirizzo}}</p></v-col>
         </v-row>
         <template v-else>
           <v-row>
@@ -74,7 +74,7 @@
       >
         </picture-input>
       <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
-    </form>
+    </form><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
   </div>
 </template>
 
@@ -172,9 +172,9 @@
   .gestrest {
     background: var(--ming);
     padding: 10px;
-    border-radius: 25px;
+    border-radius: 5px;
     transition: ease-in-out 0.3s;
-    margin-right: 10px;
+    margin-top: 10px;
   }
 
   .butgest {

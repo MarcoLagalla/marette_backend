@@ -5,12 +5,28 @@
     background: transparent!important;
     border: transparent!important;
     opacity: 1;
-    transition: 0.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+    transition: 0.3s cubic-bezier(.75,.4,.83,.67);
     margin: 0 10px;
 }
 .managebutton:hover {
-    opacity: 0.8;
+    opacity: 0.9;
     transform: scale(1.1);
+}
+.managebutton3 {
+    padding: 10px;
+    color: var(--darkslate)!important;
+    font-weight: bold!important;
+    background: rgba(13,12,53,0.1);
+    border: transparent!important;
+    opacity: 1;
+    transition: 0.3s cubic-bezier(.75,.4,.83,.67);
+    border-radius: 5px;
+    box-shadow: 0 0 2px 2px grey;
+}
+.managebutton3:hover {
+    background: rgba(13,12,53,0.4);
+    transform: scale(1.05);
+
 }
 .blutitle {
     background: var(--lightgrey);
