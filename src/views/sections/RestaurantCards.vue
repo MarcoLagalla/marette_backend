@@ -45,7 +45,7 @@
         data: () => ({}),
         computed: {
             restaurantList() {
-                return this.$store.getters['restaurants/restaurantList']
+                return this.$store.getters['restaurants/restaurantList'].results
             }
         },
         created() {
