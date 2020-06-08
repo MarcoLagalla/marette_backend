@@ -11,7 +11,9 @@
             </v-col>
         </v-row>
         <template v-if="admin">
+
             <div class="buttons">
+                <base-add-time-table></base-add-time-table>
                 <button name="delete" class="managebtn" @click="deleteImage()">
                     Elimina immagine <i class="fas fa-times"></i>
                 </button>
@@ -41,7 +43,7 @@
             }
         },
         methods: {
-            ...mapActions('restaurantData', ['editHomeComponent']),
+            ...mapActions('restaurantData', ['editHomeComponent', 'getTimeTable']),
             submitDescription: function (des) {
                 const data = {
                     description: des
@@ -75,6 +77,9 @@
             description() {
                 return this.$store.getters['restaurantData/home'].description
             },
+        },
+        created() {
+            this.getTimeTable()
         }
     }
 </script>

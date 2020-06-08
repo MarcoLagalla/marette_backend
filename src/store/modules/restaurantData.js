@@ -39,6 +39,7 @@ const getters = {
     productList: state => state.productList,
     components: state => state.restData.components,
     restData: state => state.restData,
+    openingDays: state => state.restData.openingDays,
     tags: state => state.tags,
     discounts: state => state.discounts,
     id: state => state.ID,
@@ -50,6 +51,35 @@ const getters = {
 }
 
 const actions = {
+    addOpeningDays: ({commit}, days) =>{
+         return new Promise((resolve, reject) => {
+             for (var day in days){
+                 var payload = {restId: state.ID, data: {day: days[day], restaurant: state.ID}}
+                 manageRestaurant.addOpeningDay(payload)
+                 .then(respRes => {
+                    commit('REST_ADD_OP_DAY', respRes.data)
+                 })
+             }
+             resolve()
+
+         })
+    },
+
+    addTimeTable: ({commit}) =>{
+         return new Promise((resolve, reject) => {
+             manageRestaurant.addTimeTable(state.ID)
+         })
+    },
+
+    getTimeTable: ({commit}) =>{
+         return new Promise((resolve, reject) => {
+             manageRestaurant.getTimeTable(state.ID)
+                 .then(respRes => {
+                    commit('REST_GET_TIME_TABS', respRes.data)
+                 })
+         })
+    },
+
     activateComponent: ({commit}, componentName) =>{
          return new Promise((resolve, reject) => {
              var payload = {id: state.ID, component: componentName}
@@ -361,6 +391,16 @@ const actions = {
 }
 
 const mutations = {
+    REST_GET_TIME_TABS: (state, days) =>{
+        state.restData.openingDays = days
+    },
+
+    REST_ADD_OP_DAY: (state, day) =>{
+        if (!Object.prototype.hasOwnProperty.call(state.restData, 'openingDays'))
+            state.restData.openingDays = []
+        state.restData.openingDays.push({day: day, fasce: []})
+    },
+
     MOD_HOME_COMPONENT: (state, home) =>{
         state.restData.components.home = home
     },
