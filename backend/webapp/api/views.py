@@ -17,7 +17,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
     VoteRestaurantSerializer
 from ..models.components import RestaurantComponents
-from ..models.models import Restaurant, CustomerVote
+from ..models.models import Restaurant, CustomerVote, Category
 from ...account.models import Business, Customer
 from ...account.permissions import IsBusiness, BusinessActivated, IsCustomer, CustomerActivated
 from ...utils import NavigationLinks
@@ -75,6 +75,18 @@ class CreateRestaurantAPIView(APIView):
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print(type(input_data["restaurant_category"]))
+        category_list = []
+        try:
+            for category in input_data['restaurant_category']:
+                category_list.append(Category.objects.all().get(category_name=category))
+            print(category_list)
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
 
         try:
             image = request.FILES['image']

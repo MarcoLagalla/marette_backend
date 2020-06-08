@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote
+from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote, Category
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
@@ -85,7 +85,6 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
-
 
         restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
