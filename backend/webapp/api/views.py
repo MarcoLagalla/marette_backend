@@ -33,8 +33,8 @@ class ListRestaurantsAPIView(ListAPIView):
             return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]}, status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.data.get('page_number', 1)
+        page_size = request.data.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)
@@ -75,18 +75,6 @@ class CreateRestaurantAPIView(APIView):
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        # print(type(input_data["restaurant_category"]))
-        # category_list = []
-        # try:
-        #     for category in input_data['restaurant_category']:
-        #         category_list.append(Category.objects.all().get(category_name=category))
-        #     print(category_list)
-        # except Category.DoesNotExist:
-        #     return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-
 
         try:
             image = request.FILES['image']

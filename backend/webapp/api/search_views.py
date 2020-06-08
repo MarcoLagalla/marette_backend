@@ -53,8 +53,8 @@ class SearchRestaurantAPIView(APIView):
                             status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.data.get('page_number', 1)
+        page_size = request.data.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)
@@ -100,8 +100,8 @@ class SearchRestaurantByCategoryAPIView(APIView):
                             status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.data.get('page_number', 1)
+        page_size = request.data.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)

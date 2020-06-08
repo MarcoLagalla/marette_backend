@@ -53,7 +53,6 @@ class Restaurant(models.Model):
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False)
-    #restaurant_category = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'), ]))
     restaurant_category = models.ManyToManyField('Category', related_name='category_list', blank=False)
 
     restaurant_rank = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
