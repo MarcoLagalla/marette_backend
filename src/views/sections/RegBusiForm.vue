@@ -65,7 +65,7 @@
         <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Termini e Condizioni</router-link>.</v-card-text>
         <div class="regbtn2">
           <div class="center">
-            <button class="btn" type="submit" :disabled="!valid && !loading">
+            <button class="btn" type="submit" :disabled="!valid && loading">
               <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
