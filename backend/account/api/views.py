@@ -439,7 +439,7 @@ class UpdateCostumerUserProfile(APIView):
             # save both base user and extended
             user.user.save()
             user.save()
-            
+
             serializer = CustomerSerializer(user, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
 

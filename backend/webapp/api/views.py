@@ -144,7 +144,7 @@ class UpdateRestaurantAPIView(APIView):
 
 
 class VoteRestaurantAPIView(APIView):
-   # authentication_classes = [SessionAuthentication, TokenAuthentication]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsCustomer, CustomerActivated]
 
     @transaction.atomic()
@@ -181,7 +181,6 @@ class VoteRestaurantAPIView(APIView):
                 except ZeroDivisionError:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-                print(rank)
                 if has_vote:
                     return Response({'error': ["Hai già votato questo ristorante."]},
                                     status=status.HTTP_401_UNAUTHORIZED)
