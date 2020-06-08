@@ -76,14 +76,14 @@ class CreateRestaurantAPIView(APIView):
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        print(type(input_data["restaurant_category"]))
-        category_list = []
-        try:
-            for category in input_data['restaurant_category']:
-                category_list.append(Category.objects.all().get(category_name=category))
-            print(category_list)
-        except Category.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        # print(type(input_data["restaurant_category"]))
+        # category_list = []
+        # try:
+        #     for category in input_data['restaurant_category']:
+        #         category_list.append(Category.objects.all().get(category_name=category))
+        #     print(category_list)
+        # except Category.DoesNotExist:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 

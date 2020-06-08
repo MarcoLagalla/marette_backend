@@ -160,7 +160,7 @@ class SearchRestaurantByQueryAPIView(APIView):
             queryset.append(city_query)
 
         if queried_category:
-            category_query = Restaurant.objects.filter(restaurant_category__iexact=queried_category).order_by('-id')
+            category_query = Restaurant.objects.filter(restaurant_category__category_name__iexact=queried_category).order_by('-id')
             queryset.append(category_query)
 
         try:
@@ -173,8 +173,8 @@ class SearchRestaurantByQueryAPIView(APIView):
 
             if results_query:
                 # -----------------------------------------------------------
-                page_number = request.query_params.get('page_number', 1)
-                page_size = request.query_params.get('page_size', 10)
+                page_number = request.data.get('page_number', 1)
+                page_size = request.data.get('page_size',  10)
 
                 try:
                     paginator = Paginator(results_query.distinct(), page_size)
@@ -191,7 +191,9 @@ class SearchRestaurantByQueryAPIView(APIView):
                     'first': navigator.get_first_link(),
                     'previous': navigator.get_previous_link(),
                     'next': navigator.get_next_link(),
-                    'last': navigator.get_last_link()
+                    'last': navigator.get_last_link(),
+                    'page_size': page_size,
+                    'page_number': page_number
                 }
 
                 data.update({'results': serializer.data})

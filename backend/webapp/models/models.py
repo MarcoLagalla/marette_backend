@@ -93,9 +93,10 @@ class Restaurant(models.Model):
 
 
 class Category(models.Model):
-    #restaurant = models.ForeignKey(Restaurant, related_name='category', on_delete=models.CASCADE)
-    #category_name = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'), ]))
     category_name = models.CharField(max_length=30, unique=True, blank=False)
+
+    def __str__(self):
+        return self.category_name
 
 
 class CustomerVote(models.Model):
