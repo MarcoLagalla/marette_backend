@@ -86,11 +86,9 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
-
         restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
-
 
         # create ComponentsPanels (empty)
         home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
@@ -109,6 +107,9 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
             menu=menu,
             contattaci=contattaci
         )
+
+        # create TimeTable (empty)
+        OrarioApertura.objects.create(restaurant=restaurant)
 
         return restaurant
 

@@ -44,7 +44,7 @@ class GiornoAperturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GiornoApertura
-        fields = ('restaurant', 'day', 'fasce', )
+        fields = ('id', 'restaurant', 'day', 'fasce', )
 
     def save(self, **kwargs):
 

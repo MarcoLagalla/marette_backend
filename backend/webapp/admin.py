@@ -38,6 +38,9 @@ class RestaurantAdmin(admin.ModelAdmin):
             contattaci=contattaci
         )
 
+        # create TimeTable (empty)
+        OrarioApertura.objects.create(restaurant=restaurant)
+
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(Restaurant, RestaurantAdmin)

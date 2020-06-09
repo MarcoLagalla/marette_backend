@@ -230,19 +230,8 @@ class ShowTimeTable(APIView):
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            token = Token.objects.all().get(user=restaurant.owner.user).key
-        except Token.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        days = GiornoApertura.objects.all().filter(restaurant=restaurant)
+        serializer = GiornoAperturaSerializer(days, many=True)
 
-        if token == request.user.auth_token.key:
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-            data = {}
-
-            days = GiornoApertura.objects.all().filter(restaurant=restaurant)
-            serializer = GiornoAperturaSerializer(days, many=True)
-
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)

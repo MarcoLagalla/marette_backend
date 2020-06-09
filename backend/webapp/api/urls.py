@@ -59,9 +59,8 @@ urlpatterns = [
     path('restaurant/<int:id>/components/galleria/images/<int:i_id>/edit', GalleryEditImage.as_view(), name='edit_picture_gallery'),
     path('restaurant/<int:id>/components/galleria/images/<int:i_id>/delete', GalleryDeleteImage.as_view(), name='delete_picture_gallery'),
 
-
-    path('restaurant/<int:id>/opening/add', CreateOpening.as_view(), name='create_opening'),
-    path('restaurant/<int:id>/opening/delete', DeleteOpening.as_view(), name='delete_opening'),
+    # path('restaurant/<int:id>/opening/add', CreateOpening.as_view(), name='create_opening'),
+    # path('restaurant/<int:id>/opening/delete', DeleteOpening.as_view(), name='delete_opening'),
     path('restaurant/<int:id>/opening/day/add', CreateOpeningDay.as_view(), name='create_opening_day'),
     path('restaurant/<int:id>/opening/day/<int:d_id>/delete', DeleteOpeningDay.as_view(), name='delete_opening_day'),
     path('restaurant/<int:id>/opening/day/<int:d_id>/interval/add', CreateFasciaOraria.as_view(), name='create_opening_interval'),
