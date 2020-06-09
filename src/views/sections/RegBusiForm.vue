@@ -65,13 +65,14 @@
         <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Termini e Condizioni</router-link>.</v-card-text>
         <div class="regbtn2">
           <div class="center">
-            <v-btn :loading="loading" class="btn" type="submit" :disabled="!valid && !loading">
+            <button class="btn" type="submit" :disabled="!valid && loading">
               <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
               </svg>
-              <span>Submit</span>
-            </v-btn>
+              <span v-if="!loading" >Submit</span>
+              <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
+            </button>
           </div>
         </div>
       </v-card>
@@ -272,4 +273,7 @@ a {
   cursor: not-allowed;
   color: white;
 }
+  .loader {
+    color: dodgerblue!important;
+  }
 </style>

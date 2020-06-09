@@ -265,7 +265,7 @@
 
     .product {
         transition: ease-in-out 0.4s;
-        margin: -5px;
+        margin: 26px -5px;
         background: var(--ghostwhite);
         padding: 15px;
         position: relative;
