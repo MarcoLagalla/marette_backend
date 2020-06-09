@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote
+from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote, Category
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
 
@@ -54,10 +54,17 @@ class RestaurantDiscountSerializer(serializers.ModelSerializer):
         return restaurant_discount
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'category_name')
+
+
 class ListRestaurantSerializer(serializers.ModelSerializer):
     business = BusinessSerializer(many=True, read_only=True)
     discounts = RestaurantDiscountSerializer(many=True, required=False)
     image = serializers.SerializerMethodField()
+    restaurant_category = CategorySerializer(many=True)
 
     class Meta:
         model = Restaurant
@@ -86,11 +93,24 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
 
+        try:
+            category_list = self.validated_data.pop('restaurant_category')
+        except KeyError:
+            category_list = None
 
         restaurant = Restaurant.objects.create(owner=owner, **self.validated_data)
+        restaurant.restaurant_category.clear()
+
+        if category_list:
+            for cat in category_list:
+                try:
+                    c = Category.objects.all().get(id=cat.id)
+                    restaurant.restaurant_category.add(c)
+                except Category.DoesNotExist:
+                    pass
+
         restaurant.set_url()  # needed to have /id_restaurant/name_restaurant
         restaurant.save()
-
 
         # create ComponentsPanels (empty)
         home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
