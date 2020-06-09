@@ -130,6 +130,9 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
             contattaci=contattaci
         )
 
+        # create TimeTable (empty)
+        OrarioApertura.objects.create(restaurant=restaurant)
+
         return restaurant
 
 
