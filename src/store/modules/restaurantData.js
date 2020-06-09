@@ -194,7 +194,7 @@ const actions = {
 
     removeProduct: ({commit}, product_id) => {
         return new Promise((resolve, reject) => {
-            let payload = {id: state.ID, p_id: product_id}
+            let payload = {id: state.ID, p_id: product_id};
             manageProduct.removeProduct(payload)
             .then(resp => {
                 commit('REST_REMOVE_PROD_SUCCESS', resp.data)
@@ -254,16 +254,14 @@ const actions = {
 
     addDiscountToProduct: ({commit}, payload) => {
         return new Promise((resolve, reject) => {
-            console.log(payload);
             manageProduct.addNewDiscountToProduct(payload, state.ID)
             .then(resp => {
                 commit('ADD_DISCOUNT_TO_PRODUCT_SUCCESS', resp.data);
-                    console.log(resp.data);
                 resolve(resp.data)
             })
             .catch(err => {
                 commit('ADD_DISCOUNT_TO_PRODUCT_ERROR');
-                reject(err)
+                reject(err.response.data)
             })
         })
     },
@@ -580,9 +578,8 @@ const mutations = {
         state.error = error
     },
 
-    ADD_DISCOUNT_TO_PRODUCT_SUCCESS: (state, data) => {
+    ADD_DISCOUNT_TO_PRODUCT_SUCCESS: (state) => {
         state.status = 'success'
-        state.discounts.push(data)
     },
 
     ADD_DISCOUNT_TO_PRODUCT_ERROR: (state, error) => {

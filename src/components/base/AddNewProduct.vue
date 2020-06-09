@@ -161,6 +161,7 @@
                 if(this.showTags === true) {
                     this.toggleShowTags();
                 }
+                this.$refs.modal_add.close()
                 const data = {
                     "name": this.name,
                     "description": this.description,

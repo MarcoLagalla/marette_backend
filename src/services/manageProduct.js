@@ -51,7 +51,7 @@ export default {
 
     addNewDiscountToProduct(payload, id){
 
-        return api.post('v1/webapp/restaurant/' + id + '/products/' + payload['p_id'] + '/setdiscounts', payload['data'])
+        return api.post('v1/webapp/restaurant/' + id + '/products/' + payload.id + '/setdiscounts', payload.discounts)
             .then(response => {
                 return response
             })
