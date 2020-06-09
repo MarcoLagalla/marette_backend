@@ -70,7 +70,7 @@ RESTAURANT_CATEGORY_CHOICES = [
     ('Trattoria', 'Trattoria'),
     ('Tavola calda', 'Tavola calda'),
     ('Pasticceria', 'Pasticceria'),
-    ('Cinese', 'Cinese'),
+    ('Etnico', 'Etnico'),
 ]
 
 DAYS = [

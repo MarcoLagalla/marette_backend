@@ -164,7 +164,7 @@ ADMIN_REORDER = (
     # Reorder app models authtoken.models import Token
     {'app': 'auth', 'models': ('auth.User', 'auth.Group', 'authtoken.Token'),},
     {'app': 'account', 'models': ('account.Customer', 'account.Business')},
-    {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant',)},
+    {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant','webapp.Category',)},
     {'app': 'webapp', 'label': 'Restaurant',
      'models': ('webapp.Product',
                 'webapp.ProductDiscount',

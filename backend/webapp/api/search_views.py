@@ -12,6 +12,7 @@ from ..models.models import Restaurant
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
+from ...utils import NavigationLinks
 
 
 class SearchRestaurantAPIView(APIView):
@@ -52,8 +53,8 @@ class SearchRestaurantAPIView(APIView):
                             status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.data.get('page_number', 1)
+        page_size = request.data.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)
@@ -70,101 +71,96 @@ class SearchRestaurantAPIView(APIView):
             'first': navigator.get_first_link(),
             'previous': navigator.get_previous_link(),
             'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
+            'last': navigator.get_last_link(),
+            'page_size': page_size,
+            'page_number': page_number
         }
 
         data.update({'results': serializer.data})
-
         return Response(data, status=status.HTTP_200_OK)
 
 
-class SearchRestaurantByCategoryAPIView(APIView):
+class SearchRestaurantByQueryAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        queried_name = None
+        queried_city = None
         queried_category = None
-        restaurants = []
+        queryset = []
 
         try:
-            queried_category = request.data['restaurant_category']
+            queried_name = request.data['restaurant_name']
         except KeyError:
             pass
 
-        if queried_category:
-            restaurants = Restaurant.objects.filter(restaurant_category__iexact=queried_category).order_by('-id')
-        else:
-            return Response({'error': ["Non hai specificato alcuna categoria."]}, status.HTTP_400_BAD_REQUEST)
-
-        if not restaurants:
-            return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]},
-                            status.HTTP_404_NOT_FOUND)
-
-        # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        try:
+            queried_city = request.data['restaurant_city']
+        except KeyError:
+            pass
 
         try:
-            paginator = Paginator(restaurants.distinct(), page_size)
-            page = paginator.page(page_number)
-        except django.core.paginator.EmptyPage:
-            page = paginator.page(1)
+            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
+        except KeyError:
+            pass
 
-        serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
-        # -----------------------------------------------------------
+        if queried_name:
+            name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
+            description_query = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
+            queryset.append(name_query | description_query)
 
-        navigator = NavigationLinks(self.request, paginator, page_number)
+        if queried_city:
+            city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
+            queryset.append(city_query)
 
-        data = {
-            'first': navigator.get_first_link(),
-            'previous': navigator.get_previous_link(),
-            'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
-        }
+        if queried_category:
+            category_query = Restaurant.objects.filter(restaurant_category__category_name__iexact=queried_category).order_by('-id')
+            queryset.append(category_query)
 
-        data.update({'results': serializer.data})
+        try:
+            results_query = None
 
-        return Response(data, status=status.HTTP_200_OK)
+            if queryset:
+                results_query = queryset[0]
+                for query in queryset:
+                    results_query = results_query & query
+
+            if results_query:
+                # -----------------------------------------------------------
+                page_number = request.data.get('page_number', 1)
+                page_size = request.data.get('page_size',  10)
+
+                try:
+                    paginator = Paginator(results_query.distinct(), page_size)
+                    page = paginator.page(page_number)
+                except django.core.paginator.EmptyPage:
+                    page = paginator.page(1)
+
+                serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
+                # -----------------------------------------------------------
+
+                navigator = NavigationLinks(self.request, paginator, page_number)
+
+                data = {
+                    'first': navigator.get_first_link(),
+                    'previous': navigator.get_previous_link(),
+                    'next': navigator.get_next_link(),
+                    'last': navigator.get_last_link(),
+                    'page_size': page_size,
+                    'page_number': page_number
+                }
+
+                data.update({'results': serializer.data})
+                return Response(data, status=status.HTTP_200_OK)
+
+        except KeyError:
+            return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                            status.HTTP_404_NOT_FOUND)
+
+        return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                        status.HTTP_404_NOT_FOUND)
 
 
-class NavigationLinks:
 
-    paginator = None
-    page_number = None
-    request = None
 
-    def __init__(self, request, paginator, page_number):
 
-        self.request = request
-        self.paginator = paginator
-        self.page_number = page_number
-
-    def get_first_link(self):
-        # page_number is the current page
-        if int(self.page_number) == 1:
-            return None
-        url = self.request.build_absolute_uri()
-        return replace_query_param(url, 'page_number', 1)
-
-    def get_last_link(self):
-        if int(self.page_number) == self.paginator.num_pages:
-            return None
-        url = self.request.build_absolute_uri()
-        return replace_query_param(url, 'page_number', self.paginator.num_pages)
-
-    def get_previous_link(self):
-        url = self.request.build_absolute_uri()
-        page = self.paginator.page(self.page_number)
-        if page.has_previous():
-            url = replace_query_param(url, 'page_number', page.previous_page_number())
-        else:
-            url = None
-        return url
-
-    def get_next_link(self):
-        url = self.request.build_absolute_uri()
-        page = self.paginator.page(self.page_number)
-        if page.has_next():
-            url = replace_query_param(url, 'page_number', page.next_page_number())
-        else:
-            url = None
-        return url
