@@ -100,7 +100,12 @@ class SearchRestaurantByQueryAPIView(APIView):
             pass
 
         try:
-            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
+            queried_category = request.data['restaurant_category']
+        except KeyError:
+            pass
+
+        try:
+            aperto_ora = request.data['aperto_ora']
         except KeyError:
             pass
 
