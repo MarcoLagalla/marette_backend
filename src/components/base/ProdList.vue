@@ -3,26 +3,36 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
-          <base-product :product="product" :delete="admin" :price="true" @open_card="toggleCardModal(product)"  @removed="del_Product(product)" ></base-product>
+          <base-product :product="product" :delete="admin" :price="true" @open_card="toggleCardModal(product)" @delete_prod_discount="add_discount_to_product($event, product, 0)"  @removed="del_Product(product)" ></base-product>
         </v-col>
           <v-col cols="12" md="6" lg="4">
               <base-add-new-product :category='category' v-if="admin" :admin="admin"></base-add-new-product>
           </v-col>
-          <!--div class="product" >
-              <i class="fas fa-plus fa-3x"></i>
-          </div-->
       </v-row>
     </v-container>
+      <v-snackbar
+      v-model="toggleSnackbar"
+      :timeout="3000"
+      >
+      {{text}}
+      <v-btn
+        color="blue"
+        text
+        @click="toggleSnackbar = false"
+      >
+        Chiudi
+      </v-btn>
+      </v-snackbar>
 
       <!--
         Per inserire un icona presa da fontawesome come icona della tab bisogna passar l'i tag come stringa, quindi come ho fatto
         sotto basta prendere il tag in questione e sostituire :
-                  <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @open_card="toggleCardModal" @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
 
 
         < con &lt
         > con &gt
         " con &quot
+                  <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @open_card="toggleCardModal" @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
 
       -->
       <sweet-modal ref="modal"><br>
@@ -45,8 +55,10 @@
                       :taggable="true"
                       @tag="addTag">
               </multiselect>
+              <!--{{modal_product}}-->
               <br><br>
-              <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(modal_product, selected_discounts)" > Aggiungi Sconto al prodotto</v-btn>
+
+              <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
               <br><br><br><br><br>
 
               <!--v-btn name="discount"  @click="toggleShowDiscounts"  class="managebutton">
@@ -165,6 +177,8 @@ export default {
           selected_discounts: [],
           value:[],
           modal_product:{},
+          text: '',
+          toggleSnackbar: false,
       }
 
   },
@@ -198,14 +212,68 @@ export default {
         event.target.reset();
       },
 
-      add_discount_to_product: function (prod,selected_discounts) {
+        /*
+        add discount to product viene utilizzato per eliminare o aggiungere sconti a un determinato prodotto, se entra nell'if
+        vuol dire che sta cercando di eliminare lo sconto, quindi in quel caso selected_discounts è lo sconto, una volta fuori dall'if all'interno
+        di selected mi ritrovo gli sconti del prodotto - quello eliminato. mentre nel caso di aggiunta è tutto quello fuori if e selected discounts contiene
+        gli sconti da aggiungere
+         */
+
+      add_discount_to_product: function (selected_discounts, prod, choice) {
+          let discountsId = [];
+
+          if (choice===0){
+
+              let arrayLength = prod.discounts.length;
+              for(let i=0; i< arrayLength; i++){
+                  if(prod.discounts[i]===selected_discounts){
+
+                    prod.discounts.splice(i,1);
+                    selected_discounts= prod.discounts;
+                  }
+              }
+
+          }
+          let arrayLength = selected_discounts.length;
+          for (let i = 0; i < arrayLength; i++) {
+              discountsId.push(selected_discounts[i].id)
+          }
+
           let x = this.products.indexOf(prod);
+
           let p_id= this.products[x].id;
+
+          let discounts = {
+              'discounts': discountsId,
+          };
+
           let data = {
-              'discounts': selected_discounts,
+              discounts,
               'id':p_id,
           };
-          this.addDiscountToProduct(data)
+          this.$refs.modal.close()
+          this.addDiscountToProduct(data).then(resp=> {
+              // si esegue solo se sto aggiungendo prodotti e li aggiunge subito a vista controllando che non siano doppioni
+              if (choice===1){
+              for (let i = 0; i < arrayLength; i++) {
+                  if (prod.discounts[i]!==selected_discounts[i]) {
+                      prod.discounts.push(selected_discounts[i]);
+                  }
+              }
+              this.text=resp.message;
+              }
+              else {
+              this.text='Sconto eliminato'
+              }
+              this.toggleSnackbar=true ;
+
+          })
+
+              .catch(error => {
+                  alert(error.error)
+              });
+
+
       },
 
       del_Product: function(prod){
@@ -228,8 +296,10 @@ export default {
 
       },
 
+
       toggleCardModal(prod) {
-          this.modal_product=prod;
+        this.modal_product=prod;
+        this.selected_discounts=prod.discounts;
         this.$refs.modal.open()
       },
 
