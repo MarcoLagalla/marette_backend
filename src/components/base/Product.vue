@@ -19,13 +19,26 @@
             <v-avatar class="imag" size="100" tile>
                 <v-img :src="product.image"></v-img>
             </v-avatar>
+
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
             <div class="pos2">tag tag tag</div>
-            <v-row v-if="this.price" class="quant">
-                <div v-text="product.price"></div>
-                <v-icon small class="eur">fas fa-euro-sign</v-icon>
-            </v-row>
+
+            <div class="quant">
+                <v-row>
+                <div :class="product.discounts.length>0?'discount_true':'price_text'" v-text="product.price"></div>
+                <v-icon class="eur" small>fas fa-euro-sign</v-icon>
+                </v-row>
+                <v-row v-if="product.discounts.length>0">
+                <div  class="price_text" v-text="product.final_price"></div>
+                <v-icon class="eur" small>fas fa-euro-sign</v-icon>
+                </v-row>
+
+            </div>
+        </div>
+
+        <div v-if="product.discounts.length>0">
+            <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label close x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
         </div>
     </div>
   <!--
@@ -116,6 +129,7 @@
            show: false,
            showDiscounts: false,
            selected_discounts: [],
+           discount_type: '',
 
          }
         },
@@ -152,7 +166,6 @@
               default: false
           },
 
-
           price: {
             type: Boolean,
             required: false,
@@ -173,6 +186,19 @@
 
             },
 
+            check_type(discount) {
+                let mystring = discount.value;
+              if (discount.type==='Fisso'){
+                  this.discount_type=' €'
+              }
+              else {
+                  mystring = mystring.replace('.00','');
+                  this.discount_type=' %'
+              }
+                return mystring + this.discount_type;
+
+            }
+
         }
     }
 </script>
@@ -190,6 +216,7 @@
     }
 
     .eur {
+
         padding-left: 5px;
         padding-right: 10px;
     }
@@ -250,6 +277,23 @@
         cursor: pointer;
 
     }
+
+    .price_text{
+        width: 50px;
+        text-decoration: none;
+    }
+
+    .discount_true{
+        width: 50px;
+        text-decoration: line-through;
+    }
+
+    .discount_banner{
+        box-shadow: 0 0 2px black;
+    }
+
+
+
 
     .pos2 {
         position: absolute;
