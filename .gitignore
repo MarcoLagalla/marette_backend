@@ -11,10 +11,6 @@ public/static/*
 !**/migrations
 !**/migrations/__init__.py
 
-**/**/migrations/**
-!**/**/migrations
-!**/**/migrations/__init__.py
-
 src-copy
 __pycache__
 Pipfile
