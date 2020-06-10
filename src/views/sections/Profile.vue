@@ -168,6 +168,7 @@
         text-transform: capitalize;
         color: white;
         font-weight: bold;
+        transition: ease-in-out 0.3s;
     }
 
     .gestrest:hover {
@@ -176,5 +177,7 @@
     .gestrest:hover > .wrench {
         transform: rotate(45deg);
     }
-
+.wrench {
+    transition: ease-in-out 0.3s;
+}
 </style>
