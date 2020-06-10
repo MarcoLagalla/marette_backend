@@ -8,11 +8,14 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from ..models.models import Restaurant
+from ..models.models import Restaurant, FasciaOraria, GiornoApertura
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
 from ...utils import NavigationLinks
+import datetime
+from django.utils.timezone import utc
+from backend.webapp.declarations import DAYS
 
 
 class SearchRestaurantAPIView(APIView):
@@ -108,6 +111,51 @@ class SearchRestaurantByQueryAPIView(APIView):
             aperto_ora = request.data['aperto_ora']
         except KeyError:
             pass
+
+        if aperto_ora:
+
+            # giorno apertura check
+            try:
+                today = datetime.datetime.now().weekday()
+                aperti_oggi = GiornoApertura.objects.all().filter(day__exact=DAYS[today][0])
+                print(aperti_oggi)
+                #fasce_orarie = FasciaOraria.objects.all().filter(giorno__exact=today)
+                #print(fasce_orarie)
+            except IndexError:
+                pass
+
+            if aperti_oggi:
+                for aperto in aperti_oggi:
+                    print(aperto.day)
+                    print(aperto.fasce)
+
+
+            # ora recupera la fascia oraria
+            # try:
+            #     today = datetime.datetime.now().weekday()
+            #     #print(type(today), today)
+            #
+            #     fasce_orarie = FasciaOraria.objects.all().filter(giorno__exact=today)
+            #     #print(fasce_orarie)
+            # except IndexError:
+            #     pass
+            #
+            # if fasce_orarie:
+            #     for fascia in fasce_orarie:
+            #         print(fascia.giorno.day, fascia.start, fascia.end)
+
+
+
+
+       #     print("test", datetime.datetime.now().strftime("%A"))
+            # print(datetime.datetime.now().weekday())
+            #print(DAYS[datetime.datetime.now().weekday()])
+
+            # now = datetime.datetime.utcnow().replace(tzinfo=utc).strftime('%D %H:%M:%S')
+            # print(now)
+
+
+
 
         if queried_name:
             name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
