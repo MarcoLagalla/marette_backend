@@ -23,9 +23,9 @@
                     </div>
                </v-col>
                <v-col cols="12" md="4">
-                    <div class="map">
-                    mappa
-                    </div>
+
+                        <gmaps-map :options="mapOptions" />
+
                </v-col>
            </v-row>
        </div>
@@ -33,12 +33,18 @@
 </template>
 
 <script>
+    import { gmapsMap } from 'x5-gmaps'
+
 export default {
     name: "BaseRestInfo",
+    components: { gmapsMap },
     props: ['id'],
-    created() {
-        this.$store.dispatch("restaurantData/getRestaurantData", this.id)
-    },
+    data: () => ({
+        mapOptions: {
+            center: { lat: -27.47, lng: 153.025 },
+            zoom: 12,
+        },
+    }),
     computed: {
         restData() {
             return this.$store.getters["restaurantData/restData"];
