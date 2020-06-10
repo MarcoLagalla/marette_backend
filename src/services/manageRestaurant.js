@@ -140,4 +140,11 @@ export default {
                 return response
             })
     },
+
+    getRestCategories() {
+        return api.get('v1/webapp/restaurant/category/list')
+            .then(response => {
+                return response
+            })
+    },
 }

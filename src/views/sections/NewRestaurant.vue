@@ -54,23 +54,28 @@
                                                                 </v-col>
                                                                 <v-col cols="12" md="6">
                                                                 <v-text-field label="Nome del locale*"
-                                                                              :error-messages="errors.activity_name"
-                                                                              @change="errors.activity_name=''"
-                                                                              v-model='activity_name'
-                                                                              :rules="rules"
-                                                                              counter="30"
-                                                                              type="text" id="activity_name"
-                                                                              name="activity_name"
-                                                                              required></v-text-field>
+                                                                    :error-messages="errors.activity_name"
+                                                                    @change="errors.activity_name=''"
+                                                                    v-model='activity_name'
+                                                                    :rules="rules"
+                                                                    counter="30"
+                                                                    type="text" id="activity_name"
+                                                                    name="activity_name"
+                                                                    required></v-text-field>
 
-                                                                <v-text-field
-                                                                        label="Categoria del locale* (Pizzeria, Ristorante, etc..)"
-                                                                        :error-messages="errors.restaurant_category"
-                                                                        @change="errors.restaurant_category=''"
-                                                                        v-model='restaurant_category'
-                                                                        type="text" id="restaurant_category"
-                                                                        name="restaurant_category"
-                                                                        required></v-text-field>
+                                                                <v-combobox
+                                                                    :error-messages="errors.restaurant_category"
+                                                                    :items="checkCategories()"
+                                                                    item-text="category_name"
+                                                                    item-value="id"
+                                                                    @change="errors.restaurant_category=''"
+                                                                    v-model='restaurant_category'
+                                                                    id="restaurant_category"
+                                                                    name="restaurant_category"
+                                                                    multiple chips
+                                                                    label="Categorie del locale*"
+
+                                                                ></v-combobox>
                                                                 </v-col>
                                                             </v-row>
 
@@ -183,12 +188,13 @@
         },
         methods: {
             ...mapActions('restaurants', ['newRestaurant']),
+            ...mapActions('restaurantData', ['getRestCategories']),
             register: function () {
                 this.loading = true
                 const data = {
                     activity_name: this.activity_name,
-                    restaurant_category: this.restaurant_category,
                     activity_description: this.activity_description,
+                    restaurant_category: [],
                     city: this.city,
                     address: this.address,
                     n_civ: this.n_civ,
@@ -196,6 +202,10 @@
                     restaurant_number: this.restaurant_number,
                     p_iva: this.p_iva
                 };
+
+                this.restaurant_category.forEach((category)=>{
+                    data.restaurant_category.push(category.id)
+                })
 
                 const formData = new FormData();
                 formData.append('image', this.image);
@@ -231,15 +241,32 @@
             onRemoved() {
                 this.image = '';
             },
+            checkCategories(){
+                if(Object.prototype.hasOwnProperty.call(this.restCategory, 'restCategories')){
+                    return this.restCategory.restCategories
+                }
+                else {
+                    setTimeout(this.checkCategories, 200); // check again in a second
+                }
+            }
 
         },
         computed: {
             errors() {
                 return this.$store.getters['restaurants/errors']
             },
+            restCategory() {
+                return this.$store.getters['restaurantData/restData']
+            },
             hasPermission() {
                 return this.$store.getters['userProfile/user_private'].email_activated && this.$store.getters['userProfile/isBusiness']
             }
+        },
+
+        beforeCreate() {
+          this.$store.dispatch("restaurantData/getRestCategories").then(()=>{
+              this.restaurant_category = this.checkCategories()
+          })
         }
     }
 </script>

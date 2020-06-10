@@ -30,13 +30,12 @@ const state = {
         'Percentuale'
     ],
 
-
 }
 
 const getters = {
     food_category_choice: state => state.food_category_choice,
-    discount_type_choices: state => state.DISCOUNT_TYPE_CHOICES,
     productList: state => state.productList,
+    restCategories: state => state.restData.restCategories,
     components: state => state.restData.components,
     restData: state => state.restData,
     openingDays: state => state.restData.openingDays,
@@ -51,6 +50,16 @@ const getters = {
 }
 
 const actions = {
+    getRestCategories: ({commit}) =>{
+         return new Promise((resolve, reject) => {
+             manageRestaurant.getRestCategories()
+                 .then(respRes => {
+                    commit('REST_CATEGORIES', respRes.data)
+                 })
+         })
+    },
+
+
     addOpeningDays: ({commit}, days) =>{
          return new Promise((resolve, reject) => {
              for (var day in days){
@@ -383,6 +392,10 @@ const actions = {
 }
 
 const mutations = {
+    REST_CATEGORIES: (state, categories) =>{
+        state.restData.restCategories = categories
+    },
+
     REST_GET_TIME_TABS: (state, days) =>{
         state.restData.openingDays = days
     },
