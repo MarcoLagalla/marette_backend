@@ -65,12 +65,6 @@ const actions = {
          })
     },
 
-    addTimeTable: ({commit}) =>{
-         return new Promise((resolve, reject) => {
-             manageRestaurant.addTimeTable(state.ID)
-         })
-    },
-
     getTimeTable: ({commit}) =>{
          return new Promise((resolve, reject) => {
              manageRestaurant.getTimeTable(state.ID)

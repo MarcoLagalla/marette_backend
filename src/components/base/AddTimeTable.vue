@@ -57,10 +57,9 @@
       newEnd: '',
     }),
     methods: {
-      ...mapActions('restaurantData', ['addOpeningDays', 'addTimeTable']),
+      ...mapActions('restaurantData', ['addOpeningDays']),
       activated: function () {
         this.active = !this.active
-        this.addTimeTable()
       },
 
       submitNewDays: function () {

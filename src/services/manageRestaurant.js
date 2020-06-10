@@ -127,13 +127,6 @@ export default {
             })
     },
 
-    addTimeTable(restId) {
-        return api.post('v1/webapp/restaurant/' + restId + '/opening/add')
-            .then(response => {
-                return response
-            })
-    },
-
     addTimeInterval(payload) {
         return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.dayId + '/interval/add', payload.data)
             .then(response => {
