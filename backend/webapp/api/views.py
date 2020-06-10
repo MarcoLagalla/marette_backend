@@ -15,9 +15,9 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
-    VoteRestaurantSerializer
+    VoteRestaurantSerializer, CategorySerializer
 from ..models.components import RestaurantComponents
-from ..models.models import Restaurant, CustomerVote
+from ..models.models import Restaurant, CustomerVote, Category
 from ...account.models import Business, Customer
 from ...account.permissions import IsBusiness, BusinessActivated, IsCustomer, CustomerActivated
 from ...utils import NavigationLinks
@@ -33,8 +33,8 @@ class ListRestaurantsAPIView(ListAPIView):
             return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]}, status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.data.get('page_number', 1)
+        page_size = request.data.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)
@@ -51,13 +51,14 @@ class ListRestaurantsAPIView(ListAPIView):
             'first': navigator.get_first_link(),
             'previous': navigator.get_previous_link(),
             'next': navigator.get_next_link(),
-            'last': navigator.get_last_link()
+            'last': navigator.get_last_link(),
+            'page_size': page_size,
+            'page_number': page_number
         }
 
         data.update({'results': serializer.data})
 
         return Response(data, status=status.HTTP_200_OK)
-
 
 
 class CreateRestaurantAPIView(APIView):
@@ -176,6 +177,7 @@ class UpdateRestaurantAPIView(APIView):
 
 
 class VoteRestaurantAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsCustomer, CustomerActivated]
 
     @transaction.atomic()
@@ -212,7 +214,6 @@ class VoteRestaurantAPIView(APIView):
                 except ZeroDivisionError:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
                 if has_vote:
                     return Response({'error': ["Hai già votato questo ristorante."]},
                                     status=status.HTTP_401_UNAUTHORIZED)
@@ -224,3 +225,12 @@ class VoteRestaurantAPIView(APIView):
 
         else:
             return Response({'error': ["Voto non registrato."]}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RestaurantCategoryAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        category_list = Category.objects.all()
+        serializer = CategorySerializer(instance=category_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

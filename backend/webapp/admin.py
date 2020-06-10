@@ -5,7 +5,7 @@ import django.forms
 from rest_framework.exceptions import ValidationError
 
 from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount, CustomerVote, \
-    OrarioApertura, GiornoApertura, FasciaOraria
+    OrarioApertura, GiornoApertura, FasciaOraria, Category
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -37,6 +37,9 @@ class RestaurantAdmin(admin.ModelAdmin):
             menu=menu,
             contattaci=contattaci
         )
+
+        # create TimeTable (empty)
+        OrarioApertura.objects.create(restaurant=restaurant)
 
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
 
@@ -140,3 +143,4 @@ admin.site.register(CustomerVote)
 admin.site.register(OrarioApertura)
 admin.site.register(GiornoApertura)
 admin.site.register(FasciaOraria)
+admin.site.register(Category)

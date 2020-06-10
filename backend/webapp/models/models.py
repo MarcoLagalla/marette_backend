@@ -53,7 +53,7 @@ class Restaurant(models.Model):
     cap = models.PositiveIntegerField(validators=[valids.RegexValidator(regex='[0-9]{5}')], blank=False)
     restaurant_number = PhoneNumberField(null=False, blank=False)
     p_iva = models.CharField(max_length=11, blank=False)
-    restaurant_category = models.CharField(max_length=100, choices=(RESTAURANT_CATEGORY_CHOICES + [('All', 'All'), ]))
+    restaurant_category = models.ManyToManyField('Category', related_name='category_list', blank=False)
 
     restaurant_rank = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     customer_vote_list = models.ManyToManyField('CustomerVote', related_name='customer_vote_list', blank=True)
@@ -89,6 +89,13 @@ class Restaurant(models.Model):
             return '/media/placeholder/restaurant/placeholder.png'
         else:
             return self.image.url
+
+
+class Category(models.Model):
+    category_name = models.CharField(max_length=30, unique=True, blank=False)
+
+    def __str__(self):
+        return self.category_name
 
 
 class CustomerVote(models.Model):
