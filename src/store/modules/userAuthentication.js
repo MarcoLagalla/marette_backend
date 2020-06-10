@@ -53,9 +53,9 @@ const actions = {
           dispatch("userProfile/getUserData", data.id,  { root: true }).then(()=>{
             resolve(resp)
           })
-            .catch((err)=>{
-              reject(err)
-            });
+          .catch((err)=>{
+            reject(err)
+          });
 
         })
       .catch(err => {
@@ -75,9 +75,12 @@ const actions = {
           setCookies(data);
           commit('AUTH_SUCCESS', data)
 
-          dispatch("userProfile/getUserData", data.id,  { root: true });
-
-          resolve(resp)
+          dispatch("userProfile/getUserData", data.id,  { root: true }).then(()=>{
+            resolve(resp)
+          })
+          .catch((err)=>{
+            reject(err)
+          });
         })
       .catch(err => {
         commit('REG_BUSI_AUTH_ERROR', err.response)
