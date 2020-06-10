@@ -8429,6 +8429,11 @@ ws@^6.0.0, ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
+x5-gmaps@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/x5-gmaps/-/x5-gmaps-0.3.9.tgz#867447ccc34f3a5e6b1a3cf0f47769bc3b999b43"
+  integrity sha512-8DLR8nM8Bx49W6FF7nQ6llBC3z1KEPALyfFWQN1w2egnhUgPALK2ONLd2DfsREThVRShIH9MRxU9FzYNRM7N9A==
+
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
