@@ -16,7 +16,7 @@
     </sweet-modal>
         <ul class="orari">
           <li class="infos">
-              {{category}}
+              {{categoryString}}
           </li>
           <li class="infos">
             Aperto ora/Apre alle
@@ -33,7 +33,7 @@ export default {
       required: true,
     },
     category: {
-      type: String,
+      type: Array,
       required: true,
     },
     description: {
@@ -53,6 +53,15 @@ export default {
       activity_description: this.description
     }
   },
+    computed:{
+      categoryString (){
+          var categories = ''
+          this.category.forEach((cat)=>{
+              categories += cat.category_name + ', '
+          })
+          return categories.substring(0, categories.length-2);
+        }
+    }
 }
 </script>
 <style scoped>
