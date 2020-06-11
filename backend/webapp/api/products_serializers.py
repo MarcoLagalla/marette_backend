@@ -1,6 +1,5 @@
-from rest_framework import serializers
 from django.db import transaction, IntegrityError
-from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
 from ..models.models import Product, ProductDiscount, ProductTag
 
