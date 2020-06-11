@@ -91,7 +91,6 @@ const actions = {
 
     removeTimeInterval: ({commit}, payload) =>{
          return new Promise((resolve, reject) => {
-             console.log(payload)
              manageRestaurant.removeTimeInterval({restId: state.ID, timeId: payload.time.id, dayId: payload.day.id})
              .then(respRes => {
                 commit('REST_RMV_TIME_INT', payload)

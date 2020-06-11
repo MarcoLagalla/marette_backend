@@ -1,11 +1,11 @@
 <template>
 <div class="tabella">
-    <v-row v-for="(orari, i) in orari" :key="i" class="rowhover" >
+    <v-row v-for="(day, i) in openingDays" :key="i" class="rowhover" >
         <v-col cols="6" sm="6">
-            <span class="giorno">{{orari.giorno}}</span>
+            <span class="giorno">{{day.day}}</span>
         </v-col>
         <v-col cols="6" sm="6">
-            <span class="orario">{{orari.orario}}</span>
+            <span class="orario">{{fasceToString(day.fasce)}}</span>
         </v-col>
         <div class="divider"></div>
     </v-row>
@@ -17,17 +17,32 @@
         name: "BaseOrari",
         data() {
             return {
-                orari: [
-                    {
-                        giorno: 'Lunedi',
-                        orario: '18:00 - 22:00',
-                    },
-                    {
-                        giorno: 'martedi',
-                        orario: '18:00 - 22:00',
-                    },
-                ],
+                openingDays: []
             }
+        },
+        computed: {
+            restData() {
+                return this.$store.getters["restaurantData/restData"];
+            },
+        },
+        methods: {
+            fasceToString: function (fasce) {
+                var string = ''
+                fasce.forEach((orario)=>{
+                    string += orario.start + ' - ' + orario.end + ' | '
+                })
+                return string.substring(0, string.length-3);
+            },
+            getOpeningDays() {
+                if (Object.prototype.hasOwnProperty.call(this.restData, 'openingDays')) {
+                    this.openingDays = this.restData.openingDays
+                } else {
+                    setTimeout(this.getOpeningDays, 200);
+                }
+              },
+        },
+        created() {
+          this.getOpeningDays()
         }
     }
 </script>
