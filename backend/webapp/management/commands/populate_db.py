@@ -79,6 +79,7 @@ class Command(BaseCommand):
         business_data = [
 
             {'user': {'username': 'bulk', 'email': 'email1@tmp.it', 'first_name': 'Mario', 'last_name': 'Fabbrocini'},
+             'password': '1234',
              'data': {'cf': 'DLPNZE02T04A662J', 'birth_date': '1994-04-20', 'city': 'Torino',
                       'address': 'Via S Giovanni Bosco',
                       'n_civ': '9', 'cap': '15057', 'phone': '+393456765999'},
@@ -87,9 +88,14 @@ class Command(BaseCommand):
                             'restaurant_number': '0131868956', 'p_iva': '11359591002'}]},
 
             {'user': {'username': 'pippo', 'email': 'email2@tmp.it', 'first_name': 'Pippo', 'last_name': 'Pluto'},
+             'password': '1234',
              'data': {'cf': 'LBRGRC05A14C351I', 'birth_date': '1994-05-05', 'city': 'Pavia',
                       'address': 'Pizza Duomo',
-                      'n_civ': '21/A', 'cap': '15098', 'phone': '3288567993'}},
+                      'n_civ': '21/A', 'cap': '15098', 'phone': '3288567993'},
+             'restaurant': [
+                 {'activity_name': 'La bouvette dell\'ingegnere', 'activity_description': 'Bar e ristorante dell\'Universitaà di Pavia',
+                  'city': 'Pavia', 'address': 'Via Ferrata', 'n_civ': '3', 'cap': '15645',
+                  'restaurant_number': '0131868555', 'p_iva': '02567590068'}]},
 
             {'user': {'username': 'luca', 'email': 'luca@tmp.it', 'first_name': 'Luca', 'last_name': 'Lagalla'},
              'data': {'cf': 'RLNRLF07D27F205S', 'birth_date': '2004-10-01', 'city': 'Tortona',
@@ -101,9 +107,13 @@ class Command(BaseCommand):
         for business in business_data:
 
             with transaction.atomic():
-
                 business_user = User.objects.create(**business['user'])
-                business_user.set_password(get_random_string())
+                try:
+                    pwd = business['password']
+                except KeyError:
+                    pwd = get_random_string()
+
+                business_user.set_password(pwd)
                 business_user.save()
 
                 bus = Business.objects.create(user=business_user, **business['data'],
