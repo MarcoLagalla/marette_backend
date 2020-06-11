@@ -1,20 +1,16 @@
+from django.db import transaction
 from rest_framework import status
-from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from django.shortcuts import get_object_or_404
-from django.db import transaction
-from backend.account.permissions import IsBusiness, BusinessActivated
-from rest_framework.authtoken.models import Token
 
-from ..models.models import Restaurant, Product
 from backend.account.models import Business
-from ..models.menu import Menu, MenuEntry
-
+from backend.account.permissions import IsBusiness, BusinessActivated
 from .menus_serializers import MenuSerializer, WriteMenuSerializer, MenuEntrySerializer, WriteMenuEntrySerializer
+from ..models.menu import Menu, MenuEntry
+from ..models.models import Restaurant, Product
 
 
 class ListMenus(APIView):
@@ -94,7 +90,12 @@ class DeleteMenu(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -134,7 +135,12 @@ class EditMenu(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -181,14 +187,15 @@ class MenuEntryAdd(APIView):
 
     @transaction.atomic()
     def post(self, request, id, m_id):
-        try:
-            user = Business.objects.all().get(user=self.request.user)
-        except Business.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
+        except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
@@ -197,17 +204,17 @@ class MenuEntryAdd(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {}
-        if user:
-            if user == restaurant.owner:
-                serializer = WriteMenuEntrySerializer(data=request.data)
-                if serializer.is_valid():
-                    menuentry = serializer.save(restaurant, menu)
-                    menuentry.save()
-                    data = serializer.data
-                    data.update({'id': menuentry.id})
-                    return Response(data, status=status.HTTP_201_CREATED)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if token == request.user.auth_token.key:
+            serializer = WriteMenuEntrySerializer(data=request.data)
+            if serializer.is_valid():
+                menuentry = serializer.save(restaurant, menu)
+                menuentry.save()
+                data = serializer.data
+                data.update({'id': menuentry.id})
+                return Response(data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(data, status=status.HTTP_403_FORBIDDEN)
 
 
@@ -220,7 +227,12 @@ class MenuEntryDelete(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -265,7 +277,12 @@ class MenuEntryEdit(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
