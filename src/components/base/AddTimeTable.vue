@@ -21,8 +21,9 @@
             {{orario.start}} - {{orario.end}}
           </div>
           <v-expansion-panels
-              v-model="pannello"
-              :expand="true">
+              :value="pannello"
+              multiple
+          >
             <v-expansion-panel>
               <v-expansion-panel-header>Aggiungi fascia oraria</v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -74,7 +75,6 @@
       newStart: '',
       newEnd: '',
       pannello: [],
-      prova: [],
       openingDays: []
     }),
     methods: {
@@ -108,6 +108,8 @@
 
       submitTimeInterval: function (day) {
         var payload = {day:day, data: {start: this.newStart, end: this.newEnd}}
+        console.log(payload)
+        console.log(this.openingDays)
         this.addTimeInterval(payload).then(()=>{
             this.getOpeningDays()
             this.pannello = []
