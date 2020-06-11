@@ -3,7 +3,7 @@ from django.urls import path
 from .opening_hours_views import CreateOpening, CreateOpeningDay, CreateFasciaOraria, DeleteFasciaOraria, \
     DeleteOpeningDay, DeleteOpening, ShowTimeTable
 from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, \
-    VoteRestaurantAPIView, RestaurantCategoryAPIView
+    VoteRestaurantAPIView, RestaurantCategoryAPIView, DeleteRestaurantAPIView
 from .search_views import SearchRestaurantAPIView, SearchRestaurantByQueryAPIView
 from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProduct, ProductDetails, ListProductTags
 from .discounts_views import *
@@ -76,6 +76,7 @@ urlpatterns = [
     path('restaurant/product/tags', ListProductTags.as_view(), name='list_product_tags'),
     path('restaurant/<int:id>', ShowRestaurantAPIView.as_view(), name='show_restaurant'),
     path('restaurant/<int:id>/update', UpdateRestaurantAPIView.as_view(), name='update_restaurant'),
+    path('restaurant/<int:id>/delete', DeleteRestaurantAPIView.as_view(), name='delete_restaurant'),
     path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
 
 ]
