@@ -61,55 +61,6 @@
               <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
               <br><br><br>
 
-              <!--v-btn name="discount"  @click="toggleShowDiscounts"  class="managebutton">
-              Mostra sconti Disponibili
-          </v-btn>
-              <v-expand-transition>
-                <div v-show="showDiscounts" :style="{width:'200px'}">
-                <p>Lista sconti disponibili:</p>
-                    <v-list shaped >
-                        <v-list-item-group
-                            v-model="selected_discounts"
-                            multiple
-                        >
-                            <template v-for="(campo, i) in discounts_list" >
-                                <v-divider
-                                    v-if="!campo"
-                                    :key="`divider-${i}`"
-                                ></v-divider>
-                                <v-list-item
-                                    v-else
-                                    :key="`item-${i}`"
-                                    :value="campo.id"
-                                    active-class="blue--text text--accent-2"
-                                >
-                                <template v-slot:default="{ active, toggle }" >
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="campo.title"></v-list-item-title>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-
-                                        <v-checkbox
-                                            :input-value="active"
-                                            :true-value="campo"
-                                            color="blue accent-2"
-                                            @click="toggle"
-                                        ></v-checkbox>
-
-                                    </v-list-item-action>
-                                </template>
-                                </v-list-item>
-                            </template>
-                        </v-list-item-group>
-                    </v-list>
-                    <br>
-              <v-expand-transition>
-                <div v-if="selected_discounts.length !== 0">
-                <v-btn class="managebutton" @click="add_discount_to_product(selected_discounts)" > Aggiungi Sconto al prodotto</v-btn>
-                </div>
-                </v-expand-transition>
-                </div>
-              </v-expand-transition-->
               <p>Aggiungi nuovo sconto alla lista</p>
               <br>
               <v-row>
