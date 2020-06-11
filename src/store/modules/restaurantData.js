@@ -89,6 +89,20 @@ const actions = {
     },
 
 
+    removeTimeInterval: ({commit}, payload) =>{
+         return new Promise((resolve, reject) => {
+             console.log(payload)
+             manageRestaurant.removeTimeInterval({restId: state.ID, timeId: payload.time.id, dayId: payload.day.id})
+             .then(respRes => {
+                commit('REST_RMV_TIME_INT', payload)
+                 resolve()
+             })
+
+
+         })
+    },
+
+
     removeOpeningDay: ({commit}, day) =>{
          return new Promise((resolve, reject) => {
              var payload = {restId: state.ID, day: day.id}
@@ -426,6 +440,10 @@ const mutations = {
 
     REST_ADD_TIME_INT: (state, payload) => {
         state.restData.openingDays[state.restData.openingDays.indexOf(payload.day)].fasce.push(payload.data)
+    },
+
+    REST_RMV_TIME_INT: (state, payload) => {
+        state.restData.openingDays[state.restData.openingDays.indexOf(payload.day)].fasce.splice(state.restData.openingDays[state.restData.openingDays.indexOf(payload.day)].fasce.indexOf(payload.time), 1)
     },
 
     REST_GET_TIME_TABS: (state, days) => {

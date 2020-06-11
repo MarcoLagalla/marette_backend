@@ -7,12 +7,19 @@
         <button @click="submitNewDays">Aggiungi</button>
 
         <v-card v-for="day in openingDays" :key="day.day">
-          <div>
+          <h2>
             <button name="delete" class="managebtn" @click="deleteDay(day)">
+              <i  class="fas fa-times"></i>
+            </button>
+            {{day.day}}:
+          </h2>
+
+          <div v-for="orario in day.fasce" :key="orario.id">
+            <button name="delete" class="managebtn" @click="deleteTime(day, orario)">
                     <i class="fas fa-times"></i>
-                </button><h2>{{day.day}}:</h2>
+                </button>
+            {{orario.start}} - {{orario.end}}
           </div>
-          <div v-for="orario in day.fasce" :key="orario.id">{{orario.start}} - {{orario.end}}</div>
           <v-expansion-panels>
             <v-expansion-panel
               v-model="pannello"
@@ -71,7 +78,7 @@
       openingDays: []
     }),
     methods: {
-      ...mapActions('restaurantData', ['addOpeningDays', 'removeOpeningDay', 'addTimeInterval']),
+      ...mapActions('restaurantData', ['addOpeningDays', 'removeOpeningDay', 'addTimeInterval', 'removeTimeInterval']),
       activated: function () {
         this.active = !this.active
       },
@@ -88,6 +95,14 @@
             this.getOpeningDays()
             this.days.push(day.day)
             this.remainingDays.push(day.day)
+        })
+      },
+
+
+      deleteTime: function (day, time) {
+        var payload = {day: day, time: time}
+        this.removeTimeInterval(payload).then(()=>{
+            this.getOpeningDays()
         })
       },
 

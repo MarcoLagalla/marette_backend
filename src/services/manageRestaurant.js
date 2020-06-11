@@ -141,6 +141,13 @@ export default {
             })
     },
 
+    removeTimeInterval(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.dayId + '/interval/' + payload.timeId + '/delete', )
+            .then(response => {
+                return response
+            })
+    },
+
     getTimeTable(restId) {
         return api.get('v1/webapp/restaurant/' + restId + '/timetable')
             .then(response => {
