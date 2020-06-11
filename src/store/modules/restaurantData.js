@@ -551,6 +551,8 @@ const mutations = {
     },
 
     REST_ADD_PROD_SUCCESS: (state, product) => {
+        product.discounts=[];
+        product.tags=[];
         state.productList[product.category].push(product)
     },
 

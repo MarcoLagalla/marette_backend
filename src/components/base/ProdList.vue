@@ -59,7 +59,7 @@
               <br><br>
 
               <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
-              <br><br><br><br><br>
+              <br><br><br>
 
               <!--v-btn name="discount"  @click="toggleShowDiscounts"  class="managebutton">
               Mostra sconti Disponibili
@@ -110,8 +110,11 @@
                 </v-expand-transition>
                 </div>
               </v-expand-transition-->
-
-              <v-form @submit.prevent="add_discount_to_list">
+              <p>Aggiungi nuovo sconto alla lista</p>
+              <br>
+              <v-row>
+                  <v-col cols="6">
+              <v-form  @submit.prevent="add_discount_to_list">
                 <v-text-field outlined
                               v-model="discount_name"
                               type="text"
@@ -140,7 +143,12 @@
                               required
                 ></v-text-field>
                 <v-btn dark color="var(--ming)" type="submit" >Aggiungi Sconto</v-btn>
-            </v-form>
+              </v-form>
+              </v-col>
+              <v-col cols="6">
+
+              </v-col>
+              </v-row>
           </sweet-modal-tab>
           <sweet-modal-tab title="Modifica Prodotto" id="tab2" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;"></sweet-modal-tab>
         </sweet-modal>
@@ -383,6 +391,10 @@ h1 {
     box-shadow: 0 2px 10px #828282;
     cursor: pointer;
 
+}
+
+.form_in_modal{
+    width: 50%;
 }
 
 
