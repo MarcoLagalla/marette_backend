@@ -16,10 +16,10 @@
                             <div v-bind="restaurant" >
                                 <div>
                                     <div class="example-2 card">
-                                        <div class="wrapper">
+                                        <div class="wrapper" :style="image" >
                                             <div class="header">
                                                 <div class="date">
-                                                    <span class="author">categoria?</span>
+                                                    <span class="author">{{categoryString()}}</span>
                                                 </div>
                                                 <ul class="menu-content">
                                                         <li><a class="fas fa-heart"><span>18</span></a></li>
@@ -27,7 +27,7 @@
                                             </div>
                                             <div class="data">
                                                 <div class="content">
-                                                    <span class="author">categoria?</span>
+                                                    <span class="author">{{categoryString()}}</span>
                                                     <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
                                                     <p class="text">{{restaurant.activity_description}}</p>
                                                     <a href="#" class="button">Entra nel negozio</a>
@@ -53,11 +53,31 @@
         computed: {
             restaurantList() {
                 return this.$store.getters['restaurants/restaurantList'].results
+            },
+            restData() {
+                return this.$store.getters['restaurantData/restData']
+            },
+            image() {
+                const imgUrl = this.$store.getters['restaurantData/restData'].image;
+                return {backgroundImage: "url(" + imgUrl + ") "}
+            },
+        },
+        methods:{
+            categoryString (){
+                if (Object.prototype.hasOwnProperty.call(this.restData, 'restaurant_category')) {
+                    var categories = ''
+                    this.restData.restaurant_category.forEach((cat)=>{
+                      categories += cat.category_name + ', '
+                    })
+                    return categories.substring(0, categories.length-2);
+                } else {
+                    setTimeout(this.categoryString, 200);
+                }
             }
         },
         created() {
             this.$store.dispatch("restaurants/getRestaurants")
-        }
+        },
     }
 </script>
 <style scoped>
@@ -222,9 +242,6 @@
     .card input[type='checkbox']:checked + .menu-content {
         -webkit-transform: translateY(-60px);
         transform: translateY(-60px);
-    }
-    .example-2 .wrapper {
-        background: url("../../assets/tempcards.jpg") center/cover no-repeat;
     }
     .example-2 .wrapper:hover .menu-content span {
         -webkit-transform: translate(-50%, -10px);
