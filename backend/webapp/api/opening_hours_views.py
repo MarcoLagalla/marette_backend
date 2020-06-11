@@ -1,14 +1,13 @@
 from django.db import transaction
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from backend.account.permissions import IsBusiness, BusinessActivated
-from backend.webapp.models.models import Restaurant
-from backend.webapp.api.opening_hours_serializers import  *
+from backend.webapp.api.opening_hours_serializers import *
 
 
 class CreateOpening(APIView):

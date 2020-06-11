@@ -45,10 +45,6 @@ class ListProducts(APIView):
 
         return Response(products_list, status=status.HTTP_200_OK)
 
-    # def get_queryset(self):
-    #     restaurant_id = self.kwargs['id']
-    #     return Product.objects.filter(restaurant_id=restaurant_id)
-
 
 class AddProduct(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
@@ -60,7 +56,12 @@ class AddProduct(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -112,7 +113,12 @@ class DeleteProduct(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -153,7 +159,12 @@ class UpdateProduct(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

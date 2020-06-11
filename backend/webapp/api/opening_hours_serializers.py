@@ -2,8 +2,7 @@ from datetime import datetime
 
 from rest_framework import serializers
 
-from ..models.models import GiornoApertura, OrarioApertura, FasciaOraria, Restaurant
-
+from ..models.models import GiornoApertura, OrarioApertura, FasciaOraria
 
 
 class FasciaOrariaSerializer(serializers.ModelSerializer):
