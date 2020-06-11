@@ -321,7 +321,7 @@ class FasciaOraria(models.Model):
     end = models.CharField(max_length=5, choices=DAILY_HOURS)
 
     class Meta:
-        unique_together = (('restaurant', 'start', 'end'), )
+        unique_together = (('restaurant', 'giorno', 'start', 'end'), )
 
     def clean(self, *args, **kwargs):
         start = datetime.strptime(self.start, '%H:%M')
