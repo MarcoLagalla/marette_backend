@@ -23,7 +23,7 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row align="center" justify="space-around">
+            <v-row justify="space-around">
                 <span class="fa-stack fa-xs">
                 <i class="fas fa-bread-slice fa-stack-1x" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
@@ -48,7 +48,7 @@
         </div>
 
         <div v-if="product.discounts.length>0">
-            <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label close x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
+            <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label :close="close_discount" x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
         </div>
     </div>
   <!--
@@ -177,6 +177,11 @@
           },
 
           price: {
+            type: Boolean,
+            required: false,
+            default: false
+          },
+          close_discount: {
             type: Boolean,
             required: false,
             default: false
