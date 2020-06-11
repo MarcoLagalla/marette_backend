@@ -60,16 +60,44 @@ const actions = {
     },
 
 
-    addOpeningDays: ({commit}, days) =>{
+    addOpeningDays: ({commit}, day) =>{
          return new Promise((resolve, reject) => {
-             for (var day in days){
-                 var payload = {restId: state.ID, data: {day: days[day], restaurant: state.ID}}
-                 manageRestaurant.addOpeningDay(payload)
-                 .then(respRes => {
-                    commit('REST_ADD_OP_DAY', respRes.data)
-                 })
-             }
-             resolve()
+             manageRestaurant.addOpeningDay({restId: state.ID, data: {day: day, restaurant: state.ID}})
+             .then(respRes => {
+                  respRes.data.day = day
+                commit('REST_ADD_OP_DAY', respRes.data)
+                 resolve()
+             })
+
+
+         })
+    },
+
+
+    addTimeInterval: ({commit}, payload) =>{
+         return new Promise((resolve, reject) => {
+             payload.data.restaurant = state.ID
+             manageRestaurant.addTimeInterval({restId: state.ID, data: payload.data, dayId: payload.day.id})
+             .then(respRes => {
+                  respRes.day = payload.day
+                commit('REST_ADD_TIME_INT', respRes)
+                 resolve()
+             })
+
+
+         })
+    },
+
+
+    removeOpeningDay: ({commit}, day) =>{
+         return new Promise((resolve, reject) => {
+             var payload = {restId: state.ID, day: day.id}
+             manageRestaurant.removeOpeningDay(payload)
+             .then(respRes => {
+                commit('REST_RMV_OP_DAY', day)
+                 resolve()
+             })
+
 
          })
     },
@@ -392,139 +420,144 @@ const actions = {
 }
 
 const mutations = {
-    REST_CATEGORIES: (state, categories) =>{
+    REST_CATEGORIES: (state, categories) => {
         state.restData.restCategories = categories
     },
 
-    REST_GET_TIME_TABS: (state, days) =>{
+    REST_ADD_TIME_INT: (state, payload) => {
+        state.restData.openingDays[state.restData.openingDays.indexOf(payload.day)].fasce.push(payload.data)
+    },
+
+    REST_GET_TIME_TABS: (state, days) => {
         state.restData.openingDays = days
     },
 
-    REST_ADD_OP_DAY: (state, day) =>{
-        if (!Object.prototype.hasOwnProperty.call(state.restData, 'openingDays'))
-            state.restData.openingDays = []
-        state.restData.openingDays.push({day: day, fasce: []})
+    REST_ADD_OP_DAY: (state, data) => {
+        state.restData.openingDays.push({day: data.day, fasce: [], id: data.id})
     },
 
-    MOD_HOME_COMPONENT: (state, home) =>{
+    REST_RMV_OP_DAY: (state, day) => {
+        state.restData.openingDays.splice(state.restData.openingDays.indexOf(day), 1)
+    },
+
+    MOD_HOME_COMPONENT: (state, home) => {
         state.restData.components.home = home
     },
 
-    ADD_GALLERY_IMG: (state, img) =>{
+    ADD_GALLERY_IMG: (state, img) => {
         state.restData.components.galleria.immagini.push(img)
     },
 
-    RMV_GALLERY_IMG: (state, imgId) =>{
-        state.restData.components.galleria.immagini.forEach( (img) =>{
-          if (img.id === imgId)
-            state.restData.components.galleria.immagini.splice(state.restData.components.galleria.immagini.indexOf(img), 1)
+    RMV_GALLERY_IMG: (state, imgId) => {
+        state.restData.components.galleria.immagini.forEach((img) => {
+            if (img.id === imgId)
+                state.restData.components.galleria.immagini.splice(state.restData.components.galleria.immagini.indexOf(img), 1)
         });
     },
 
-    EDIT_GALLERY_IMG: (state, newImg) =>{
-        state.restData.components.galleria.immagini.forEach( (img) =>{
-          if (img.id === newImg.id)
-            state.restData.components.galleria.immagini[state.restData.components.galleria.immagini.indexOf(img)] = newImg
+    EDIT_GALLERY_IMG: (state, newImg) => {
+        state.restData.components.galleria.immagini.forEach((img) => {
+            if (img.id === newImg.id)
+                state.restData.components.galleria.immagini[state.restData.components.galleria.immagini.indexOf(img)] = newImg
         });
     },
 
-    RMV_PORTATA_SUCCESS: (state, data) =>{
-        state.menus.forEach( (menu) =>{
-          if (menu.id === data.menuId){
-            menu.entries.forEach((portata) =>{
-                if (portata.id === data.entryId)
-                    menu.entries.splice(menu.entries.indexOf(portata), 1)
-            })
-          }
+    RMV_PORTATA_SUCCESS: (state, data) => {
+        state.menus.forEach((menu) => {
+            if (menu.id === data.menuId) {
+                menu.entries.forEach((portata) => {
+                    if (portata.id === data.entryId)
+                        menu.entries.splice(menu.entries.indexOf(portata), 1)
+                })
+            }
         });
     },
 
-    RMV_PORTATA_ERROR: () =>{
+    RMV_PORTATA_ERROR: () => {
     },
 
-    EDIT_PORTATA_SUCCESS: (state, payload) =>{
-        state.menus.forEach( (menu) =>{
-          if (menu.id === payload.menuId){
-            menu.entries.forEach((portata) =>{
-                if (portata.id === payload.entryId) {
-                    menu.entries[menu.entries.indexOf(portata)] = payload.portata
-                }
-            })
-          }
+    EDIT_PORTATA_SUCCESS: (state, payload) => {
+        state.menus.forEach((menu) => {
+            if (menu.id === payload.menuId) {
+                menu.entries.forEach((portata) => {
+                    if (portata.id === payload.entryId) {
+                        menu.entries[menu.entries.indexOf(portata)] = payload.portata
+                    }
+                })
+            }
         });
     },
 
-    EDIT_PORTATA_ERROR: () =>{
+    EDIT_PORTATA_ERROR: () => {
     },
 
-    ADD_PORTATA_SUCCESS: (state, data) =>{
-        state.menus.forEach( (menu) =>{
-          if (menu.id === data.menuId)
-            state.menus[state.menus.indexOf(menu)].entries.push(data.data)
+    ADD_PORTATA_SUCCESS: (state, data) => {
+        state.menus.forEach((menu) => {
+            if (menu.id === data.menuId)
+                state.menus[state.menus.indexOf(menu)].entries.push(data.data)
         });
     },
 
-    ADD_PORTATA_ERROR: () =>{
+    ADD_PORTATA_ERROR: () => {
     },
 
-    ADD_MENU_SUCCESS: (stete, menu) =>{
+    ADD_MENU_SUCCESS: (stete, menu) => {
         stete.menus.push(menu)
     },
 
-    ADD_MENU_ERROR: () =>{
+    ADD_MENU_ERROR: () => {
     },
 
-    EDIT_MENU_SUCCESS: (state, newMenu) =>{
-        state.menus.forEach( (menu) =>{
-          if (menu.id === newMenu.id)
-            state.menus[state.menus.indexOf(menu)] = newMenu
+    EDIT_MENU_SUCCESS: (state, newMenu) => {
+        state.menus.forEach((menu) => {
+            if (menu.id === newMenu.id)
+                state.menus[state.menus.indexOf(menu)] = newMenu
         });
     },
 
-    EDIT_MENU_ERROR: () =>{
+    EDIT_MENU_ERROR: () => {
     },
 
-    RMV_MENU_SUCCESS: (state, menu) =>{
-      state.menus.splice(state.menus.indexOf(menu), 1)
+    RMV_MENU_SUCCESS: (state, menu) => {
+        state.menus.splice(state.menus.indexOf(menu), 1)
     },
 
-    RMV_MENU_ERROR: () =>{
+    RMV_MENU_ERROR: () => {
     },
 
-    LIST_MENU_SUCCESS: (state, menus) =>{
+    LIST_MENU_SUCCESS: (state, menus) => {
         state.menus = menus
     },
 
-    LIST_MENU_ERROR: () =>{
+    LIST_MENU_ERROR: () => {
     },
 
-    REST_ADD_PROD_SUCCESS: (state, product) =>{
+    REST_ADD_PROD_SUCCESS: (state, product) => {
         state.productList[product.category].push(product)
     },
 
-    REST_ADD_PROD_ERROR: () =>{
+    REST_ADD_PROD_ERROR: () => {
     },
 
-    REST_REMOVE_PROD_SUCCESS: (state) =>{
+    REST_REMOVE_PROD_SUCCESS: (state) => {
         state.status = 'success'
 
-      // this.products.splice(this.products.indexOf(product), 1);
-       // state.productList[product.category].splice(state.productList[product.category].product, 1)
+        // this.products.splice(this.products.indexOf(product), 1);
+        // state.productList[product.category].splice(state.productList[product.category].product, 1)
 
 
     },
 
-    REST_REMOVE_PROD_ERROR: () =>{
+    REST_REMOVE_PROD_ERROR: () => {
     },
 
 
-
-    REST_RMV_COMPONENT: (state, componentName) =>{
-        state.restData.components[componentName].show=false;
+    REST_RMV_COMPONENT: (state, componentName) => {
+        state.restData.components[componentName].show = false;
     },
 
-    REST_ADD_COMPONENT: (state, componentName) =>{
-        state.restData.components[componentName].show=true;
+    REST_ADD_COMPONENT: (state, componentName) => {
+        state.restData.components[componentName].show = true;
     },
 
     REST_DATA_REQUEST: (state, ID) => {
@@ -532,7 +565,7 @@ const mutations = {
         state.ID = ID
     },
 
-    REST_DATA_SUCCESS: (state, data) =>{
+    REST_DATA_SUCCESS: (state, data) => {
         state.restData = data
     },
 
@@ -594,11 +627,7 @@ const mutations = {
         state.error = error
     },
 
-
-
-
 }
-
 export default {
   namespaced: true,
   state,

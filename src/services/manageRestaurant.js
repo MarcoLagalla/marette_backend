@@ -127,6 +127,13 @@ export default {
             })
     },
 
+    removeOpeningDay(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.day + '/delete')
+            .then(response => {
+                return response
+            })
+    },
+
     addTimeInterval(payload) {
         return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.dayId + '/interval/add', payload.data)
             .then(response => {

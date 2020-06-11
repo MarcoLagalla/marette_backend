@@ -3,12 +3,21 @@
     <button @click="activated">Aggiungi orari di apertura</button>
     <v-dialog v-model="active" max-width="815" >
       <v-card max-width="800">
-        <v-select :items="remainingDays" multiple chips item-text="name" item-value="id" label="Aggiungi giorni di apertura:" v-model="newDays"></v-select>
+        <v-select :items="remainingDays" chips item-text="name" item-value="id" label="Aggiungi giorni di apertura:" v-model="newDay"></v-select>
         <button @click="submitNewDays">Aggiungi</button>
+
         <v-card v-for="day in openingDays" :key="day.day">
-          <h2>{{day.day}}:</h2>
+          <div>
+            <button name="delete" class="managebtn" @click="deleteDay(day)">
+                    <i class="fas fa-times"></i>
+                </button><h2>{{day.day}}:</h2>
+          </div>
+          <div v-for="orario in day.fasce" :key="orario.id">{{orario.start}} - {{orario.end}}</div>
           <v-expansion-panels>
-            <v-expansion-panel>
+            <v-expansion-panel
+              v-model="pannello"
+              :expand="true"
+            >
               <v-expansion-panel-header>Aggiungi fascia oraria</v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-row>
@@ -16,10 +25,10 @@
                     <v-label for="start">Inizio</v-label><br>
                      <v-time-picker
                          id="start"
-                        v-model="newStart"
-                        :allowed-minutes="allowedMinutes"
-                        class="mt-4"
-                        format="24hr"
+                         v-model="newStart"
+                         :allowed-minutes="allowedMinutes"
+                         class="mt-4"
+                         format="24hr"
                       ></v-time-picker>
                   </v-col>
 
@@ -27,12 +36,15 @@
                      <v-label for="end">Fine</v-label><br>
                      <v-time-picker
                          id="end"
-                        v-model="newEnd"
-                        :allowed-minutes="allowedMinutes"
-                        class="mt-4"
-                        format="24hr"
+                         v-model="newEnd"
+                         :allowed-minutes="allowedMinutes"
+                         class="mt-4"
+                         format="24hr"
                       ></v-time-picker>
                   </v-col>
+                </v-row>
+                <v-row>
+                  <button @click="submitTimeInterval(day)">Aggiungi</button>
                 </v-row>
 
               </v-expansion-panel-content>
@@ -52,35 +64,67 @@
     data: () => ({
       active: false,
       days: ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica'],
-      newDays: [],
+      newDay: '',
       newStart: '',
       newEnd: '',
+      pannello: [],
+      openingDays: []
     }),
     methods: {
-      ...mapActions('restaurantData', ['addOpeningDays']),
+      ...mapActions('restaurantData', ['addOpeningDays', 'removeOpeningDay', 'addTimeInterval']),
       activated: function () {
         this.active = !this.active
       },
 
       submitNewDays: function () {
-        this.addOpeningDays(this.newDays)
-        this.newDays = []
+        this.addOpeningDays(this.newDay).then(()=>{
+            this.getOpeningDays()
+        })
+        this.newDay = []
+      },
+
+      deleteDay: function (day) {
+        this.removeOpeningDay(day).then(()=>{
+            this.getOpeningDays()
+            this.days.push(day.day)
+            this.remainingDays.push(day.day)
+        })
+      },
+
+      submitTimeInterval: function (day) {
+        var payload = {day:day, data: {start: this.newStart, end: this.newEnd}}
+        this.addTimeInterval(payload).then(()=>{
+            this.getOpeningDays()
+            this.pannello = []
+        })
       },
 
       allowedMinutes: m => m % 30 === 0,
 
-    },
-    computed: {
-      remainingDays() {
-        return this.days
-      },
-      openingDaysCheNonVa() {
-        return this.$store.getters['restaurantData/openingDays']
+      getOpeningDays() {
+        if (Object.prototype.hasOwnProperty.call(this.restData, 'openingDays')) {
+            this.openingDays = this.restData.openingDays
+        } else {
+            setTimeout(this.getOpeningDays, 200);
+        }
       },
 
-      openingDays() {
-        return this.$store.getters["restaurantData/restData"].openingDays;
+    },
+    computed: {
+      restData() {
+        return this.$store.getters["restaurantData/restData"];
+      },
+      remainingDays() {
+        this.openingDays.forEach((day)=>{
+            if(this.days.includes(day.day))
+              this.days.splice(this.days.indexOf(day.day), 1)
+        })
+        return this.days
       }
+    },
+    created() {
+      this.getOpeningDays()
+
     }
   }
 </script>
