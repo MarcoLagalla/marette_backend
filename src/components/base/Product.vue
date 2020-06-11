@@ -24,13 +24,16 @@
             <p class="description" v-text="product.description"></p>
 
             <v-row justify="space-around">
+                <div class="tooltip">
                 <span class="fa-stack fa-xs">
-                <i class="fas fa-bread-slice fa-stack-1x" style="color: peru"></i>
+                <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
-                <i class="fas fa-carrot" style="color: orange"></i>
-                <i class="fas fa-pepper-hot" style="color: red"></i>
-                <i class="fas fa-seedling" style="color: green"></i>
+                <span class="tooltiptext">Gluten Free</span>
+                </div>
+                <div class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -306,7 +309,41 @@
     .discount_banner{
         box-shadow: 0 0 2px black;
     }
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
 
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 80px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      top: 150%;
+      left: 50%;
+      margin-left: -40px;
+        font-size: 0.8em;
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent black transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
 
 
 
