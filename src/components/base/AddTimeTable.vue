@@ -20,11 +20,10 @@
                 </button>
             {{orario.start}} - {{orario.end}}
           </div>
-          <v-expansion-panels>
-            <v-expansion-panel
+          <v-expansion-panels
               v-model="pannello"
-              :expand="true"
-            >
+              :expand="true">
+            <v-expansion-panel>
               <v-expansion-panel-header>Aggiungi fascia oraria</v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-row>
@@ -75,6 +74,7 @@
       newStart: '',
       newEnd: '',
       pannello: [],
+      prova: [],
       openingDays: []
     }),
     methods: {
