@@ -22,7 +22,17 @@
 
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
-            <div class="pos2">tag tag tag</div>
+
+            <v-row align="center" justify="space-around">
+                <span class="fa-stack fa-xs">
+                <i class="fas fa-bread-slice fa-stack-1x" style="color: peru"></i>
+                <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
+                </span>
+                <i class="fas fa-carrot" style="color: orange"></i>
+                <i class="fas fa-pepper-hot" style="color: red"></i>
+                <i class="fas fa-seedling" style="color: green"></i>
+
+            </v-row>
 
             <div class="quant">
                 <v-row>
