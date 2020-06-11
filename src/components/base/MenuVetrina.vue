@@ -1,5 +1,6 @@
 <template>
-    <v-card dark class="vetrinacard" width="800" height="auto">
+    <v-card class="vetrinacard" max-width="500" height="auto">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="menu.name"></v-card-title>
             <div class="quant">
@@ -18,17 +19,18 @@
                               @new_portata="submitPortata($event)"
                               @edit_portata="submitEditPortata($event)"></base-add-portata>
         </div>
-        <v-card-actions>
+        <div class="actions">
             <v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
                 Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
             </v-btn>
-            <v-btn light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton">
+            <button light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton" text>
                 Elimina Menù <i class="fas fa-times"></i>
-            </v-btn>
-            <v-btn light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton">
-                Modifica Menù<i class="far fa-edit"></i>
-            </v-btn>
-        </v-card-actions>
+            </button>
+
+            <button light name="edit" v-if="admin" @click="$emit('edited')" class="managebutton" text>
+                Modifica Menù <i class="far fa-edit"></i>
+            </button>
+        </div>
     </v-card>
 </template>
 
@@ -55,7 +57,11 @@
                 showAddPortata: false,
                 products: [],
                 edit: false
-            }
+            },
+            snackbar: false,
+            timeout: 4000,
+            color: 'green',
+            text: 'Menu aggiornato con successo'
         }),
         methods: {
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry', 'editMenuEntry']),
@@ -65,7 +71,7 @@
                     menuId: this.menu.id
                 }
                 this.addMenuEntry(payload)
-                    .then(
+                    .then(() => {
                         this.portataToManage = {
                             name: '',
                             num_products: 1,
@@ -73,23 +79,57 @@
                             products: [],
                             edit: false
                         }
-                    )//TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                        this.snackbar = true;
+                        this.text = 'Portata aggiunta con successo';
+                        this.color = 'green';
+                    })
+                    .catch((errors) => {
+                        this.snackbar = true;
+                        var errString = ''
+                        for (var key in errors) {
+                          // eslint-disable-next-line no-prototype-builtins
+                          if (!errors.hasOwnProperty(key)) continue;
+                          errString += key + ': ' + errors[key].toString() + ' ';
+                        }
+                        this.text = 'Errore: ' + errString;
+                        this.color = 'error';
+                    })
             },
 
             deletePortata: function (portata) {
-                this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
+
                 const payload = {menuId: this.menu.id, entryId: portata.id}
-                this.deleteMenuEntry(payload) //TODO: se sbaglia ad aggiungiere la entry devo gestire l'errore
+                this.deleteMenuEntry(payload)
+                .then(() => {
+                    this.menu.entries.splice(this.menu.entries.indexOf(portata), 1)
+                    this.snackbar = true;
+                    this.text = 'Portata eliminata con successo';
+                    this.color = 'green';
+                })
+                .catch((errors) => {
+                    this.snackbar = true;
+                    var errString = ''
+                    for (var key in errors) {
+                      // eslint-disable-next-line no-prototype-builtins
+                      if (!errors.hasOwnProperty(key)) continue;
+                      errString += key + ': ' + errors[key].toString() + ' ';
+                    }
+                    this.text = 'Errore: ' + errString;
+                    this.color = 'error';
+                })
             },
 
             askEditPortata: function (portata) {
                 portata.showAddPortata = true
                 portata.edit = true
                 this.portataToManage = portata
-                document.getElementById('AddPortata').scrollIntoView(false)
-                document.getElementById('AddPortata').focus({
+                setTimeout(()=>{
+                    document.getElementById('AddPortata').scrollIntoView(false)
+                    document.getElementById('AddPortata').focus({
                     preventScroll: true
                 });
+                }, 200)
+
             },
 
             submitEditPortata: function (portata) {
@@ -100,19 +140,29 @@
                         name: portata.name,
                         num_products: portata.num_products,
                         products: []
-                    }
+                    },
+                    portata: portata
                 }
                 portata.products.forEach(function (item) {
                     payload.data.products.push(item.id)
                 });
 
                 this.editMenuEntry(payload)
-                    .then((newPortata) => {
-                        this.menu.entries[this.menu.entries.indexOf(portata)] = newPortata
-                        alert('Portata aggiornata con successo')
+                    .then(() => {
+                        this.snackbar = true;
+                        this.text = 'Portata aggiornata con successo';
+                        this.color = 'green';
                     })
-                    .catch((err) => {
-                        alert('Errore ' + err)
+                    .catch((errors) => {
+                        this.snackbar = true;
+                        var errString = ''
+                        for (var key in errors) {
+                          // eslint-disable-next-line no-prototype-builtins
+                          if (!errors.hasOwnProperty(key)) continue;
+                          errString += key + ': ' + errors[key].toString() + ' ';
+                        }
+                        this.text = 'Errore: ' + errString;
+                        this.color = 'error';
                     })
 
                 this.portataToManage = {
@@ -128,32 +178,24 @@
 </script>
 
 <style scoped>
+    .vetrinacard {
+        margin: 0 auto;
+    }
 
     .addmenu {
         height: auto;
     }
     .addtocart {
         background: var(--ming)!important;
+        color: white;
+        font-weight: bold;
+        margin: 10px;
     }
 
     h1 {
         color: white;
         text-align: center;
         padding-top: 20px;
-    }
-
-    .vetrinacard {
-        background: var(--emerald);
-
-    }
-
-    .blutitle {
-        background: var(--emerald);
-        color: #FFFFFF;
-        box-shadow: 0 0 5px black;
-        position: sticky;
-        top: 0;
-        z-index: 1;
     }
 
     .titlemenu {
@@ -168,12 +210,13 @@
         top: 0;
         margin: 10px;
         display: flex;
-        padding: 5px;
+        padding: 10px;
+        background: var(--ghostwhite);
+        border-radius: 15px;
+        box-shadow: inset 0 0 4px grey;
     }
     .euro {
         margin-left: 5px;
     }
-    .managebutton {
-        background: ghostwhite!important;
-    }
+
 </style>

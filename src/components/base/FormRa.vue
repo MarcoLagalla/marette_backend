@@ -17,22 +17,47 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="6" md="4">
+                                    <v-col cols="12" md="6">
+                                        <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
+                                                      solo filed v-model="first_name" label="Nome"
+                                                      prepend-icon="mdi-account-cowboy-hat"
+                                                      id="first_name"></v-text-field>
+
+                                        <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
+                                                      solo prepend-icon="mdi-account-cowboy-hat"
+                                                      filed v-model="last_name" label="Cognome"
+                                                      id="last_name"></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="6">
+                                        <picture-input
+                                                ref="avatar"
+                                                @change="onChanged"
+                                                :width="150"
+                                                :height="150"
+                                                size="3"
+                                                :zIndex="0"
+                                                :crop="true"
+                                                :changeOnClick="false"
+                                                accept="image/jpeg, image/png, image/gif"
+                                                buttonClass="ui button primary"
+                                                :customStrings="{
+                      upload: '<h1>Carica immagine</h1>',
+                      drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                                        </picture-input>
+
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="nameRules" :error-messages="errors.username"
                                                       @change="errors.username=''" prepend-icon="mdi-account" solo filed
                                                       id="username" v-model="username" label="Username*"
                                                       required></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
-                                                      solo filed v-model="first_name" label="Nome"
-                                                      id="first_name"></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="4">
-                                        <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
-                                                      solo
-                                                      filed v-model="last_name" label="Cognome"
-                                                      id="last_name"></v-text-field>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field :rules="emailRules" :error-messages="errors.email"
+                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
+                                                      v-model="email" label="Email*" id="email" type="email"
+                                                      required></v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6">
                                         <v-text-field :rules="phoneRules" :error-messages="errors.phone"
@@ -47,14 +72,9 @@
                                                       label="Data di nascita" v-model="birth_date"
                                                       type="date"></v-text-field>
                                     </v-col>
-                                    <v-col cols="12">
-                                        <v-text-field :rules="emailRules" :error-messages="errors.email"
-                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
-                                                      v-model="email" label="Email*" id="email" type="email"
-                                                      required></v-text-field>
-                                    </v-col>
+
                                     <v-col cols="12" sm="6" md="6">
-                                        <v-text-field :rules="passwordRules" :error-messages="errors.password"
+                                        <v-text-field :rules="passwordRules" :error-messages="errorPassword"
                                                       @change="errors.password=''" prepend-icon="mdi-key" solo filed
                                                       v-model="password" label="Password*" id="password" type="password"
                                                       required></v-text-field>
@@ -65,40 +85,25 @@
                                                       label="Repeat password*" id="password2" type="password"
                                                       required></v-text-field>
                                     </v-col>
-                                    <v-col cols="12">
-                                        <picture-input
-                                                ref="avatar"
-                                                @change="onChanged"
-                                                :width="200"
-                                                :height="200"
-                                                size="3"
-                                                :zIndex="0"
-                                                :crop="true"
-                                                :changeOnClick="false"
-                                                accept="image/jpeg, image/png, image/gif"
-                                                buttonClass="ui button primary"
-                                                :customStrings="{
-                      upload: '<h1>Carica immagine</h1>',
-                      drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
-                                        </picture-input>
-                                    </v-col>
+
                                 </v-row>
                             </v-container>
                             <small style="color:white">*indica i campi obbligatori</small>
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-text style="color:white">Registrando un account accetti i nostri
-                            <router-link to="/termini">Terms & Privacy</router-link>
+                            <router-link to="/termini">Terms & Condizioni</router-link>
                             .
                         </v-card-text>
                         <div class="regbtn2">
                             <div class="center">
-                                <button class="btn" type="submit" :disabled="!valid">
+                                <button class="btn" type="submit" :disabled="!valid && loading">
                                     <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
                                     </svg>
-                                    <span>Submit</span>
+                                    <span v-if="!loading" >Submit</span>
+                                    <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
                                 </button>
                             </div>
                         </div>
@@ -127,6 +132,7 @@
         mixins: [Heading],
         data: () => ({
             dialog: false,
+            loading: false,
             settings: {
                 maxScrollbarLength: 60
             },
@@ -160,38 +166,35 @@
         methods: {
             ...mapActions('userAuthentication', ['registerUser']),
             register: function () {
-                if (!this.first_name && !this.last_name) {
-                    const data = {
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone
-                    };
-                    const formData = new FormData();
-                    formData.append('avatar', this.image);
-                    formData.append('data', JSON.stringify(data));
-                    this.registerUser(formData).then(() => {
-                        this.$router.push('/profile')
+                this.loading = true
+                const data = {
+                    username: this.username,
+                    email: this.email,
+                    password: this.password,
+                    password2: this.password2,
+                    phone: this.phone,
+                };
+                if(this.first_name)
+                    data.first_name = this.first_name
+                if(this.last_name)
+                    data.last_name = this.last_name
+                if(this.birth_date)
+                    data.birth_date = this.birth_date
+
+                const formData = new FormData();
+                formData.append('avatar', this.image);
+                formData.append('data', JSON.stringify(data));
+                this.registerUser(formData).then(() => {
+                    this.$router.push('/profile').catch(error => {
+                        var id = Object.keys(error)[0];
+                        document.getElementById(id).scrollIntoView(false)
+                        document.getElementById(id).focus({
+                            preventScroll: true
+                        });
                     })
-                } else {
-                    const data = {
-                        username: this.username,
-                        email: this.email,
-                        password: this.password,
-                        password2: this.password2,
-                        phone: this.phone,
-                        first_name: this.first_name,
-                        last_name: this.last_name,
-                        birth_date: this.birth_date
-                    };
-                    const formData = new FormData();
-                    formData.append('avatar', this.image);
-                    formData.append('data', JSON.stringify(data));
-                    this.registerUser(formData).then(() => {
-                        this.$router.push('/profile')
-                    })
-                }
+                    this.loading = false;
+                })
+
             },
             onChanged() {
                 if (this.$refs.avatar.file) {
@@ -200,8 +203,8 @@
                     console.log("Old browser. No support for Filereader API");
                 }
             },
-            scrollHanle(evt) {
-                console.log(evt)
+            scrollHanle() {
+                //console.log(evt)
             },
         },
         computed: {
@@ -209,7 +212,10 @@
                 return this.$store.getters['userAuthentication/status']
             },
             errors() {
-                return this.$store.getters['userAuthentication/errors']
+                return this.$store.getters['userAuthentication/errorsR']
+            },
+            errorPassword() {
+              return this.errors.password? this.errors.password.join('; ') : ''
             }
         }
     }
@@ -252,8 +258,8 @@
     }
 
     .v-card {
-        background: #3c3c3c;
-        opacity: 0.9
+        background: var(--emerald);
+        opacity: 0.8
     }
 
     .center {

@@ -2,7 +2,7 @@
   <router-link :to="{ name: 'profile'}">
     <v-card
     id="settings"
-    class="py-2 px-4"
+    class="profcard"
     color="#ffffff8D"
     dark
     flat
@@ -75,4 +75,8 @@ export default {
 a {
   text-decoration: none;
 }
+  .profcard {
+    padding: 15px;
+    box-shadow: 0 0 6px black!important;
+  }
 </style>

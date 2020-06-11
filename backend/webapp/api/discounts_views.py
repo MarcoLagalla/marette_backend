@@ -410,11 +410,11 @@ class SetDiscounts(APIView):
                     discount = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=id)
                     product.discounts.add(discount)
                 except ProductDiscount.DoesNotExist:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
+                    return Response({'error': 'Sconto Non Esistente'},status=status.HTTP_404_NOT_FOUND)
             product.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({'message': 'Sconto Aggiunto correttamente'}, status=status.HTTP_201_CREATED)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Accesso Non Autorizzato'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 

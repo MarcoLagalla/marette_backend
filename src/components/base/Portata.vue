@@ -3,15 +3,15 @@
     <v-card-title class="headline" v-text="portata.name"></v-card-title>
     <v-card-subtitle v-text="'Puoi scegliere ' + portata.num_products + ' di questi prodotti:'"> </v-card-subtitle>
     <div class="portate" v-for="product in portata.products" :key="product.id">
-    <base-portata-product :product="product"></base-portata-product>
+    <base-portata-product :portata="portata.name" :product="product"></base-portata-product>
     </div>
     <div class="actions">
-      <v-btn name="delete" v-if="admin" color="white" @click="$emit('removed')" class="managebutton">
-        Elimina portata<i class="fas fa-times"></i>
-      </v-btn>
-      <v-btn name="edit" v-if="admin" color="white" @click="$emit('edited')" class="managebutton">
-        Modifica portata<i class="far fa-edit"></i>
-      </v-btn>
+      <button name="delete" v-if="admin" class="manageportata" @click="$emit('removed')" text>
+        Elimina portata <i class="fas fa-times"></i>
+      </button>
+      <button name="edit" v-if="admin" class="manageportata" @click="$emit('edited')" text>
+        Modifica portata <i class="far fa-edit"></i>
+      </button>
     </div>
   </div>
 </template>
@@ -35,14 +35,15 @@
 
 <style scoped>
 .portata {
-  background: var(--darkslate)!important;
+  background: var(--ghostwhite)!important;
 }
   .portate {
     margin: 10px;
   }
-  .managebutton {
-    color: #1a1a1a!important;
-    background: aliceblue!important;
-    margin: 5px;
-  }
+ .manageportata {
+   padding: 10px;
+   margin: 10px;
+   color: var(--ming);
+   background: transparent;
+ }
 </style>

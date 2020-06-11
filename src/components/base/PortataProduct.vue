@@ -1,11 +1,14 @@
 <template>
     <v-tooltip v-model="show" top color="rgba(0,0,0,0)">
         <template v-slot:activator="{ on }">
-            <div class="products">
-                <div class="title" v-text="product.name"></div>
-                <div class="buttons">
-                    <button class="select"><i class="fas fa-cart-arrow-down"></i></button>
-                    <i class="fas fa-eye" v-on="on"></i>
+            <div class="products" v-on="on">
+                <div v-if="!deleteOpt" class="inputGroup">
+                    <input  :id="product.id + portata" name="product.name" type="checkbox"/>
+                    <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
+                </div>
+                <div v-else class="inputGroup2">
+                    <input  :id="product.id + portata" @click="$emit('removed')" name="product.name" type="checkbox"/>
+                    <label :for="product.id + portata"><div class="title" v-text="product.name"></div></label>
                 </div>
             </div>
         </template>
@@ -42,22 +45,17 @@
                 type: Object,
                 required: true
             },
-            delete: {
+            portata: {
+                type: String,
+                required: false,
+                default: ''
+            },
+            deleteOpt: {
                 type: Boolean,
                 required: false,
                 default: false
             },
             basket: {
-                type: Boolean,
-                required: false,
-                default: false
-            },
-            edit: {
-                type: Boolean,
-                required: false,
-                default: false
-            },
-            price: {
                 type: Boolean,
                 required: false,
                 default: false
@@ -68,18 +66,7 @@
 </script>
 
 <style scoped>
-    .products {
-        position: relative;
-        width: 100%;
-        height: 50px;
-        display: flex;
-       box-shadow: 0 0 4px #2f3942;
-        padding: 10px;
-        transition: ease-in-out 0.3s;
-    }
-    .products:hover {
-        box-shadow: 0 0 10px var(--emerald);
-    }
+
 
     .buttons {
         position: absolute;
@@ -127,4 +114,162 @@
     .product:hover {
         box-shadow: 0 0 10px black;
     }
+
+
+    .inputGroup {
+        background-color: #fff;
+        display: block;
+        margin: 10px 0;
+        position: relative;
+        box-shadow: 0 0 2px lightgrey;
+    }
+    .inputGroup label {
+        padding: 12px 30px;
+        width: 100%;
+        display: block;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        -webkit-transition: color 200ms ease-in;
+        transition: color 200ms ease-in;
+        overflow: hidden;
+    }
+    .inputGroup label:before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        content: '';
+        background-color: var(--emerald);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        -webkit-transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        z-index: -1;
+    }
+    .inputGroup label:after {
+        width: 32px;
+        height: 32px;
+        content: '';
+        border: 2px solid #D1D7DC;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ");
+        background-repeat: no-repeat;
+        background-position: 2px 3px;
+        border-radius: 50%;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        -webkit-transition: all 200ms ease-in;
+        transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+        color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+        -webkit-transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        transform: translate(-50%, -50%) scale3d(56, 56, 1);
+        opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+        background-color: var(--ming);
+        border-color: var(--ming);
+    }
+    .inputGroup input {
+        width: 32px;
+        height: 32px;
+        -webkit-box-ordinal-group: 2;
+        order: 1;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        visibility: hidden;
+    }
+    /* test */
+
+    .inputGroup2 {
+        background-color: #fff;
+        display: block;
+        margin: 10px 0;
+        position: relative;
+        box-shadow: 0 0 2px lightgrey;
+    }
+    .inputGroup2 label {
+        padding: 12px 30px;
+        width: 100%;
+        display: block;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        -webkit-transition: color 200ms ease-in;
+        transition: color 200ms ease-in;
+        overflow: hidden;
+    }
+    .inputGroup2 label:before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        content: '';
+        background-color: var(--emerald);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        transform: translate(-50%, -50%) scale3d(1, 1, 1);
+        -webkit-transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        z-index: -1;
+    }
+    .inputGroup2 label:after {
+        width: 32px;
+        height: 32px;
+        content: '';
+        border: 2px solid #D1D7DC;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,<svg aria-hidden='true' focusable='false' data-prefix='fas' data-icon='trash' class='svg-inline--fa fa-trash fa-w-14' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='-50 0 600 650'><path fill='grey' d='M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z'></path></svg>");
+        background-repeat: no-repeat;
+        background-position: 2px 3px;
+        border-radius: 50%;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        -webkit-transition: all 200ms ease-in;
+        transition: all 200ms ease-in;
+    }
+    .inputGroup2 input {
+        width: 32px;
+        height: 32px;
+        -webkit-box-ordinal-group: 2;
+        order: 1;
+        z-index: 2;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        cursor: pointer;
+        visibility: hidden;
+    }
+
+
 </style>

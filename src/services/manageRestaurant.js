@@ -119,4 +119,46 @@ export default {
                 return response
             })
     },
+
+    addOpeningDay(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
+    removeOpeningDay(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.day + '/delete')
+            .then(response => {
+                return response
+            })
+    },
+
+    addTimeInterval(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.dayId + '/interval/add', payload.data)
+            .then(response => {
+                return response
+            })
+    },
+
+    removeTimeInterval(payload) {
+        return api.post('v1/webapp/restaurant/' + payload.restId + '/opening/day/' + payload.dayId + '/interval/' + payload.timeId + '/delete', )
+            .then(response => {
+                return response
+            })
+    },
+
+    getTimeTable(restId) {
+        return api.get('v1/webapp/restaurant/' + restId + '/timetable')
+            .then(response => {
+                return response
+            })
+    },
+
+    getRestCategories() {
+        return api.get('v1/webapp/restaurant/category/list')
+            .then(response => {
+                return response
+            })
+    },
 }

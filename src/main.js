@@ -5,6 +5,10 @@ import store from './store'
 import './plugins'
 import vuetify from './plugins/vuetify';
 import api from '@/services/api'
+import SweetModal from 'sweet-modal-vue/src/plugin.js'
+Vue.use(SweetModal)
+import x5GMaps from 'x5-gmaps'
+Vue.use(x5GMaps, 'AIzaSyADeNZHXA5OfUA2DtSs7SA3fh4s7rhX_gA')
 
 Vue.config.productionTip = false
 

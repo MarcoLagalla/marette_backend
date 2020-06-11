@@ -1,7 +1,10 @@
 <template>
 <div class="body">
   <v-row align="center" class="ma-0 pa-8" justify="center">
-    <v-form @submit.prevent="register" v-model="valid">
+    <v-card v-if="isAuthenticated" color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
+      Effettuare il LogOut per poter registrare un business e i relativi ristoranti
+    </v-card>
+    <v-form v-else @submit.prevent="register" v-model="valid">
       <v-card color="rgba(255,255,255,0.9)" shaped :elevation="8" class="pa-4">
         <h1>Registra il tuo business <v-icon>mdi-account-tie</v-icon>
         </h1>
@@ -22,7 +25,7 @@
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Indirizzo" :rules="required" :error-messages="errors.address" @change="errors.address=''" v-model='address' type="text" id="address" name="address" required></v-text-field>
-            <v-text-field label="Numero civico" :rules="required" :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="number" id="n_civ" name="n_civ" required></v-text-field>
+            <v-text-field label="Numero civico" :rules="required" :error-messages="errors.n_civ" @change="errors.n_civ=''" v-model='n_civ' type="text" id="n_civ" name="n_civ" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <v-text-field label="Codice fiscale" :rules="required" :error-messages="errors.cf" @change="errors.cf=''" v-model='cf' type="text" id="cf" name="cf" required></v-text-field>
@@ -32,37 +35,43 @@
             <v-text-field label="Numero telefonico" :rules="required" :error-messages="errors.phone" @change="errors.phone=''" v-model='phone' type="tel" id="phone" name="phone" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
-            <v-text-field label="Password" :rules="required" :error-messages="errors.password" @change="errors.password=''" v-model='password' type="password" id="psw" name="psw" required></v-text-field>
+            <v-text-field label="Password" :rules="required" :error-messages="errorPassword" @change="errors.password=''" v-model='password' type="password" id="psw" name="psw" required></v-text-field>
             <v-text-field label="Ripetere la password" :rules="password2Rules" :error-messages="errors.password2" @change="errors.password2=''" v-model='password2' type="password" id="psw-repeat" name="psw-repeat" required></v-text-field>
           </v-row>
           <v-row align="center" class="ma-0" justify="center">
             <picture-input
               ref="avatar"
               @change="onChanged"
+              @remove="onRemoved"
+              :removable="true"
               :width="200"
               :height="200"
               size="5"
-              zIndex="0"
+              :zIndex="0"
               :crop="true"
               :changeOnClick="false"
               accept="image/jpeg, image/png, image/gif"
               buttonClass="ui button primary"
               :customStrings="{
-              upload: '<h1>Carica immagine</h1>',
-              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla'}">
+                upload: '<h1>Carica immagine</h1>',
+                drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+                change: 'Cambia foto',
+                remove: 'Elimina foto',
+              }">
             </picture-input>
           </v-row>
         </v-col>
         <hr>
-        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Terms & Privacy</router-link>.</v-card-text>
+        <v-card-text>Registrando un account accetti i nostri <router-link to="/termini">Termini e Condizioni</router-link>.</v-card-text>
         <div class="regbtn2">
           <div class="center">
-            <button class="btn" type="submit" :disabled="!valid">
+            <button class="btn" type="submit" :disabled="!valid && loading">
               <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
                 <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
               </svg>
-              <span>Submit</span>
+              <span v-if="!loading" >Submit</span>
+              <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
             </button>
           </div>
         </div>
@@ -84,6 +93,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       username: '',
       email: '',
       password: '',
@@ -115,6 +125,7 @@ export default {
   methods: {
     ...mapActions('userAuthentication', ['registerBusiness']),
     register: function() {
+      this.loading = true
       const data = {
         username: this.username,
         email: this.email,
@@ -144,6 +155,7 @@ export default {
           preventScroll: true
         });
       })
+      this.loading = false;
     },
     onChanged() {
       if (this.$refs.avatar.file) {
@@ -152,13 +164,19 @@ export default {
         console.log("Old browser. No support for Filereader API");
       }
     },
+    onRemoved() {
+      this.image = '';
+    },
   },
   computed: {
-    status() {
-      return this.$store.getters['userAuthentication/status']
+    isAuthenticated() {
+      return this.$store.getters['userAuthentication/isAuthenticated']
     },
     errors() {
-      return this.$store.getters['userAuthentication/errors']
+      return this.$store.getters['userAuthentication/errorsB']
+    },
+    errorPassword() {
+      return this.errors.password? this.errors.password.join('; ') : ''
     }
   }
 }
@@ -179,7 +197,7 @@ export default {
   margin: 5%;
 }
 h1 {
-  color: red;
+  color: var(--ming);
   font-size: 2em;
   text-align: center;
 }
@@ -248,7 +266,14 @@ a {
   color: dodgerblue;
 }
 .btn:disabled {
-  background: red;
+  background: grey;
   cursor: not-allowed;
 }
+.btn:disabled > span{
+  cursor: not-allowed;
+  color: white;
+}
+  .loader {
+    color: dodgerblue!important;
+  }
 </style>

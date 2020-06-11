@@ -28,8 +28,8 @@
                 </button>
               </div>
             </div>
-            <v-card-text><a style="color:white" href="#">
-              <router-link to="/resetpass">Hai dimenticato la password? </router-link>
+            <v-card-text @click="dialog=false"><a style="color:white" href="#">
+              <router-link to="/resetpass" >Hai dimenticato la password? </router-link>
             </a></v-card-text>
           </v-form>
         </v-card>
@@ -64,7 +64,7 @@
         return this.$store.getters['userAuthentication/status']
       },
       errors() {
-        return this.$store.getters['userAuthentication/errors']
+        return this.$store.getters['userAuthentication/errorsL']
       }
     }
   }

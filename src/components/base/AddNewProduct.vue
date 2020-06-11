@@ -1,6 +1,12 @@
 <template>
     <div>
-    <v-btn dark color="var(--ming)" @click="toggleCardModal">Aggiungi nuovo Prodotto</v-btn>
+
+        <div class="product" @click="toggleCardModal">
+
+            <i class="fas fa-plus fa-5x"></i>
+
+        </div>
+
     <sweet-modal ref="modal_add">
         <div class="addprod">
             <v-form @submit.prevent="submitProduct">
@@ -73,6 +79,7 @@
                 </v-card>
                 <br><br>
                 <picture-input
+                        v-if="toggleCardModal"
                         ref="productImage"
                         @change="onChanged"
                         :width="300"
@@ -100,18 +107,13 @@
     import {mapActions} from "vuex";
     import PictureInput from "vue-picture-input";
     import {SweetModal} from "sweet-modal-vue";
-    
-
-
-
     export default {
-        name: "AddProduct",
+        name: "AddNewProduct",
         props: ['category'],
 
         components: {
             PictureInput,
             SweetModal,
-
 
         },
 
@@ -122,6 +124,7 @@
                 price: '',
                 image: '',
                 showTags: false,
+                spi: true,
                 selectedTags: [],
 
             }
@@ -158,6 +161,7 @@
                 if(this.showTags === true) {
                     this.toggleShowTags();
                 }
+                this.$refs.modal_add.close()
                 const data = {
                     "name": this.name,
                     "description": this.description,
@@ -190,6 +194,11 @@
     }
 </script>
 <style scoped>
+    i {
+        color: grey !important;
+        text-shadow: 0 0 1px grey;
+        transition: 0.4s ease-in-out;
+    }
     .addprod {
         margin: auto;
         width: 50%;
@@ -197,5 +206,87 @@
     }
     picture-input {
         z-index: 0!important;
+    }
+    .imag {
+        border-radius: 10px;
+        box-shadow: 0 0 2px black;
+    }
+
+    h1 {
+        color: white;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+
+    .eur {
+        padding-left: 5px;
+        padding-right: 10px;
+    }
+
+    .title {
+        font-size: 1.3em !important;
+        position: absolute;
+        top: 0;
+        left: 100px;
+        padding: 8px;
+        text-transform: capitalize;
+        font-weight: normal !important;
+    }
+
+    .description {
+        position: absolute;
+        color: darkslategrey;
+        letter-spacing: 2px;
+        font-size: 0.9em;
+        top: 35px;
+        left: 100px;
+        padding: 10px;
+        width: 50%;
+        height: 50px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .quant {
+        position: absolute;
+        top: 30px;
+        right: 0px;
+        padding: 10px;
+    }
+
+    .delete_button {
+        z-index: 2;
+        top:15px;
+        left:335px;
+    }
+
+
+
+    .product {
+        transition: ease-in-out 0.4s;
+        margin: 26px -5px;
+        background: var(--ghostwhite);
+        padding: 15px;
+        position: relative;
+        z-index: 1;
+        height: 110px;
+        text-align: center;
+    }
+
+    .product:hover {
+        box-shadow: 0 2px 10px darkgrey;
+        cursor: pointer;
+    }
+    .product:hover > i {
+        transform: scale(1.1);
+    }
+
+    .pos2 {
+        position: absolute;
+        bottom: 0;
+
+        width: 50%;
+        left: 50%;
     }
 </style>

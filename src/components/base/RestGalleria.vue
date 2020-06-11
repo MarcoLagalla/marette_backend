@@ -1,17 +1,15 @@
 <template>
   <div class="container" id="Galleria">
-
     <div class="gallery">
       <div v-for="image in images" :key="image.id" class="gallery-item">
-        <v-btn name="delete" color="red" v-if="admin" @click="$emit('removed', image.id)" class="managebutton">
+        <v-btn name="delete" color="white" v-if="admin" @click="$emit('removed', image.id)" class="managebutton">
           <i class="fas fa-times"></i>
         </v-btn>
-        <v-btn name="edit" color="blue" v-if="admin" @click="$emit('edited', image)" class="managebutton">
+        <v-btn name="edit" color="white" v-if="admin" @click="$emit('edited', image)" class="managebutton">
           <i class="far fa-edit"></i>
         </v-btn>
-        {{image.name}}
+        <div class="imagname"> {{image.name}} </div>
         <img class="gallery-image" :src="image.image" :alt="image.description">
-
       </div>
     </div>
   </div>
@@ -33,6 +31,16 @@ export default {
 }
 </script>
 <style scoped>
+  .imagname {
+    position: absolute;
+    bottom: 0;
+    margin: 10px;
+    padding: 10px;
+    color: white;
+    font-weight: lighter;
+    font-size: 1em;
+    text-transform: capitalize;
+  }
 .container {
   max-width: 100rem;
   margin: 0 auto;
@@ -56,8 +64,10 @@ export default {
   margin: -1rem -1rem;
 }
 .gallery-item {
+  position: relative;
   /* Minimum width of 24rem and grow to fit available space */
   flex: 1 0 24rem;
+  max-width: 24rem;
   /* Margin value should be half of grid-gap value as margins on flex items don't collapse */
   margin: 1rem;
   box-shadow: 0.3rem 0.4rem 0.4rem rgba(0, 0, 0, 0.4);

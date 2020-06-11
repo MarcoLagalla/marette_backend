@@ -65,6 +65,7 @@ export default {
   methods: {
     ...mapActions('userAuthentication', ['AskPasswordreset']),
     send_email: function() {
+
       this.AskPasswordreset({
           email: this.email,
         }).then(() => {

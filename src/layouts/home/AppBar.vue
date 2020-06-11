@@ -98,7 +98,6 @@
     font-size: 1.5em;
     font-weight: bold;
     font-family: 'B612', sans-serif;
-    text-transform: ;
     color: #666;
     transition: .4s;
   }

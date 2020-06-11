@@ -6,18 +6,25 @@ import View from '@/views/View'
 import LoadSections from '@/mixins/load-sections'
 
 export default {
-  name: 'manageRestData',
+  name: 'TerminiECondizioni',
 
   metaInfo: {
-    title: 'ManageRestData'
+    title: 'TerminiECondizioni'
   },
 
   extends: View,
 
   mixins: [
     LoadSections([
-      'ManageRestData',
+      'TerminiECondizioni'
     ]),
   ],
+
+  props: {
+    id: {
+      type: String,
+      default: 'TerminiECondizioni',
+    },
+  },
 }
 </script>
