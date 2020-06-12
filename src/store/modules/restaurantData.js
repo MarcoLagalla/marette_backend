@@ -256,8 +256,8 @@ const actions = {
 
             manageProduct.listTags()
             .then(resp => {
-                commit('LIST_TAGS_SUCCESS', resp)
-                resolve(resp)
+                commit('LIST_TAGS_SUCCESS', resp.data)
+                resolve(resp.data)
             })
             .catch(err => {
                 commit('LIST_TAGS_ERROR')
