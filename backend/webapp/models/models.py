@@ -85,8 +85,9 @@ class Restaurant(models.Model):
         return self.discounts.all().count()
 
     def get_image(self):
+        from django.conf import settings
         if not (self.image and hasattr(self.image, 'url')):
-            return '/media/placeholder/restaurant/rest_placeholder.png'
+            return settings.MEDIA_URL + 'placeholder/restaurant/rest_placeholder.png'
         else:
             return self.image.url
 

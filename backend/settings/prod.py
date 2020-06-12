@@ -71,6 +71,7 @@ AWS_LOCATION = 'static'
 #     os.path.join(BASE_DIR, 'marette_backend/static'),
 # ]
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'backend.settings.storage_backends.MediaStorage'
 
