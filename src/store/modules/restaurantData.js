@@ -35,7 +35,7 @@ const state = {
 const getters = {
     food_category_choice: state => state.food_category_choice,
     productList: state => state.productList,
-    restCategories: state => state.restData.restCategories,
+    restCategories: state => state.restCat.restCategories,
     components: state => state.restData.components,
     restData: state => state.restData,
     openingDays: state => state.restData.openingDays,
@@ -434,7 +434,8 @@ const actions = {
 
 const mutations = {
     REST_CATEGORIES: (state, categories) => {
-        state.restData.restCategories = categories
+        state.restCat = {}
+        state.restCat.restCategories = categories
     },
 
     REST_ADD_TIME_INT: (state, payload) => {
