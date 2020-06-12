@@ -55,7 +55,8 @@
                       :taggable="true"
                       @tag="addTag">
               </multiselect>
-              <!--{{modal_product}}-->
+              {{discounts_list}}
+
               <br><br>
 
               <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
@@ -244,7 +245,9 @@ export default {
         ).then(resp => {
 
             this.products.splice(this.products.indexOf(prod), 1);
-            alert(resp.message)
+            this.text=resp.message;
+            this.toggleSnackbar=true ;
+
 
         })
 
