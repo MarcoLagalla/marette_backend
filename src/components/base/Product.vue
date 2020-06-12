@@ -23,14 +23,17 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row align="center" justify="space-around">
+            <v-row justify="space-around">
+                <div class="tooltip">
                 <span class="fa-stack fa-xs">
-                <i class="fas fa-bread-slice fa-stack-1x" style="color: peru"></i>
+                <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
-                <i class="fas fa-carrot" style="color: orange"></i>
-                <i class="fas fa-pepper-hot" style="color: red"></i>
-                <i class="fas fa-seedling" style="color: green"></i>
+                <span class="tooltiptext">Gluten Free</span>
+                </div>
+                <div class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -48,7 +51,7 @@
         </div>
 
         <div v-if="product.discounts.length>0">
-            <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label close x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
+            <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label :close="close_discount" x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
         </div>
     </div>
   <!--
@@ -181,6 +184,11 @@
             required: false,
             default: false
           },
+          close_discount: {
+            type: Boolean,
+            required: false,
+            default: false
+          },
         },
 
 
@@ -301,7 +309,45 @@
     .discount_banner{
         box-shadow: 0 0 2px black;
     }
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
 
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 80px;
+      background-color: black;
+      color: #fff;
+      background-color: var(--charcoal);
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      top: 150%;
+      left: 50%;
+      margin-left: -40px;
+      font-size: 0.8em;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent black transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+        opacity: 1;
+    }
 
 
 

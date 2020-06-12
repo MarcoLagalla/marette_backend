@@ -3,7 +3,7 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
-          <base-product :product="product" :delete="admin" :price="true" @open_card="toggleCardModal(product)" @delete_prod_discount="add_discount_to_product($event, product, 0)"  @removed="del_Product(product)" ></base-product>
+          <base-product :product="product" :delete="admin" :close_discount="admin" :price="true" @open_card="toggleCardModal(product)" @delete_prod_discount="add_discount_to_product($event, product, 0)"  @removed="del_Product(product)" ></base-product>
         </v-col>
           <v-col cols="12" md="6" lg="4">
               <base-add-new-product :category='category' v-if="admin" :admin="admin"></base-add-new-product>
@@ -61,55 +61,6 @@
               <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
               <br><br><br>
 
-              <!--v-btn name="discount"  @click="toggleShowDiscounts"  class="managebutton">
-              Mostra sconti Disponibili
-          </v-btn>
-              <v-expand-transition>
-                <div v-show="showDiscounts" :style="{width:'200px'}">
-                <p>Lista sconti disponibili:</p>
-                    <v-list shaped >
-                        <v-list-item-group
-                            v-model="selected_discounts"
-                            multiple
-                        >
-                            <template v-for="(campo, i) in discounts_list" >
-                                <v-divider
-                                    v-if="!campo"
-                                    :key="`divider-${i}`"
-                                ></v-divider>
-                                <v-list-item
-                                    v-else
-                                    :key="`item-${i}`"
-                                    :value="campo.id"
-                                    active-class="blue--text text--accent-2"
-                                >
-                                <template v-slot:default="{ active, toggle }" >
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="campo.title"></v-list-item-title>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-
-                                        <v-checkbox
-                                            :input-value="active"
-                                            :true-value="campo"
-                                            color="blue accent-2"
-                                            @click="toggle"
-                                        ></v-checkbox>
-
-                                    </v-list-item-action>
-                                </template>
-                                </v-list-item>
-                            </template>
-                        </v-list-item-group>
-                    </v-list>
-                    <br>
-              <v-expand-transition>
-                <div v-if="selected_discounts.length !== 0">
-                <v-btn class="managebutton" @click="add_discount_to_product(selected_discounts)" > Aggiungi Sconto al prodotto</v-btn>
-                </div>
-                </v-expand-transition>
-                </div>
-              </v-expand-transition-->
               <p>Aggiungi nuovo sconto alla lista</p>
               <br>
               <v-row>
@@ -269,6 +220,7 @@ export default {
                   }
               }
               this.text=resp.message;
+              prod.final_price= resp.final_price;
               }
               else {
               this.text='Sconto eliminato'
@@ -306,9 +258,11 @@ export default {
 
 
       toggleCardModal(prod) {
-        this.modal_product=prod;
-        this.selected_discounts=prod.discounts;
-        this.$refs.modal.open()
+          if(this.admin===true) {
+              this.modal_product = prod;
+              this.selected_discounts = prod.discounts;
+              this.$refs.modal.open()
+          }
       },
 
       toggleShowDiscounts() {
