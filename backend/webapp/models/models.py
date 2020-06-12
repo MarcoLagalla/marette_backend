@@ -4,6 +4,7 @@ import string
 from io import BytesIO
 
 from PIL import Image
+from django.conf import settings
 from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -85,7 +86,6 @@ class Restaurant(models.Model):
         return self.discounts.all().count()
 
     def get_image(self):
-        from django.conf import settings
         if not (self.image and hasattr(self.image, 'url')):
             return settings.MEDIA_URL + 'placeholder/restaurant/rest_placeholder.png'
         else:
@@ -247,18 +247,18 @@ class Product(models.Model):
     def get_thumb_image(self):
         if not (self.thumb_image and hasattr(self.thumb_image, 'url')):
             try:
-                return FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get(self.category)
+                return settings.MEDIA_URL + FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get(self.category)
             except KeyError:
-                return FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get('Altro')
+                return settings.MEDIA_URL + FOOD_CATEGORY_CHOICES_THUMBS_IMAGES.get('Altro')
         else:
             return self.thumb_image.url
 
     def get_image(self):
         if not (self.image and hasattr(self.image, 'url')):
             try:
-                return FOOD_CATEGORY_CHOICES_IMAGES.get(self.category)
+                return settings.MEDIA_URL + FOOD_CATEGORY_CHOICES_IMAGES.get(self.category)
             except KeyError:
-                return FOOD_CATEGORY_CHOICES_IMAGES.get('Altro')
+                return settings.MEDIA_URL + FOOD_CATEGORY_CHOICES_IMAGES.get('Altro')
         else:
             return self.image.url
 
