@@ -86,7 +86,7 @@ class Restaurant(models.Model):
 
     def get_image(self):
         if not (self.image and hasattr(self.image, 'url')):
-            return '/media/placeholder/restaurant/placeholder.png'
+            return '/media/placeholder/restaurant/rest_placeholder.png'
         else:
             return self.image.url
 
