@@ -23,17 +23,17 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row justify="space-around">
-                <div class="tooltip">
+            <v-row v-if="product.tags.length>0" justify="space-around">
+                <div v-if="check_tags('GlutenFree',product)" class="tooltip">
                 <span class="fa-stack fa-xs">
                 <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
                 <span class="tooltiptext">Gluten Free</span>
                 </div>
-                <div class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
-                <div class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
-                <div class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
+                <div v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -54,75 +54,7 @@
             <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label :close="close_discount" x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
         </div>
     </div>
-  <!--
-                                                   pulsanti vecchi della card
-  <div v-if="this.price" class="quant">
-          <div v-text="product.price" ></div>
-          <v-icon small class="quant">fas fa-euro-sign</v-icon>
-        </div>
-        <div class="mngbtn">
-        <v-btn name="basket" v-if="this.basket" @click="$emit('added')" class="managebutton">
-          <i class="fas fa-shopping-basket"></i>
-        </v-btn>
-        <v-btn name="edit" v-if="this.edit" @click="$emit('edited')" class="managebutton">
-          <i class="far fa-edit"></i>
-        </v-btn>
-        <v-btn name="discount" v-if="this.discount" @click="toggleShowDiscounts"  class="managebutton">
-          <i class="fas fa-percent"></i>
-        </v-btn>
-        <v-btn name="delete" v-if="this.delete" @click="$emit('removed')" class="managebutton">
-          <i class="fas fa-times"></i>
-        </v-btn>
-        </div>
-                                          expand transition
-  <v-expand-transition>
-    <div v-show="showDiscounts" :style="{width:'300px',margin:'0 auto'}">
-      <p>Lista sconti disponibili:</p>
 
-            <v-list shaped >
-                <v-list-item-group
-                        v-model="selected_discounts"
-                        multiple
-                >
-                    <template v-for="(campo, i) in discounts_list" >
-                        <v-divider
-                                v-if="!campo"
-                                :key="`divider-${i}`"
-                        ></v-divider>
-                        <v-list-item
-                                v-else
-                                :key="`item-${i}`"
-                                :value="campo.id"
-                                active-class="green--text text--accent-2"
-                        >
-                            <template v-slot:default="{ active, toggle }" >
-                                <v-list-item-content>
-                                    <v-list-item-title v-text="campo.title"></v-list-item-title>
-                                </v-list-item-content>
-                                <v-list-item-action>
-                                    <v-checkbox
-                                            :input-value="active"
-                                            :true-value="campo"
-                                            color="green accent-2"
-                                            @click="toggle"
-                                    ></v-checkbox>
-                                </v-list-item-action>
-                            </template>
-                        </v-list-item>
-                    </template>
-                </v-list-item-group>
-            </v-list>
-        <br>
-        <v-expand-transition>
-        <div v-if="selected_discounts.length !== 0">
-            <v-btn class="managebutton" @click="$emit('add_discount_to_product', selected_discounts)" > Aggiungi sconto al prodotto</v-btn>
-        </div>
-        </v-expand-transition>
-        <v-btn class="managebutton" name="new_discount_add" v-if="this.new_discount_add" @click="$emit('new_discount')" > Inserisci nuovo sconto</v-btn>
-    </div>
-    </v-expand-transition>
-
-    -->
 
 </template>
 
@@ -215,6 +147,15 @@
               }
                 return mystring + this.discount_type;
 
+            },
+
+            check_tags(textTag, prod) {
+              let arrayLength = prod.tags.length;
+              for(let i=0; i< arrayLength; i++){
+              if (prod.tags[i].name===textTag){
+                return true;
+              }
+              }
             }
 
         }
