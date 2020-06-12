@@ -220,6 +220,7 @@ export default {
                   }
               }
               this.text=resp.message;
+              prod.final_price= resp.final_price;
               }
               else {
               this.text='Sconto eliminato'
@@ -257,9 +258,11 @@ export default {
 
 
       toggleCardModal(prod) {
-        this.modal_product=prod;
-        this.selected_discounts=prod.discounts;
-        this.$refs.modal.open()
+          if(this.admin===true) {
+              this.modal_product = prod;
+              this.selected_discounts = prod.discounts;
+              this.$refs.modal.open()
+          }
       },
 
       toggleShowDiscounts() {
