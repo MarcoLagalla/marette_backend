@@ -319,6 +319,7 @@
       width: 80px;
       background-color: black;
       color: #fff;
+      background-color: var(--charcoal);
       text-align: center;
       border-radius: 6px;
       padding: 5px 0;
@@ -327,7 +328,9 @@
       top: 150%;
       left: 50%;
       margin-left: -40px;
-        font-size: 0.8em;
+      font-size: 0.8em;
+      opacity: 0;
+      transition: opacity 1s;
     }
 
     .tooltip .tooltiptext::after {
@@ -343,6 +346,7 @@
 
     .tooltip:hover .tooltiptext {
       visibility: visible;
+        opacity: 1;
     }
 
 
