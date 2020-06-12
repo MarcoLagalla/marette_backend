@@ -4,6 +4,7 @@ import string
 from io import BytesIO
 
 from PIL import Image
+from django.conf import settings
 from django.core import validators as valids
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -85,7 +86,6 @@ class Restaurant(models.Model):
         return self.discounts.all().count()
 
     def get_image(self):
-        from django.conf import settings
         if not (self.image and hasattr(self.image, 'url')):
             return settings.MEDIA_URL + 'placeholder/restaurant/rest_placeholder.png'
         else:

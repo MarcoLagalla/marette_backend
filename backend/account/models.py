@@ -1,17 +1,14 @@
+import random
+import string
 from pathlib import Path
-import os
+
 from django.conf import settings
-from django.db import models
-from django.core import validators as valids
-import unidecode, re
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save, post_save
-from django.dispatch import receiver
+from django.core import validators as valids
+from django.db import models
 from django_resized import ResizedImageField
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
-import random
-import string
 
 
 def randomString(stringLength=8):
@@ -42,7 +39,7 @@ class Customer(models.Model):
 
     def get_image(self):
         if not (self.avatar and hasattr(self.avatar, 'url')):
-            return 'media/placeholder/avatars/user.png'
+            return settings.MEDIA_URL + 'placeholder/avatars/user.png'
         else:
             return self.avatar.url
 
@@ -72,7 +69,7 @@ class Business(models.Model):
 
     def get_image(self):
         if not (self.avatar and hasattr(self.avatar, 'url')):
-            return 'media/placeholder/avatars/user.png'
+            return settings.MEDIA_URL + 'placeholder/avatars/user.png'
         else:
             return self.avatar.url
 
