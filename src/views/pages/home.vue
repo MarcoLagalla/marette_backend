@@ -19,7 +19,6 @@ export default {
     LoadSections([
         'HomeBanner',
       'restaurantCards',
-      'info',
     ]),
   ],
 

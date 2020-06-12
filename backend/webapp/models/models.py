@@ -209,8 +209,8 @@ class Product(models.Model):
     def get_price_with_discount(self):
         new_price = self.get_all_discounts()
         if new_price < 0:
-            new_price = 0
-        return new_price
+            new_price = "0.00"
+        return str(new_price)
 
     def get_original_price(self):
         return self.price
@@ -321,7 +321,7 @@ class FasciaOraria(models.Model):
     end = models.CharField(max_length=5, choices=DAILY_HOURS)
 
     class Meta:
-        unique_together = (('restaurant', 'start', 'end'), )
+        unique_together = (('restaurant', 'giorno', 'start', 'end'), )
 
     def clean(self, *args, **kwargs):
         start = datetime.strptime(self.start, '%H:%M')

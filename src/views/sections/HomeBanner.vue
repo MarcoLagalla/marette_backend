@@ -1,12 +1,12 @@
 <template>
-  <body>
+  <div class="body">
 
   <div class="hero-image">
       <div class="hero-text">
-        <img class="logo" src="@/assets/logo_small.png">
+        <img class="logo" src="@/assets/logo_small_icon_only_inverted.png">
       </div>
   </div>
-  </body>
+  </div>
 </template>
 
 <script>
@@ -22,18 +22,16 @@ export default {
 </script>
 
 <style scoped>
-  body {
-    margin: 0;
+  .body {
+    margin: auto;
 
   }
 
   .hero-image {
-    background-image: url("../../assets/logo-2.jpg");
-    background-color: darkcyan;
+    background-image: url("../../assets/pattern3.png");
+
     height: 300px;
-    background-position: initial;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: repeat;
     position: relative;
      border-bottom: 4px solid var(--ming);
   }
@@ -48,6 +46,7 @@ export default {
   }
   .logo {
     width: 40%;
+      opacity: 1;
   }
 
 </style>

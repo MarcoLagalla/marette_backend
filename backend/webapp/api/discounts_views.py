@@ -1,21 +1,17 @@
 import json
 
+from django.db import transaction
 from rest_framework import status
-from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, GenericAPIView
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from django.shortcuts import get_object_or_404
-from django.db import transaction
-from backend.account.permissions import IsBusiness, BusinessActivated
-from rest_framework.authtoken.models import Token
 
-from ..models.models import Restaurant, Product, ProductTag, ProductDiscount, RestaurantDiscount
+from backend.account.permissions import IsBusiness, BusinessActivated
 from .products_serializers import ProductDiscountSerializer
 from .serializers import RestaurantDiscountSerializer
+from ..models.models import Restaurant, Product, ProductDiscount, RestaurantDiscount
 
 
 class ListDiscounts(APIView):
@@ -56,7 +52,12 @@ class AddDiscounts(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -97,7 +98,12 @@ class EditDiscounts(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -145,8 +151,14 @@ class DeleteDiscounts(APIView):
     def post(self, request, id, d_id):
 
         # verifico che l'utente sia il proprietario del ristorante
+
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -186,7 +198,12 @@ class AddRestaurantDiscounts(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -260,7 +277,12 @@ class EditRestaurantDiscounts(APIView):
 
         # verifico che l'utente sia il proprietario del ristorante
         try:
-            token = Token.objects.all().get(user=request.user).key
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -307,9 +329,13 @@ class DeleteRestaurantDiscounts(APIView):
     def post(self, request, id, d_id):
 
         # verifico che l'utente sia il proprietario del ristorante
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            token = Token.objects.all().get(user=request.user).key
+            token = Token.objects.all().get(user=restaurant.owner.user).key
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -384,11 +410,11 @@ class SetDiscounts(APIView):
                     discount = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=id)
                     product.discounts.add(discount)
                 except ProductDiscount.DoesNotExist:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
+                    return Response({'error': 'Sconto Non Esistente'},status=status.HTTP_404_NOT_FOUND)
             product.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({'message': 'Sconto Aggiunto correttamente'}, status=status.HTTP_201_CREATED)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Accesso Non Autorizzato'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 

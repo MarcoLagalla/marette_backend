@@ -37,7 +37,7 @@ class ListRestaurantsAPIView(ListAPIView):
         page_size = request.data.get('page_size', 10)
 
         try:
-            paginator = Paginator(restaurants.distinct(), page_size)
+            paginator = Paginator(restaurants.distinct().order_by('-id'), page_size)
             page = paginator.page(page_number)
         except django.core.paginator.EmptyPage:
             page = paginator.page(1)
@@ -177,6 +177,7 @@ class UpdateRestaurantAPIView(APIView):
 
 
 class VoteRestaurantAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated, IsCustomer, CustomerActivated]
 
     @transaction.atomic()
@@ -213,7 +214,6 @@ class VoteRestaurantAPIView(APIView):
                 except ZeroDivisionError:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
                 if has_vote:
                     return Response({'error': ["Hai già votato questo ristorante."]},
                                     status=status.HTTP_401_UNAUTHORIZED)
@@ -234,3 +234,35 @@ class RestaurantCategoryAPIView(APIView):
         category_list = Category.objects.all()
         serializer = CategorySerializer(instance=category_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DeleteRestaurantAPIView(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
+
+    @transaction.atomic
+    def post(self, request, id):
+
+        try:
+            restaurant = Restaurant.objects.all().get(id=id)
+        except Restaurant.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=restaurant.owner.user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if request.user.auth_token.key == token:
+
+            confirm = request.data.get('confirm', None)
+
+            if not confirm:
+                return Response({'error': 'Codice conferma mancante.'})
+            else:
+                if confirm == restaurant.url:
+                    # delete restaurant
+                    restaurant.delete()
+            return Response({'status': 'Ristorante cancellato.'}, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

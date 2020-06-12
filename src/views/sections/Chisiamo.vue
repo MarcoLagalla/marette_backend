@@ -1,17 +1,11 @@
 <template>
 <div class="body">
-  <v-theme-provider>
-    <base-section id="contact-us" space="300">
+  <div>
+    <div id="contact-us" space="300">
       <div class="infocart">
         <v-row justify="center">
           <v-col cols="10">
-            <base-title :space="$vuetify.breakpoint.mdAndUp ? 0 : 4" title="Hai dei dubbi? Contattaci" />
 
-            <base-body space="0">
-              <span class="">
-                Siamo un gruppo di studenti della facoltà di ingegneria dell'università di Pavia.
-              </span>
-            </base-body>
           </v-col>
 
           <v-col cols="12" md="6">
@@ -24,8 +18,8 @@
           </v-col>
         </v-row>
       </div>
-    </base-section>
-  </v-theme-provider>
+    </div>
+  </div>
 </div>
 </template>
 

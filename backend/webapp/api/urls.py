@@ -3,7 +3,7 @@ from django.urls import path
 from .opening_hours_views import CreateOpening, CreateOpeningDay, CreateFasciaOraria, DeleteFasciaOraria, \
     DeleteOpeningDay, DeleteOpening, ShowTimeTable
 from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, \
-    VoteRestaurantAPIView, RestaurantCategoryAPIView
+    VoteRestaurantAPIView, RestaurantCategoryAPIView, DeleteRestaurantAPIView
 from .search_views import SearchRestaurantAPIView, SearchRestaurantByQueryAPIView
 from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProduct, ProductDetails, ListProductTags
 from .discounts_views import *
@@ -59,9 +59,8 @@ urlpatterns = [
     path('restaurant/<int:id>/components/galleria/images/<int:i_id>/edit', GalleryEditImage.as_view(), name='edit_picture_gallery'),
     path('restaurant/<int:id>/components/galleria/images/<int:i_id>/delete', GalleryDeleteImage.as_view(), name='delete_picture_gallery'),
 
-
-    path('restaurant/<int:id>/opening/add', CreateOpening.as_view(), name='create_opening'),
-    path('restaurant/<int:id>/opening/delete', DeleteOpening.as_view(), name='delete_opening'),
+    # path('restaurant/<int:id>/opening/add', CreateOpening.as_view(), name='create_opening'),
+    # path('restaurant/<int:id>/opening/delete', DeleteOpening.as_view(), name='delete_opening'),
     path('restaurant/<int:id>/opening/day/add', CreateOpeningDay.as_view(), name='create_opening_day'),
     path('restaurant/<int:id>/opening/day/<int:d_id>/delete', DeleteOpeningDay.as_view(), name='delete_opening_day'),
     path('restaurant/<int:id>/opening/day/<int:d_id>/interval/add', CreateFasciaOraria.as_view(), name='create_opening_interval'),
@@ -77,6 +76,7 @@ urlpatterns = [
     path('restaurant/product/tags', ListProductTags.as_view(), name='list_product_tags'),
     path('restaurant/<int:id>', ShowRestaurantAPIView.as_view(), name='show_restaurant'),
     path('restaurant/<int:id>/update', UpdateRestaurantAPIView.as_view(), name='update_restaurant'),
+    path('restaurant/<int:id>/delete', DeleteRestaurantAPIView.as_view(), name='delete_restaurant'),
     path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
 
 ]

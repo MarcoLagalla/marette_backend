@@ -1,5 +1,8 @@
 <template>
-    <v-card id="AddMenu" width="800" max-height="800" class="scrollovf">
+    <div>
+    <button v-if="!editOnly" :class="loading?'loading':'openmodaladdmenu'" :disabled="loading" @click="open = !open"><span class="btnmod" v-if="!loading">Nuovo Menu <i class="fas fa-plus fa-1x"></i></span><span v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span> </button>
+    <v-dialog ref="addmenu" v-model="open" max-width="500">
+    <div id="AddMenu" >
         <div class="blutitle">
             <v-card-title class="titlemenu" v-text="title"></v-card-title>
             <v-card-subtitle
@@ -7,15 +10,17 @@
             </v-card-subtitle>
         </div>
         <div class="addmenu">
-            <v-text-field outlined v-model='menu.name' type="text" label="Nome del menu" required></v-text-field>
-            <v-text-field outlined v-model='menu.description' type="text" label="Descrizione del menu"></v-text-field>
-            <v-text-field outlined v-model='menu.price' type="number" label="Prezzo del menu completo"
+            <v-text-field outlined v-model='newMenu.name' type="text" label="Nome del menu" required></v-text-field>
+            <v-text-field outlined v-model='newMenu.description' type="text" label="Descrizione del menu"></v-text-field>
+            <v-text-field outlined v-model='newMenu.price' type="number" label="Prezzo del menu completo"
                           required></v-text-field>
-            <v-text-field outlined v-model='menu.iva' type="number" label="IVA applicata" required></v-text-field>
-            <v-btn color="green"  @click="submitMenu" text>{{submit}}</v-btn>
-            <v-btn color="var(--ming)" v-if="menu.edit" @click="reset" text>Annulla</v-btn>
+            <v-text-field outlined v-model='newMenu.iva' type="number" label="IVA applicata" required></v-text-field>
+            <v-btn class="managebutton"  @click="submitMenu" text><span v-if="!loading">{{submit}}</span><span v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span></v-btn>
+            <v-btn class="managebutton" v-if="newMenu.edit" @click="reset" text>Annulla</v-btn>
         </div>
-    </v-card>
+    </div>
+    </v-dialog>
+    </div>
 </template>
 
 <script>
@@ -31,45 +36,69 @@
                     description: '',
                     price: '',
                     iva: '',
-                    edit: false
+                    edit: false,
                 })
             },
+            edit: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+            editOnly: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
         },
-        data: () => ({
-            titleNew:'Aggiungi menù',
-            titleEdit:'Modifica menù',
-            descriptionNew: 'Potrai creare diverse portate, in ognuna puoi aggiungere più piatti e decidere se il cliente li potrà selezionare tutti o sceglierne uno',
-            descriptionEdit: 'Modifica i dati del menù che ti interessano',
-            submitNew: 'Aggiungi Menù',
-            submitEdit: 'Salva cambiamenti'
-        }),
+        data() {
+            return {
+                titleNew:'Aggiungi menù',
+                titleEdit:'Modifica menù',
+                descriptionNew: 'Potrai creare diverse portate, in ognuna puoi aggiungere più piatti e decidere se il cliente li potrà selezionare tutti o sceglierne uno',
+                descriptionEdit: 'Modifica i dati del menù che ti interessano',
+                submitNew: 'Aggiungi Menù',
+                submitEdit: 'Salva cambiamenti',
+                loading: false,
+                open: this.menu.edit,
+                newMenu: this.menu
+            }
+        },
         computed: {
           title() {
-              return this.menu.edit? this.titleEdit : this.titleNew
+              return this.newMenu.edit? this.titleEdit : this.titleNew
           },
           description() {
-              return this.menu.edit? this.descriptionEdit : this.descriptionNew
+              return this.newMenu.edit? this.descriptionEdit : this.descriptionNew
           },
           submit() {
-              return this.menu.edit? this.submitEdit : this.submitNew
+              return this.newMenu.edit? this.submitEdit : this.submitNew
           },
         },
         methods: {
             submitMenu: function () {
-                if (this.menu.edit)
-                    this.$emit('edit_menu', this.menu)
+                this.loading=true
+                if (this.newMenu.edit)
+                    this.$emit('edit_menu', this.newMenu)
                 else
-                    this.$emit('new_menu', this.menu)
+                    this.$emit('new_menu', this.newMenu);
+                this.loading=false
+                this.open = false
+                this.reset()
             },
             reset: function () {
-                this.menu = {
+                this.newMenu = {
                     name: '',
                     description: '',
                     price: '',
                     iva: '',
                     edit: false
                 }
-            }
+                this.open = false
+            },
+        },
+        updated() {
+            if(this.newMenu.edit === true && this.open === false)
+                this.reset()
         }
     }
 </script>
@@ -79,23 +108,31 @@
         background: var(--ghostwhite);
     }
 
-    .blutitle {
-        background: var(--emerald);
-        color: #FFFFFF;
-        box-shadow: 0 0 5px black;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .scrollovf {
-
-        box-shadow: 0 0 10px var(--charcoal);
-        background: var(--whitesmoke);
-    }
-
     .titlemenu {
         text-transform: uppercase;
         font-size: 1.2em;
+    }
+    .managebutton {
+        color: var(--darkslate);
+        font-weight: bold;
+    }
+    .openmodaladdmenu {
+        background: var(--darkslate);
+        border-radius: 25px;
+        box-shadow: 0 0 4px grey;
+        padding: 10px;
+        margin: 10px auto;
+        transition: 0.3s ease-in-out;
+    }
+    .openmodaladdmenu:hover {
+        transform: scale(1.1);
+    }
+    .btnmod {
+        color: white;
+        font-weight: bold;
+    }
+    .loading {
+        background: transparent;
+        box-shadow: transparent;
     }
 </style>

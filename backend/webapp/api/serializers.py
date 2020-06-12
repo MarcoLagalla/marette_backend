@@ -1,17 +1,11 @@
-from collections import OrderedDict
-from operator import itemgetter
+from django.db import transaction, IntegrityError
+from localflavor.it.util import vat_number_validation
 
-from rest_framework import serializers, status
-from rest_framework.validators import UniqueValidator, ValidationError
-from ..models.models import Restaurant, RestaurantDiscount, Picture, CustomerVote, Category
+from ..api.opening_hours_serializers import *
 from ..models.components import RestaurantComponents, HomeComponent, VetrinaComponent, GalleriaComponent, \
     EventiComponent, MenuComponent, ContattaciComponent
-
+from ..models.models import RestaurantDiscount, Picture, CustomerVote, Category, Restaurant
 from ...account.api.serializers import BusinessSerializer
-from ..api.opening_hours_serializers import *
-from django.db import transaction, IntegrityError
-from django.utils.text import slugify
-from localflavor.it.util import vat_number_validation
 
 
 class PictureSerializer(serializers.ModelSerializer):
@@ -129,6 +123,9 @@ class CreateRestaurantSerializer(serializers.ModelSerializer):
             menu=menu,
             contattaci=contattaci
         )
+
+        # create TimeTable (empty)
+        OrarioApertura.objects.create(restaurant=restaurant)
 
         return restaurant
 

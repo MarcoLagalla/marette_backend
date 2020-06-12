@@ -22,7 +22,7 @@ export default {
 
 
     removeProduct(payload){
-        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/'+ payload['p_id']+ '/delete\n', payload)
+        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/'+ payload['p_id']+ '/delete', payload)
                     .then(response => {
                 return response
             })
@@ -42,8 +42,16 @@ export default {
             })
     },
 
-    addDiscount(discount, id){
+    addNewDiscount(discount, id){
                     return api.post('v1/webapp/restaurant/' + id + '/products/discounts/add', discount)
+            .then(response => {
+                return response
+            })
+    },
+
+    addNewDiscountToProduct(payload, id){
+
+        return api.post('v1/webapp/restaurant/' + id + '/products/' + payload.id + '/setdiscounts', payload.discounts)
             .then(response => {
                 return response
             })

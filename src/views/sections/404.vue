@@ -1,25 +1,16 @@
 <template>
-<base-section id="404">
-  <base-heading title="404" />
-
-  <base-subheading class="primary--text" title="Oh!" />
-
-  <base-subheading space="8" title="Looks like this page doesn't exist" />
-
-  <base-img :src="require('@/assets/logo.svg')" class="mx-auto mb-12" contain height="350" width="250" />
-
-  <div class="text-center">
-    <base-btn :to="{ name: 'Home' }">
-      Get me Out of Here
-    </base-btn>
-  </div>
-</base-section>
+<div id="404" class="body">
+    <gmaps-map>
+        <gmaps-marker :position="{ lat: 0, lng: 0 }" />
+    </gmaps-map>
+</div>
 </template>
 
 <script>
+    import { gmapsMap, gmapsMarker } from 'x5-gmaps'
 export default {
   name: 'FourOhFour',
-
+    components: { gmapsMap, gmapsMarker },
   provide: {
     heading: {
       align: 'center'
@@ -27,3 +18,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+  .body {
+    height: 500px!important;
+  background: grey;
+  }
+</style>

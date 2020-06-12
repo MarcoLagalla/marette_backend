@@ -1,14 +1,13 @@
 from django.db import transaction
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from backend.account.permissions import IsBusiness, BusinessActivated
-from backend.webapp.models.models import Restaurant
-from backend.webapp.api.opening_hours_serializers import  *
+from backend.webapp.api.opening_hours_serializers import *
 
 
 class CreateOpening(APIView):
@@ -230,19 +229,8 @@ class ShowTimeTable(APIView):
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            token = Token.objects.all().get(user=restaurant.owner.user).key
-        except Token.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        days = GiornoApertura.objects.all().filter(restaurant=restaurant)
+        serializer = GiornoAperturaSerializer(days, many=True)
 
-        if token == request.user.auth_token.key:
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-            data = {}
-
-            days = GiornoApertura.objects.all().filter(restaurant=restaurant)
-            serializer = GiornoAperturaSerializer(days, many=True)
-
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)

@@ -2,14 +2,13 @@ from datetime import datetime
 
 from rest_framework import serializers
 
-from ..models.models import GiornoApertura, OrarioApertura, FasciaOraria, Restaurant
-
+from ..models.models import GiornoApertura, OrarioApertura, FasciaOraria
 
 
 class FasciaOrariaSerializer(serializers.ModelSerializer):
     class Meta:
         model = FasciaOraria
-        fields = ('restaurant', 'start', 'end', )
+        fields = ('id', 'restaurant', 'start', 'end', )
 
     def validate(self, attrs):
         start = datetime.strptime(attrs['start'], '%H:%M')
@@ -44,7 +43,7 @@ class GiornoAperturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GiornoApertura
-        fields = ('restaurant', 'day', 'fasce', )
+        fields = ('id', 'restaurant', 'day', 'fasce', )
 
     def save(self, **kwargs):
 

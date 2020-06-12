@@ -1,16 +1,21 @@
 <template>
   <div class="body" id="VETRINA">
+  <div class="body2" >
     <base-rest-h1> Vetrina </base-rest-h1>
     <v-container>
+      <template v-if="admin">
+        <base-add-menu :editOnly="menus.length >= 3" :key="newEditMenu" :edit="edit" :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
+        <v-alert v-if="menus.length >= 3" type="info">Puoi creare al massimo 3 menù</v-alert>
+      </template>
       <v-row>
-        <v-col v-if="admin" cols="12" md="6">
-          <base-add-menu  :menu="menuToManage" @new_menu="submitMenu($event)" @edit_menu="submitEditMenu($event)"></base-add-menu>
-        </v-col>
-        <v-col v-for="menu in menus" :key="menu.id" cols="12" md="6">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
+
+        <v-col v-for="menu in menus" :key="menu.name" cols="12" :md="12/menus.length">
           <base-menu-vetrina :menu="menu" :admin="admin" @removed="removeMenu(menu)" @edited="askEditMenu(menu)"></base-menu-vetrina>
         </v-col>
       </v-row>
     </v-container>
+  </div>
   </div>
 </template>
 
@@ -33,8 +38,14 @@ export default {
           description: '',
           price: '',
           iva: '',
-          edit: false
-      }
+          edit: false,
+      },
+    edit: false,
+    snackbar: false,
+    timeout: 4000,
+    color: 'green',
+    text: 'Menu creato con successo',
+    newEditMenu: 0,
     }),
   computed: {
     menus() {
@@ -47,15 +58,13 @@ export default {
   methods: {
     ...mapActions('restaurantData', ['deleteMenu', 'addMenu', 'editMenu']),
     removeMenu: function (menu) {
-      this.deleteMenu(menu) //TODO: se sbaglia ad eliminare devo gestire
+      this.deleteMenu(menu)
     },
     askEditMenu: function (menu) {
+        this.edit = true
+        this.newEditMenu ++
         menu.edit = true
         this.menuToManage = menu
-        document.getElementById('AddMenu').scrollIntoView(false)
-        document.getElementById('AddMenu').focus({
-          preventScroll: true
-        });
     },
     submitEditMenu: function (menu) {
       this.editMenu({
@@ -69,10 +78,20 @@ export default {
         }
       })
       .then(() =>{
-        alert('Menù aggiornato con successo')
+        this.snackbar = true;
+        this.text = 'Menu modificato con successo';
+        this.color = 'green'
       })
-      .catch((err) =>{
-        alert('Errore ' + err)
+      .catch((errors) =>{
+        this.snackbar = true;
+        var errString = ''
+        for (var key in errors) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (!errors.hasOwnProperty(key)) continue;
+          errString += key + ': ' + errors[key].toString() + ' ';
+        }
+        this.text = 'Errore: ' + errString;
+        this.color = 'error';
       })
 
       this.menuToManage = {
@@ -90,9 +109,19 @@ export default {
           price: menu.price,
           iva: menu.iva
       }).then(() =>{
-          alert('Menù aggiunto con successo')
-      }).catch((err) =>{
-          alert('Errore ' + err)
+          this.snackbar = true;
+          this.text = 'Menu creato con successo';
+          this.color = 'green'
+      }).catch((errors) =>{
+        this.snackbar = true;
+        var errString = ''
+        for (var key in errors) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (!errors.hasOwnProperty(key)) continue;
+          errString += key + ': ' + errors[key].toString() + ' ';
+        }
+        this.text = 'Errore: ' + errString;
+        this.color = 'error';
       })
     }
   }
@@ -102,8 +131,12 @@ export default {
 
 <style scoped>
 .body {
-  margin: 0 !important;
+
   background: var(--whitesmoke);
+}
+.body2 {
+  margin: auto;
+  width: 90%;
 }
 h1 {
   color: white;

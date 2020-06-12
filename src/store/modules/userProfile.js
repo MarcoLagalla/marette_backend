@@ -34,21 +34,23 @@ const getters = {
 }
 
 const actions = {
-
-
   getUserData: ({commit, dispatch}, id) => {
-    commit('USER_REQUEST')
-    manageUserProfile.getUserProfile(id)
+    return new Promise((resolve, reject) => {
+      commit('USER_REQUEST')
+      manageUserProfile.getUserProfile(id)
         .then(resp => {
           const data = resp.data
           data.id = id
           setCookiesUserPrivate(data)
           commit('USER_SUCCESS', data)
+          resolve(data)
         })
         .catch(err => {
           dispatch("userAuthentication/logout", null, {root: true});
           commit('USER_ERROR');
+          reject(err)
         })
+    })
   },
 
   logout: ({commit}) => {
@@ -75,14 +77,109 @@ const actions = {
           .catch(err => {
 
             commit('PSW_CHANGE_ERROR', err.response)
-            reject(err)
+            reject(err.response.data)
 
           })
     })
-  }
+  },
+
+  validateEmail: ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ValidateEmail(payload)
+      .then(resp => {
+
+        commit('VALID_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('VALID_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
+
+  resendEmailValidation: ({commit}) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ResendValidateEmail(state.user_private.id)
+      .then(resp => {
+
+        commit('RESEND_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('RESEND_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
+
+  updateProfile: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      if ( state.user_private.type==='business'){
+        manageUserProfile.updateBusiness(state.user_private.id, data)
+        .then(resp => {
+          commit('BUSINESS_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('BUSINESS_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+      else{
+        manageUserProfile.updateUser(state.user_private.id, data)
+        .then(resp => {
+          commit('USER_UPDATE')
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('USER_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+    })
+  },
 }
 
 const mutations = {
+
+  USER_UPDATE: (state) => {
+  },//TODO: fare mutation dei dati quando il back me li passerà
+
+  USER_UPDATE_ERROR: (state) => {
+  },
+
+  BUSINESS_UPDATE: (state) => {
+  },
+
+  BUSINESS_UPDATE_ERROR: (state) => {
+  },
+
+  RESEND_EMAIL_SUCCESS: () => {
+  },
+
+  RESEND_EMAIL_ERROR: () => {
+  },
+
+  VALID_EMAIL_SUCCESS: (state) => {
+    state.user_private.email_activated = true
+  },
+  VALID_EMAIL_ERROR: (state) => {
+    state.user_private.email_activated = false
+  },
+
   USER_REQUEST: (state) => {
     state.status = 'loading'
   },
@@ -92,6 +189,8 @@ const mutations = {
     state.user_private.type = data.type
     state.user_private.id = data.id
     state.user_private.is_superuser = data.is_superuser
+    state.user_private.avatar = data.avatar
+    state.user_private.email_activated = data.email_activated
 
     state.user.Username = data.username
     state.user.Email = data.email
@@ -99,12 +198,15 @@ const mutations = {
     state.user.Cognome = data.last_name
     state.user.Anno_di_Nascita = data.birth_date
     state.user.Numero_di_Telefono = data.phone
-    state.user.avatar = data.avatar
+
 
     if (state.user_private.type === 'business')
     {
       state.user.Codice_Fiscale = data.cf
-      state.user.Indirizzo = data.address + ', ' + data.city + ', ' + data.cap
+      state.user.Indirizzo = data.address
+      state.user.N_civ = data.n_civ
+      state.user.Citta = data.city
+      state.user.Cap = data.cap
       state.user_private.restaurants = data.restaurants
     }
 
@@ -159,6 +261,7 @@ function setCookiesUserPrivate( data) {
     user_private['type']=data.type
     user_private['id'] = data.id
     user_private['is_superuser'] = data.is_superuser
+    user_private['email_activated'] = data.email_activated
     if (data.type === 'business')
        user_private['restaurants'] = data.restaurants
   var d = new Date();

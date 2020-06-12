@@ -1,8 +1,8 @@
-import json
 import django
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -12,6 +12,9 @@ from ..models.models import Restaurant, FasciaOraria, GiornoApertura
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
+
+from .serializers import ListRestaurantSerializer
+from ..models.models import Restaurant
 from ...utils import NavigationLinks
 import datetime
 from django.utils.timezone import utc
