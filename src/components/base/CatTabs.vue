@@ -9,7 +9,6 @@
       <v-tab-item v-for="category in categories" :key="category">
         <v-card flat >
           <base-prod-list :admin="admin" :products="menu[category]" :category="category"/>
-          <base-add-product :category='category' v-if="admin" :admin="admin"></base-add-product>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
