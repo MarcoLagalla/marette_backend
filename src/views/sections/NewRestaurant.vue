@@ -241,15 +241,6 @@
             onRemoved() {
                 this.image = '';
             },
-            checkCategories(){
-                if(this.$store.getters["restaurantData/restCategories"]){
-                    return this.$store.getters["restaurantData/restCategories"];
-                }
-                else {
-                    setTimeout(this.checkCategories, 200); // check again in a second
-                }
-            },
-
         },
         computed: {
             errors() {
