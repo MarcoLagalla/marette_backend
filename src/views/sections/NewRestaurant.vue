@@ -65,7 +65,7 @@
 
                                                                 <v-combobox
                                                                     :error-messages="errors.restaurant_category"
-                                                                    :items="checkCategories()"
+                                                                    :items="restDataCat"
                                                                     item-text="category_name"
                                                                     item-value="id"
                                                                     @change="errors.restaurant_category=''"
@@ -242,31 +242,30 @@
                 this.image = '';
             },
             checkCategories(){
-                if(Object.prototype.hasOwnProperty.call(this.restCategory, 'restCategories')){
-                    return this.restCategory.restCategories
+                if(this.$store.getters["restaurantData/restCategories"]){
+                    return this.$store.getters["restaurantData/restCategories"];
                 }
                 else {
                     setTimeout(this.checkCategories, 200); // check again in a second
                 }
-            }
+            },
 
         },
         computed: {
             errors() {
                 return this.$store.getters['restaurants/errors']
             },
-            restCategory() {
-                return this.$store.getters['restaurantData/restData']
-            },
             hasPermission() {
                 return this.$store.getters['userProfile/user_private'].email_activated && this.$store.getters['userProfile/isBusiness']
+            },
+            restDataCat() {
+                return this.$store.getters['restaurantData/restCategories']
             }
+
         },
 
-        beforeCreate() {
-          this.$store.dispatch("restaurantData/getRestCategories").then(()=>{
-              this.restaurant_category = this.checkCategories()
-          })
+        created() {
+          this.$store.dispatch("restaurantData/getRestCategories")
         }
     }
 </script>

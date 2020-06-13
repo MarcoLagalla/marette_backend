@@ -97,7 +97,7 @@
                         </v-card-text>
                         <div class="regbtn2">
                             <div class="center">
-                                <button class="btn" type="submit" :disabled="!valid && loading">
+                                <button class="btn" type="submit" :disabled="!valid || loading">
                                     <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
                                         <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
@@ -185,16 +185,19 @@
                 formData.append('avatar', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.registerUser(formData).then(() => {
-                    this.$router.push('/profile').catch(error => {
+                    this.$router.push('/profile')
+                    this.loading = false
+                })
+                    .catch(error => {
+                        console.log('error')
+                        console.log(error)
                         var id = Object.keys(error)[0];
                         document.getElementById(id).scrollIntoView(false)
                         document.getElementById(id).focus({
                             preventScroll: true
                         });
+                        this.loading = false
                     })
-                    this.loading = false;
-                })
-
             },
             onChanged() {
                 if (this.$refs.avatar.file) {
