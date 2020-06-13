@@ -150,7 +150,7 @@ class UpdateRestaurantAPIView(APIView):
             # numero di telefono del ristorante, city, address, cap
 
             try:
-                p_iva = request.data['p_iva']
+                p_iva = input_data['p_iva']
                 if not vat_number_validation(p_iva):
                     raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
             except ValueError:
