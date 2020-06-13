@@ -159,8 +159,16 @@ class UpdateRestaurantAPIView(APIView):
             serializer = CreateRestaurantSerializer(data=input_data)
 
             if serializer.is_valid():
-                
-                del input_data['restaurant_category']
+                try:
+                    categories = input_data['restaurant_category']
+                    del input_data['restaurant_category']
+                    restaurant.restaurant_category.clear()
+                    for cat in categories:
+                        c = Category.objects.all().get(id=cat)
+                        restaurant.restaurant_category.add(c)
+                except KeyError:
+                    pass
+
                 for key in input_data:
                     setattr(restaurant, key, input_data[key])
 
