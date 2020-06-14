@@ -12,7 +12,6 @@ from ..models.models import Restaurant, FasciaOraria, GiornoApertura, OrarioAper
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
-
 from .serializers import ListRestaurantSerializer
 from ..models.models import Restaurant
 from ...utils import NavigationLinks
@@ -93,6 +92,10 @@ class SearchRestaurantByQueryAPIView(APIView):
         queried_name = None
         queried_city = None
         queried_category = None
+
+        queried_aperto_ora = None
+        queried_aperto_oggi = None
+        fascie_orarie = None
         queryset = []
 
         try:
@@ -109,10 +112,6 @@ class SearchRestaurantByQueryAPIView(APIView):
             queried_category = request.data['restaurant_category']
         except KeyError:
             pass
-
-        queried_aperto_ora = None
-        queried_aperto_oggi = None
-        fascie_orarie = None
 
         try:
             queried_aperto_ora = request.data['aperto_ora']
@@ -158,6 +157,7 @@ class SearchRestaurantByQueryAPIView(APIView):
 
                     # check if not aperto adesso ma apre tra + - 30min
                     timedelta_ = 1 * 60
+                    # TODO
 
         # print("aperto_ora", aperto_ora)    # DEBUG
         # print("aperto_oggi", aperto_oggi)  # DEBUG
@@ -169,6 +169,8 @@ class SearchRestaurantByQueryAPIView(APIView):
                     # print("YES", restaurant)
                     open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant[0]).order_by('-id')
                     queryset.append(open_restaurant_query)
+
+            ######  TODO se non ho ristoranti aperti devo togliere quelli dal risultato !!!!!!!!
 
         if queried_aperto_oggi:
             pass  #TODO add this part !
@@ -228,8 +230,3 @@ class SearchRestaurantByQueryAPIView(APIView):
 
         return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
                         status.HTTP_404_NOT_FOUND)
-
-
-
-
-
