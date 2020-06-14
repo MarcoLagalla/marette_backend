@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from backend.account.permissions import IsBusiness, BusinessActivated
 from backend.webapp.api.opening_hours_serializers import *
+from backend.webapp.models.models import Restaurant
 
 
 class CreateOpening(APIView):

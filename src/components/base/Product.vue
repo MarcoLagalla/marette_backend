@@ -25,7 +25,7 @@
 
             <v-row class="tags_class" v-if="product.tags.length>0" justify="start">
                 <div v-if="check_tags('GlutenFree',product)" class="tooltip">
-                <span class="fa-stack fa-xs">
+                <span class="fa-stack fa-xs" style="padding: 10px; margin-left: 10px;">
                 <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
@@ -262,6 +262,7 @@
     .tooltip {
         position: relative;
         display: inline-block;
+        z-index: 10;
     }
 
     .tooltip .tooltiptext {
@@ -274,7 +275,7 @@
       border-radius: 6px;
       padding: 5px 0;
       position: absolute;
-      z-index: 1;
+      z-index: 10;
       top: 150%;
       left: 50%;
       margin-left: -40px;
