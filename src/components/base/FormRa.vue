@@ -344,7 +344,7 @@
         height: 2px;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 
@@ -355,7 +355,7 @@
         height: 0;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 
