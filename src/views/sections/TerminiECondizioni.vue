@@ -1,5 +1,5 @@
 <template>
-  <div id="texte_a_afficher">
+  <div id="texte_a_afficher" style="padding: 10px;">
 						<span class="stabilisation"></span><p style="text-align: center;"><strong>PRIVACY POLICY</strong></p>
 <p style="text-align: center;"><strong><br><br>I - INFORMAZIONI RELATIVE ALLA PRIVACY POLICY DEL SITO</strong></p>
 <p style="text-align: left;"><br>1. In questa sezione sono contenute le informazioni relative alle modalità di gestione di <span>Marette</span> in riferimento al trattamento dei dati degli utenti di <span >Marette</span>.</p>

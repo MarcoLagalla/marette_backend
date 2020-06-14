@@ -187,10 +187,11 @@
     }
     .card .wrapper {
         background-color: #fff;
-        min-height: 440px;
+        min-height: 380px;
         max-width: 300px;
         position: relative;
         overflow: hidden;
+        margin: auto;
         box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.2);
     }
     .card .wrapper:hover .data {
@@ -220,16 +221,17 @@
     }
     .card .title {
         margin-top: 10px;
-        font-family: "Open Sans", sans-serif;
-        font-weight: 400;
-        font-size: 2rem!important;
-        -webkit-text-stroke-width: 1px;
-        -webkit-text-stroke-color: lightslategrey;
+        margin-bottom: 5px;
+        font-weight: 300;
+        font-size: 1.6rem!important;
     }
     .card .text {
         height: 70px;
         margin: 0;
         background: rgba(0,0,0,0.0);
+    }
+    .card .header {
+        background: rgba(0,0,0,0.3);
     }
     .card input[type='checkbox'] {
         display: none;

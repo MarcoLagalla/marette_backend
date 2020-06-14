@@ -90,19 +90,22 @@ export default {
     color: white;
     margin: 1vmax 0;
   }
+
   .infocard {
     position: relative;
-  background: rgba(0,0,0,0.4);
-padding: 1vmax;
+    background: rgba(0,0,0,0.4);
+    padding: 1vmax;
     display: block;
     width: 100%;
     height: 400px;
     box-shadow: 0 0 10px black;
   }
+
   .descript {
-    width: 50%;
-    font-size: 0.9em;
-      color: white;
+    width: 90%;
+    font-size: 0.8em;
+    overflow: hidden;
+    color: white;
   }
   .orari {
     position: absolute;
