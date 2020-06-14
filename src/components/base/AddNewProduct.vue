@@ -151,7 +151,7 @@
                 }
             },
 
-            submitProduct: function () {
+            submitProduct: function (event) {
                 let tagsID= [];
                 let arrayLength = this.selectedTags.length;
                 for (let i = 0; i < arrayLength; i++) {
@@ -172,6 +172,8 @@
                 formData.append('image', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.addProduct(formData)
+                this.name = this.description = this.category = this.price  = this.selectedTags = '';
+                event.target.reset();
             },
 
 
