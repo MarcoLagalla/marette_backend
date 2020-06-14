@@ -172,8 +172,6 @@ class SearchRestaurantByQueryAPIView(APIView):
                 return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
                                 status.HTTP_404_NOT_FOUND)
 
-            ######  TODO se non ho ristoranti aperti devo togliere quelli dal risultato !!!!!!!!
-
         if queried_aperto_oggi:
             pass  #TODO add this part !
 
