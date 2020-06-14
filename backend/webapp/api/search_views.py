@@ -159,8 +159,8 @@ class SearchRestaurantByQueryAPIView(APIView):
                     # check if not aperto adesso ma apre tra + - 30min
                     timedelta_ = 1 * 60
 
-        print("aperto_ora", aperto_ora)    # DEBUG
-        print("aperto_oggi", aperto_oggi)  # DEBUG
+        # print("aperto_ora", aperto_ora)    # DEBUG
+        # print("aperto_oggi", aperto_oggi)  # DEBUG
 
         if queried_aperto_ora:
             open_restaurant = len(aperto_ora)
