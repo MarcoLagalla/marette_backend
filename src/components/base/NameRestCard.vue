@@ -1,5 +1,6 @@
 <template>
 <div class="infocard">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
         <h1>{{name}}</h1>
         <div class="divider"></div>
           <v-textarea auto-grow class="descript" :rounded="!admin" :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
@@ -50,12 +51,17 @@ export default {
   data: function () {
     return {
       edited: false,
-      activity_description: this.description
+      activity_description: this.description,
+      snackbar: false,
+      timeout: 4000,
+      color: 'green',
+      text: 'Descrizione aggiornata con successo'
     }
   },
   methods: {
       edit: function() {
         this.edited = false
+        this.snackbar = true
         this.$emit('edited', this.activity_description)
       }
     },
