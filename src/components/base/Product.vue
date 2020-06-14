@@ -23,7 +23,7 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row v-if="product.tags.length>0" justify="space-around">
+            <v-row class="tags_class" v-if="product.tags.length>0" justify="start">
                 <div v-if="check_tags('GlutenFree',product)" class="tooltip">
                 <span class="fa-stack fa-xs">
                 <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
@@ -31,9 +31,9 @@
                 </span>
                 <span class="tooltiptext">Gluten Free</span>
                 </div>
-                <div v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
-                <div v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
-                <div v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
+                <div style="padding:10px" v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div style="padding:10px" v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div style="padding:10px" v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -247,6 +247,15 @@
         text-decoration: line-through;
     }
 
+    .tags_class{
+        position: absolute;
+        top: 45px;
+        left: 100px;
+        width: 50%;
+        height: 50px;
+        padding: 15px;
+    }
+
     .discount_banner{
         box-shadow: 0 0 2px black;
     }
@@ -289,7 +298,6 @@
       visibility: visible;
         opacity: 1;
     }
-
 
 
     .pos2 {

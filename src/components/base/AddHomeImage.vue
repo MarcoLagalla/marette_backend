@@ -2,11 +2,11 @@
   <v-row >
     <v-dialog v-model="active" overlay-opacity="0.8" >
       <template v-slot:activator="{ on }">
-        <div class="rel">
+
           <button name="edit" v-on="on"  class="managebtn">
-            Modifica immagine <i class="far fa-edit"></i>
+             <i class="far fa-edit"></i>
           </button>
-        </div>
+
         </template>
         <v-card justify="center">
           <picture-input
@@ -64,7 +64,10 @@
 
 <style scoped>
   .managebtn {
-    width: 100% !important;
+    width: 50px;
+    margin: 0;
+    border: solid 0.5px grey;
+
     padding: 10px;
     background: rgba(250,250,250,0.8);
     text-transform: uppercase;

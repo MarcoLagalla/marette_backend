@@ -21,7 +21,7 @@
              light class="field"
              outlined
              :disabled="!editing"
-            :items="checkCategories()"
+            :items="restCategories"
             item-text="category_name"
             item-value="id"
             v-model='restData.restaurant_category'
@@ -95,6 +95,9 @@
       restData() {
         return this.$store.getters["restaurantData/restData"];
       },
+      restCategories() {
+        return this.$store.getters["restaurantData/restCategories"];
+      },
     },
     methods: {
       ...mapActions('restaurants', ['updateRestaurant']),
@@ -124,15 +127,6 @@
 
         this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con successo, gestire errori, aggiornare immagine quando cambia e far tornare le cose chiuse dopo aver salvato
       },
-      checkCategories(){
-          if(this.$store.getters["restaurantData/restCategories"]){
-            return this.$store.getters["restaurantData/restCategories"];
-          }
-          else {
-              setTimeout(this.checkCategories, 200); // check again in a second
-          }
-      },
-
       onChanged() {
         if (this.$refs.restImage.file) {
           this.image = this.$refs.restImage.file;
@@ -141,11 +135,6 @@
         }
       },
     },
-    beforeCreate() {
-      this.$store.dispatch("restaurantData/getRestCategories").then(()=>{
-          this.restaurant_category = this.checkCategories()
-      })
-    }
   };
 
 </script>
