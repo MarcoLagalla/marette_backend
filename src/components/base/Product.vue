@@ -46,7 +46,6 @@
                 <div  class="price_text" v-text="product.final_price"></div>
                 <v-icon class="eur" small>fas fa-euro-sign</v-icon>
                 </v-row>
-
             </div>
         </div>
 
