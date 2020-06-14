@@ -1,10 +1,10 @@
 <template>
   <div>
-    <button @click="activated">Aggiungi orari di apertura</button>
+    <button class="managebtn" @click="activated">Aggiungi orari di apertura</button>
     <v-dialog v-model="active" max-width="815" >
-      <v-card max-width="800">
-        <v-select :items="remainingDays" chips item-text="name" item-value="id" label="Aggiungi giorni di apertura:" v-model="newDay"></v-select>
-        <button @click="submitNewDays">Aggiungi</button>
+      <v-card max-width="800" class="pa-6">
+        <v-select prepend-icon="mdi-calendar" :items="remainingDays" chips item-text="name" item-value="id" label="Aggiungi giorni di apertura:" v-model="newDay"></v-select>
+        <button class="managebtn" @click="submitNewDays">Aggiungi</button>
 
         <v-card v-for="day in openingDays" :key="day.day">
           <h2>
@@ -147,5 +147,14 @@
 </script>
 
 <style scoped>
-
-</style>
+  .managebtn {
+  box-shadow: 0 0 4px darkslategrey;
+margin: 0;
+    padding: 10px;
+    background: rgba(250,250,250,0.8);
+    text-transform: capitalize;
+    transition: 0.3s ease-in-out;
+  }
+  .managebtn:hover {
+    background: rgba(250,250,250,1);
+  }</style>
