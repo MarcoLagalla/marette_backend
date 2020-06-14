@@ -143,7 +143,6 @@ class UpdateRestaurantAPIView(APIView):
             image = request.data['image']
         except Exception as err:
             image = None
-
         if request.user == restaurant.owner.user:
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
