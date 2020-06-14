@@ -130,18 +130,15 @@ class SearchRestaurantByQueryAPIView(APIView):
             current_hour = datetime.datetime.now().replace(tzinfo=utc).strftime('%H')
             current_minutes = datetime.datetime.now().replace(tzinfo=utc).strftime('%M')
             current_time = int(current_hour) * 60 + int(current_minutes)
-            # print(current_hour, current_minutes)
 
             try:
                 fascie_orarie = FasciaOraria.objects.all().filter(giorno__day__exact=DAYS[today][0])
-                # print("aperto oggi", fascie_orarie)
             except IndexError:
                 pass
 
             if fascie_orarie:
                 for fascia_oraria in fascie_orarie:
                     aperto_oggi.append([fascia_oraria.restaurant, fascia_oraria.giorno.day, fascia_oraria.start, fascia_oraria.end])
-                   # print(aperto.restaurant, aperto.giorno.day, aperto.start, aperto.end)
                     start_hour = fascia_oraria.start[:2]
                     start_minute = fascia_oraria.start[3:]
                     end_hour = fascia_oraria.end[:2]
@@ -151,22 +148,17 @@ class SearchRestaurantByQueryAPIView(APIView):
 
                     # check if aperto adesso
                     if start_time <= current_time <= end_time:
-                        # print("APERTO !") # DEBUG
-                        aperto_ora.append([fascia_oraria.restaurant, fascia_oraria.giorno.day, fascia_oraria.start, fascia_oraria.end])
+                        aperto_ora.append(fascia_oraria.restaurant)
 
                     # check if not aperto adesso ma apre tra + - 30min
                     timedelta_ = 1 * 60
                     # TODO
 
-        # print("aperto_ora", aperto_ora)    # DEBUG
-        # print("aperto_oggi", aperto_oggi)  # DEBUG
-
         if queried_aperto_ora:
             open_restaurant = len(aperto_ora)
             if open_restaurant:
                 for i, restaurant in enumerate(aperto_ora):
-                    # print("YES", restaurant)
-                    open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant[0]).order_by('-id')
+                    open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant).order_by('-id')
                     queryset.append(open_restaurant_query)
             else:
                 return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
@@ -194,7 +186,6 @@ class SearchRestaurantByQueryAPIView(APIView):
             if queryset:
                 results_query = queryset[0]
                 for query in queryset:
-                    print(query)
                     results_query = results_query & query
 
             if results_query:
