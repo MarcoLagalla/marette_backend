@@ -1,27 +1,26 @@
 <template>
 <div class="infocard">
-        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
-        <h1>{{name}}</h1>
-        <div class="divider"></div>
-          <v-textarea auto-grow class="descript" :rounded="!admin" :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
-          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="edit" class="editbutton">
+  <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
+  <h1>{{name}}</h1>
+  <div class="divider"></div>
+    <v-textarea auto-grow class="descript" :rounded="!admin" :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
+    <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="edit" class="editbutton">
+      Modifica descrizione<i class="far fa-edit"></i>
+    </v-btn>
 
-            Modifica descrizione<i class="far fa-edit"></i>
-          </v-btn>
-  <button class="infoicon" @click="$refs.orarimodal.open()" >
-    <i class="fas fa-info-circle"></i>
-  </button>
+  <base-add-time-table v-if="admin"></base-add-time-table>
+
     <sweet-modal ref="orarimodal">
-        <base-orari>
-
-        </base-orari>
+        <base-orari></base-orari>
     </sweet-modal>
         <ul class="orari">
           <li class="infos">
               {{categoryString}}
           </li>
           <li class="infos">
-            Aperto ora/Apre alle
+            <button v-if="!admin"  @click="$refs.orarimodal.open()" >
+              <i class="fas fa-info-circle"> </i> Orari di apertura
+            </button>
           </li>
         </ul>
 </div>
@@ -103,8 +102,7 @@ padding: 1vmax;
   .descript {
     width: 50%;
     font-size: 0.9em;
-
-    color: white;
+      color: white;
   }
   .orari {
     position: absolute;
