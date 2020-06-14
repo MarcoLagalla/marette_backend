@@ -34,27 +34,27 @@
                             <v-tab-item v-for="(restaurant, i) in userRestaurantList" :key="i">
                                 <v-card flat class="restc" dark v-bind="restaurant" min-height="150" >
                                     <v-row>
-                                        <v-col cols="12" md="6">
+                                        <v-col cols="12" md="8">
                                             <v-card-title class="restitle">{{ restaurant.activity_name }}</v-card-title>
                                             <div class="divider"></div>
                                             <v-card-subtitle class="description">{{ restaurant.activity_description }}
                                             </v-card-subtitle>
-                                            <v-card-actions>
+
+                                        </v-col>
+                                        <v-col cols="12" md="4" >
+                                                <v-row style="margin-bottom: 15px; margin-top: 10px">
                                                 <router-link tag="button" class="gestrest"
                                                              :to="'profile/'+restaurant.url">
                                                     <span class="butgest"> gestisci ristorante  </span>
                                                     <v-icon class="wrench" medium>fas fa-wrench</v-icon>
                                                 </router-link>
+                                                </v-row>
+                                                <v-row>
+                                                <button class="gestrest" @click="editingRest=!editingRest"><span class="butgest"> Modifica Dati Ristorante  </span></button>
+                                                </v-row>
 
 
-                                                <button class="gestrest" @click="editingRest=!editingRest"><span class="butgest"> Modifica dati  </span></button>
-                                            </v-card-actions>
-                                        </v-col>
-                                        <v-col cols="12" md="6">
 
-                                            <v-avatar class="imgrest" size="125" tile>
-                                                <v-img :src="restaurant.image"></v-img>
-                                            </v-avatar>
                                         </v-col>
 
                                     </v-row>
