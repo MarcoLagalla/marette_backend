@@ -1,8 +1,8 @@
 <template>
    <div class="body" id="">
-       <div class="infbanner">
+       <!--div class="infbanner">
 
-       </div>
+       </div-->
        <div class="infcols">
            <v-row>
                <v-col cols="12" md="4">
@@ -18,8 +18,7 @@
                         <span class="restname">{{restData.activity_name}}</span>
                         <span class="restdati">{{restData.city}}</span>
                         <span class="restdati">{{restData.cap}}</span>
-                        <span class="restdati">{{restData.n_civ}}</span>
-                        <span class="restdati">{{restData.address}}</span>
+                        <span class="restdati">{{restData.address}} {{restData.n_civ}}</span>
                     </div>
                </v-col>
                <v-col cols="12" md="4">

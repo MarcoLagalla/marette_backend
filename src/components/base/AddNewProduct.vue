@@ -55,8 +55,8 @@
 
               </multiselect>
               <br><br>
-                {{selectedTags}}
                 <picture-input
+                        :key="resetImage"
                         v-if="showPicture"
                         ref="productImage"
                         @change="onChanged"
@@ -121,6 +121,7 @@
                 showTags: false,
                 showPicture: false,
                 selectedTags: [],
+                resetImage: 0,
 
             }
         },
@@ -152,7 +153,7 @@
                 }
             },
 
-            submitProduct: function () {
+            submitProduct: function (event) {
                 let tagsID= [];
                 let arrayLength = this.selectedTags.length;
                 for (let i = 0; i < arrayLength; i++) {
@@ -167,12 +168,14 @@
                     "category": this.category,
                     "price": this.price,
                     "tags": tagsID,
-
                 };
                 const formData = new FormData();
                 formData.append('image', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.addProduct(formData)
+                this.name = this.description  = this.price  = this.selectedTags = this.image = '';
+                this.resetImage++;
+                event.target.reset();
             },
 
 

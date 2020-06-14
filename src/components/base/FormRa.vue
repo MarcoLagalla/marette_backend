@@ -189,6 +189,7 @@
                     this.loading = false
                 })
                     .catch(error => {
+                        this.loading = false
                         console.log('error')
                         console.log(error)
                         var id = Object.keys(error)[0];
@@ -196,7 +197,7 @@
                         document.getElementById(id).focus({
                             preventScroll: true
                         });
-                        this.loading = false
+
                     })
             },
             onChanged() {
@@ -261,7 +262,7 @@
     }
 
     .v-card {
-        background: var(--emerald);
+        background: var(--charcoal);
         opacity: 0.8
     }
 
@@ -343,7 +344,7 @@
         height: 2px;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 
@@ -354,7 +355,7 @@
         height: 0;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 

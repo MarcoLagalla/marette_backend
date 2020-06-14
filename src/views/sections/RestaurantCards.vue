@@ -222,9 +222,10 @@
     .card .title {
         margin-top: 10px;
         font-family: "Open Sans", sans-serif;
-        font-weight: 300;
+        font-weight: 400;
         font-size: 2rem!important;
-        text-shadow: 0 0 1px black;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: lightslategrey;
     }
     .card .text {
         height: 70px;
@@ -237,6 +238,9 @@
     .card input[type='checkbox']:checked + .menu-content {
         -webkit-transform: translateY(-60px);
         transform: translateY(-60px);
+    }
+    .example-2 .wrapper {
+        background: center/cover no-repeat;
     }
     .example-2 .wrapper:hover .menu-content span {
         -webkit-transform: translate(-50%, -10px);

@@ -23,17 +23,17 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row v-if="product.tags.length>0" justify="space-around">
+            <v-row class="tags_class" v-if="product.tags.length>0" justify="start">
                 <div v-if="check_tags('GlutenFree',product)" class="tooltip">
-                <span class="fa-stack fa-xs">
+                <span class="fa-stack fa-xs" style="padding: 10px; margin-left: 10px;">
                 <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
                 <span class="tooltiptext">Gluten Free</span>
                 </div>
-                <div v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
-                <div v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
-                <div v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
+                <div style="padding:10px" v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div style="padding:10px" v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div style="padding:10px" v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -46,7 +46,6 @@
                 <div  class="price_text" v-text="product.final_price"></div>
                 <v-icon class="eur" small>fas fa-euro-sign</v-icon>
                 </v-row>
-
             </div>
         </div>
 
@@ -247,12 +246,22 @@
         text-decoration: line-through;
     }
 
+    .tags_class{
+        position: absolute;
+        top: 45px;
+        left: 100px;
+        width: 50%;
+        height: 50px;
+        padding: 15px;
+    }
+
     .discount_banner{
         box-shadow: 0 0 2px black;
     }
     .tooltip {
         position: relative;
         display: inline-block;
+        z-index: 10;
     }
 
     .tooltip .tooltiptext {
@@ -265,7 +274,7 @@
       border-radius: 6px;
       padding: 5px 0;
       position: absolute;
-      z-index: 1;
+      z-index: 10;
       top: 150%;
       left: 50%;
       margin-left: -40px;
@@ -289,7 +298,6 @@
       visibility: visible;
         opacity: 1;
     }
-
 
 
     .pos2 {

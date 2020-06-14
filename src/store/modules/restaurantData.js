@@ -46,7 +46,7 @@ const getters = {
     menus: state => state.menus,
     slug: state => state.restData.slug,
     home: state => state.restData.components.home,
-    galleria: state => state.restData.components.galleria
+    galleria: state => state.restData.components.galleria,
 
 }
 
@@ -552,10 +552,6 @@ const mutations = {
     },
 
     REST_ADD_PROD_SUCCESS: (state, product) => {
-        product.discounts=[];
-        product.tags=[];
-        product.iva=22;
-        product.final_price=product.price;
         state.productList[product.category].push(product)
     },
 
