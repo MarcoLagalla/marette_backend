@@ -172,7 +172,7 @@
                 formData.append('image', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.addProduct(formData)
-                this.name = this.description = this.category = this.price  = this.selectedTags = '';
+                this.name = this.description  = this.price  = this.selectedTags = '';
                 event.target.reset();
             },
 
