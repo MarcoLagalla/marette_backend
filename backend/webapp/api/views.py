@@ -143,14 +143,13 @@ class UpdateRestaurantAPIView(APIView):
             image = request.data['image']
         except Exception as err:
             image = None
-
         if request.user == restaurant.owner.user:
             # campi che possono essere modificati:
             # nome_attività, descrizione_attività, p_iva
             # numero di telefono del ristorante, city, address, cap
 
             try:
-                p_iva = request.data['p_iva']
+                p_iva = input_data['p_iva']
                 if not vat_number_validation(p_iva):
                     raise serializers.ValidationError({'p_iva': 'La partita iva non è valida'})
             except ValueError:
@@ -159,6 +158,16 @@ class UpdateRestaurantAPIView(APIView):
             serializer = CreateRestaurantSerializer(data=input_data)
 
             if serializer.is_valid():
+                try:
+                    categories = input_data['restaurant_category']
+                    del input_data['restaurant_category']
+                    restaurant.restaurant_category.clear()
+                    for cat in categories:
+                        c = Category.objects.all().get(id=cat)
+                        restaurant.restaurant_category.add(c)
+                except KeyError:
+                    pass
+
                 for key in input_data:
                     setattr(restaurant, key, input_data[key])
 

@@ -55,7 +55,6 @@
                       :taggable="true"
                       @tag="addTag">
               </multiselect>
-              {{discounts_list}}
 
               <br><br>
 
