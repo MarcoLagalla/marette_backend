@@ -262,7 +262,7 @@
     }
 
     .v-card {
-        background: var(--emerald);
+        background: var(--charcoal);
         opacity: 0.8
     }
 
