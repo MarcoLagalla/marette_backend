@@ -189,6 +189,7 @@
                     this.loading = false
                 })
                     .catch(error => {
+                        this.loading = false
                         console.log('error')
                         console.log(error)
                         var id = Object.keys(error)[0];
@@ -196,7 +197,7 @@
                         document.getElementById(id).focus({
                             preventScroll: true
                         });
-                        this.loading = false
+
                     })
             },
             onChanged() {
