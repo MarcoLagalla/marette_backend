@@ -18,7 +18,7 @@
                         <span class="restname">{{restData.activity_name}}</span>
                         <span class="restdati">{{restData.city}}</span>
                         <span class="restdati">{{restData.cap}}</span>
-                        <span class="restdati">{{restData.address}}{{restData.n_civ}}</span>
+                        <span class="restdati">{{restData.address}} {{restData.n_civ}}</span>
                     </div>
                </v-col>
                <v-col cols="12" md="4">
