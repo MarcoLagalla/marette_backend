@@ -147,8 +147,10 @@ export default {
       formData.append('data', JSON.stringify(data));
 
       this.registerBusiness(formData).then(() => {
+        this.loading = false;
         this.$router.push('/profile')
       }).catch(error => {
+        this.loading = false;
         var id = Object.keys(error)[0];
         document.getElementById(id).scrollIntoView(false)
         document.getElementById(id).focus({

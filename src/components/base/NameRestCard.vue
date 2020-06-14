@@ -1,10 +1,11 @@
 <template>
 <div class="infocard">
+        <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
         <h1>{{name}}</h1>
         <div class="divider"></div>
-          <v-textarea class="descript" v-if="admin" dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
-          <p class="descript" v-if="!admin" v-model="activity_description"></p>
-          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="editbutton">
+          <v-textarea auto-grow class="descript" :rounded="!admin" :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
+          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="edit" class="editbutton">
+
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
   <button class="infoicon" @click="$refs.orarimodal.open()" >
@@ -51,9 +52,20 @@ export default {
   data: function () {
     return {
       edited: false,
-      activity_description: this.description
+      activity_description: this.description,
+      snackbar: false,
+      timeout: 4000,
+      color: 'green',
+      text: 'Descrizione aggiornata con successo'
     }
   },
+  methods: {
+      edit: function() {
+        this.edited = false
+        this.snackbar = true
+        this.$emit('edited', this.activity_description)
+      }
+    },
     computed:{
       categoryString (){
           var categories = ''
@@ -91,6 +103,7 @@ padding: 1vmax;
   .descript {
     width: 50%;
     font-size: 0.9em;
+
     color: white;
   }
   .orari {
