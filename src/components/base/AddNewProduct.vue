@@ -55,7 +55,6 @@
 
               </multiselect>
               <br><br>
-                {{selectedTags}}
                 <picture-input
                         v-if="showPicture"
                         ref="productImage"
