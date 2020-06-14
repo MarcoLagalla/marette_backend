@@ -187,7 +187,7 @@
     }
     .card .wrapper {
         background-color: #fff;
-        min-height: 440px;
+        min-height: 380px;
         max-width: 300px;
         position: relative;
         overflow: hidden;
@@ -223,7 +223,7 @@
         margin-top: 10px;
         margin-bottom: 5px;
         font-weight: 300;
-        font-size: 2rem!important;
+        font-size: 1.6rem!important;
     }
     .card .text {
         height: 70px;
