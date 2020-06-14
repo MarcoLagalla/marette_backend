@@ -56,6 +56,7 @@
               </multiselect>
               <br><br>
                 <picture-input
+                        :key="resetImage"
                         v-if="showPicture"
                         ref="productImage"
                         @change="onChanged"
@@ -120,6 +121,7 @@
                 showTags: false,
                 showPicture: false,
                 selectedTags: [],
+                resetImage: 0,
 
             }
         },
@@ -172,7 +174,8 @@
                 formData.append('image', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.addProduct(formData)
-                this.name = this.description  = this.price  = this.selectedTags = '';
+                this.name = this.description  = this.price  = this.selectedTags = this.image = '';
+                this.resetImage++;
                 event.target.reset();
             },
 
