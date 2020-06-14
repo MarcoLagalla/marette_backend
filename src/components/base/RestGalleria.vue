@@ -43,8 +43,7 @@ export default {
   }
 .container {
   max-width: 100rem;
-  margin: 0 auto;
-  padding: 0 2rem 2rem;
+  margin: auto;
 }
 .heading {
   font-size: 4rem;
@@ -58,26 +57,23 @@ export default {
   display: block;
 }
 .gallery {
-  display: flex;
-  flex-wrap: wrap;
-  /* Compensate for excess margin on outer gallery flex items */
-  margin: -1rem -1rem;
+    margin: auto;
 }
+
 .gallery-item {
-  position: relative;
   /* Minimum width of 24rem and grow to fit available space */
-  flex: 1 0 24rem;
-  max-width: 24rem;
+  max-width: 20rem;
   /* Margin value should be half of grid-gap value as margins on flex items don't collapse */
-  margin: 1rem;
-  box-shadow: 0.3rem 0.4rem 0.4rem rgba(0, 0, 0, 0.4);
+  margin: auto!important;
   overflow: hidden;
 }
+
 .gallery-image {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  margin: auto;
   transition: transform 400ms ease-out;
 }
 .gallery-image:hover {
