@@ -153,7 +153,7 @@ class SearchRestaurantByQueryAPIView(APIView):
 
                     # check if aperto adesso
                     if start_time <= current_time <= end_time:
-                        print("APERTO !")
+                        # print("APERTO !") # DEBUG
                         aperto_ora.append([fascia_oraria.restaurant, fascia_oraria.giorno.day, fascia_oraria.start, fascia_oraria.end])
 
                     # check if not aperto adesso ma apre tra + - 30min
@@ -166,8 +166,12 @@ class SearchRestaurantByQueryAPIView(APIView):
             open_restaurant = len(aperto_ora)
             if open_restaurant:
                 for i, restaurant in enumerate(aperto_ora):
-                    print("YES", restaurant)
+                    # print("YES", restaurant)
+                    open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant[0]).order_by('-id')
+                    queryset.append(open_restaurant_query)
 
+        if queried_aperto_oggi:
+            pass  #TODO add this part !
 
         if queried_name:
             name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
