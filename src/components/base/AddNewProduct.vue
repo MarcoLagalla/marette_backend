@@ -168,7 +168,6 @@
                     "category": this.category,
                     "price": this.price,
                     "tags": tagsID,
-
                 };
                 const formData = new FormData();
                 formData.append('image', this.image);

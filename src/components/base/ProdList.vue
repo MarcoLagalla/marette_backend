@@ -23,7 +23,6 @@
         Chiudi
       </v-btn>
       </v-snackbar>
-
       <!--
         Per inserire un icona presa da fontawesome come icona della tab bisogna passar l'i tag come stringa, quindi come ho fatto
         sotto basta prendere il tag in questione e sostituire :

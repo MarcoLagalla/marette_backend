@@ -89,12 +89,12 @@ class AddProduct(APIView):
                     if serializer.is_valid():
                         ret_data = {}
                         product = serializer.save(restaurant)
-                        # ret_data.update(serializer.data)
-                        # ret_data.update({'id': product.id})
-                        # ret_data.update({'image': product.get_image()})
-                        # ret_data.update({'thumb_image': product.get_thumb_image()})
-                        ret_data = ReadProductSerializer(instance=product)
-                        return Response(ret_data.data, status=status.HTTP_201_CREATED)
+                        ret_data.update(serializer.data)
+                        ret_data.update({'id': product.id})
+                        ret_data.update({'image': product.get_image()})
+                        ret_data.update({'thumb_image': product.get_thumb_image()})
+                        new_data = ReadProductSerializer(instance=product)
+                        return Response(new_data.data, status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
