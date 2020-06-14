@@ -34,52 +34,29 @@
                               name="price"
                               required
                 ></v-text-field>
-                <button class="managebutton" @click.prevent="toggleShowTags">Inserisci i tag</button>
-                <br>
-                <v-card
-                        v-show="showTags"
-                        class="mx-auto"
-                        max-width="500"
-                >
-                    <v-list shaped>
-                        <v-list-item-group
-                                v-model="selectedTags"
-                                multiple
-                        >
-                            <template v-for="(item, i) in tags.data">
-                                <v-divider
-                                        v-if="!item"
-                                        :key="`divider-${i}`"
-                                ></v-divider>
 
-                                <v-list-item
-                                        v-else
-                                        :key="`item-${i}`"
-                                        :value="item.id"
-                                        active-class="blue--text text--accent-4"
-                                >
-                                    <template v-slot:default="{ active, toggle }">
-                                        <v-list-item-content>
-                                            <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        </v-list-item-content>
 
-                                        <v-list-item-action>
-                                            <v-checkbox
-                                                    :input-value="active"
-                                                    :true-value="item"
-                                                    color="blue accent-4"
-                                                    @click="toggle"
-                                            ></v-checkbox>
-                                        </v-list-item-action>
-                                    </template>
-                                </v-list-item>
-                            </template>
-                        </v-list-item-group>
-                    </v-list>
-                </v-card>
-                <br><br>
+                <multiselect
+                      v-model="selectedTags"
+                      track-by="id"
+                      label="name"
+                      placeholder="Seleziona un Tag"
+                      tag-placholder="Aggiungi questo come nuovo Tag"
+                      selectLabel="Clicca per selezionare"
+                      deselectLabel="Clicca per Rimuovere"
+                      selectedLabel="Selezionato"
+                      :block-keys="['Tab', 'Enter']"
+                      :options="tags"
+                      :searchable="false"
+                      :internal-search="false"
+                      :multiple="true"
+                      :taggable="true"
+                      @tag="addTag">
+
+              </multiselect>
+              <br><br>
                 <picture-input
-                        v-if="toggleCardModal"
+                        v-if="showPicture"
                         ref="productImage"
                         @change="onChanged"
                         :width="300"
@@ -101,12 +78,27 @@
 
         </div>
     </sweet-modal>
+    <!--v-snackbar
+      v-model="toggleSnackbar"
+      :timeout="3000"
+      >
+      {{text}}
+      <v-btn
+        color="blue"
+        text
+        @click="toggleSnackbar = false"
+      >
+        Chiudi
+      </v-btn>
+    </v-snackbar-->
     </div>
 </template>
 <script>
     import {mapActions} from "vuex";
     import PictureInput from "vue-picture-input";
     import {SweetModal} from "sweet-modal-vue";
+    import Multiselect from 'vue-multiselect'
+
     export default {
         name: "AddNewProduct",
         props: ['category'],
@@ -114,6 +106,8 @@
         components: {
             PictureInput,
             SweetModal,
+            Multiselect,
+
 
         },
 
@@ -124,7 +118,7 @@
                 price: '',
                 image: '',
                 showTags: false,
-                spi: true,
+                showPicture: false,
                 selectedTags: [],
 
             }
@@ -157,23 +151,29 @@
                 }
             },
 
-            submitProduct: function () {
-                if(this.showTags === true) {
-                    this.toggleShowTags();
+            submitProduct: function (event) {
+                let tagsID= [];
+                let arrayLength = this.selectedTags.length;
+                for (let i = 0; i < arrayLength; i++) {
+                    tagsID.push(this.selectedTags[i].id)
                 }
+
+
                 this.$refs.modal_add.close()
                 const data = {
                     "name": this.name,
                     "description": this.description,
                     "category": this.category,
                     "price": this.price,
-                    "tags": this.selectedTags
+                    "tags": tagsID,
 
                 };
                 const formData = new FormData();
                 formData.append('image', this.image);
                 formData.append('data', JSON.stringify(data));
                 this.addProduct(formData)
+                this.name = this.description  = this.price  = this.selectedTags = '';
+                event.target.reset();
             },
 
 
@@ -183,7 +183,16 @@
             },
 
             toggleCardModal() {
+                this.showPicture = true;
                 this.$refs.modal_add.open()
+            },
+
+            addTag (newTag) {
+                const tag = {
+                name: newTag,
+                code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+                }
+                this.value.push(tag)
             },
 
 

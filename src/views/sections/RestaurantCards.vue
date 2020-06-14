@@ -16,10 +16,10 @@
                             <div v-bind="restaurant" >
                                 <div>
                                     <div class="example-2 card">
-                                        <div class="wrapper" :style="image" >
+                                        <div class="wrapper" :style="image(restaurant.image)" >
                                             <div class="header">
                                                 <div class="date">
-                                                    <span class="author">{{categoryString()}}</span>
+                                                    <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
                                                 </div>
                                                 <ul class="menu-content">
                                                         <li><a class="fas fa-heart"><span>18</span></a></li>
@@ -27,7 +27,6 @@
                                             </div>
                                             <div class="data">
                                                 <div class="content">
-                                                    <span class="author">{{categoryString()}}</span>
                                                     <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
                                                     <p class="text">{{restaurant.activity_description}}</p>
                                                     <a href="#" class="button">Entra nel negozio</a>
@@ -57,23 +56,18 @@
             restData() {
                 return this.$store.getters['restaurantData/restData']
             },
-            image() {
-                const imgUrl = this.$store.getters['restaurantData/restData'].image;
-                return {backgroundImage: "url(" + imgUrl + ") "}
-            },
         },
         methods:{
-            categoryString (){
-                if (Object.prototype.hasOwnProperty.call(this.restData, 'restaurant_category')) {
-                    var categories = ''
-                    this.restData.restaurant_category.forEach((cat)=>{
-                      categories += cat.category_name + ', '
-                    })
-                    return categories.substring(0, categories.length-2);
-                } else {
-                    setTimeout(this.categoryString, 200);
-                }
-            }
+            categoryString (restaurant_category){
+                var categories = ''
+                restaurant_category.forEach((cat)=>{
+                  categories += cat.category_name + ', '
+                })
+                return categories.substring(0, categories.length-2);
+            },
+            image(imgUrl) {
+                return {backgroundImage: "url(" + imgUrl + ") "}
+            },
         },
         created() {
             this.$store.dispatch("restaurants/getRestaurants")
@@ -227,9 +221,10 @@
     .card .title {
         margin-top: 10px;
         font-family: "Open Sans", sans-serif;
-        font-weight: 300;
+        font-weight: 400;
         font-size: 2rem!important;
-        text-shadow: 0 0 1px black;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: lightslategrey;
     }
     .card .text {
         height: 70px;
@@ -242,6 +237,9 @@
     .card input[type='checkbox']:checked + .menu-content {
         -webkit-transform: translateY(-60px);
         transform: translateY(-60px);
+    }
+    .example-2 .wrapper {
+        background: center/cover no-repeat;
     }
     .example-2 .wrapper:hover .menu-content span {
         -webkit-transform: translate(-50%, -10px);

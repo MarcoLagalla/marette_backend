@@ -11,14 +11,21 @@
             </v-col>
         </v-row>
         <template v-if="admin">
-
+<div class="buttonscontainer">
             <div class="buttons">
-                <base-add-time-table></base-add-time-table>
+                <v-row>
+
+                    <v-col cols="6">
                 <button name="delete" class="managebtn" @click="deleteImage()">
-                    Elimina immagine <i class="fas fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>
+                    </v-col>
+                    <v-col cols="6">
                 <base-add-home-image :imageUrl="imageURL" @edited="submitImage($event)"></base-add-home-image>
+                    </v-col>
+                </v-row>
             </div>
+</div>
         </template>
     </div>
 </template>
@@ -105,16 +112,22 @@
     }
   .buttons {
     position: absolute;
-    top: 0;
-      right: 0;
+    bottom: 0;
+      left: 0;
+
+  }
+  .buttonscontainer {
+      position: relative;
   }
     .managebtn {
-        width: 100% !important;
+        width: 50px;
+        margin: 0;
+        border: solid 0.5px grey;
         padding: 10px;
         background: rgba(250,250,250,0.8);
         text-transform: uppercase;
         transition: 0.3s ease-in-out;
-        display: inline-block;
+
     }
     .managebtn:hover {
         background: rgba(250,250,250,1);

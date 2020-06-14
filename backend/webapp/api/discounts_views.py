@@ -412,7 +412,9 @@ class SetDiscounts(APIView):
                 except ProductDiscount.DoesNotExist:
                     return Response({'error': 'Sconto Non Esistente'},status=status.HTTP_404_NOT_FOUND)
             product.save()
-            return Response({'message': 'Sconto Aggiunto correttamente'}, status=status.HTTP_201_CREATED)
+            data = {'final_price': product.get_price_with_discount(),
+                    'message': 'Sconto Aggiunto correttamente'}
+            return Response(data, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': 'Accesso Non Autorizzato'}, status=status.HTTP_401_UNAUTHORIZED)
 

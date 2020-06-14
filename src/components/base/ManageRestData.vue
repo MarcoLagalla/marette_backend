@@ -16,12 +16,28 @@
         <v-row>
         <v-text-field light class="field"  outlined label="Numero civico" :disabled="!editing"  v-model='restData.n_civ'></v-text-field>
         </v-row>
+        <v-row>
+        <v-combobox
+             light class="field"
+             outlined
+             :disabled="!editing"
+            :items="restCategories"
+            item-text="category_name"
+            item-value="id"
+            v-model='restData.restaurant_category'
+            id="restaurant_category"
+            name="restaurant_category"
+            multiple chips
+            label="Categorie del locale*"
+
+        ></v-combobox>
+        </v-row>
 
 
       </v-col>
       <v-col cols="12" md="6">
         <div class="piccnt">
-      <picture-input ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
+      <picture-input v-if="editing" ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
             upload: '<h1>Carica immagine</h1>',
             drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
       </picture-input>
@@ -69,7 +85,7 @@
     data() {
       return {
         image: '',
-
+        restaurant_category: []
       }
     },
     created() {
@@ -78,7 +94,10 @@
     computed: {
       restData() {
         return this.$store.getters["restaurantData/restData"];
-      }
+      },
+      restCategories() {
+        return this.$store.getters["restaurantData/restCategories"];
+      },
     },
     methods: {
       ...mapActions('restaurants', ['updateRestaurant']),
@@ -92,19 +111,22 @@
           cap: this.restData.cap,
           restaurant_number: this.restData.restaurant_number,
           p_iva: this.restData.p_iva,
+          restaurant_category : []
         };
 
-        if (!this.image) {
-          this.image = this.$refs.restImageOld.file
-        }
+        this.restData.restaurant_category.forEach((category)=>{
+            data.restaurant_category.push(category.id)
+        })
 
         const formData = new FormData();
-        formData.append('image', this.image);
+
+        if (this.image) {
+          formData.append('image', this.image);
+        }
         formData.append('data', JSON.stringify(data));
 
         this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con successo, gestire errori, aggiornare immagine quando cambia e far tornare le cose chiuse dopo aver salvato
       },
-
       onChanged() {
         if (this.$refs.restImage.file) {
           this.image = this.$refs.restImage.file;

@@ -21,14 +21,14 @@ class RestaurantAdmin(admin.ModelAdmin):
 
         restaurant = obj
 
-        home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
-        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
-        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
-        eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
-        menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTI')
+        home, crt = HomeComponent.objects.get_or_create(restaurant=restaurant, name='HOME')
+        vetrina, crt = VetrinaComponent.objects.get_or_create(restaurant=restaurant, name='VETRINA')
+        galleria, crt = GalleriaComponent.objects.get_or_create(restaurant=restaurant, name='GALLERIA')
+        eventi, crt = EventiComponent.objects.get_or_create(restaurant=restaurant, name='EVENTI')
+        menu, crt = MenuComponent.objects.get_or_create(restaurant=restaurant, name='MENU')
+        contattaci, crt = ContattaciComponent.objects.get_or_create(restaurant=restaurant, name='CONTATTI')
 
-        RestaurantComponents.objects.create(
+        RestaurantComponents.objects.get_or_create(
             restaurant=restaurant,
             home=home,
             vetrina=vetrina,
@@ -39,9 +39,10 @@ class RestaurantAdmin(admin.ModelAdmin):
         )
 
         # create TimeTable (empty)
-        OrarioApertura.objects.create(restaurant=restaurant)
+        OrarioApertura.objects.get_or_create(restaurant=restaurant)
 
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
+
 
 admin.site.register(Restaurant, RestaurantAdmin)
 

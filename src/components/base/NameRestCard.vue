@@ -2,7 +2,8 @@
 <div class="infocard">
         <h1>{{name}}</h1>
         <div class="divider"></div>
-          <v-textarea class="descript"  dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
+          <v-textarea class="descript" v-if="admin" dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
+          <p class="descript" v-if="!admin" v-model="activity_description"></p>
           <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="editbutton">
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
@@ -90,6 +91,7 @@ padding: 1vmax;
   .descript {
     width: 50%;
     font-size: 0.9em;
+    color: white;
   }
   .orari {
     position: absolute;

@@ -10,6 +10,7 @@ const state = {
     tags:[],
     discounts:[],
     menus: [],
+    restCategories: [],
 
     FOOD_CATEGORY_CHOICES : [
         'Altro',
@@ -35,7 +36,7 @@ const state = {
 const getters = {
     food_category_choice: state => state.food_category_choice,
     productList: state => state.productList,
-    restCategories: state => state.restData.restCategories,
+    restCategories: state => state.restCategories,
     components: state => state.restData.components,
     restData: state => state.restData,
     openingDays: state => state.restData.openingDays,
@@ -256,8 +257,8 @@ const actions = {
 
             manageProduct.listTags()
             .then(resp => {
-                commit('LIST_TAGS_SUCCESS', resp)
-                resolve(resp)
+                commit('LIST_TAGS_SUCCESS', resp.data)
+                resolve(resp.data)
             })
             .catch(err => {
                 commit('LIST_TAGS_ERROR')
@@ -434,7 +435,8 @@ const actions = {
 
 const mutations = {
     REST_CATEGORIES: (state, categories) => {
-        state.restData.restCategories = categories
+        state.restCategories = categories
+
     },
 
     REST_ADD_TIME_INT: (state, payload) => {
@@ -552,6 +554,8 @@ const mutations = {
     REST_ADD_PROD_SUCCESS: (state, product) => {
         product.discounts=[];
         product.tags=[];
+        product.iva=22;
+        product.final_price=product.price;
         state.productList[product.category].push(product)
     },
 

@@ -2,6 +2,7 @@ import random
 import string
 
 from PIL import Image
+from django.conf import settings
 from django.db import models
 from django_resized import ResizedImageField
 
@@ -35,7 +36,7 @@ class HomeComponent(models.Model):
 
     def get_image(self):
         if not (self.image and hasattr(self.image, 'url')):
-            return '/media/components/home/placeholder.png'
+            return settings.MEDIA_URL + 'components/home/rest_placeholder.png'
         else:
             return self.image.url
 
