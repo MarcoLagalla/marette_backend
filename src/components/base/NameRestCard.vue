@@ -91,6 +91,7 @@ padding: 1vmax;
   .descript {
     width: 50%;
     font-size: 0.9em;
+    color: white;
   }
   .orari {
     position: absolute;
