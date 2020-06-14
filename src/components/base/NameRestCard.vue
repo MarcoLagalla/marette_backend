@@ -2,8 +2,8 @@
 <div class="infocard">
         <h1>{{name}}</h1>
         <div class="divider"></div>
-          <v-textarea auto-grow class="descript" :rounded="!admin" dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
-          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="$emit('edited', activity_description)" class="editbutton">
+          <v-textarea auto-grow class="descript" :rounded="!admin" :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin' @input="edited= true" v-model="activity_description"></v-textarea>
+          <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="edit" class="editbutton">
             Modifica descrizione<i class="far fa-edit"></i>
           </v-btn>
   <button class="infoicon" @click="$refs.orarimodal.open()" >
@@ -53,6 +53,12 @@ export default {
       activity_description: this.description
     }
   },
+  methods: {
+      edit: function() {
+        this.edited = false
+        this.$emit('edited', this.activity_description)
+      }
+    },
     computed:{
       categoryString (){
           var categories = ''
