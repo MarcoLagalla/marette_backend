@@ -46,7 +46,7 @@ const getters = {
     menus: state => state.menus,
     slug: state => state.restData.slug,
     home: state => state.restData.components.home,
-    galleria: state => state.restData.components.galleria
+    galleria: state => state.restData.components.galleria,
 
 }
 
