@@ -97,6 +97,8 @@ class SearchRestaurantByQueryAPIView(APIView):
         queried_aperto_oggi = None
         fascie_orarie = None
         queryset = []
+        aperto_ora = []
+        aperto_oggi = []
 
         try:
             queried_name = request.data['restaurant_name']
@@ -122,9 +124,6 @@ class SearchRestaurantByQueryAPIView(APIView):
             queried_aperto_oggi = request.data['aperto_oggi']
         except KeyError:
             pass
-
-        aperto_ora = []
-        aperto_oggi = []
 
         if queried_aperto_ora or queried_aperto_oggi:
             today = datetime.datetime.now().weekday()
@@ -169,6 +168,9 @@ class SearchRestaurantByQueryAPIView(APIView):
                     # print("YES", restaurant)
                     open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant[0]).order_by('-id')
                     queryset.append(open_restaurant_query)
+            else:
+                return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                                status.HTTP_404_NOT_FOUND)
 
             ######  TODO se non ho ristoranti aperti devo togliere quelli dal risultato !!!!!!!!
 
@@ -194,6 +196,7 @@ class SearchRestaurantByQueryAPIView(APIView):
             if queryset:
                 results_query = queryset[0]
                 for query in queryset:
+                    print(query)
                     results_query = results_query & query
 
             if results_query:
