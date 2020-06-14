@@ -100,9 +100,10 @@ padding: 1vmax;
     box-shadow: 0 0 10px black;
   }
   .descript {
-    width: 50%;
+    width: 90%;
     font-size: 0.9em;
-      color: white;
+    overflow: hidden;
+    color: white;
   }
   .orari {
     position: absolute;
