@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from ..models.models import Restaurant, FasciaOraria, GiornoApertura
+from ..models.models import Restaurant, FasciaOraria, GiornoApertura, OrarioApertura
 from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
@@ -111,43 +111,45 @@ class SearchRestaurantByQueryAPIView(APIView):
             pass
 
         try:
-            aperto_ora = request.data['aperto_ora']
+            aperto_ora_query = request.data['aperto_ora']   #aggiungi aperto oggi
         except KeyError:
             pass
 
-        if aperto_ora:
+        if aperto_ora_query:
+            today = datetime.datetime.now().weekday()
+            current_hour = datetime.datetime.now().replace(tzinfo=utc).strftime('%H')
+            current_minutes = datetime.datetime.now().replace(tzinfo=utc).strftime('%M')
+            current_time = int(current_hour) * 60 + int(current_minutes)
+            # print(current_hour, current_minutes)
 
-            # giorno apertura check
+
             try:
-                today = datetime.datetime.now().weekday()
-                aperti_oggi = GiornoApertura.objects.all().filter(day__exact=DAYS[today][0])
-                print(aperti_oggi)
+                aperti_oggi = FasciaOraria.objects.all().filter(giorno__day__exact=DAYS[today][0])
+                #print("aperto oggi", aperti_oggi)
                 #fasce_orarie = FasciaOraria.objects.all().filter(giorno__exact=today)
                 #print(fasce_orarie)
             except IndexError:
                 pass
 
+            aperto_ora = []
+
             if aperti_oggi:
                 for aperto in aperti_oggi:
-                    print(aperto.day)
-                    print(aperto.fasce)
+                    print(aperto.restaurant, aperto.giorno.day, aperto.start, aperto.end)
+                    start_hour = aperto.start[:2]
+                    start_minute = aperto.start[3:]
+                    end_hour = aperto.end[:2]
+                    end_minute = aperto.end[3:]
+                    start_time = int(start_hour) * 60 + int(start_minute)
+                    end_time = int(end_hour) * 60 + int(end_minute)
 
+                    # check if aperto adesso
+                    if start_time <= current_time <= end_time:
+                        print("APERTO !")
+                        aperto_ora.append([aperto.restaurant, aperto.giorno.day, aperto.start, aperto.end])
 
-            # ora recupera la fascia oraria
-            # try:
-            #     today = datetime.datetime.now().weekday()
-            #     #print(type(today), today)
-            #
-            #     fasce_orarie = FasciaOraria.objects.all().filter(giorno__exact=today)
-            #     #print(fasce_orarie)
-            # except IndexError:
-            #     pass
-            #
-            # if fasce_orarie:
-            #     for fascia in fasce_orarie:
-            #         print(fascia.giorno.day, fascia.start, fascia.end)
-
-
+                    # check if not aperto adesso ma apre tra + - 30min
+                    timedelta_ = 1 * 60
 
 
        #     print("test", datetime.datetime.now().strftime("%A"))
