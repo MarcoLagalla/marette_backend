@@ -41,7 +41,7 @@
                                             </v-card-subtitle>
 
                                         </v-col>
-                                        <v-col cols="12" md="4" >
+                                        <v-col cols="12" md="4" :class="$vuetify.breakpoint.smAndDown?'ml-6': '' ">
                                                 <v-row style="margin-bottom: 15px; margin-top: 10px">
                                                 <router-link tag="button" class="gestrest"
                                                              :to="'profile/'+restaurant.url">
@@ -52,8 +52,6 @@
                                                 <v-row>
                                                 <button class="gestrest" @click="editingRest=!editingRest"><span class="butgest"> Modifica Dati Ristorante  </span></button>
                                                 </v-row>
-
-
 
                                         </v-col>
 

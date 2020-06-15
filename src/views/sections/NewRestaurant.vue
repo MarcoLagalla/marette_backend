@@ -4,7 +4,7 @@
             <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="show = !show">Aggiungi Ristorante
                 <v-icon :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
-            <button v-if="$vuetify.breakpoint.smAndDown" class="shownr" @click="show = !show">
+            <button v-if="$vuetify.breakpoint.smAndDown" class="shownrmob" @click="show = !show">
                 <v-icon x-large :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
             <v-row dense>
@@ -283,7 +283,20 @@
         background: var(--darkslate);
         transition: ease-in-out 0.3s;
     }
-
+    .shownrmob {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        padding: 10px;
+        border-radius: 50px;
+        border: 4px inset var(--darkslate);
+        margin: 10px;
+        font-weight: bold;
+        z-index: 200;
+        color: white;
+        background: var(--darkslate);
+        transition: ease-in-out 0.3s;
+    }
     .background {
         background-color: var(--whitesmoke) !important;
     }
