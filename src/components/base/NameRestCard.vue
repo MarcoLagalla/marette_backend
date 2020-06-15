@@ -8,7 +8,7 @@
       Modifica descrizione<i class="far fa-edit"></i>
     </v-btn>
   <button class="infoicon" v-if="!admin"  @click="$refs.orarimodal.open()" >
-    <i class="fas fa-info-circle"> </i> Orari di apertura
+    <i class="fas fa-info-circle"> </i> <span v-if="$vuetify.breakpoint.mdAndUp">Orari di apertura</span>
   </button>
   <base-add-time-table v-if="admin"></base-add-time-table>
 
