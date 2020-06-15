@@ -22,7 +22,7 @@
                     </div>
                </v-col>
                <v-col cols="12" md="4">
-                    <div id="map" style="width: 450px; height: 250px;"></div>
+                    <div id="map" :class="$vuetify.breakpoint.smAndDown? 'mapmob':'mapdesk' "></div>
                </v-col>
            </v-row>
        </div>
@@ -91,6 +91,14 @@ export default {
 }
 </script>
 <style  scoped>
+    .mapmob{
+        width: 100%;
+        height: 250px;
+    }
+    .mapdesk{
+        width: 450px; height: 250px;
+        margin: auto;
+    }
 .infbanner {
     margin: 0;
     height: 300px;
@@ -104,6 +112,7 @@ export default {
 }
 .infcols {
     width: 90%;
+    margin: auto;
 }
 .restdati {
     display: block;
