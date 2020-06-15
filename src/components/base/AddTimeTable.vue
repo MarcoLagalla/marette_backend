@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="managebtn" @click="activated">Modifica orari di apertura</button>
+    <button class="managebuttoninv" @click="activated">Modifica orari di apertura</button>
     <v-dialog v-model="active" max-width="815" >
       <v-card max-width="800" class="pa-6">
         <v-select prepend-icon="mdi-calendar" :items="remainingDays" chips item-text="name" item-value="id" label="Aggiungi giorni di apertura:" v-model="newDay"></v-select>

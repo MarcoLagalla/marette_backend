@@ -7,7 +7,9 @@
     <v-btn v-if="admin" name="edit" :disabled="!edited" color="blue" @click="edit" class="editbutton">
       Modifica descrizione<i class="far fa-edit"></i>
     </v-btn>
-
+  <button class="infoicon" v-if="!admin"  @click="$refs.orarimodal.open()" >
+    <i class="fas fa-info-circle"> </i> Orari di apertura
+  </button>
   <base-add-time-table v-if="admin"></base-add-time-table>
 
     <sweet-modal ref="orarimodal">
@@ -18,9 +20,10 @@
               {{categoryString}}
           </li>
           <li class="infos">
-            <button v-if="!admin"  @click="$refs.orarimodal.open()" >
-              <i class="fas fa-info-circle"> </i> Orari di apertura
-            </button>
+            :
+          </li>
+          <li class="infos">
+            da fare funzione aperto/apre alle
           </li>
         </ul>
 </div>
