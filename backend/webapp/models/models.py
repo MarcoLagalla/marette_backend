@@ -91,6 +91,37 @@ class Restaurant(models.Model):
         else:
             return self.image.url
 
+    def is_open(self):
+        try:
+            fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(giorno__day__iexact=today())
+            if fasce:
+                for fascia in fasce:
+                    this_hour = datetime.now().hour
+                    if int(fascia.start[:2]) <= int(this_hour) <= int(fascia.end[:2]):
+                        # aperto
+                        return True
+        except FasciaOraria.DoesNotExist:
+            pass
+        return False
+
+    def opens_at(self):
+        if not self.is_open():
+            try:
+                fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(giorno__day__iexact=today()).order_by('start')
+                if fasce:
+                    for fascia in fasce:
+                        this_hour = datetime.now().hour
+                        if int(fascia.start[:2]) >= int(this_hour):
+                            # apre a quest'ora
+                            return fascia.start
+                else:
+                    # oggi nessuna fascia di apertura
+                    return "Oggi Chiuso"
+            except FasciaOraria.DoesNotExist:
+                return False
+        else:
+            return False
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=30, unique=True, blank=False)
@@ -373,3 +404,11 @@ def do_something_if_changed(sender, instance, **kwargs):
         if not obj.image == instance.image:  # Image has changed
             obj.thumb_image = None
             obj.save()
+
+
+
+def today():
+    date = datetime.today()
+    day_name = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
+    day = datetime.strptime(date.strftime('%d %m %Y'), '%d %m %Y').weekday()
+    return  day_name[day]
