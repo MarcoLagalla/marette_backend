@@ -233,5 +233,10 @@ class ShowTimeTable(APIView):
         days = GiornoApertura.objects.all().filter(restaurant=restaurant)
         serializer = GiornoAperturaSerializer(days, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = {}
+        # update: aggiungo aperto ora / apre alle
+        data.update({'opened_now': restaurant.is_open()})
+        data.update({'opens_at': restaurant.opens_at()})
+        data.update({'timetable': serializer.data})
+        return Response(data, status=status.HTTP_200_OK)
 

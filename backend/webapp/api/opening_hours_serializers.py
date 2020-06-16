@@ -62,6 +62,8 @@ class GiornoAperturaSerializer(serializers.ModelSerializer):
 
 class OpeningSerializer(serializers.ModelSerializer):
     days = GiornoAperturaSerializer(read_only=True)
+
     class Meta:
         model = OrarioApertura
-        fields = ('restaurant', 'days')
+        fields = ('restaurant', 'days',)
+
