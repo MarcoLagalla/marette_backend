@@ -140,10 +140,8 @@ class Restaurant(models.Model):
                             fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(
                                 giorno__day__iexact=day).order_by('start')
                             if fasce:
-                                for fascia in fasce:
-                                    this_hour = datetime.now().hour
-                                    if int(fascia.start[:2]) >= int(this_hour):
-                                        return "Apre " + day + " alle " + fascia.start
+                                fascia = fasce.first()
+                                return "Apre " + day + " alle " + fascia.start
 
                     return "Oggi Chiuso"
             except FasciaOraria.DoesNotExist:
