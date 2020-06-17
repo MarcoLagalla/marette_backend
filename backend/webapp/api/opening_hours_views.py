@@ -230,7 +230,7 @@ class ShowTimeTable(APIView):
         except Restaurant.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        days = GiornoApertura.objects.all().filter(restaurant=restaurant)
+        days = GiornoApertura.objects.all().filter(restaurant=restaurant).order_by('day')
         serializer = GiornoAperturaSerializer(days, many=True)
 
         data = {}
