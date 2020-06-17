@@ -129,7 +129,7 @@ class Restaurant(models.Model):
                         if int(fascia.start[:2]) >= int(this_hour):
                             # apre a quest'ora
                             return "Apre alle " + fascia.start
-                else:
+            except GiornoApertura.DoesNotExist:
                     # oggi nessuna fascia di apertura
                     days = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
 
@@ -148,8 +148,6 @@ class Restaurant(models.Model):
                                 fascia = fasce.first()
                                 return "Apre " + day + " alle " + fascia.start
 
-            except GiornoApertura.DoesNotExist:
-                return False
         else:
             return False
 
