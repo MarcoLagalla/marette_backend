@@ -77,9 +77,6 @@
                 this.$emit('edited', this.activity_description)
             },
         },
-        mounted: function() {
-            console.log(this)
-        },
         computed: {
             categoryString() {
                 var categories = ''
