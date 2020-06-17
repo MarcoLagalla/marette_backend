@@ -94,36 +94,42 @@ class Restaurant(models.Model):
     def is_open(self, giorno=0):
         if giorno == 0:
             try:
-                fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(giorno__day__iexact=today())
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                fasce = giorno.fasce
                 if fasce:
-                    for fascia in fasce:
+                    for fascia in fasce.all():
                         this_hour = datetime.now().hour
                         if int(fascia.start[:2]) <= int(this_hour) <= int(fascia.end[:2]):
                             # aperto
                             return True
-            except FasciaOraria.DoesNotExist:
+            except GiornoApertura.DoesNotExist:
                 pass
             return False
         else:
             # voglio sapere se apre in qualsiasi momento in questo giorno
             try:
-                fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(giorno__day__iexact=giorno)
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=giorno)
+                fasce = giorno.fasce
                 if fasce.count() > 0:
-                        return True
-            except FasciaOraria.DoesNotExist:
+                    return True
+                else:
+                    return False
+            except GiornoApertura.DoesNotExist:
                 pass
             return False
 
     def opens_at(self):
         if not self.is_open():
             try:
-                fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(giorno__day__iexact=today()).order_by('start')
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                fasce = giorno.fasce.all().order_by('start')
                 if fasce:
                     for fascia in fasce:
                         this_hour = datetime.now().hour
                         if int(fascia.start[:2]) >= int(this_hour):
                             # apre a quest'ora
-                            return fascia.start
+                            return "Apre alle " + fascia.start
+                    return True
                 else:
                     # oggi nessuna fascia di apertura
                     days = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
@@ -135,16 +141,16 @@ class Restaurant(models.Model):
                     next_days = next_ + before_
 
                     for day in next_days:
-                        print("Day:", day, self.is_open(day))
                         if self.is_open(day):
-                            fasce = FasciaOraria.objects.all().filter(restaurant_id=self.id).filter(
-                                giorno__day__iexact=day).order_by('start')
+                            giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(
+                                day__iexact=day)
+                            fasce = giorno.fasce.all().order_by('start')
                             if fasce:
                                 fascia = fasce.first()
                                 return "Apre " + day + " alle " + fascia.start
 
                     return "Oggi Chiuso"
-            except FasciaOraria.DoesNotExist:
+            except GiornoApertura.DoesNotExist:
                 return False
         else:
             return False
