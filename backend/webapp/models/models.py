@@ -148,7 +148,6 @@ class Restaurant(models.Model):
                                 fascia = fasce.first()
                                 return "Apre " + day + " alle " + fascia.start
 
-                    return "Oggi Chiuso"
             except GiornoApertura.DoesNotExist:
                 return False
         else:
