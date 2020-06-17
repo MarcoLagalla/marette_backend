@@ -147,7 +147,8 @@ class Restaurant(models.Model):
                             if fasce:
                                 fascia = fasce.first()
                                 return "Apre " + day + " alle " + fascia.start
-
+                        
+                    return False
         else:
             return False
 
