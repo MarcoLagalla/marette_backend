@@ -56,7 +56,7 @@
           this.snackbar = true;
           location.reload()
         }).catch(() => {
-          this.text = 'Logout eseguito con qualche difficoltà'
+          this.text = 'Logout eseguito con successo'
           this.snackbar = true;
           location.reload()
         });
