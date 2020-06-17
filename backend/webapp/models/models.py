@@ -129,7 +129,6 @@ class Restaurant(models.Model):
                         if int(fascia.start[:2]) >= int(this_hour):
                             # apre a quest'ora
                             return "Apre alle " + fascia.start
-                    return True
                 else:
                     # oggi nessuna fascia di apertura
                     days = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
