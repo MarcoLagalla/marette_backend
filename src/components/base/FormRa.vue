@@ -9,7 +9,7 @@
             <v-card class="regcard">
                 <vue-custom-scrollbar class="scroll-area" :settings="settings" @ps-scroll-y="scrollHanle">
                     <v-form @submit.prevent="register" v-model="valid">
-                        <div class="cardtitle">
+                        <div class="cardtitle" style="margin-top: 10px;">
                             <h1>REGISTRATI</h1>
                         </div>
                         <v-divider></v-divider>
@@ -81,7 +81,7 @@
                                     </v-col>
                                     <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="password2Rules" :error-messages="errors.password2"
-                                                      @change="errors.password2=''" solo filed v-model="password2"
+                                                      @change="errors.password2=''" prepend-inner-icon="mdi-key" solo filed v-model="password2"
                                                       label="Repeat password*" id="password2" type="password"
                                                       required></v-text-field>
                                     </v-col>
@@ -92,17 +92,17 @@
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-text style="color:white">Registrando un account accetti i nostri
-                            <router-link to="/termini">Terms & Condizioni</router-link>
+                            <router-link to="/termini">T&C</router-link>
                             .
                         </v-card-text>
                         <div class="regbtn2">
                             <div class="center">
                                 <button class="btn" type="submit" :disabled="!valid || loading">
-                                    <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
-                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
-                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
+                                    <svg width="140px" height="40px" viewBox="0 0 140 40" class="border">
+                                        <polyline points="139,1 139,39 1,39 1,1 139,1" class="bg-line" />
+                                        <polyline points="139,1 139,39 1,39 1,1 139,1" class="hl-line" />
                                     </svg>
-                                    <span v-if="!loading" >Submit</span>
+                                    <span v-if="!loading" >Invia</span>
                                     <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
                                 </button>
                             </div>
@@ -267,16 +267,16 @@
     }
 
     .center {
-        width: 180px;
-        height: 60px;
+        width: 140px;
+        height: 40px;
         position: absolute;
     }
 
     .btn {
-        width: 180px;
-        height: 60px;
+        width: 140px;
+        height: 40px;
         cursor: pointer;
-        background: #945d60;
+        background: #626e60!important;
         border: 1px solid white;
         outline: none;
         transition: 1s ease-in-out;
@@ -332,7 +332,6 @@
     span {
         display: block;
         padding: 5px 20px;
-        font-weight: ;
         letter-spacing: 3px;
         text-transform: uppercase;
     }
