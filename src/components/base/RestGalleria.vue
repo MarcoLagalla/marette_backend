@@ -19,9 +19,7 @@
                     <!-- title -->
                         <div>
                     <h1 class="product-description__title">
-                        <a href="#">
-                            {{image.name}}
-                            </a>
+                      {{image.name}}
                     </h1>
                     <div v-if="image.description">
                             <br />
