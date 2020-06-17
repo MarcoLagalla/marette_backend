@@ -3,7 +3,7 @@
         <v-row align="center" class="ma-0 pa-8" justify="center">
             <v-col cols="12" md="6">
                 <base-name-rest-card :category="restData.restaurant_category" :description="description" :name="restData.activity_name" :admin="admin"
-                                     @edited="submitDescription($event)"></base-name-rest-card>
+                                     :opened_now='restData.opened_now' :opens_at="restData.opens_at" @edited="submitDescription($event)"></base-name-rest-card>
             </v-col>
             <v-col cols="6" md="4">
             </v-col>
@@ -85,9 +85,6 @@
                 return this.$store.getters['restaurantData/home'].description
             },
         },
-        created() {
-            this.getTimeTable()
-        }
     }
 </script>
 <style scoped>

@@ -52,8 +52,9 @@ export default {
       return this.$store.getters['restaurantData/components']
     },
     restData() {
+        console.log(this.$store.getters['restaurantData/restData'])
       return this.$store.getters['restaurantData/restData']
     }
-  }
+  },
 }
 </script>
