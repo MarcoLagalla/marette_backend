@@ -90,7 +90,7 @@
                 this.getRestaurants({page_number: page, page_size: this.page_size})
             },
             changePageSize(page_size) {
-                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size})
+                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size}) //TODO: creare cookie per prossime sessioni
             },
         },
         created() {
