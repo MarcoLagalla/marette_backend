@@ -81,22 +81,7 @@
 <script>
   import {mapActions} from "vuex";
   import PictureInput from "vue-picture-input";
-    import Vue from 'vue'
-import AsyncComputed from 'vue-async-computed'
 
-Vue.use(AsyncComputed)
-
-  async function createFile(img) {
-         let response = await fetch(img);
-          console.log(response)
-        let data = await response.blob();
-        let metadata = {
-            type: 'image/jpeg'
-        };
-        let file = new File([data], "test.jpg", metadata);
-        return file;
-
-      }
   export default {
     name: "ManageUserData",
     components: {
@@ -161,27 +146,22 @@ Vue.use(AsyncComputed)
           this.image = '';
           this.deletePhoto = true;
       },
-
     },
     computed: {
-        user() {
-            return this.$store.getters['userProfile/user']
-        },
-        isBusiness() {
-            return this.$store.getters['userProfile/isBusiness']
-        },
-        stringIndirizzo() {
-            return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
-        },
-        butText() {
-            return this.editing ? 'Visualizza dati' : 'Modifica dati'
-        },
-    },
-    asyncComputed: {
-      async avatar() {
-          console.log("ok");
-            var img = this.$store.getters['userProfile/user_private'].avatar;
-            return await createFile(img);
+      user() {
+        return this.$store.getters['userProfile/user']
+      },
+      isBusiness() {
+        return this.$store.getters['userProfile/isBusiness']
+      },
+      stringIndirizzo() {
+        return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
+      },
+      butText() {
+        return this.editing? 'Visualizza dati' : 'Modifica dati'
+      },
+      avatar() {
+          return this.$store.getters['userProfile/user_private'].avatar
       },
     }
   }
