@@ -13,6 +13,7 @@
     "js-cookie": "^2.2.1",
     "sweet-modal-vue": "^2.0.0",
     "vue": "^2.6.11",
+    "vue-async-computed": "^3.8.2",
     "vue-cookie-law": "^1.13.3",
     "vue-custom-scrollbar": "^1.2.0",
     "vue-multiselect": "^2.1.6",
