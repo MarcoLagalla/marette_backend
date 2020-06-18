@@ -60,7 +60,7 @@ const actions = {
             })
             .catch(err => {
                 commit('REST_UPDATE_ERROR')
-                reject(err)
+                reject(err.response.data)
             })
         })
     },

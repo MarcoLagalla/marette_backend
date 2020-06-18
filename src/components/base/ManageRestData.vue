@@ -1,5 +1,6 @@
 <template>
 <div class="restdatabox">
+  <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color" >{{text}}</v-snackbar>
   <div class="restdatafields">
     <form @submit.prevent="update">
       <v-row>
@@ -85,7 +86,11 @@
     data() {
       return {
         image: '',
-        restaurant_category: []
+        restaurant_category: [],
+        snackbar: false,
+        timeout: 4000,
+        color: 'green',
+        text: 'Dati ristorante aggiornati con successo'
       }
     },
     created() {
@@ -125,7 +130,23 @@
         }
         formData.append('data', JSON.stringify(data));
 
-        this.updateRestaurant(formData) //TODO: far apparire un banner dati modificati con successo, gestire errori, aggiornare immagine quando cambia e far tornare le cose chiuse dopo aver salvato
+        this.updateRestaurant(formData)
+          .then(()=>{
+            this.snackbar = true;
+            this.text = 'Dati ristorante aggiornati con successo';
+            this.color = 'green';
+            this.$emit('edited')
+          })
+          .catch(error => {
+              var id = Object.keys(error)[0];
+              console.log(id)
+              this.text = 'Errore: ' + id + ': ' + error[id];
+              this.color = 'error';
+              this.snackbar = true;
+
+          })
+
+
       },
       onChanged() {
         if (this.$refs.restImage.file) {

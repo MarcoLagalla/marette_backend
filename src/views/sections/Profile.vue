@@ -57,7 +57,7 @@
 
                                     </v-row>
                                     <base-manage-rest-data :id="restaurant.id"
-                                    :editing="editingRest"
+                                    :editing="editingRest" @edited="editingRest = false"
                                     >
 
                                     </base-manage-rest-data>
