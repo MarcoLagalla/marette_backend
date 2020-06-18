@@ -32,8 +32,8 @@ class AllNotifications(APIView):
 
         notifications = OrderNotification.objects.all().filter(recipient=business.user).order_by('-issued')
         # -----------------------------------------------------------
-        page_number = request.query_params.get('page_number', 1)
-        page_size = request.query_params.get('page_size', 10)
+        page_number = request.GET.get('page_number', 1)
+        page_size = request.GET.get('page_size', 10)
 
         try:
             paginator = Paginator(notifications, page_size)
