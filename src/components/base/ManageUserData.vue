@@ -87,14 +87,7 @@ import AsyncComputed from 'vue-async-computed'
 Vue.use(AsyncComputed)
 
   async function createFile(img) {
-         let response = await fetch(img, {
-             method: 'GET',
-             mode: 'no-cors',
-             headers: new Headers(
-                   {"Access-Control-Allow-Origin": "*",
-                   }
-                ),
-         });
+         let response = await fetch(img);
           console.log(response)
         let data = await response.blob();
         let metadata = {
