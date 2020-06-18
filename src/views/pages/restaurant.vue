@@ -54,6 +54,6 @@ export default {
     restData() {
       return this.$store.getters['restaurantData/restData']
     }
-  }
+  },
 }
 </script>

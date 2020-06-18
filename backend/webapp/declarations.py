@@ -74,13 +74,13 @@ RESTAURANT_CATEGORY_CHOICES = [
 ]
 
 DAYS = [
-    ('Lunedi', 'Lunedi'),
-    ('Martedi', 'Martedi'),
-    ('Mercoledi', 'Mercoledi'),
-    ('Giovedi', 'Giovedi'),
-    ('Venerdi', 'Venerdi'),
-    ('Sabato', 'Sabato'),
-    ('Domenica', 'Domenica'),
+    ('1', 'Lunedi'),
+    ('2', 'Martedi'),
+    ('3', 'Mercoledi'),
+    ('4', 'Giovedi'),
+    ('5', 'Venerdi'),
+    ('6', 'Sabato'),
+    ('7', 'Domenica'),
 ]
 
 

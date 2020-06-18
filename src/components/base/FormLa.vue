@@ -7,7 +7,7 @@
         </template>
         <v-card>
           <v-form @submit.prevent="login" class="container">
-            <h1>MEMBER LOGIN</h1>
+            <h1>LOGIN</h1>
             <p class="error" v-if="errors.error" id="error">{{errors.error[0]}}</p>
             <div class="regbtn">
               <v-text-field prepend-inner-icon="mdi-account" solo v-model='email' :error-messages="errors.email" @change="errors.email=''" type="email" placeholder="Inserire Email" id="email" name="email" required>
@@ -20,9 +20,9 @@
             <div class="regbtn2">
               <div class="center">
                 <button class="btn" type="submit">
-                  <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
-                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
-                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+                  <svg width="140px" height="40px" viewBox="0 0 140 40" class="border">
+                    <polyline points="139,1 139,39 1,39 1,1 139,1" class="bg-line" />
+                    <polyline points="139,1 139,39 1,39 1,1 139,1" class="hl-line" />
                   </svg>
                   <span>Login</span>
                 </button>
@@ -79,6 +79,7 @@
   }
   h1 {
     text-align: center;
+    margin-top: 5%;
     margin-bottom: 5%;
     color: white;
   }
@@ -110,15 +111,15 @@
     opacity: 0.9
   }
   .center {
-    width: 180px;
-    height: 60px;
+    width: 140px;
+    height: 40px;
     position: absolute;
   }
   .btn {
-    width: 180px;
-    height: 60px;
+    width: 140px;
+    height: 40px;
     cursor: pointer;
-    background: #626e60;
+    background: #626e60!important;
     border: 1px solid white;
     outline: none;
     transition: 1s ease-in-out;

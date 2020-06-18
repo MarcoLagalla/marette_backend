@@ -24,16 +24,23 @@
             <li class="infos">
                 :
             </li>
-            <li class="infos">
-                da fare funzione aperto/apre alle
+            <li class="infos" >
+                {{ opened }} <span v-if="opened_now === false && opens_at != false">- {{ opens_at }} </span>
             </li>
         </ul>
     </div>
 </template>
 <script>
-
     export default {
         props: {
+            opened_now: {
+                type: Boolean,
+                required: true,
+            },
+            opens_at: {
+                type: String,
+                required: true,
+            },
             name: {
                 type: String,
                 required: true,
@@ -68,7 +75,7 @@
                 this.edited = false
                 this.snackbar = true
                 this.$emit('edited', this.activity_description)
-            }
+            },
         },
         computed: {
             categoryString() {
@@ -77,8 +84,15 @@
                     categories += cat.category_name + ', '
                 })
                 return categories.substring(0, categories.length - 2);
-            }
-        }
+            },
+            opened() {
+                if (this.opened_now) {
+                    return "Aperto";
+                } else {
+                    return "Chiuso";
+                }
+            },
+        },
     }
 </script>
 <style scoped>
