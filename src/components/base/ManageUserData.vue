@@ -51,12 +51,10 @@
       </template>
 
       <picture-input
-          v-if="editing"
           ref="avatar"
           @change="onChanged"
           @remove="onRemoved"
           :removable="true"
-          :prefill="avatar"
           :width="200"
           :height="200"
           size="3"
@@ -103,6 +101,10 @@
     },
     methods: {
       ...mapActions('userProfile', ['updateProfile']),
+      initPic: function() {
+            var img = this.$store.getters['userProfile/user_private'].avatar;
+            this.$refs.avatar.preloadImage(img);
+      } ,
       update: function() {
         var data = {
           phone: this.user.Numero_di_Telefono,
@@ -147,23 +149,29 @@
           this.deletePhoto = true;
       },
     },
+    mounted() {
+              this.$nextTick(() => {
+                this.initPic();
+                })
+
+    },
     computed: {
-      user() {
-        return this.$store.getters['userProfile/user']
-      },
-      isBusiness() {
-        return this.$store.getters['userProfile/isBusiness']
-      },
-      stringIndirizzo() {
-        return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
-      },
-      butText() {
-        return this.editing? 'Visualizza dati' : 'Modifica dati'
-      },
-      avatar() {
-          return this.$store.getters['userProfile/user_private'].avatar
-      },
-    }
+        user() {
+            return this.$store.getters['userProfile/user']
+        },
+        isBusiness() {
+            return this.$store.getters['userProfile/isBusiness']
+        },
+        stringIndirizzo() {
+            return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
+        },
+        butText() {
+            return this.editing ? 'Visualizza dati' : 'Modifica dati'
+        },
+        avatar() {
+            return this.$store.getters['userProfile/user_private'].avatar;
+        }
+    },
   }
 </script>
 
