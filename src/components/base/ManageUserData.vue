@@ -79,10 +79,6 @@
 <script>
   import {mapActions} from "vuex";
   import PictureInput from "vue-picture-input";
-    import Vue from 'vue'
-import AsyncComputed from 'vue-async-computed'
-
-Vue.use(AsyncComputed)
 
   export default {
     name: "ManageUserData",
@@ -152,7 +148,6 @@ Vue.use(AsyncComputed)
           this.image = '';
           this.deletePhoto = true;
       },
-
     },
     mounted() {
               this.$nextTick(() => {
