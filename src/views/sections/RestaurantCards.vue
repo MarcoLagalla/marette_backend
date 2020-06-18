@@ -8,10 +8,11 @@
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
-
+                <v-slider class="slider" height="60" label="Ristoranti per pagina:" min="1" max="40" v-model="page_size" thumb-label="always" @end="changePageSize($event)"></v-slider>
             <div>
+
                 <v-row>
-                    <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" sm="6" md="4" lg="3">
+                    <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
                         <router-link :to="restaurant.url">
                             <div v-bind="restaurant" >
                                 <div>
@@ -40,24 +41,30 @@
                     </v-col>
                 </v-row>
             </div>
+            <v-pagination total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
         </base-section>
     </div>
 </template>
 
 <script>
+    import {mapActions} from "vuex";
+
     export default {
         name: 'RestaurantCards',
 
-        data: () => ({}),
+        data: () => ({
+            page_size: 10,
+        }),
         computed: {
-            restaurantList() {
-                return this.$store.getters['restaurants/restaurantList'].results
+            restaurantListData() {
+                return this.$store.getters['restaurants/restaurantList']
             },
             restData() {
                 return this.$store.getters['restaurantData/restData']
             },
         },
         methods:{
+            ...mapActions('restaurants', ['getRestaurants']),
             categoryString (restaurant_category){
                 var categories = ''
                 restaurant_category.forEach((cat)=>{
@@ -68,9 +75,23 @@
             image(imgUrl) {
                 return {backgroundImage: "url(" + imgUrl + ") "}
             },
+            nextPage() {
+                if(this.restaurantListData.next)
+                    this.getRestaurants({page_number: this.restaurantListData.next, page_size: this.page_size}) //TODO: aggiungere loading per tutte queste richieste
+            },
+            previousPage() {
+                if(this.restaurantListData.previous)
+                    this.getRestaurants({page_number: this.restaurantListData.previous, page_size: this.page_size})
+            },
+            goToPage(page) {
+                this.getRestaurants({page_number: page, page_size: this.page_size})
+            },
+            changePageSize(page_size) {
+                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size})
+            },
         },
         created() {
-            this.$store.dispatch("restaurants/getRestaurants")
+            this.$store.dispatch("restaurants/getRestaurants", {})
         },
     }
 </script>
@@ -91,6 +112,14 @@
         height: 5px;
         margin: 10px auto;
         filter: blur(2px);
+    }
+
+    .slider {
+        width: 50%;
+        min-width: 350px;
+        align-self: center;
+        justify-content: center;
+        text-align: center;
     }
 
     .title-center {
