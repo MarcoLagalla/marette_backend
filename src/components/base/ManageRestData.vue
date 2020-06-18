@@ -38,10 +38,26 @@
       </v-col>
       <v-col cols="12" md="6">
         <div class="piccnt">
-      <picture-input v-if="editing" ref="restImage" @change="onChanged" :width="200" :height="200" size="3" :zIndex="0" :crop="true" :changeOnClick="false" accept="image/jpeg, image/png, image/gif" buttonClass="ui button primary" :customStrings="{
+      <newPictureInput
+          v-if="editing"
+          ref="restImage"
+          :prefill="restData.image"
+          @change="onChanged"
+          :width="200"
+          :height="200"
+          size="3"
+          :zIndex="0"
+          :crop="true"
+          :changeOnClick="true"
+          accept="image/jpeg, image/png, image/gif"
+          buttonClass="ui button primary"
+          :customStrings="{
             upload: '<h1>Carica immagine</h1>',
-            drag: 'Trascina qui la un immagine del ristorante o clicca per selezionarla'}">
-      </picture-input>
+            drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+            change: 'Cambia foto',
+          }">
+      </newPictureInput>
+          <v-img v-else size="3" :src="restData.image"></v-img>
         </div>
       </v-col>
       </v-row>
@@ -74,15 +90,13 @@
   import {
     mapActions
   } from "vuex";
-  import PictureInput from "vue-picture-input";
+
 
   export default {
 
     name: 'BaseManageRestData',
     props: ['id','editing'],
-    components: {
-      PictureInput,
-    },
+
     data() {
       return {
         image: '',

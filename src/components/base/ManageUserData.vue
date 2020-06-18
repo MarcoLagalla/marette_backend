@@ -50,7 +50,7 @@
         </template>
       </template>
 
-      <picture-input
+      <newPictureInput
           v-if="editing"
           ref="avatar"
           @change="onChanged"
@@ -62,7 +62,7 @@
           size="3"
           :zIndex="0"
           :crop="true"
-          :changeOnClick="false"
+          :changeOnClick="true"
           accept="image/jpeg, image/png, image/gif"
           buttonClass="ui button primary"
           :customStrings="{
@@ -72,7 +72,7 @@
               remove: 'Elimina foto',
           }"
       >
-        </picture-input>
+        </newPictureInput>
       <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
     </form><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
   </div>
@@ -80,13 +80,9 @@
 
 <script>
   import {mapActions} from "vuex";
-  import PictureInput from "vue-picture-input";
 
   export default {
     name: "ManageUserData",
-    components: {
-      PictureInput,
-    },
     data() {
       return {
         fix: [

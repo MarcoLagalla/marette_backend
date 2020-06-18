@@ -13,7 +13,7 @@
         <v-text-field rounded filled v-model="imagePrefill.name" label="Titolo*" type="text" required></v-text-field>
         <v-textarea rounded filled v-model="imagePrefill.description" label="Descrizione" type="text" ></v-textarea>
 
-        <picture-input
+        <newPictureInput
           ref="background"
           @change="onChanged"
           :width="200"
@@ -30,7 +30,7 @@
             drag: 'Trascina qui la un immagine o clicca per selezionarla',
             change: 'Cambia foto',
           }">
-        </picture-input>
+        </newPictureInput>
         <v-btn color="green" :disabled="(image==='' || imagePrefill.name==='') && (!imagePrefill.edit || imagePrefill.name==='')" @click="submitImage" text>Salva immagine</v-btn>
       </v-card>
     </v-dialog>
@@ -38,8 +38,6 @@
 </template>
 
 <script>
-
-    import PictureInput from "vue-picture-input";
 
     export default {
         name: "AddGalleryImage",
@@ -54,9 +52,6 @@
               edit: false
             })
           }
-        },
-        components: {
-            PictureInput,
         },
         data: function () {
           return {
