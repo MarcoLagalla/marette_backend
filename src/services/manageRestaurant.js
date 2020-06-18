@@ -9,7 +9,6 @@ export default {
     },
 
     getRestaurantList(payload) {
-      console.log(payload)
         return api.get('v1/webapp/restaurant/list', {
           params: {
             page_number: payload.page_number,

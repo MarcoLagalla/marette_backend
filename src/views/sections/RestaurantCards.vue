@@ -41,7 +41,7 @@
                     </v-col>
                 </v-row>
             </div>
-            <v-pagination total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
+            <v-pagination v-model="restaurantListData.page_number" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
         </base-section>
     </div>
 </template>
