@@ -76,6 +76,7 @@ a {
   text-decoration: none;
 }
   .profcard {
+    z-index: 999;
     padding: 15px;
     box-shadow: 0 0 6px black!important;
   }
