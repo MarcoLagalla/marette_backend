@@ -51,12 +51,10 @@
       </template>
 
       <picture-input
-          v-if="editing"
           ref="avatar"
           @change="onChanged"
           @remove="onRemoved"
           :removable="true"
-          :prefill="avatar"
           :width="200"
           :height="200"
           size="3"
@@ -86,24 +84,6 @@ import AsyncComputed from 'vue-async-computed'
 
 Vue.use(AsyncComputed)
 
-  async function createFile(img) {
-         let response = await fetch(img, {
-             method: 'GET',
-             mode: 'no-cors',
-             headers: new Headers(
-                   {"Access-Control-Allow-Origin": "*",
-                   }
-                ),
-         });
-          console.log(response)
-        let data = await response.blob();
-        let metadata = {
-            type: 'image/jpeg'
-        };
-        let file = new File([data], "test.jpg", metadata);
-        return file;
-
-      }
   export default {
     name: "ManageUserData",
     components: {
@@ -125,6 +105,10 @@ Vue.use(AsyncComputed)
     },
     methods: {
       ...mapActions('userProfile', ['updateProfile']),
+      initPic: function() {
+            var img = this.$store.getters['userProfile/user_private'].avatar;
+            this.$refs.avatar.preloadImage(img);
+      } ,
       update: function() {
         var data = {
           phone: this.user.Numero_di_Telefono,
@@ -170,6 +154,12 @@ Vue.use(AsyncComputed)
       },
 
     },
+    mounted() {
+              this.$nextTick(() => {
+                this.initPic();
+                })
+
+    },
     computed: {
         user() {
             return this.$store.getters['userProfile/user']
@@ -183,14 +173,10 @@ Vue.use(AsyncComputed)
         butText() {
             return this.editing ? 'Visualizza dati' : 'Modifica dati'
         },
+        avatar() {
+            return this.$store.getters['userProfile/user_private'].avatar;
+        }
     },
-    asyncComputed: {
-      async avatar() {
-          console.log("ok");
-            var img = this.$store.getters['userProfile/user_private'].avatar;
-            return await createFile(img);
-      },
-    }
   }
 </script>
 
