@@ -9,40 +9,41 @@
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span>
                 <div class="divider"></div>
-                <div>
-                    <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
-                    <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
-                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                    </v-btn>
-                </div>
+
+                <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+
+                <v-expand-transition>
+                    <div v-show="showAdvancedQuery">
+                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                        <v-text-field :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-btn @click="getLocation()" :loading="loadingGeo" text>Localizza
+                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                        </v-btn>
+                        <v-combobox
+                            :items="restDataCat"
+                            item-text="category_name"
+                            item-value="id"
+                            v-model='restaurant_category'
+                            id="restaurant_category"
+                            name="restaurant_category"
+                            label="Categoria"
+                        ></v-combobox>
+                        <v-slider
+                            height="60"
+                            label="Ristoranti per pagina:"
+                            min="1"
+                            max="40"
+                            v-model="restaurantListData.page_size"
+                            thumb-label="always"
+                            @change="changePageSize($event)"
+                        ></v-slider>
+                    </div>
+                </v-expand-transition>
+                <v-btn text>Cerca</v-btn>
             </div>
-            <v-expand-transition>
-                <div v-show="showAdvancedQuery" class="title-center">
-                    <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
-                    <v-text-field label="Città" v-model="city"></v-text-field>
-                    <v-btn @click="getLocation()" text>Localizza
-                        <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
-                    </v-btn>
-                    <v-combobox
-                        :items="restDataCat"
-                        item-text="category_name"
-                        item-value="id"
-                        v-model='restaurant_category'
-                        id="restaurant_category"
-                        name="restaurant_category"
-                        label="Categoria"
-                    ></v-combobox>
-                    <v-slider
-                        height="60"
-                        label="Ristoranti per pagina:"
-                        min="1"
-                        max="40"
-                        v-model="restaurantListData.page_size"
-                        thumb-label="always"
-                        @change="changePageSize($event)"
-                    ></v-slider>
-                </div>
-            </v-expand-transition>
 
             <v-skeleton-loader
               :loading="loading"
@@ -97,6 +98,7 @@
             loading: false,
             city: '',
             aperto_ora: false,
+            loadingGeo: false,
             query: '',
             restaurant_category: '',
             showAdvancedQuery: false
@@ -165,12 +167,14 @@
                 .then(this.loading = false)
             },
             getLocation() {
+                this.loadingGeo = true
                 var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
                 }
                 else {
                     console.log("Geolocation is not supported by this browser.")
+                    this.loadingGeo = false
                 }
             },
             getCity (coordinates) {
@@ -184,11 +188,17 @@
                   })
                   .then((response) => {
                       this.city = response.data.results[0].components.county
+                      this.loadingGeo = false
+                  }).catch((error)=>{
+                      console.log('error')
+                      console.log(error)
+                      this.loadingGeo = false
                   })
             },
             error(error){
                 console.log('error')
                 console.log(error)
+                this.loadingGeo = false
             }
         },
         created() {
