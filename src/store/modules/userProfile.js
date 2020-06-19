@@ -13,6 +13,7 @@ const state = {
         is_superuser: false,
         type:"",
         restaurants:[],
+        avatar: ''
   },
 
   errors: [],
@@ -30,6 +31,7 @@ const getters = {
   user: state => state.user,
   errors: state=> state.errors,
   user_private: state => state.user_private,
+  avatar: state => state.user_private.avatar,
   restaurants: state => state.user_private.restaurants
 }
 
@@ -124,7 +126,7 @@ const actions = {
       if ( state.user_private.type==='business'){
         manageUserProfile.updateBusiness(state.user_private.id, data)
         .then(resp => {
-          commit('BUSINESS_UPDATE')
+          commit('USER_UPDATE', resp.data)
           resolve(resp.data)
 
         })
@@ -138,7 +140,7 @@ const actions = {
       else{
         manageUserProfile.updateUser(state.user_private.id, data)
         .then(resp => {
-          commit('USER_UPDATE')
+          commit('USER_UPDATE', resp.data)
           resolve(resp.data)
 
         })
@@ -155,8 +157,27 @@ const actions = {
 
 const mutations = {
 
-  USER_UPDATE: (state) => {
-  },//TODO: fare mutation dei dati quando il back me li passerà
+  USER_UPDATE: (state, data) => {
+    state.user_private.avatar = data.avatar
+    state.user_private.email_activated = data.email_activated
+
+    state.user.Username = data.username
+    state.user.Email = data.email
+    state.user.Nome = data.first_name
+    state.user.Cognome = data.last_name
+    state.user.Anno_di_Nascita = data.birth_date
+    state.user.Numero_di_Telefono = data.phone
+
+
+    if (state.user_private.type === 'business')
+    {
+      state.user.Codice_Fiscale = data.cf
+      state.user.Indirizzo = data.address
+      state.user.N_civ = data.n_civ
+      state.user.Citta = data.city
+      state.user.Cap = data.cap
+    }
+  },
 
   USER_UPDATE_ERROR: (state) => {
   },
@@ -262,6 +283,7 @@ function setCookiesUserPrivate( data) {
     user_private['id'] = data.id
     user_private['is_superuser'] = data.is_superuser
     user_private['email_activated'] = data.email_activated
+    user_private['avatar'] = data.avatar
     if (data.type === 'business')
        user_private['restaurants'] = data.restaurants
   var d = new Date();
