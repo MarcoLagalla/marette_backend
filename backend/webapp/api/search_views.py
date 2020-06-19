@@ -5,10 +5,19 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from ..models.models import Restaurant, FasciaOraria, GiornoApertura, OrarioApertura
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from rest_framework.utils.urls import remove_query_param, replace_query_param
+from django.core.paginator import Paginator
 from .serializers import ListRestaurantSerializer
 from ..models.models import Restaurant
 from ...utils import NavigationLinks
+import datetime
+from django.utils.timezone import utc
+from backend.webapp.declarations import DAYS
 
 
 class SearchRestaurantAPIView(APIView):
@@ -49,8 +58,8 @@ class SearchRestaurantAPIView(APIView):
                             status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.data.get('page_number', 1)
-        page_size = request.data.get('page_size', 10)
+        page_number = request.GET.get('page_number', 1)
+        page_size = request.GET.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct(), page_size)
@@ -83,7 +92,13 @@ class SearchRestaurantByQueryAPIView(APIView):
         queried_name = None
         queried_city = None
         queried_category = None
+
+        queried_aperto_ora = None
+        queried_aperto_oggi = None
+        fascie_orarie = None
         queryset = []
+        aperto_ora = []
+        aperto_oggi = []
 
         try:
             queried_name = request.data['restaurant_name']
@@ -96,9 +111,61 @@ class SearchRestaurantByQueryAPIView(APIView):
             pass
 
         try:
-            queried_category = request.data['restaurant_category']   # ADD validation on category from request.data
+            queried_category = request.data['restaurant_category']
         except KeyError:
             pass
+
+        try:
+            queried_aperto_ora = request.data['aperto_ora']
+        except KeyError:
+            pass
+
+        try:
+            queried_aperto_oggi = request.data['aperto_oggi']
+        except KeyError:
+            pass
+
+        if queried_aperto_ora or queried_aperto_oggi:
+            today = datetime.datetime.now().weekday()
+            current_hour = datetime.datetime.now().replace(tzinfo=utc).strftime('%H')
+            current_minutes = datetime.datetime.now().replace(tzinfo=utc).strftime('%M')
+            current_time = int(current_hour) * 60 + int(current_minutes)
+
+            try:
+                fascie_orarie = FasciaOraria.objects.all().filter(giorno__day__exact=DAYS[today][0])
+            except IndexError:
+                pass
+
+            if fascie_orarie:
+                for fascia_oraria in fascie_orarie:
+                    aperto_oggi.append([fascia_oraria.restaurant, fascia_oraria.giorno.day, fascia_oraria.start, fascia_oraria.end])
+                    start_hour = fascia_oraria.start[:2]
+                    start_minute = fascia_oraria.start[3:]
+                    end_hour = fascia_oraria.end[:2]
+                    end_minute = fascia_oraria.end[3:]
+                    start_time = int(start_hour) * 60 + int(start_minute)
+                    end_time = int(end_hour) * 60 + int(end_minute)
+
+                    # check if aperto adesso
+                    if start_time <= current_time <= end_time:
+                        aperto_ora.append(fascia_oraria.restaurant)
+
+                    # check if not aperto adesso ma apre tra + - 30min
+                    timedelta_ = 1 * 60
+                    # TODO
+
+        if queried_aperto_ora:
+            open_restaurant = len(aperto_ora)
+            if open_restaurant:
+                for i, restaurant in enumerate(aperto_ora):
+                    open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant).order_by('-id')
+                    queryset.append(open_restaurant_query)
+            else:
+                return Response({'error': ["Nessun Ristorante trovato."]},
+                                status.HTTP_404_NOT_FOUND)
+
+        if queried_aperto_oggi:
+            pass  #TODO add this part !
 
         if queried_name:
             name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
@@ -120,11 +187,13 @@ class SearchRestaurantByQueryAPIView(APIView):
                 results_query = queryset[0]
                 for query in queryset:
                     results_query = results_query & query
+            else:
+                results_query = Restaurant.objects.all().order_by('-id')
 
             if results_query:
                 # -----------------------------------------------------------
-                page_number = request.data.get('page_number', 1)
-                page_size = request.data.get('page_size',  10)
+                page_number = request.GET.get('page_number', 1)
+                page_size = request.GET.get('page_size', 10)
 
                 try:
                     paginator = Paginator(results_query.distinct(), page_size)
@@ -150,13 +219,8 @@ class SearchRestaurantByQueryAPIView(APIView):
                 return Response(data, status=status.HTTP_200_OK)
 
         except KeyError:
-            return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+            return Response({'error': ["Nessun Ristorante trovato."]},
                             status.HTTP_404_NOT_FOUND)
 
-        return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+        return Response({'error': ["Nessun Ristorante trovato."]},
                         status.HTTP_404_NOT_FOUND)
-
-
-
-
-
