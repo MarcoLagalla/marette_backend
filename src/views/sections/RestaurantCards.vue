@@ -57,12 +57,16 @@
 
 <script>
     import {mapActions} from "vuex";
+    import axios from 'axios'
 
     export default {
         name: 'RestaurantCards',
 
         data: () => ({
-            loading: false
+            loading: false,
+            coordinates: '',
+            coordinates2: '',
+            info: {},
         }),
         computed: {
             restaurantListData() {
@@ -124,9 +128,26 @@
                 })
                 .then(this.loading = false)
             },
+            getLocation() {
+              if (navigator.geolocation) {
+                this.coordinates = navigator.geolocation.getCurrentPosition(this.boh);
+              } else {
+                console.log("Geolocation is not supported by this browser.")
+              }
+            },
+            boh (bah) {
+                axios
+                  .get('https://api.coindesk.com/v1/bpi/currentprice.json', {
+                      key: '9f6a7dc1ef664052825c045470a06937',
+                      language: 'it',
+                      q: bah
+                  })
+                  .then(response => (this.info = response))
+            }
         },
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
+            this.getLocation()
         },
     }
 </script>
