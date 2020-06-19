@@ -2,7 +2,7 @@ import json
 
 import django
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db import transaction
 from localflavor.it.util import vat_number_validation
 from rest_framework import status, serializers
@@ -39,8 +39,10 @@ class ListRestaurantsAPIView(ListAPIView):
         try:
             paginator = Paginator(restaurants.distinct().order_by('-id'), page_size)
             page = paginator.page(page_number)
-        except django.core.paginator.EmptyPage:
-            page = paginator.page(1)
+        except EmptyPage:
+            page_number = 1
+            page = paginator.page(page_number)
+
 
         serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
         # -----------------------------------------------------------

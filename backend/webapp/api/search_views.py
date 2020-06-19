@@ -65,7 +65,8 @@ class SearchRestaurantAPIView(APIView):
             paginator = Paginator(restaurants.distinct(), page_size)
             page = paginator.page(page_number)
         except django.core.paginator.EmptyPage:
-            page = paginator.page(1)
+            page_number = 1
+            page = paginator.page(page_number)
 
         serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
         # -----------------------------------------------------------
@@ -199,7 +200,8 @@ class SearchRestaurantByQueryAPIView(APIView):
                     paginator = Paginator(results_query.distinct(), page_size)
                     page = paginator.page(page_number)
                 except django.core.paginator.EmptyPage:
-                    page = paginator.page(1)
+                    page_number = 1
+                    page = paginator.page(page_number)
 
                 serializer = ListRestaurantSerializer(page, many=True, context={'request': request})
                 # -----------------------------------------------------------
