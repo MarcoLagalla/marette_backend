@@ -161,7 +161,7 @@ class SearchRestaurantByQueryAPIView(APIView):
                     open_restaurant_query = Restaurant.objects.filter(activity_name__iexact=restaurant).order_by('-id')
                     queryset.append(open_restaurant_query)
             else:
-                return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+                return Response({'error': ["Nessun Ristorante trovato."]},
                                 status.HTTP_404_NOT_FOUND)
 
         if queried_aperto_oggi:
@@ -187,6 +187,9 @@ class SearchRestaurantByQueryAPIView(APIView):
                 results_query = queryset[0]
                 for query in queryset:
                     results_query = results_query & query
+            else:
+                results_query = Restaurant.objects.all().order_by('-id')
+
 
             if results_query:
                 # -----------------------------------------------------------
@@ -217,8 +220,8 @@ class SearchRestaurantByQueryAPIView(APIView):
                 return Response(data, status=status.HTTP_200_OK)
 
         except KeyError:
-            return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+            return Response({'error': ["Nessun Ristorante trovato."]},
                             status.HTTP_404_NOT_FOUND)
 
-        return Response({'error': ["Nessun Ristorante trovato secondo i filtri specificati."]},
+        return Response({'error': ["Nessun Ristorante trovato."]},
                         status.HTTP_404_NOT_FOUND)
