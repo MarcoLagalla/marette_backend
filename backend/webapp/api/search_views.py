@@ -190,7 +190,6 @@ class SearchRestaurantByQueryAPIView(APIView):
             else:
                 results_query = Restaurant.objects.all().order_by('-id')
 
-
             if results_query:
                 # -----------------------------------------------------------
                 page_number = request.GET.get('page_number', 1)
