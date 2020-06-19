@@ -29,11 +29,11 @@ class SearchRestaurantAPIView(APIView):
         restaurants = []
 
         try:
-            queried_name = request.data['query']
+            queried_name = request.GET.get('query', '')
         except KeyError:
             pass
         try:
-            queried_city = request.data['city']
+            queried_city = request.GET.get('city', '')
         except KeyError:
             pass
 
@@ -102,27 +102,27 @@ class SearchRestaurantByQueryAPIView(APIView):
         aperto_oggi = []
 
         try:
-            queried_name = request.data['restaurant_name']
+            queried_name = request.GET.get('restaurant_name', None)
         except KeyError:
             pass
 
         try:
-            queried_city = request.data['restaurant_city']
+            queried_city = request.GET.get('restaurant_city', None)
         except KeyError:
             pass
 
         try:
-            queried_category = request.data['restaurant_category']
+            queried_category = request.GET.get('restaurant_category', None)
         except KeyError:
             pass
 
         try:
-            queried_aperto_ora = request.data['aperto_ora']
+            queried_aperto_ora = request.GET.get('aperto_ora', None)
         except KeyError:
             pass
 
         try:
-            queried_aperto_oggi = request.data['aperto_oggi']
+            queried_aperto_oggi = request.GET.get('aperto_oggi', None)
         except KeyError:
             pass
 
