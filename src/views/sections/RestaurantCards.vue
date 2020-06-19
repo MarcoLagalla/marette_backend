@@ -7,10 +7,19 @@
             <div class="title-center">
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
-                <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
-                <v-slider class="slider" height="60" label="Ristoranti per pagina:" min="1" max="40" v-model="restaurantListData.page_size" thumb-label="always" @end="changePageSize($event)"></v-slider>
-            <div>
-
+                <span class="subt"> Ecco la nostra scelta di ristoranti</span>
+            </div>
+            <v-slider
+                class="slider"
+                height="60"
+                label="Ristoranti per pagina:"
+                min="1"
+                max="40"
+                v-model="restaurantListData.page_size"
+                thumb-label="always"
+                @change="changePageSize($event)"
+            ></v-slider>
+            <v-card :loading="loading">
                 <v-row>
                     <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
                         <router-link :to="restaurant.url">
@@ -40,7 +49,7 @@
                         </router-link>
                     </v-col>
                 </v-row>
-            </div>
+            </v-card>
             <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
         </base-section>
     </div>
@@ -53,6 +62,7 @@
         name: 'RestaurantCards',
 
         data: () => ({
+            loading: false
         }),
         computed: {
             restaurantListData() {
@@ -61,8 +71,9 @@
             restData() {
                 return this.$store.getters['restaurantData/restData']
             },
-            pageNumber() {
-                return parseInt(this.restaurantListData.page_number, 10)
+            pageNumber: {
+                get() {return parseInt(this.restaurantListData.page_number, 10);},
+                set(value) { this.restaurantListData.page_number =  value}
             },
         },
         methods:{
@@ -78,18 +89,40 @@
                 return {backgroundImage: "url(" + imgUrl + ") "}
             },
             nextPage() {
-                if(this.restaurantListData.next)
-                    this.getRestaurants({page_number: this.restaurantListData.next, page_size: this.restaurantListData.page_size}) //TODO: aggiungere loading per tutte queste richieste
+                if(this.restaurantListData.next) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.next,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
             },
             previousPage() {
-                if(this.restaurantListData.previous)
-                    this.getRestaurants({page_number: this.restaurantListData.previous, page_size: this.restaurantListData.page_size})
+                if(this.restaurantListData.previous) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.previous,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
             },
             goToPage(page) {
-                this.getRestaurants({page_number: page, page_size: this.restaurantListData.page_size})
+                this.loading = true
+                this.getRestaurants({
+                    page_number: page,
+                    page_size: this.restaurantListData.page_size
+                })
+                .then(this.loading = false)
             },
             changePageSize(page_size) {
-                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size})
+                this.loading = true
+                this.getRestaurants({
+                    page_number: this.restaurantListData.page_number,
+                    page_size: page_size
+                })
+                .then(this.loading = false)
             },
         },
         created() {
