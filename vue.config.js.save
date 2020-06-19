@@ -1,0 +1,19 @@
+module.exports = {
+  "transpileDependencies": [
+    "vuetify"
+  ],
+    outputDir: 'dist',
+    assetsDir: 'static',
+    // For Production, replace set baseUrl to CDN
+    // And set the CDN origin to `yourdomain.com/static`
+    // Whitenoise will serve once to CDN which will then cache
+    // and distribute
+    devServer: {
+      proxy: {
+        '/api*': {
+          // Forward frontend dev server request for /orders to django dev server
+          target: 'http://:8000/',
+        }
+      }
+    }
+}
