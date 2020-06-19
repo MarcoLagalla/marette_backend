@@ -9,7 +9,7 @@
 
         </template>
         <v-card justify="center">
-          <picture-input
+          <newPictureInput
             ref="background"
             @change="onChanged"
             :width="400"
@@ -22,9 +22,11 @@
             accept="image/jpeg, image/png, image/gif"
             buttonClass="ui button primary"
             :customStrings="{
-            upload: '<h1>Carica immagine</h1>',
-            drag: 'Trascina qui la un immagine di vetrina o clicca per selezionarla'}">
-          </picture-input>
+              upload: '<h1>Carica immagine</h1>',
+              drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+              change: 'Cambia foto',
+            }">
+          </newPictureInput>
           <v-btn color="green" @click="submitImage" text>Salva immagine</v-btn>
         </v-card>
     </v-dialog>
@@ -33,14 +35,9 @@
 
 <script>
 
-    import PictureInput from "vue-picture-input";
-
     export default {
         name: "AddHomeImage",
         props: ['imageUrl'],
-        components: {
-            PictureInput,
-        },
         data: () => ({
             image: '',
             active: false

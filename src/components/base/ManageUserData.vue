@@ -19,7 +19,7 @@
       </v-row>
       <v-row v-if="user.Anno_di_Nascita || editing">
         <v-col cols="3" class="dati"><b>Data di nascita:</b></v-col>
-        <v-col cols="9"><p v-if="!editing" class="field">{{user.Anno_di_Nascita}}</p><v-text-field v-if="editing" light class="field" type="text" v-model='user.Anno_di_Nascita'></v-text-field></v-col>
+        <v-col cols="9"><p v-if="!editing" class="field">{{user.Anno_di_Nascita}}</p><v-text-field v-if="editing" light class="field" type="date" v-model='user.Anno_di_Nascita'></v-text-field></v-col>
       </v-row>
       <v-row>
         <v-col cols="3" class="dati"><b>Numero di Telefono:</b></v-col>
@@ -28,7 +28,7 @@
       <template v-if="isBusiness">
         <v-row v-if="!editing">
           <v-col cols="3" class="dati"><b>Indirizzo:</b></v-col>
-          <v-col cols="9"><p class="field">{{stringIndirizzo}}</p></v-col>
+          <v-col cols="9"><p class="field">{{stringIndirizzo()}}</p></v-col>
         </v-row>
         <template v-else>
           <v-row>
@@ -50,7 +50,7 @@
         </template>
       </template>
 
-      <picture-input
+      <newPictureInput
           v-if="editing"
           ref="avatar"
           @change="onChanged"
@@ -62,7 +62,7 @@
           size="3"
           :zIndex="0"
           :crop="true"
-          :changeOnClick="false"
+          :changeOnClick="true"
           accept="image/jpeg, image/png, image/gif"
           buttonClass="ui button primary"
           :customStrings="{
@@ -72,7 +72,7 @@
               remove: 'Elimina foto',
           }"
       >
-        </picture-input>
+        </newPictureInput>
       <button v-if="editing" type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
     </form><button class="gestrest" @click="editing=!editing"><span class="butgest">{{butText}}</span></button>
   </div>
@@ -80,13 +80,9 @@
 
 <script>
   import {mapActions} from "vuex";
-  import PictureInput from "vue-picture-input";
 
   export default {
     name: "ManageUserData",
-    components: {
-      PictureInput,
-    },
     data() {
       return {
         fix: [
@@ -146,6 +142,9 @@
           this.image = '';
           this.deletePhoto = true;
       },
+      stringIndirizzo() {
+        return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
+      },
     },
     computed: {
       user() {
@@ -153,9 +152,6 @@
       },
       isBusiness() {
         return this.$store.getters['userProfile/isBusiness']
-      },
-      stringIndirizzo() {
-        return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
       },
       butText() {
         return this.editing? 'Visualizza dati' : 'Modifica dati'

@@ -9,7 +9,7 @@
             <v-card class="regcard">
                 <vue-custom-scrollbar class="scroll-area" :settings="settings" @ps-scroll-y="scrollHanle">
                     <v-form @submit.prevent="register" v-model="valid">
-                        <div class="cardtitle">
+                        <div class="cardtitle" style="margin-top: 10px;">
                             <h1>REGISTRATI</h1>
                         </div>
                         <v-divider></v-divider>
@@ -20,11 +20,11 @@
                                     <v-col cols="12" md="6">
                                         <v-text-field :error-messages="errors.first_name" @change="errors.first_name=''"
                                                       solo filed v-model="first_name" label="Nome"
-                                                      prepend-icon="mdi-account-cowboy-hat"
+                                                      prepend-inner-icon="mdi-account-cowboy-hat"
                                                       id="first_name"></v-text-field>
 
                                         <v-text-field :error-messages="errors.last_name" @change="errors.last_name=''"
-                                                      solo prepend-icon="mdi-account-cowboy-hat"
+                                                      solo prepend-inner-icon="mdi-account-cowboy-hat"
                                                       filed v-model="last_name" label="Cognome"
                                                       id="last_name"></v-text-field>
                                     </v-col>
@@ -49,39 +49,39 @@
                                     </v-col>
                                     <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="nameRules" :error-messages="errors.username"
-                                                      @change="errors.username=''" prepend-icon="mdi-account" solo filed
+                                                      @change="errors.username=''" prepend-inner-icon="mdi-account" solo filed
                                                       id="username" v-model="username" label="Username*"
                                                       required></v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <v-text-field :rules="emailRules" :error-messages="errors.email"
-                                                      @change="errors.email=''" prepend-icon="mdi-email" solo filed
+                                                      @change="errors.email=''" prepend-inner-icon="mdi-email" solo filed
                                                       v-model="email" label="Email*" id="email" type="email"
                                                       required></v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6">
                                         <v-text-field :rules="phoneRules" :error-messages="errors.phone"
-                                                      @change="errors.phone=''" prepend-icon="mdi-phone" solo filed
+                                                      @change="errors.phone=''" prepend-inner-icon="mdi-phone" solo filed
                                                       id="phone" name="phone" label="Numero di telefono*"
                                                       v-model="phone"
                                                       type="tel" require></v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6">
                                         <v-text-field :error-messages="errors.birth_date" @change="errors.birth_date=''"
-                                                      prepend-icon="mdi-calendar-range" solo filed id="birth_date"
+                                                      prepend-inner-icon="mdi-calendar-range" solo filed id="birth_date"
                                                       label="Data di nascita" v-model="birth_date"
                                                       type="date"></v-text-field>
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="passwordRules" :error-messages="errorPassword"
-                                                      @change="errors.password=''" prepend-icon="mdi-key" solo filed
+                                                      @change="errors.password=''" prepend-inner-icon="mdi-key" solo filed
                                                       v-model="password" label="Password*" id="password" type="password"
                                                       required></v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6" md="6">
                                         <v-text-field :rules="password2Rules" :error-messages="errors.password2"
-                                                      @change="errors.password2=''" solo filed v-model="password2"
+                                                      @change="errors.password2=''" prepend-inner-icon="mdi-key" solo filed v-model="password2"
                                                       label="Repeat password*" id="password2" type="password"
                                                       required></v-text-field>
                                     </v-col>
@@ -92,17 +92,17 @@
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-text style="color:white">Registrando un account accetti i nostri
-                            <router-link to="/termini">Terms & Condizioni</router-link>
+                            <router-link to="/termini">T&C</router-link>
                             .
                         </v-card-text>
                         <div class="regbtn2">
                             <div class="center">
                                 <button class="btn" type="submit" :disabled="!valid || loading">
-                                    <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
-                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line"/>
-                                        <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line"/>
+                                    <svg width="140px" height="40px" viewBox="0 0 140 40" class="border">
+                                        <polyline points="139,1 139,39 1,39 1,1 139,1" class="bg-line" />
+                                        <polyline points="139,1 139,39 1,39 1,1 139,1" class="hl-line" />
                                     </svg>
-                                    <span v-if="!loading" >Submit</span>
+                                    <span v-if="!loading" >Invia</span>
                                     <span class="loader" v-if="loading"><i class="fas fa-cog fa-2x fa-spin"></i></span>
                                 </button>
                             </div>
@@ -262,21 +262,21 @@
     }
 
     .v-card {
-        background: var(--emerald);
+        background: var(--charcoal);
         opacity: 0.8
     }
 
     .center {
-        width: 180px;
-        height: 60px;
+        width: 140px;
+        height: 40px;
         position: absolute;
     }
 
     .btn {
-        width: 180px;
-        height: 60px;
+        width: 140px;
+        height: 40px;
         cursor: pointer;
-        background: #945d60;
+        background: #626e60!important;
         border: 1px solid white;
         outline: none;
         transition: 1s ease-in-out;
@@ -332,7 +332,6 @@
     span {
         display: block;
         padding: 5px 20px;
-        font-weight: ;
         letter-spacing: 3px;
         text-transform: uppercase;
     }
@@ -344,7 +343,7 @@
         height: 2px;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 
@@ -355,7 +354,7 @@
         height: 0;
         position: absolute;
         transition: all 0.2s linear;
-        background: red;
+        background: #2F4F4F;
         filter: blur(2px);
     }
 

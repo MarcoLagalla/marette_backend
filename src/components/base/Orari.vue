@@ -1,6 +1,5 @@
 <template>
 <div class="tabella">
-    <base-add-time-table>Aggiungi orari</base-add-time-table>
     <v-row v-for="(day, i) in openingDays" :key="i" class="rowhover" >
         <v-col cols="6" sm="6">
             <span class="giorno">{{day.day}}</span>

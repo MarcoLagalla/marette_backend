@@ -23,17 +23,17 @@
             <span class="title" v-text="product.name"></span>
             <p class="description" v-text="product.description"></p>
 
-            <v-row class="tags_class" v-if="product.tags.length>0" justify="start">
-                <div v-if="check_tags('GlutenFree',product)" class="tooltip">
-                <span class="fa-stack fa-xs" style="padding: 10px; margin-left: 10px;">
+            <v-row class="tags_class" v-if="product.tags.length>0" justify="center">
+                <div v-if="check_tags('GlutenFree',product)" class="tooltip" >
+                <span class="fa-stack fa-xs" >
                 <i class="fas fa-bread-slice fa-stack-1x" title="Gluten Free" style="color: peru"></i>
                 <i class="fas fa-ban fa-stack-2x" style="color: red; opacity: 0.7;"></i>
                 </span>
                 <span class="tooltiptext">Gluten Free</span>
                 </div>
-                <div style="padding:10px" v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
-                <div style="padding:10px" v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
-                <div style="padding:10px" v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
+                <div v-if="check_tags('Vegetariano',product)" class="tooltip"><i class="fas fa-carrot" style="color: orange"></i><span class="tooltiptext">Vegetariano</span></div>
+                <div v-if="check_tags('Piccante',product)" class="tooltip"><i class="fas fa-pepper-hot" style="color: red"></i><span class="tooltiptext">Piccante</span></div>
+                <div v-if="check_tags('Vegano',product)" class="tooltip"><i class="fas fa-seedling" style="color: green"></i><span class="tooltiptext">Vegano</span></div>
 
             </v-row>
 
@@ -46,7 +46,6 @@
                 <div  class="price_text" v-text="product.final_price"></div>
                 <v-icon class="eur" small>fas fa-euro-sign</v-icon>
                 </v-row>
-
             </div>
         </div>
 
@@ -181,11 +180,12 @@
     }
 
     .title {
-        font-size: 1.3em !important;
+        font-size: 1em !important;
         position: absolute;
         top: 0;
         left: 100px;
-        padding: 8px;
+        padding: 2% 3% 3% !important;
+        line-height: 0.6cm !important;
         text-transform: capitalize;
         font-weight: normal !important;
     }
@@ -197,7 +197,8 @@
         font-size: 0.9em;
         top: 35px;
         left: 100px;
-        padding: 10px;
+        padding: 2% 3% 3%;
+        margin-top:2%;
         width: 50%;
         height: 50px;
         text-overflow: ellipsis;
@@ -249,11 +250,12 @@
 
     .tags_class{
         position: absolute;
-        top: 45px;
-        left: 100px;
-        width: 50%;
+        top: 50%;
+        /*left: 25%;*/
+        width: 60%;
         height: 50px;
-        padding: 15px;
+        padding: 15px 6%;
+        margin-left: 30%;
     }
 
     .discount_banner{
@@ -262,21 +264,20 @@
     .tooltip {
         position: relative;
         display: inline-block;
-        z-index: 10;
+        padding: 3% 3%;
     }
 
     .tooltip .tooltiptext {
       visibility: hidden;
       width: 80px;
-      background-color: black;
       color: #fff;
       background-color: var(--charcoal);
       text-align: center;
       border-radius: 6px;
       padding: 5px 0;
       position: absolute;
-      z-index: 10;
-      top: 150%;
+      z-index: 2 !important;
+      bottom: 100%;
       left: 50%;
       margin-left: -40px;
       font-size: 0.8em;
@@ -287,17 +288,19 @@
     .tooltip .tooltiptext::after {
       content: "";
       position: absolute;
-      bottom: 100%;
+      top: 100%;
       left: 50%;
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: transparent transparent black transparent;
+      border-color: var(--charcoal) transparent transparent  transparent;
+
     }
 
     .tooltip:hover .tooltiptext {
       visibility: visible;
         opacity: 1;
+
     }
 
 

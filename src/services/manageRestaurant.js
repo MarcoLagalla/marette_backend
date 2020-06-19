@@ -8,8 +8,13 @@ export default {
             })
     },
 
-    getRestaurantList() {
-        return api.get('v1/webapp/restaurant/list')
+    getRestaurantList(payload) {
+        return api.get('v1/webapp/restaurant/list', {
+          params: {
+            page_number: payload.page_number,
+            page_size: payload.page_size
+          }
+        })
             .then(response => {
                 return response
             })

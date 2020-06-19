@@ -33,8 +33,8 @@ class ListRestaurantsAPIView(ListAPIView):
             return Response({'error': ["Nessun Ristorante trovato nella categoria specificata."]}, status.HTTP_404_NOT_FOUND)
 
         # -----------------------------------------------------------
-        page_number = request.data.get('page_number', 1)
-        page_size = request.data.get('page_size', 10)
+        page_number = request.GET.get('page_number', 1)
+        page_size = request.GET.get('page_size', 10)
 
         try:
             paginator = Paginator(restaurants.distinct().order_by('-id'), page_size)

@@ -1,16 +1,20 @@
 <template>
-<v-navigation-drawer right color="transparent" fixed height="auto" overlay-color="secondary" overlay-opacity=".8" temporary v-bind="$attrs" v-on="$listeners">
-  <v-list color="white" shaped>
+<v-navigation-drawer right class="drawer" fixed height="100%" overlay-color="secondary" overlay-opacity=".8" temporary v-bind="$attrs" v-on="$listeners">
+  <v-list color="transparent" shaped>
     <v-list-item v-if="(!isLogged)" color="primary">
       <base-form-ra />
     </v-list-item>
     <v-list-item v-if="(!isLogged)" color="primary">
       <base-form-la />
     </v-list-item>
-    <v-list-item v-if="(isLogged)"><button class="btn-6" @click="Logout()"><span>Logout</span>
-      </button> </v-list-item>
     <router-view name="restMenuMobile" :items="items"></router-view>
   </v-list>
+  <template v-slot:append>
+    <div class="pa-2">
+      <button v-if="(isLogged)" class="btn-6" @click="Logout()"><span>Logout</span>
+      </button>
+    </div>
+  </template>
 </v-navigation-drawer>
 </template>
 
@@ -48,7 +52,11 @@ export default {
 }
 </script>
 <style scoped>
+  .drawer {
+    background: linear-gradient(darkgrey,grey)!important;
+  }
 .btn-6 {
+  width: 100%;
   display: inline-block;
   position: relative;
   margin-top: 10px;

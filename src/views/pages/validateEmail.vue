@@ -1,7 +1,15 @@
 <template>
-  <div>
-    <h2 :style="'color:'+ color + ';'">{{response}}</h2>
-    <router-link to="/profile"><v-btn>Se non vieni reindirizzato dopo 5 secondi clicca qui</v-btn></router-link>
+  <div style="text-align:center" >
+      <v-row>
+          <v-col md=6 cols=12>
+              <h2 :style="'color:'+ color + ';'">{{response}}</h2>
+          </v-col>
+      </v-row>
+      <v-row>
+          <v-col md=6 cols=12>
+              <router-link to="/profile"><v-btn>Se non vieni reindirizzato dopo 5 secondi clicca qui</v-btn></router-link>
+          </v-col>
+      </v-row>
   </div>
 </template>
 <script>

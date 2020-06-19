@@ -28,12 +28,17 @@ export default {
   text-shadow: 0 0 2px grey;
 }
 h2 {
-  font-size: 2vmax;
+  font-size: 26px;
   color: var(--ming);
   margin-top: 0;
   padding: 2vmax;
   text-align: center;
   text-transform: uppercase;
+}
+@media screen and (max-width: 992px) {
+  h2 {
+    font-size: 26px;
+  }
 }
 h2.background {
   position: relative;

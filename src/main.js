@@ -8,6 +8,9 @@ import api from '@/services/api'
 import SweetModal from 'sweet-modal-vue/src/plugin.js'
 Vue.use(SweetModal)
 import x5GMaps from 'x5-gmaps'
+
+import PictureInput from "vue-picture-input";
+
 Vue.use(x5GMaps, 'AIzaSyADeNZHXA5OfUA2DtSs7SA3fh4s7rhX_gA')
 
 Vue.config.productionTip = false
@@ -20,6 +23,66 @@ if (token && id) { //voglio caricarli solo se li ho entrambi
   api.defaults.headers.common['Authorization'] = 'Token ' + token;
   store.dispatch("userProfile/getUserData", id);
 }
+
+Vue.component('PictureInput', PictureInput);
+const newPictureInput = Vue.component('PictureInput').extend({
+  methods: {
+    preloadImage (source, options) {
+      console.log("questo picture input ha l'header modificato")
+      // ie 11 support
+      let File = window.File
+      try {
+        new File([], '') // eslint-disable-line
+      } catch (e) {
+        File = class File extends Blob {
+          constructor (chunks, filename, opts = {}) {
+            super(chunks, opts)
+            this.lastModifiedDate = new Date()
+            this.lastModified = +this.lastModifiedDate
+            this.name = filename
+          }
+        }
+      }
+      options = Object.assign({}, options)
+      if (typeof source === 'object') {
+        this.imageSelected = true
+        this.image = ''
+        if (this.supportsPreview) {
+          this.loadImage(source, true)
+        } else {
+          this.$emit('prefill')
+        }
+        return
+      }
+      let headers = new Headers()
+      headers.append('Accept', 'image/*')
+      headers.append('Access-Control-Allow-Origin', 'https://marette.ovh/')
+      fetch(source, {
+        method: 'GET',
+        mode: 'cors',
+        headers: headers
+      }).then(response => {
+        return response.blob()
+      })
+      .then(imageBlob => {
+        let e = { target: { files: [] } }
+        const fileName = options.fileName || source.split('/').slice(-1)[0]
+        let mediaType = options.mediaType || ('image/' + (options.fileType || fileName.split('.').slice(-1)[0]))
+        mediaType = mediaType.replace('jpg', 'jpeg')
+        e.target.files[0] = new File([imageBlob], fileName, { type: mediaType })
+        this.onFileChange(e, true)
+      })
+      .catch(err => {
+        this.$emit('error', {
+          type: 'failedPrefill',
+          message: 'Failed loading prefill image: ' + err
+        })
+      })
+    }
+  }
+});
+
+Vue.component('newPictureInput', newPictureInput);
 
 new Vue({
   router,

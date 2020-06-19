@@ -11,7 +11,6 @@ const state = {
     discounts:[],
     menus: [],
     restCategories: [],
-
     FOOD_CATEGORY_CHOICES : [
         'Altro',
         'Antipasto',
@@ -46,7 +45,7 @@ const getters = {
     menus: state => state.menus,
     slug: state => state.restData.slug,
     home: state => state.restData.components.home,
-    galleria: state => state.restData.components.galleria
+    galleria: state => state.restData.components.galleria,
 
 }
 
@@ -209,6 +208,11 @@ const actions = {
                     commit('REST_MENU_ERROR', err.response)
                     reject(err.response)
                 })
+
+                manageRestaurant.getTimeTable(restaurantID)
+                 .then(respRes => {
+                    commit('REST_GET_TIME_TABS', respRes.data)
+                 })
             })
             .catch(err => {
                 commit('REST_DATA_ERROR', err.response)
@@ -448,7 +452,9 @@ const mutations = {
     },
 
     REST_GET_TIME_TABS: (state, days) => {
-        state.restData.openingDays = days
+        state.restData.opens_at = days.opens_at
+        state.restData.opened_now = days.opened_now
+        state.restData.openingDays = days.timetable
     },
 
     REST_ADD_OP_DAY: (state, data) => {

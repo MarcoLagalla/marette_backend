@@ -34,9 +34,9 @@ const actions = {
         })
     },
 
-    getRestaurants: ({commit}) => {
+    getRestaurants: ({commit}, payload) => {
         return new Promise((resolve, reject) => {
-            manageRestaurant.getRestaurantList()
+            manageRestaurant.getRestaurantList(payload)
             .then(resp => {
                 const data = resp.data
                 commit('REST_LIST_SUCCESS', data)
@@ -60,7 +60,7 @@ const actions = {
             })
             .catch(err => {
                 commit('REST_UPDATE_ERROR')
-                reject(err)
+                reject(err.response.data)
             })
         })
     },

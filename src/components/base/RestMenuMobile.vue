@@ -3,7 +3,7 @@
     <div v-for="(name , i) in items" :key="i" >
       <v-list-item :href="'#'+ name.name" :exact="name.name === 'HOME'" color="primary">
         <v-list-item-content>
-          <v-list-item-title v-text="name.name" />
+          <div class="list">{{name.name}}</div>
         </v-list-item-content>
       </v-list-item>
     </div>
@@ -18,5 +18,8 @@ export default {
 </script>
 
 <style scoped>
-
+.list {
+  color: white!important;
+  font-weight: bold!important;
+}
 </style>

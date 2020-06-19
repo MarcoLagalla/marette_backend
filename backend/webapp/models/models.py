@@ -91,6 +91,67 @@ class Restaurant(models.Model):
         else:
             return self.image.url
 
+    def is_open(self, giorno=0):
+        if giorno == 0:
+            try:
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                fasce = giorno.fasce
+                if fasce:
+                    for fascia in fasce.all():
+                        this_hour = datetime.now().hour
+                        if int(fascia.start[:2]) <= int(this_hour) <= int(fascia.end[:2]):
+                            # aperto
+                            return True
+            except GiornoApertura.DoesNotExist:
+                pass
+            return False
+        else:
+            # voglio sapere se apre in qualsiasi momento in questo giorno
+            try:
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=giorno)
+                fasce = giorno.fasce
+                if fasce.count() > 0:
+                    return True
+                else:
+                    return False
+            except GiornoApertura.DoesNotExist:
+                pass
+            return False
+
+    def opens_at(self):
+        if not self.is_open():
+            try:
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                fasce = giorno.fasce.all().order_by('start')
+                if fasce:
+                    for fascia in fasce:
+                        this_hour = datetime.now().hour
+                        if int(fascia.start[:2]) >= int(this_hour):
+                            # apre a quest'ora
+                            return "Apre alle " + fascia.start
+            except GiornoApertura.DoesNotExist:
+                    # oggi nessuna fascia di apertura
+                    days = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
+
+                    today_ = today()
+
+                    before_ = days[:days.index(today_)]
+                    next_ = days[days.index(today_) + 1:]
+                    next_days = next_ + before_
+
+                    for day in next_days:
+                        if self.is_open(day):
+                            giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(
+                                day__iexact=day)
+                            fasce = giorno.fasce.all().order_by('start')
+                            if fasce:
+                                fascia = fasce.first()
+                                return "Apre " + day + " alle " + fascia.start
+
+                    return False
+        else:
+            return False
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=30, unique=True, blank=False)
@@ -373,3 +434,10 @@ def do_something_if_changed(sender, instance, **kwargs):
         if not obj.image == instance.image:  # Image has changed
             obj.thumb_image = None
             obj.save()
+
+
+def today():
+    date = datetime.today()
+    day_name = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
+    day = datetime.strptime(date.strftime('%d %m %Y'), '%d %m %Y').weekday()
+    return day_name[day]
