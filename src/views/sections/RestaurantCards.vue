@@ -19,37 +19,43 @@
                 thumb-label="always"
                 @change="changePageSize($event)"
             ></v-slider>
-            <v-card :loading="loading">
-                <v-row>
-                    <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
-                        <router-link :to="restaurant.url">
-                            <div v-bind="restaurant" >
-                                <div>
-                                    <div class="example-2 card">
-                                        <div class="wrapper" :style="image(restaurant.image)" >
-                                            <div class="header">
-                                                <div class="date">
-                                                    <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
+            <v-skeleton-loader
+              :loading="loading"
+              transition-group="scale-transition"
+              type="table-thead@4"
+            >
+                <div>
+                    <v-row>
+                        <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
+                            <router-link :to="restaurant.url">
+                                <div v-bind="restaurant" >
+                                    <div>
+                                        <div class="example-2 card">
+                                            <div class="wrapper" :style="image(restaurant.image)" >
+                                                <div class="header">
+                                                    <div class="date">
+                                                        <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
+                                                    </div>
+                                                    <ul class="menu-content">
+                                                            <li><a class="fas fa-heart"><span>18</span></a></li>
+                                                    </ul>
                                                 </div>
-                                                <ul class="menu-content">
-                                                        <li><a class="fas fa-heart"><span>18</span></a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="data">
-                                                <div class="content">
-                                                    <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
-                                                    <p class="text">{{restaurant.activity_description}}</p>
-                                                    <a href="#" class="button">Entra nel negozio</a>
+                                                <div class="data">
+                                                    <div class="content">
+                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <p class="text">{{restaurant.activity_description}}</p>
+                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </router-link>
-                    </v-col>
-                </v-row>
-            </v-card>
+                            </router-link>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-skeleton-loader>
             <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
         </base-section>
     </div>
