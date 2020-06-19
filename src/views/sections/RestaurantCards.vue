@@ -64,9 +64,7 @@
 
         data: () => ({
             loading: false,
-            coordinates: '',
-            coordinates2: '',
-            info: {},
+            city: '',
         }),
         computed: {
             restaurantListData() {
@@ -129,20 +127,30 @@
                 .then(this.loading = false)
             },
             getLocation() {
-              if (navigator.geolocation) {
-                this.coordinates = navigator.geolocation.getCurrentPosition(this.boh);
-              } else {
-                console.log("Geolocation is not supported by this browser.")
-              }
+                var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
+                }
+                else {
+                    console.log("Geolocation is not supported by this browser.")
+                }
             },
-            boh (bah) {
+            getCity (coordinates) {
                 axios
-                  .get('https://api.coindesk.com/v1/bpi/currentprice.json', {
-                      key: '9f6a7dc1ef664052825c045470a06937',
-                      language: 'it',
-                      q: bah
+                  .get('https://api.opencagedata.com/geocode/v1/json', {
+                      params: {
+                          key: '9f6a7dc1ef664052825c045470a06937',
+                          language: 'it',
+                          q: coordinates.coords.latitude + ',' + coordinates.coords.longitude
+                      }
                   })
-                  .then(response => (this.info = response))
+                  .then((response) => {
+                      this.city = response.data.results[0].components.county
+                  })
+            },
+            error(error){
+                console.log('error')
+                console.log(error)
             }
         },
         created() {
