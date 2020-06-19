@@ -8,17 +8,42 @@
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span>
+                <div class="divider"></div>
+                <div>
+                    <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
+                    <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                    </v-btn>
+                </div>
             </div>
-            <v-slider
-                class="slider"
-                height="60"
-                label="Ristoranti per pagina:"
-                min="1"
-                max="40"
-                v-model="restaurantListData.page_size"
-                thumb-label="always"
-                @change="changePageSize($event)"
-            ></v-slider>
+            <v-expand-transition>
+                <div v-show="showAdvancedQuery" class="title-center">
+                    <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                    <v-text-field label="Città" v-model="city"></v-text-field>
+                    <v-btn @click="getLocation()" text>Localizza
+                        <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                    </v-btn>
+                    <v-combobox
+                        :items="restDataCat"
+                        item-text="category_name"
+                        item-value="id"
+                        v-model='restaurant_category'
+                        id="restaurant_category"
+                        name="restaurant_category"
+                        label="Categoria"
+                    ></v-combobox>
+                    <v-slider
+                        height="60"
+                        label="Ristoranti per pagina:"
+                        min="1"
+                        max="40"
+                        v-model="restaurantListData.page_size"
+                        thumb-label="always"
+                        @change="changePageSize($event)"
+                    ></v-slider>
+                </div>
+            </v-expand-transition>
+
             <v-skeleton-loader
               :loading="loading"
               transition-group="scale-transition"
@@ -71,6 +96,10 @@
         data: () => ({
             loading: false,
             city: '',
+            aperto_ora: false,
+            query: '',
+            restaurant_category: '',
+            showAdvancedQuery: false
         }),
         computed: {
             restaurantListData() {
@@ -83,6 +112,9 @@
                 get() {return parseInt(this.restaurantListData.page_number, 10);},
                 set(value) { this.restaurantListData.page_number =  value}
             },
+            restDataCat() {
+                return this.$store.getters['restaurantData/restCategories']
+            }
         },
         methods:{
             ...mapActions('restaurants', ['getRestaurants']),
@@ -161,7 +193,7 @@
         },
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
-            this.getLocation()
+            this.$store.dispatch("restaurantData/getRestCategories")
         },
     }
 </script>
