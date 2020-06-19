@@ -8,7 +8,7 @@
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
-                <v-slider class="slider" height="60" label="Ristoranti per pagina:" min="1" max="40" v-model="page_size" thumb-label="always" @end="changePageSize($event)"></v-slider>
+                <v-slider class="slider" height="60" label="Ristoranti per pagina:" min="1" max="40" v-model="restaurantListData.page_size" thumb-label="always" @end="changePageSize($event)"></v-slider>
             <div>
 
                 <v-row>
@@ -53,7 +53,6 @@
         name: 'RestaurantCards',
 
         data: () => ({
-            page_size: 10,
         }),
         computed: {
             restaurantListData() {
@@ -80,17 +79,17 @@
             },
             nextPage() {
                 if(this.restaurantListData.next)
-                    this.getRestaurants({page_number: this.restaurantListData.next, page_size: this.page_size}) //TODO: aggiungere loading per tutte queste richieste
+                    this.getRestaurants({page_number: this.restaurantListData.next, page_size: this.restaurantListData.page_size}) //TODO: aggiungere loading per tutte queste richieste
             },
             previousPage() {
                 if(this.restaurantListData.previous)
-                    this.getRestaurants({page_number: this.restaurantListData.previous, page_size: this.page_size})
+                    this.getRestaurants({page_number: this.restaurantListData.previous, page_size: this.restaurantListData.page_size})
             },
             goToPage(page) {
-                this.getRestaurants({page_number: page, page_size: this.page_size})
+                this.getRestaurants({page_number: page, page_size: this.restaurantListData.page_size})
             },
             changePageSize(page_size) {
-                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size}) //TODO: creare cookie per prossime sessioni
+                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size})
             },
         },
         created() {

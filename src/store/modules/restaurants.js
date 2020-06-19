@@ -36,6 +36,13 @@ const actions = {
 
     getRestaurants: ({commit}, payload) => {
         return new Promise((resolve, reject) => {
+            if (Object.prototype.hasOwnProperty.call(payload, 'page_size')){
+                setPageSizeCookie(payload.page_size)
+            }
+            else{
+                payload.page_size = getPageSizeCookie()
+            }
+
             manageRestaurant.getRestaurantList(payload)
             .then(resp => {
                 const data = resp.data
@@ -133,4 +140,28 @@ export default {
   getters,
   actions,
   mutations
+}
+
+function setPageSizeCookie(page_size) {
+  var d = new Date();
+  var exdays = 364;
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+    document.cookie = "page_size=" + page_size + ";" + expires + " ; SameSite=Lax ; Secure ; path=/";
+}
+
+function getPageSizeCookie() {
+  var name = "page_size=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return 10;
 }
