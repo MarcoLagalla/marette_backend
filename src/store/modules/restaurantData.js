@@ -241,6 +241,24 @@ const actions = {
         })
     },
 
+    updateProduct: ({commit}, product) => {
+        return new Promise((resolve, reject) => {
+
+            let payload = {};
+            payload['id'] = state.ID;
+            payload['data'] = product;
+            manageProduct.updateProduct(payload)
+            .then(resp => {
+                commit('REST_ADD_PROD_SUCCESS', resp.data);
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_ADD_PROD_ERROR');
+                reject(err)
+            })
+        })
+    },
+
     removeProduct: ({commit}, product_id) => {
         return new Promise((resolve, reject) => {
             let payload = {id: state.ID, p_id: product_id};

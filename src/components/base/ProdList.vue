@@ -35,6 +35,37 @@
 
       -->
       <sweet-modal ref="modal"><br>
+          <sweet-modal-tab title="Modifica/Info Prodotto" id="tab2" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;">
+            <v-row>
+                <v-col cols="6">
+              <picture-input
+                        v-if="showPicture"
+                        ref="productImage"
+                        @change="onChanged"
+                        :prefill="modal_product.image"
+                        :width="200"
+                        :height="200"
+                        :zIndex="0"
+                        size="5"
+                        :crop="true"
+                        :changeOnClick="false"
+                        accept="image/jpeg, image/png, image/gif"
+                        buttonClass="ui button primary"
+                        :customStrings="{
+                        upload: '<h1>Carica immagine</h1>',
+                        drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
+                </picture-input>
+                </v-col>
+                <v-col cols="6">
+              <v-text-field light class="field"  outlined label="Nome" :disabled="!editing"  v-model='modal_product.name'></v-text-field>
+              <v-text-field light class="field"  outlined label="Prezzo" :disabled="!editing"  v-model='modal_product.price'></v-text-field>
+              <v-text-field light class="field"  outlined label="Perw" :disabled="!editing"  v-model='modal_product.final_price'></v-text-field>
+              <v-textarea light class="field"  outlined label="Descrizione" :disabled="!editing"  v-model='modal_product.description'></v-textarea>
+                </v-col>
+                </v-row>
+              {{modal_product}}
+          </sweet-modal-tab>
+
           <sweet-modal-tab  title="Aggiungi Sconto" id="sconta_prodotto" icon="&lt;i class=&quot;fas fa-percent&quot;&gt;&lt;i&gt;">
                 <label>Aggiungi sconto/i</label>
               <multiselect
@@ -100,7 +131,6 @@
               </v-col>
               </v-row>
           </sweet-modal-tab>
-          <sweet-modal-tab title="Modifica Prodotto" id="tab2" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;"></sweet-modal-tab>
         </sweet-modal>
   </div>
 
@@ -108,7 +138,9 @@
 <script>
     import {mapActions} from "vuex";
     import {SweetModal, SweetModalTab} from "sweet-modal-vue";
-    import Multiselect from 'vue-multiselect'
+    import Multiselect from 'vue-multiselect';
+    import PictureInput from "vue-picture-input";
+
 
 
 
@@ -122,6 +154,7 @@ export default {
       SweetModal,
       SweetModalTab,
       Multiselect,
+      PictureInput,
   },
 
 
@@ -137,6 +170,7 @@ export default {
           modal_product:{},
           text: '',
           toggleSnackbar: false,
+          showPicture: false,
       }
 
   },
@@ -167,6 +201,7 @@ export default {
             "value": this.discount_price,
         };
         this.addNewDiscount(data);
+        this.discount_price = this.discount_type = this.discount_name = '';
         event.target.reset();
       },
 
@@ -262,6 +297,7 @@ export default {
           if(this.admin===true) {
               this.modal_product = prod;
               this.selected_discounts = prod.discounts;
+              this.showPicture = true;
               this.$refs.modal.open()
           }
       },
@@ -287,8 +323,14 @@ export default {
           }else{
               return `${option.title} - Sconto del ${option.value} %`
           }
-
-
+    },
+    onChanged() {
+        console.log("New picture loaded");
+        if (this.$refs.productImage.file) {
+            this.image = this.$refs.productImage.file;
+        } else {
+            console.log("Old browser. No support for Filereader API");
+        }
     },
 
     },

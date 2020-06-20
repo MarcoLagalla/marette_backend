@@ -20,6 +20,18 @@ export default {
             })
     },
 
+    updateProduct(payload) {
+        const config = {
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
+        };
+        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/add', payload['data'], config)
+            .then(response => {
+                return response
+            })
+    },
+
 
     removeProduct(payload){
         return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/'+ payload['p_id']+ '/delete', payload)
