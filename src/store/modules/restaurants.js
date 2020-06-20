@@ -56,6 +56,27 @@ const actions = {
         })
     },
 
+    searchRestaurants: ({commit}, payload) => {
+        return new Promise((resolve, reject) => {
+            if (Object.prototype.hasOwnProperty.call(payload, 'page_size')){
+                setPageSizeCookie(payload.page_size)
+            }
+            else{
+                payload.page_size = getPageSizeCookie()
+            }
+            manageRestaurant.searchRestaurantList(payload)
+            .then(resp => {
+                const data = resp.data
+                commit('REST_LIST_SUCCESS', data)
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_LIST_ERROR')
+                reject(err)
+            })
+        })
+    },
+
     updateRestaurant: ({commit, rootGetters}, data) => {
         return new Promise((resolve, reject) => {
             var id = rootGetters["restaurantData/id"];

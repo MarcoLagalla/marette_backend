@@ -42,7 +42,7 @@
                         ></v-slider>
                     </div>
                 </v-expand-transition>
-                <v-btn text>Cerca</v-btn>
+                <v-btn text @click="search()">Cerca</v-btn>
             </div>
 
             <v-skeleton-loader
@@ -119,7 +119,7 @@
             }
         },
         methods:{
-            ...mapActions('restaurants', ['getRestaurants']),
+            ...mapActions('restaurants', ['getRestaurants', 'searchRestaurants']),
             categoryString (restaurant_category){
                 var categories = ''
                 restaurant_category.forEach((cat)=>{
@@ -165,6 +165,24 @@
                     page_size: page_size
                 })
                 .then(this.loading = false)
+            },
+            search(){
+                this.loading = true
+                var payload = {
+                    page_number: this.restaurantListData.page_number,
+                    page_size: this.restaurantListData.page_size,
+                    query: this.query,
+                    city: this.city,
+                    restaurant_category: this.restaurant_category.category_name,
+                }
+                if(this.aperto_ora)
+                    payload.aperto_ora = 1
+
+                this.searchRestaurants(payload)
+                .then(this.loading = false)
+                .catch((error)=>{
+                    console.log(error)
+                })
             },
             getLocation() {
                 this.loadingGeo = true
