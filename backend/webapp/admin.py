@@ -4,7 +4,8 @@ from django.contrib.admin.utils import flatten_fieldsets
 import django.forms
 from rest_framework.exceptions import ValidationError
 
-from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount
+from .models.models import Restaurant, Product, ProductTag, ProductDiscount, Picture, RestaurantDiscount, CustomerVote, \
+    OrarioApertura, GiornoApertura, FasciaOraria, Category
 from .models.menu import Menu, MenuEntry
 from .models.components import RestaurantComponents, HomeComponent, VetrinaComponent, EventiComponent, \
     GalleriaComponent, MenuComponent, ContattaciComponent
@@ -17,16 +18,17 @@ class RestaurantAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
         obj.set_url()
-        restaurant = obj
-        # create ComponentsPanels (empty)
-        home = HomeComponent.objects.create(restaurant=restaurant, name='HOME')
-        vetrina = VetrinaComponent.objects.create(restaurant=restaurant, name='VETRINA')
-        galleria = GalleriaComponent.objects.create(restaurant=restaurant, name='GALLERIA')
-        eventi = EventiComponent.objects.create(restaurant=restaurant, name='EVENTI')
-        menu = MenuComponent.objects.create(restaurant=restaurant, name='MENU')
-        contattaci = ContattaciComponent.objects.create(restaurant=restaurant, name='CONTATTACI')
 
-        RestaurantComponents.objects.create(
+        restaurant = obj
+
+        home, crt = HomeComponent.objects.get_or_create(restaurant=restaurant, name='HOME')
+        vetrina, crt = VetrinaComponent.objects.get_or_create(restaurant=restaurant, name='VETRINA')
+        galleria, crt = GalleriaComponent.objects.get_or_create(restaurant=restaurant, name='GALLERIA')
+        eventi, crt = EventiComponent.objects.get_or_create(restaurant=restaurant, name='EVENTI')
+        menu, crt = MenuComponent.objects.get_or_create(restaurant=restaurant, name='MENU')
+        contattaci, crt = ContattaciComponent.objects.get_or_create(restaurant=restaurant, name='CONTATTI')
+
+        RestaurantComponents.objects.get_or_create(
             restaurant=restaurant,
             home=home,
             vetrina=vetrina,
@@ -35,6 +37,9 @@ class RestaurantAdmin(admin.ModelAdmin):
             menu=menu,
             contattaci=contattaci
         )
+
+        # create TimeTable (empty)
+        OrarioApertura.objects.get_or_create(restaurant=restaurant)
 
         super(RestaurantAdmin, self).save_model(request, obj, form, change)
 
@@ -78,6 +83,7 @@ class MenuInline(django.forms.ModelForm):
             entry.delete()
         return super(MenuInline, self).delete_model(request, obj)
 
+
 class MenuAdmin(ModelAdmin):
   form = MenuInline
 
@@ -113,10 +119,11 @@ class MyAdmin(ModelAdmin):
                 'valid',
             )}),
     )
-    readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva', )
+    # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva', )
 
     # when in production
-    # readonly_fields = ('all')
+    readonly_fields = ('discount', 'total', 'imposable', 'iva', 'date_created')
+
     def total(self, obj):
         return obj.get_total()
 
@@ -132,3 +139,9 @@ class MyAdmin(ModelAdmin):
 admin.site.register(Order, MyAdmin)
 
 admin.site.register(RestaurantDiscount)
+admin.site.register(CustomerVote)
+
+admin.site.register(OrarioApertura)
+admin.site.register(GiornoApertura)
+admin.site.register(FasciaOraria)
+admin.site.register(Category)

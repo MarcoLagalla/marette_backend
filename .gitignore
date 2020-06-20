@@ -7,6 +7,9 @@ public/static/*
 /dist
 /venv
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
 
 src-copy
 __pycache__
@@ -29,3 +32,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+/public/media/avatars/

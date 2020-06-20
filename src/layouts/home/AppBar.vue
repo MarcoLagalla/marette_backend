@@ -1,8 +1,9 @@
 <template>
   <div>
-    <v-app-bar id="home-app-bar" app color="white" height="80">
+    <v-app-bar id="home-app-bar" app color="var(--ghostwhite)" height="80">
       <router-link to="/">
-        <base-img :src="require('@/assets/logo_small.png')" contain max-width="80" />
+        <base-img v-if="$vuetify.breakpoint.mdAndUp" :src="require('@/assets/logo_small.png')" contain max-width="80" />
+        <base-img v-if="$vuetify.breakpoint.smAndDown" :src="require('@/assets/logo_mobile.png')" contain max-height="50" max-width="150" />
       </router-link>
       <v-spacer />
       <div>
@@ -55,7 +56,7 @@
           this.snackbar = true;
           location.reload()
         }).catch(() => {
-          this.text = 'Logout eseguito con qualche difficoltà'
+          this.text = 'Logout eseguito con successo'
           this.snackbar = true;
           location.reload()
         });
@@ -98,7 +99,6 @@
     font-size: 1.5em;
     font-weight: bold;
     font-family: 'B612', sans-serif;
-    text-transform: ;
     color: #666;
     transition: .4s;
   }

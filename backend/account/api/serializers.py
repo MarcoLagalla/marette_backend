@@ -1,3 +1,4 @@
+from django.contrib.auth import validators
 from django.contrib.auth.models import update_last_login
 from django.core.validators import RegexValidator
 from rest_framework import serializers
@@ -5,10 +6,12 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from backend.account.models import Customer, Business
 from django.db import transaction
+from django.core import exceptions
 from codicefiscale import isvalid as cf_isvalid
 
 from ..models import User
 from .validators import SetCustomErrorMessagesMixin
+from ..tokens import account_activation_token
 
 
 class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerializer):
@@ -56,7 +59,20 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         user = User.objects.create(**self.validated_data['user'])
 
         if password != password2:
-            raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
+            raise serializers.ValidationError({'password': ['Le password devono combaciare.'],
+                                               'password2': ['Le password devono combaciare.']})
+
+        try:
+            # validate the password and catch the exception
+            validate_password(password=password, user=user)
+
+            # the exception raised here is different than serializers.ValidationError
+        except exceptions.ValidationError as e:
+            errors = dict()
+            errors['password'] = list(e.messages)
+            raise serializers.ValidationError(errors)
+
+
         user.set_password(password)
         user.save()
         update_last_login(None, user)
@@ -64,7 +80,9 @@ class CustomerSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         del self.validated_data['user']
         del self.validated_data['password2']
 
-        customer = Customer.objects.create(user=user, **self.validated_data)
+        activation_token = account_activation_token.make_token(user)
+
+        customer = Customer.objects.create(user=user, activation_token=activation_token, **self.validated_data)
         return customer
 
 
@@ -98,10 +116,16 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
         my_fields = {'avatar'}
         data = super().to_representation(instance)
         for field in my_fields:
-            try:
-                    data[field] = instance.get_image()
-            except KeyError:
-                pass
+            if field == 'avatar':
+                try:
+                        data[field] = instance.get_image()
+                except KeyError:
+                    pass
+            elif field == 'cf':
+                try:
+                        data[field] = instance.get_cf()
+                except KeyError:
+                    pass
         return data
 
     @transaction.atomic
@@ -112,7 +136,18 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
         user = User.objects.create(**self.validated_data['user'])
         if password != password2:
-            raise serializers.ValidationError({'password': ['Le password devono combaciare.']})
+            raise serializers.ValidationError({'password': ['Le password devono combaciare.'],
+                                               'password2': ['Le password devono combaciare.']})
+
+        try:
+            # validate the password and catch the exception
+            validate_password(password=password, user=user)
+
+            # the exception raised here is different than serializers.ValidationError
+        except exceptions.ValidationError as e:
+            errors = dict()
+            errors['password'] = list(e.messages)
+            raise serializers.ValidationError(errors)
 
         if not cf_isvalid(cf):
             raise serializers.ValidationError({'cf': ['Il codice fiscale non è valido.']})
@@ -123,8 +158,12 @@ class BusinessSerializer(SetCustomErrorMessagesMixin, serializers.ModelSerialize
 
         del self.validated_data['user']
         del self.validated_data['password2']
+        del self.validated_data['cf']
 
-        business = Business.objects.create(user=user, **self.validated_data)
+        activation_token = account_activation_token.make_token(user)
+
+        business = Business.objects.create(user=user, activation_token=activation_token,
+                                           cf=cf, **self.validated_data)
         return business
 
 

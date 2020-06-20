@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@/store"
 import RestMenu from "../components/base/RestMenu";
-import rest1 from "../views/pages/rest1";
+import restaurant from "../views/pages/restaurant";
 import RestMenuMobile from "../components/base/RestMenuMobile";
 import ManageRest from "../views/pages/manageRest";
 
@@ -17,9 +17,23 @@ const ifNotAuthenticated = (to, from, next) => {
   next("/");
 };
 
-const ifAuthenticated = (to, from, next) => {
+/*const ifAuthenticated = (to, from, next) => {
   if (store.getters['userAuthentication/isAuthenticated']) {
     next();
+
+    return;
+  }
+  next("/");
+};*/
+
+const downloadProfileData = (to, from, next) => {
+  if (store.getters['userAuthentication/isAuthenticated']) {
+    store.dispatch("userProfile/getUserData", getID()).then(()=> {
+      next();
+    }).catch(()=>{
+       next("/");
+     })
+
     return;
   }
   next("/");
@@ -36,7 +50,10 @@ const ifBusiness = (to, from, next) => {
 const ifOwner = (to, from, next) => {
   if (store.getters['userProfile/isBusiness'] && store.getters['userProfile/restaurants'].includes(Number(to.params.id))){
      store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
-       next();
+        if (store.getters['restaurantData/slug'] === to.params.name)
+          next();
+        else
+          next("/404");
      }).catch(()=>{
        next("/404");
      })
@@ -47,7 +64,10 @@ const ifOwner = (to, from, next) => {
 
 const ifExist = (to, from, next) => {
   store.dispatch("restaurantData/getRestaurantData", to.params.id).then(()=>{
-    next();
+    if (store.getters['restaurantData/slug'] === to.params.name)
+      next();
+    else
+      next("/404");
   }).catch(()=>{
     next("/404");
   })
@@ -78,12 +98,17 @@ const router = new Router({
           component: () => import('@/views/pages/about.vue'),
           //meta: { src: require('@/assets/about.jpg') },
         },
+        {
+          path: 'termini',
+          name: 'TerminiECondizioni',
+          component: () => import('@/views/pages/TerminiECondizioni.vue'),
+          //meta: { src: require('@/assets/about.jpg') },
+        },
 
         {
           path: 'registrationBusiness',
           name: 'RegBusiness',
           component: () => import('@/views/pages/registrationBusiness.vue'),
-          beforeEnter: ifNotAuthenticated,
         },
         {
           path: 'newRestaurant',
@@ -95,7 +120,7 @@ const router = new Router({
           path: 'profile',
           name: 'profile',
           component: () => import('@/views/pages/profile.vue'),
-          beforeEnter:  ifAuthenticated,
+          beforeEnter:  downloadProfileData,
         },
         {
           path: 'profile/manage/:id/:name',
@@ -120,10 +145,15 @@ const router = new Router({
           beforeEnter: ifNotAuthenticated,
         },
         {
+          path: 'activate/:id/:token',
+          name: 'ValidateEmail',
+          component: () => import('@/views/pages/validateEmail.vue'),
+        },
+        {
           path: ':id/:name',
           name: 'RestaurantHome',
           components: {
-            default: rest1,
+            default: restaurant,
             restMenu: RestMenu,
             restMenuMobile: RestMenuMobile
           },
@@ -141,5 +171,12 @@ const router = new Router({
 
   ],
 })
+
+function getID() {
+ var result = document.cookie.match(new RegExp('user_private' + '=([^;]+)'));
+ result && (result = JSON.parse(result[1]));
+ return result ? result.id : '';
+}
+
 
 export default router

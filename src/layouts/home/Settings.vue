@@ -2,7 +2,7 @@
   <router-link :to="{ name: 'profile'}">
     <v-card
     id="settings"
-    class="py-2 px-4"
+    class="profcard"
     color="#ffffff8D"
     dark
     flat
@@ -10,7 +10,7 @@
     width="100"
     >
     <v-icon
-    color="red"
+    class="proficon"
     large>
     mdi-account
   </v-icon>
@@ -69,7 +69,15 @@ export default {
   width: 0.5em;
   transform: rotate(45deg);
 }
+.proficon {
+  color: var(--darkslate);
+}
 a {
   text-decoration: none;
 }
+  .profcard {
+    z-index: 999;
+    padding: 15px;
+    box-shadow: 0 0 6px black!important;
+  }
 </style>

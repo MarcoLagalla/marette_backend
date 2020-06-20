@@ -1,8 +1,5 @@
 <template>
-  <v-card color="basil">
-    <v-card-title class="text-center justify-center py-6">
-      <h1 class="font-weight-bold display-3 basil--text">Categorie</h1>
-    </v-card-title>
+  <v-card flat class="basil" >
     <v-tabs v-model="tab" color="basil" grow >
       <v-tab v-for="category in categories" :key="category" class="tabcat">
         {{ category }}
@@ -10,9 +7,8 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="category in categories" :key="category">
-        <v-card color="basil" >
-          <base-prod-list :products="menu[category]"/>
-          <base-add-product :category='category' :v-if="admin" :admin="admin"></base-add-product>
+        <v-card flat >
+          <base-prod-list :admin="admin" :products="menu[category]" :category="category"/>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -57,12 +53,15 @@ export default {
 <style lang="css" scoped>
 /* Helper classes */
 .basil {
-  background-color: #FFFBE6 !important;
+  background-color: var(--ghostwhite) !important;
+  margin-top: 1vmax;
 }
 .basil--text {
-  color: #356859 !important;
+  color: var(--emerald) !important;
+  text-shadow: 0 0 2px grey;
+
 }
 .tabcat {
-  background-color: beige;
+  background-color: var(--ghostwhite);
 }
 </style>

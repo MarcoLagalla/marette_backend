@@ -17,7 +17,6 @@ export default {
   mixins: [
     LoadSections([
       'NewRestaurant',
-      'info',
     ]),
   ],
 

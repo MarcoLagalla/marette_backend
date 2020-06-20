@@ -1,18 +1,21 @@
-from rest_framework import serializers
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
-from ..models.models import Product
-from ..models.menu import Menu, MenuEntry
 from .products_serializers import ProductTagSerializer
+from ..models.menu import Menu, MenuEntry
+from ..models.models import Product
 
 
 class MenuEntryProductSerializer(serializers.ModelSerializer):
     tags = ProductTagSerializer(many=True)
+    image = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'description', 'image', 'tags')
+
+    def get_image(self, obj):
+        return obj.get_image()
 
 
 class MenuEntrySerializer(serializers.ModelSerializer):
@@ -66,7 +69,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ('id', 'name', 'description', 'price', 'entries')
+        fields = ('id', 'name', 'description', 'price', 'iva', 'entries')
 
     def get_entries(self, obj):
         return MenuEntrySerializer(obj.get_entries(), many=True).data

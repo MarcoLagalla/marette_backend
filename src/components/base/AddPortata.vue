@@ -1,63 +1,75 @@
 <template>
-  <form>
-    <v-text-field v-model='name' type="text" label="Nome della portata" required></v-text-field>
-    <v-text-field v-model='num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
+  <div class="body" id="AddPortata">
+    <v-btn class="managebutton" @click="portata.showAddPortata = true" text>{{addBtn}}</v-btn>
+    <div v-show="portata.showAddPortata" class="addportata" >
+      <v-text-field outlined v-model='portata.name' type="text" label="Nome della portata" required></v-text-field>
+      <v-text-field outlined v-model='portata.num_products' type="number" label="Numero di piatti selezionabili" required></v-text-field>
+          <div v-for="(product, i) in portata.products" :key="i"  >
+            <base-portata-product :product="product" :deleteOpt="true" @removed="removeProduct(product)" :discounts_list="[]"></base-portata-product>
+          </div>
+      <v-btn class="managebutton" @click="showAddProduct=true" text>Aggiungi prodotto</v-btn>
+      <base-add-product-to-portata v-show="showAddProduct" @added_product="addProduct($event)"></base-add-product-to-portata>
 
-    <v-row >
-        <v-col v-for="(product, i) in products" :key="i" cols="12" >
-          <v-card color="#616161" dark class="product">
-            <div class="d-flex flex-no-wrap justify-space-between">
-              <div class="quant">
-                <div class>
-                  <v-avatar class="ma-3" size="100" tile>
-                    <v-img :src="product.image"></v-img>
-                  </v-avatar>
-                </div>
-                <div class>
-                  <v-card-title class="headline" v-text="product.name"></v-card-title>
-                  <v-card-subtitle class="pb-0" v-text="product.category"></v-card-subtitle>
-                  <div class="description" v-text="product.description"></div>
-                </div>
-              </div>
-              <div class="pos2" v-for="(item, j) in product.tags" :key="j" v-text="item.name"></div>
-              <v-card-actions class="pos1">
-                <div class="quant">
-                  <div v-text="product.price"></div>
-                  <v-icon small class="quant">fas fa-euro-sign</v-icon>
-                </div>
-                <v-btn color="red">
-                  <i class="fas fa-shopping-basket">Elimina</i>
-                </v-btn>
-              </v-card-actions>
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
-
-    <v-btn @click="showAdd=true" text>Aggiungi prodotto</v-btn>
-    <base-add-product-to-portata v-show="showAdd" @added_product="addProduct($event)"></base-add-product-to-portata>
-
-  </form>
+      <v-btn class="managebutton"  @click="submitPortata" :disabled="portata.products.length===0" text>{{submitBtn}}</v-btn>
+    </div>
+  </div>
 </template>
 
 <script>
+
   export default {
     name: "AddPortata",
-      data: () => ({
-      name: '',
-      num_products: 1,
-      showAdd: false,
-      products: []
+    props: {
+      portata: {
+        type: Object,
+        required: false,
+        default:() => ({
+          name: '',
+          num_products: 1,
+          products: [],
+          edit: false,
+          showAddPortata: false,
+        })
+      },
+    },
+    data: () => ({
+        showAddProduct: false,
+        addBtnNew: 'Aggiungi portata',
+        addBtnEdit: 'Modifica portata',
+        submitBtnNew: 'Salva portata',
+        submitBtnEdit: 'Salva cambiamenti',
     }),
     methods: {
       addProduct: function(prod) {
-        this.products.push(prod);
-        this.showAdd =  false
+        this.portata.products = this.portata.products.concat(prod);
+        this.showAddProduct =  false
+      },
+      removeProduct: function(prod){
+        this.portata.products.splice(this.portata.products.indexOf(prod), 1);
+      },
+      submitPortata: function(){
+          if (this.portata.edit)
+              this.$emit('edit_portata', this.portata)
+          else
+              this.$emit('new_portata', this.portata)
       }
-    }
+    },
+    computed: {
+      addBtn() {
+          return this.portata.edit? this.addBtnEdit : this.addBtnNew
+      },
+      submitBtn() {
+          return this.portata.edit? this.submitBtnEdit : this.submitBtnNew
+      },
+    },
   }
 </script>
 
 <style scoped>
+.addportata {
 
+}
+  .body {
+    margin: 10px;
+  }
 </style>

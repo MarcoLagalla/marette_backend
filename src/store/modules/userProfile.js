@@ -13,6 +13,7 @@ const state = {
         is_superuser: false,
         type:"",
         restaurants:[],
+        avatar: ''
   },
 
   errors: [],
@@ -30,30 +31,37 @@ const getters = {
   user: state => state.user,
   errors: state=> state.errors,
   user_private: state => state.user_private,
+  avatar: state => state.user_private.avatar,
   restaurants: state => state.user_private.restaurants
 }
 
 const actions = {
-
-
   getUserData: ({commit, dispatch}, id) => {
-    commit('USER_REQUEST')
-    manageUserProfile.getUserProfile(id)
+    return new Promise((resolve, reject) => {
+      commit('USER_REQUEST')
+      manageUserProfile.getUserProfile(id)
         .then(resp => {
           const data = resp.data
           data.id = id
           setCookiesUserPrivate(data)
           commit('USER_SUCCESS', data)
+          resolve(data)
         })
         .catch(err => {
           dispatch("userAuthentication/logout", null, {root: true});
           commit('USER_ERROR');
+          reject(err)
         })
+    })
   },
 
   logout: ({commit}) => {
     deleteUserPrivateCookies()
     commit('USER_PROF_LOGOUT')
+  },
+
+  addRestaurant: ({commit}, restID) => {
+    commit('USER_ADD_REST', restID)
   },
 
   changePassword: ({commit}, data) => {
@@ -71,14 +79,128 @@ const actions = {
           .catch(err => {
 
             commit('PSW_CHANGE_ERROR', err.response)
-            reject(err)
+            reject(err.response.data)
 
           })
     })
-  }
+  },
+
+  validateEmail: ({commit}, payload) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ValidateEmail(payload)
+      .then(resp => {
+
+        commit('VALID_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('VALID_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
+
+  resendEmailValidation: ({commit}) => {
+    return new Promise((resolve, reject) => {
+      sendUserAuthentication.ResendValidateEmail(state.user_private.id)
+      .then(resp => {
+
+        commit('RESEND_EMAIL_SUCCESS')
+        resolve(resp.data)
+
+      })
+      .catch(err => {
+
+        commit('RESEND_EMAIL_ERROR')
+        reject(err.response.data)
+
+      })
+    })
+  },
+
+  updateProfile: ({commit}, data) => {
+    return new Promise((resolve, reject) => {
+      if ( state.user_private.type==='business'){
+        manageUserProfile.updateBusiness(state.user_private.id, data)
+        .then(resp => {
+          commit('USER_UPDATE', resp.data)
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('BUSINESS_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+      else{
+        manageUserProfile.updateUser(state.user_private.id, data)
+        .then(resp => {
+          commit('USER_UPDATE', resp.data)
+          resolve(resp.data)
+
+        })
+        .catch(err => {
+
+          commit('USER_UPDATE_ERROR')
+          reject(err.response.data)
+
+        })
+      }
+    })
+  },
 }
 
 const mutations = {
+
+  USER_UPDATE: (state, data) => {
+    state.user_private.avatar = data.avatar
+    state.user_private.email_activated = data.email_activated
+
+    state.user.Username = data.username
+    state.user.Email = data.email
+    state.user.Nome = data.first_name
+    state.user.Cognome = data.last_name
+    state.user.Anno_di_Nascita = data.birth_date
+    state.user.Numero_di_Telefono = data.phone
+
+
+    if (state.user_private.type === 'business')
+    {
+      state.user.Codice_Fiscale = data.cf
+      state.user.Indirizzo = data.address
+      state.user.N_civ = data.n_civ
+      state.user.Citta = data.city
+      state.user.Cap = data.cap
+    }
+  },
+
+  USER_UPDATE_ERROR: (state) => {
+  },
+
+  BUSINESS_UPDATE: (state) => {
+  },
+
+  BUSINESS_UPDATE_ERROR: (state) => {
+  },
+
+  RESEND_EMAIL_SUCCESS: () => {
+  },
+
+  RESEND_EMAIL_ERROR: () => {
+  },
+
+  VALID_EMAIL_SUCCESS: (state) => {
+    state.user_private.email_activated = true
+  },
+  VALID_EMAIL_ERROR: (state) => {
+    state.user_private.email_activated = false
+  },
+
   USER_REQUEST: (state) => {
     state.status = 'loading'
   },
@@ -88,6 +210,8 @@ const mutations = {
     state.user_private.type = data.type
     state.user_private.id = data.id
     state.user_private.is_superuser = data.is_superuser
+    state.user_private.avatar = data.avatar
+    state.user_private.email_activated = data.email_activated
 
     state.user.Username = data.username
     state.user.Email = data.email
@@ -96,10 +220,14 @@ const mutations = {
     state.user.Anno_di_Nascita = data.birth_date
     state.user.Numero_di_Telefono = data.phone
 
+
     if (state.user_private.type === 'business')
     {
       state.user.Codice_Fiscale = data.cf
-      state.user.Indirizzo = data.address + ', ' + data.city + ', ' + data.cap
+      state.user.Indirizzo = data.address
+      state.user.N_civ = data.n_civ
+      state.user.Citta = data.city
+      state.user.Cap = data.cap
       state.user_private.restaurants = data.restaurants
     }
 
@@ -123,7 +251,10 @@ const mutations = {
 
   USER_ERROR: (state) => {
     state.status = 'error'
+  },
 
+  USER_ADD_REST: (state, restId) => {
+    state.user_private.restaurants.push(restId)
   },
 }
 
@@ -139,7 +270,11 @@ function updateTokenCookie( token ) {
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user-token=" + token + ";" + expires + ";path=/";//TODO: flaggare il cookie come sicuro solo quando avremo https
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user-token=" + token + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function setCookiesUserPrivate( data) {
@@ -147,17 +282,27 @@ function setCookiesUserPrivate( data) {
     user_private['type']=data.type
     user_private['id'] = data.id
     user_private['is_superuser'] = data.is_superuser
+    user_private['email_activated'] = data.email_activated
+    user_private['avatar'] = data.avatar
     if (data.type === 'business')
        user_private['restaurants'] = data.restaurants
   var d = new Date();
   var exdays = 364;
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
-  document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + ";path=/";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ; Secure ;path=/";
+  }
+  else
+    document.cookie = "user_private=" + JSON.stringify(user_private) + ";" + expires + "; SameSite=Lax ;path=/";
 }
 
 function deleteUserPrivateCookies() {
-  document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  if (process.env.NODE_ENV === 'production') {
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; Secure ; path=/;";
+  }
+  else
+    document.cookie = "user_private=; expires=Thu, 01 Jan 1970 00:00:00 UTC ; SameSite=Lax ; path=/;";
 }
 
 

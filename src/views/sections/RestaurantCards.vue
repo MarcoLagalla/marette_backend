@@ -1,127 +1,479 @@
 <template>
 
-<div class="body">
-    <a href="https://www.facebook.com/dialog/oauth?client_id=3088012607926243&redirect_uri={http://localhost:8080}">Premi qui Larco</a>
-    <p>{{this.$route.query.code}}</p>
+    <div class="body">
+        <!-- p>{{this.$route.query.code}}</p -->
 
-  <base-section id="">
-  <div class="title-center">
-    <h1 >Ristoranti</h1>
-      <div class="divider"></div>
-      <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
-    
+        <base-section id="">
+            <div class="title-center">
+                <h1>Ristoranti</h1>
+                <div class="divider"></div>
+                <span class="subt"> Ecco la nostra scelta di ristoranti</span>
+                <div class="divider"></div>
 
-    <v-container>
-      <v-row>
-        <v-col v-for="(restaurant, i) in restaurantList" :key="i" cols="12" md="6">
-          <router-link :to="restaurant.url">
-            <v-card v-bind="restaurant" class="restcard" max-width="400">
-              <v-img class="white--text align-end imag" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
-                <v-card-title><h2>{{ restaurant.activity_name }}</h2></v-card-title>
-              </v-img>
+                <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
 
-              <v-card-text class="text--primary">
-                <div>{{ restaurant.activity_description }}</div>
-              </v-card-text>
-  <v-divider />
-              <div class="actions">
-                <button class="share">
-                  Condividi <v-icon color="orange"> mdi-share-variant </v-icon>
-                </button>
-                <button class="like">  <v-icon color="orange"> mdi-heart </v-icon></button>
-              </div>
-            </v-card>
-          </router-link>
-        </v-col>
-      </v-row>
-    </v-container>
-  </base-section>
-</div>
+                <v-expand-transition>
+                    <div v-show="showAdvancedQuery">
+                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                        <v-text-field :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-btn @click="getLocation()" :loading="loadingGeo" text>Localizza
+                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                        </v-btn>
+                        <v-combobox
+                            :items="restDataCat"
+                            item-text="category_name"
+                            item-value="id"
+                            v-model='restaurant_category'
+                            id="restaurant_category"
+                            name="restaurant_category"
+                            label="Categoria"
+                        ></v-combobox>
+                        <v-slider
+                            height="60"
+                            label="Ristoranti per pagina:"
+                            min="1"
+                            max="40"
+                            v-model="restaurantListData.page_size"
+                            thumb-label="always"
+                            @change="changePageSize($event)"
+                        ></v-slider>
+                    </div>
+                </v-expand-transition>
+                <v-btn text @click="search()">Cerca</v-btn>
+            </div>
+
+            <v-skeleton-loader
+              :loading="loading"
+              transition-group="scale-transition"
+              type="table-thead@4"
+            >
+                <div>
+                    <v-row>
+                        <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
+                            <router-link :to="restaurant.url">
+                                <div v-bind="restaurant" >
+                                    <div>
+                                        <div class="example-2 card">
+                                            <div class="wrapper" :style="image(restaurant.image)" >
+                                                <div class="header">
+                                                    <div class="date">
+                                                        <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
+                                                    </div>
+                                                    <ul class="menu-content">
+                                                            <li><a class="fas fa-heart"><span>18</span></a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="data">
+                                                    <div class="content">
+                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <p class="text">{{restaurant.activity_description}}</p>
+                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </router-link>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-skeleton-loader>
+            <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
+        </base-section>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'RestaurantCards',
+    import {mapActions} from "vuex";
+    import axios from 'axios'
 
-  data: () => ({
+    export default {
+        name: 'RestaurantCards',
 
-  }),
-  computed: {
-    restaurantList() {
-      return this.$store.getters['restaurants/restaurantList']
+        data: () => ({
+            loading: false,
+            city: '',
+            aperto_ora: false,
+            loadingGeo: false,
+            query: '',
+            restaurant_category: '',
+            showAdvancedQuery: false
+        }),
+        computed: {
+            restaurantListData() {
+                return this.$store.getters['restaurants/restaurantList']
+            },
+            restData() {
+                return this.$store.getters['restaurantData/restData']
+            },
+            pageNumber: {
+                get() {return parseInt(this.restaurantListData.page_number, 10);},
+                set(value) { this.restaurantListData.page_number =  value}
+            },
+            restDataCat() {
+                return this.$store.getters['restaurantData/restCategories']
+            }
+        },
+        methods:{
+            ...mapActions('restaurants', ['getRestaurants', 'searchRestaurants']),
+            categoryString (restaurant_category){
+                var categories = ''
+                restaurant_category.forEach((cat)=>{
+                  categories += cat.category_name + ', '
+                })
+                return categories.substring(0, categories.length-2);
+            },
+            image(imgUrl) {
+                return {backgroundImage: "url(" + imgUrl + ") "}
+            },
+            nextPage() {
+                if(this.restaurantListData.next) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.next,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
+            },
+            previousPage() {
+                if(this.restaurantListData.previous) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.previous,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
+            },
+            goToPage(page) {
+                this.loading = true
+                this.getRestaurants({
+                    page_number: page,
+                    page_size: this.restaurantListData.page_size
+                })
+                .then(this.loading = false)
+            },
+            changePageSize(page_size) {
+                this.loading = true
+                this.getRestaurants({
+                    page_number: this.restaurantListData.page_number,
+                    page_size: page_size
+                })
+                .then(this.loading = false)
+            },
+            search(){
+                this.loading = true
+                var payload = {
+                    page_number: this.restaurantListData.page_number,
+                    page_size: this.restaurantListData.page_size,
+                    query: this.query,
+                    city: this.city,
+                    restaurant_category: this.restaurant_category.category_name,
+                }
+                if(this.aperto_ora)
+                    payload.aperto_ora = 1
+
+                this.searchRestaurants(payload)
+                .then(this.loading = false)
+                .catch((error)=>{
+                    console.log(error)
+                })
+            },
+            getLocation() {
+                this.loadingGeo = true
+                var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
+                }
+                else {
+                    console.log("Geolocation is not supported by this browser.")
+                    this.loadingGeo = false
+                }
+            },
+            getCity (coordinates) {
+                axios
+                  .get('https://api.opencagedata.com/geocode/v1/json', {
+                      params: {
+                          key: '9f6a7dc1ef664052825c045470a06937',
+                          language: 'it',
+                          q: coordinates.coords.latitude + ',' + coordinates.coords.longitude
+                      }
+                  })
+                  .then((response) => {
+                      this.city = response.data.results[0].components.county
+                      this.loadingGeo = false
+                  }).catch((error)=>{
+                      console.log('error')
+                      console.log(error)
+                      this.loadingGeo = false
+                  })
+            },
+            error(error){
+                console.log('error')
+                console.log(error)
+                this.loadingGeo = false
+            }
+        },
+        created() {
+            this.$store.dispatch("restaurants/getRestaurants", {})
+            this.$store.dispatch("restaurantData/getRestCategories")
+        },
     }
-  },
-  created() {
-    this.$store.dispatch("restaurants/getRestaurants")
-  }
-}
 </script>
 <style scoped>
-.body {
-  /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
-  background:var(--herb);
-}
-.divider {
-  width: 50px;
-  background: var(--chilli);
-  height: 5px;
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.title-center {
-  padding: 10px;
-  margin: 10px;
-  display: block;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.actions {
-  padding: 10px;
-}
-.like {
-  float: right;
-  padding: 10px;
-    transition: 0.3s ease-in-out;
-  opacity: 0.8;
-}
-.share {
-  font-weight: bold;
-  color: orange;
-  border-radius: 25px;
-  padding: 10px;
-  font-size: 1em;
-  transition: 0.3s ease-in-out;
-}
-.share:hover {
-  color: darkorange;
-  opacity: 1;
-}
-.shalikere:hover {
-  color: darkorange;
-  opacity: 1;
-}
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        box-sizing: border-box;
+    }
+    .body {
+        /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
+        background: var(--whitesmoke);
+    }
 
-.restcard {
-  box-shadow: 0 0 5px var(--charcoal);
-  transition: 0.5s;
-}
-.restcard:hover {
-  box-shadow: 0 0 20px var(--charcoal)
-}
-.imag {
-  box-shadow: 0 2px 2px var(--charcoal);
-}
-a {
-  text-decoration: none
-}
-.subt {
-  color: aliceblue;
-  font-weight: bold;
-}
-h1 {
-  color: aliceblue;
-  font-size: 2em;
-}
+    .divider {
+        width: 50px;
+        background: var(--ming);
+        height: 5px;
+        margin: 10px auto;
+        filter: blur(2px);
+    }
+
+    .slider {
+        width: 50%;
+        min-width: 350px;
+        align-self: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .title-center {
+        padding: 10px;
+        margin: 10px;
+        display: block;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+
+    .restcard {
+        width: 80%;
+        max-width: 350px;
+        transition: 0.4s;
+        margin: auto;
+        background: rgba(250,250,250,0) !important;
+    }
+
+
+
+    .imag {
+        box-shadow: 0 10px 4px grey;
+        text-shadow: 0 0 2px black;
+        border-radius:15px;
+        transition: 0.3s ease-in-out;
+        opacity: 0.9;
+        border: solid 1px darkgrey;
+    }
+    .restcard:hover > .imag {
+        transform: scale(1.05);
+    }
+    a {
+        text-decoration: none
+    }
+
+    .subt {
+        color: var(--darkslate);
+        font-weight: bold;
+    }
+
+    h1 {
+        color: var(--darkslate);
+        font-size: 2em;
+    }
+
+    h2 {
+        text-transform: capitalize;
+        word-break: keep-all;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+
+    }
+    .description {
+        overflow: hidden!important;
+        height: 50px;
+    }
+
+
+
+    .card {
+        float: left;
+        padding: 0 1.7rem;
+        width: 100%;
+    }
+    .card .menu-content {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+    .card .menu-content::before, .card .menu-content::after {
+        content: '';
+        display: table;
+    }
+    .card .menu-content::after {
+        clear: both;
+    }
+    .card .menu-content li {
+        display: inline-block;
+    }
+    .card .menu-content a {
+        color: #fff;
+    }
+    .card .menu-content span {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        font-size: 10px;
+        font-weight: 700;
+        font-family: 'Open Sans';
+        -webkit-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+    }
+    .card .wrapper {
+        background-color: #fff;
+        min-height: 380px;
+        max-width: 300px;
+        position: relative;
+        overflow: hidden;
+        margin: auto;
+        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.2);
+    }
+    .card .wrapper:hover .data {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    .card .data {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        -webkit-transform: translateY(calc(70px + 1em));
+        transform: translateY(calc(70px + 1em));
+        -webkit-transition: -webkit-transform 0.3s;
+        transition: -webkit-transform 0.3s;
+        transition: transform 0.3s;
+        transition: transform 0.3s, -webkit-transform 0.3s;
+    }
+    .card .data .content {
+        padding: 1em;
+        position: relative;
+        z-index: 1;
+    }
+    .card .author {
+        font-size: 12px;
+        text-transform: capitalize;
+        text-shadow: 0 0 1px black;
+    }
+    .card .title {
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-weight: 300;
+        font-size: 1.6rem!important;
+    }
+    .card .text {
+        height: 70px;
+        margin: 0;
+        background: rgba(0,0,0,0.0);
+    }
+    .card .header {
+        background: rgba(0,0,0,0.3);
+    }
+    .card input[type='checkbox'] {
+        display: none;
+    }
+    .card input[type='checkbox']:checked + .menu-content {
+        -webkit-transform: translateY(-60px);
+        transform: translateY(-60px);
+    }
+    .example-2 .wrapper {
+        background: center/cover no-repeat;
+    }
+    .example-2 .wrapper:hover .menu-content span {
+        -webkit-transform: translate(-50%, -10px);
+        transform: translate(-50%, -10px);
+        opacity: 1;
+    }
+    .example-2 .wrapper:hover .data div {
+        background: rgba(0,0,0,0.5);
+        transition: 0.4s ease-in-out;
+    }
+    .example-2 .wrapper .data div {
+        transition: 0.4s ease-in-out;
+    }
+    .example-2 .header {
+        color: #fff;
+        padding: 1em;
+    }
+    .example-2 .header::before, .example-2 .header::after {
+        content: '';
+        display: table;
+    }
+    .example-2 .header::after {
+        clear: both;
+    }
+    .example-2 .header .date {
+        float: left;
+        font-size: 12px;
+    }
+    .example-2 .menu-content {
+        float: right;
+    }
+    .example-2 .menu-content li {
+        margin: 0 5px;
+        position: relative;
+    }
+    .example-2 .menu-content span {
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        opacity: 0;
+    }
+    .example-2 .data {
+        color: #fff;
+        -webkit-transform: translateY(calc(70px + 4.5em));
+        transform: translateY(calc(70px + 4.5em));
+    }
+    .example-2 .title a {
+        color: #fff;
+    }
+    .example-2 .button {
+        display: block;
+        width: 100px;
+        margin: 2em auto 1em;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        line-height: 1;
+        position: relative;
+        font-weight: 700;
+    }
+    .example-2 .button::after {
+        content: '\2192';
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+    .example-2 .button:hover::after {
+        -webkit-transform: translate(5px, -50%);
+        transform: translate(5px, -50%);
+        opacity: 1;
+    }
 </style>

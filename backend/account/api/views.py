@@ -1,5 +1,5 @@
 import json
-
+import datetime
 from django.contrib.auth.models import User, update_last_login
 from django.core.exceptions import ObjectDoesNotExist
 import re
@@ -63,9 +63,8 @@ class CustomerAPIView(APIView):
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 customer = serializer.save()
-                activation_token = account_activation_token.make_token(customer.user)
-                send_welcome_email(customer.user, activation_token)
-                data['response'] = "Utente corretamente registrato."
+                send_welcome_email(customer.user, customer.activation_token)
+                data['response'] = "Utente correttamente registrato."
                 data['username'] = customer.user.username
                 data['id'] = customer.user.id
                 data['email'] = customer.user.email
@@ -101,8 +100,7 @@ class BusinessAPIView(APIView):
         if serializer.is_valid():
             if (not request.user.is_authenticated) or request.user.is_superuser:
                 business = serializer.save()
-                activation_token = account_activation_token.make_token(business.user)
-                send_welcome_email(business.user, activation_token)
+                send_welcome_email(business.user, business.activation_token)
                 data['response'] = "Utente correttamente registrato."
                 data['username'] = business.user.username
                 data['id'] = business.user.id
@@ -272,7 +270,11 @@ class AskPasswordAPIView(APIView):
                 return Response({'error': 'Email non esistente!'}, status.HTTP_404_NOT_FOUND)
 
             reset_token = passwordreset_token.make_token(user)
-            send_reset_email(user, reset_token)
+            try:
+                send_reset_email(user, reset_token)
+            except Exception:
+                data = {'error': ["Qualcosa è andato storto, riprova!"]}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             return Response({'details': 'Email inviata correttamente!'}, status.HTTP_200_OK)
         else:
             return Response({'error': 'Parametri non validi!'}, status.HTTP_400_BAD_REQUEST)
@@ -309,6 +311,10 @@ class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
+        try:
+            req_token = request.user.auth_token.key
+        except (Exception, ObjectDoesNotExist):
+            req_token = None
 
         try:
             user = User.objects.all().get(id=id)
@@ -321,7 +327,7 @@ class UserProfileAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if user:
-            if request.user.auth_token.key == token or request.user.is_superuser:
+            if req_token == token or request.user.is_superuser:
                 # check if customer
                 try:
                     data = {}
@@ -370,20 +376,33 @@ class UpdateCostumerUserProfile(APIView):
         except Customer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        input_data = {}
         try:
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            avatar = request.FILES['avatar']
-            input_data.update({'avatar': avatar})
+            avatar = request.data['avatar']
         except KeyError:
-            pass
+            avatar = None
 
         try:
             phone = input_data.get('phone')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            first_name = input_data.get('first_name')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            last_name = input_data.get('last_name')
+        except KeyError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            birth_date = input_data.get('birth_date')
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -397,10 +416,32 @@ class UpdateCostumerUserProfile(APIView):
             else:
                 return Response({'phone': 'Il numero di telefono non è valido.'},
                                 status=status.HTTP_400_BAD_REQUEST)
-            if avatar:
+
+            if birth_date:
+                try:
+                    datetime.datetime.strptime(birth_date, "%Y-%m-%d")
+                    user.birth_date = birth_date
+                except ValueError:
+                    return Response({'birth_date': 'Il formato data non è valido.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+            if first_name:
+                user.user.first_name = first_name
+
+            if last_name:
+                user.user.last_name = last_name
+
+            if avatar == '':
+                user.avatar = None
+            elif avatar:
                 user.avatar = avatar
+
+            # save both base user and extended
+            user.user.save()
             user.save()
-            return Response(status=status.HTTP_200_OK)
+
+            serializer = CustomerSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -416,24 +457,22 @@ class UpdateBusinessUserProfile(APIView):
         try:
             user = Business.objects.get(user_id=id)
         except Business.DoesNotExist:
-            return Response("ok",status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             token = Token.objects.all().get(user=user.user).key
         except Token.DoesNotExist:
-            return Response("2", status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        input_data = {}
         try:
             input_data = json.loads(request.data['data'])
         except KeyError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            avatar = request.FILES['avatar']
-            input_data.update({'avatar': avatar})
+            avatar = request.data['avatar']
         except KeyError:
-            pass
+            avatar = None
 
         missing_keys = False
         value_errors = {}
@@ -468,12 +507,39 @@ class UpdateBusinessUserProfile(APIView):
             missing_keys = True
             value_errors.update({'cap': 'Il campo non può essere vuoto.'})
 
+        try:
+            first_name = input_data.pop('first_name')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'first_name': 'Il campo non può essere vuoto.'})
+
+        try:
+            last_name = input_data.pop('last_name')
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'last_name': 'Il campo non può essere vuoto.'})
+
+        try:
+            birth_date = input_data.pop('birth_date')
+            if birth_date:
+                try:
+                    datetime.datetime.strptime(birth_date, "%Y-%m-%d")
+                    user.birth_date = birth_date
+                except ValueError:
+                    return Response({'birth_date': 'Il formato data non è valido.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            missing_keys = True
+            value_errors.update({'birth_date': 'Il campo non può essere vuoto.'})
+
         if missing_keys:
             return Response(value_errors, status=status.HTTP_400_BAD_REQUEST)
 
         validation_errors_ = False
         validation_errors = {}
-        if not phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT")):
+        try:
+            phonenumbers.is_valid_number(phonenumbers.parse(phone, "IT"))
+        except phonenumbers.phonenumberutil.NumberParseException:
             validation_errors_ = True
             validation_errors.update({'phone': 'Il numero di telefono deve essere valido'})
 
@@ -488,16 +554,68 @@ class UpdateBusinessUserProfile(APIView):
         if request.user.auth_token.key == token:
             # campi che possono essere modificati:
             # numero di telefono, city, address, cap
+
+            if first_name:
+                user.user.first_name = first_name
+            if last_name:
+                user.user.last_name = last_name
+
+            user.birth_date = birth_date
             user.city = city
             user.address = address
             user.n_civ = n_civ
             user.cap = cap
             user.phone = phone
-            if avatar:
+
+            if avatar == '':
+                user.avatar = None
+            elif avatar:
                 user.avatar = avatar
+
+            user.user.save()
             user.save()
-            return Response(status=status.HTTP_200_OK)
+
+            serializer = BusinessSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
+class ResendActivationToken(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic()
+    def post(self, request, id):
+
+        try:
+            user = User.objects.all().get(id=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            token = Token.objects.all().get(user=user).key
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if request.user.auth_token.key == token:
+
+            try:
+                extended_user = Customer.objects.all().get(user=user)
+            except Customer.DoesNotExist:
+                try:
+                    extended_user = Business.objects.all().get(user=user)
+                except Business.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            if extended_user.email_activated:
+                return Response({'error': "L'utente ha già verificato l'indirizzo email"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                send_welcome_email(user, extended_user.activation_token)
+                return Response({'data': 'Email inviata!'}, status=status.HTTP_200_OK)
+            except Exception:
+                pass
+        else:
+            return Response({'error': 'Token not valid.'}, status=status.HTTP_401_UNAUTHORIZED)

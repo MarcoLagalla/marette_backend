@@ -17,8 +17,8 @@ export default {
 
   mixins: [
     LoadSections([
+      'HomeBanner',
       'restaurantCards',
-      'info',
     ]),
   ],
 

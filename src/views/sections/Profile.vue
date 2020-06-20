@@ -1,288 +1,181 @@
 <template>
-  <div class="body">
-    <v-container>
+    <div class="body">
+        <v-container>
+            <v-row dense>
+                <v-col cols="12">
+                    <v-card>
+                        <v-toolbar flat class="profilctool" dark>
+                            <v-toolbar-title>Il Tuo Profilo</v-toolbar-title>
+                        </v-toolbar>
+                        <v-avatar class="profimag" size="155" tile>
+                            <v-img :src="user_private.avatar"></v-img>
+                        </v-avatar>
+                        <v-divider></v-divider>
+                        <v-tabs show-arrows :vertical="$vuetify.breakpoint.mdAndUp">
+                            <v-tab>
+                                <v-icon left>mdi-account</v-icon>
+                                Profilo
+                            </v-tab>
+                            <v-tab v-for="(restaurant, i) in userRestaurantList" :key="i">
+                                <v-icon left>fas fa-utensils</v-icon>
+                                {{ restaurant.activity_name }}
+                            </v-tab>
 
-      <v-row dense>
-        <v-col cols="6">
-          <v-card class="profilc" dark>
-            <v-card-title class="profilo">Profilo utente</v-card-title>
+                            <v-tab-item>
+                                <v-card flat>
+                                    <div class="bodyprofile">
+                                        <v-card-subtitle>
+                                            <base-manage-user-data :editing="false"></base-manage-user-data>
+                                        </v-card-subtitle>
+                                    </div>
+                                    <base-change-password></base-change-password>
+                                </v-card>
+                            </v-tab-item>
+                            <v-tab-item v-for="(restaurant, i) in userRestaurantList" :key="i">
+                                <v-card flat class="restc" dark v-bind="restaurant" min-height="150" >
+                                    <v-row>
+                                        <v-col cols="12" md="8">
+                                            <v-card-title class="restitle">{{ restaurant.activity_name }}</v-card-title>
+                                            <div class="divider"></div>
+                                            <v-card-subtitle class="description">{{ restaurant.activity_description }}
+                                            </v-card-subtitle>
 
-            <v-card-subtitle>
-              <p v-for="(campo, i) in user" :key="i">{{i.replace(/_/g , ' ')}} : {{campo}}</p>
-            </v-card-subtitle>
-            <router-link tag="button" class="addrest" v-if="isBusiness" to="newRestaurant">Aggiungi ristorante <v-icon right dark>
-              mdi-food-fork-drink
-            </v-icon>
-          </router-link>
-          <v-card-actions>
-            <v-btn @click="show = !show" text>Modifica password<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-          </v-card-actions>
+                                        </v-col>
+                                        <v-col cols="12" md="4" :class="$vuetify.breakpoint.smAndDown?'ml-6': '' ">
+                                                <v-row style="margin-bottom: 15px; margin-top: 10px">
+                                                <router-link tag="button" class="gestrest"
+                                                             :to="'profile/'+restaurant.url">
+                                                    <span class="butgest"> gestisci ristorante  </span>
+                                                    <v-icon class="wrench" medium>fas fa-wrench</v-icon>
+                                                </router-link>
+                                                </v-row>
+                                                <v-row>
+                                                <button class="gestrest" @click="editingRest=!editingRest"><span class="butgest"> Modifica Dati Ristorante  </span></button>
+                                                </v-row>
 
-          <v-expand-transition>
-            <div v-show="show">
-              <v-divider></v-divider>
-              <v-form @submit.prevent="change_psw">
-                <v-row align="center" class="ma-0 mt-8" justify="center">
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field light :error-messages="errors.old_password" @change="errors.old_password=''" solo background-color="#FFF8DC" v-model='old_password' type="password" placeholder=" Inserire vecchia password" id="old_password"
-                    name="old_password" required>
-                  </v-text-field>
+                                        </v-col>
 
+                                    </v-row>
+                                    <base-manage-rest-data :id="restaurant.id"
+                                    :editing="editingRest" @edited="editingRest = false"
+                                    >
+
+                                    </base-manage-rest-data>
+                                </v-card>
+                            </v-tab-item>
+                        </v-tabs>
+                    </v-card>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field light :rules="passwordRules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password' type="password" placeholder=" Inserire nuova password"
-                  id="new_password" name="new_password" required>
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-
-                <v-text-field light :rules="password2Rules" :error-messages="errors.password" @change="errors.password=''" solo background-color="#FFF8DC" v-model='new_password2' type="password" placeholder=" Reinserire nuova password"
-                id="new_password2" name="new_password2" required>
-              </v-text-field>
-            </v-col>
-
-          </v-row>
-          <div class="regbtn2">
-            <div class="center">
-              <button type="submit" class="password_btn">Modifica Password</button>
-            </div>
-          </div>
-        </v-form>
-      </div>
-    </v-expand-transition>
-  </v-card>
-</v-col>
-
-<!--v-col v-for="(item, i) in items" :key="i" cols="12">
-<v-card :color="item.color" dark>
-<div class="d-flex flex-no-wrap justify-space-between">
-<div>
-<v-card-title class="headline" v-text="item.title"></v-card-title>
-
-<v-card-subtitle v-text="item.artist"></v-card-subtitle>
-</div>
-
-<v-avatar class="ma-3" size="125" tile>
-<v-img :src="item.src"></v-img>
-</v-avatar>
-</div>
-</v-card>
-</v-col-->
-
-<v-col  cols="6">
-  <v-row v-for="(restaurant, i) in userRestaurantList" :key="i">
-  <v-card class="restc" v-bind="restaurant" dark>
-    <div class="d-flex flex-no-wrap justify-space-between">
-      <div>
-        <v-card-title>{{ restaurant.activity_name }}</v-card-title>
-
-        <v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
-
-        <v-card-text class="text--primary">
-          <div>{{ restaurant.activity_description }}</div>
-        </v-card-text>
-      </div>
-      <v-col >
-        <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/'+restaurant.url">  <v-icon x-large dark>
-          fas fa-cogs
-        </v-icon>
-      </router-link>
-      <router-link tag="button" class="settings" v-if="isBusiness" :to="'profile/manage/' + restaurant.url">  <v-icon x-large dark>
-        fas fa-address-card
-      </v-icon>
-    </router-link>  </v-col>
-    <v-avatar class="ma-3" size="125" tile>
-      <v-img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"></v-img>
-    </v-avatar>
-  </div>
-
-
-
-  <!--router-link :to="restaurant.url">
-  <v-img class="white--text align-end" height="200px" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
-  <v-card-title>{{ restaurant.activity_name }}</v-card-title>
-</v-img>
-</router-link>
-<v-card-subtitle class="pb-0">Descrizione</v-card-subtitle>
-
-<v-card-text class="text--primary">
-<div>{{ restaurant.activity_description }}</div>
-</v-card-text>
-
-<v-card-actions>
-<router-link :to="'profile/'+restaurant.url">
-<v-btn color="orange" text>
-Gestione ristorante
-</v-btn>
-</router-link>
-<v-btn color="orange" text>
-Modifica ristorante
-</v-btn>
-</v-card-actions-->
-</v-card>
-  </v-row>
-</v-col>
-</v-row>
-</v-container>
-</div>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 
 <script>
-import Heading from '@/mixins/heading'
-import {
-  mapActions
-} from 'vuex'
+    import Heading from '@/mixins/heading'
+    export default {
+        name: "Profile",
+        mixins: [Heading],
 
-export default {
-  name: "Profile",
+        data() {
+            return {
+                editingRest:false,
+            }
+        },
+        computed: {
+            user() {
+                return this.$store.getters['userProfile/user']
+            },
+            user_private() {
+                return this.$store.getters['userProfile/user_private']
+            },
+            isBusiness() {
+                return this.$store.getters['userProfile/isBusiness']
+            },
+            userRestaurantList() {
+                return this.$store.getters['restaurants/userList']
+            }
+        },
 
-  mixins: [Heading],
-
-  data() {
-    return {
-      old_password: '',
-      new_password: '',
-      new_password2: '',
-      passwordRules: [
-        v => !!v || 'Campo obbligatorio',
-        v => v !== this.old_password || "La nuova password deve essere diversa dalla vecchia"
-      ],
-      password2Rules: [
-        v => !!v || 'Campo obbligatorio',
-        v => v === this.new_password || "Le password devono combaciare"
-      ],
-      show: false,
-      items: [{
-        color: '#1F7087',
-        src: 'https://cdn.vuetifyjs.com/images/cards/docks.jpg',
-        title: 'Ristorante 1',
-        artist: '',
-      },
-      {
-        color: '#952175',
-        src: "https://cdn.vuetifyjs.com/images/cards/docks.jpg",
-        title: 'Ristorante 2',
-        artist: '',
-      },
-    ],
-  }
-},
-methods: {
-  ...mapActions('userProfile', ['changePassword']),
-  change_psw: function() {
-    this.changePassword({
-      old_password: this.old_password,
-      new_password: this.new_password,
-      new_password2: this.new_password2,
-
-    }).then(messaggio => {
-
-      alert(messaggio)
-
-    })
-
-  }
-},
-computed: {
-  user() {
-    return this.$store.getters['userProfile/user']
-  },
-  user_private() {
-    return this.$store.getters['userProfile/user_private']
-  },
-  errors() {
-    return this.$store.getters['userProfile/errors']
-  },
-  isBusiness() {
-    return this.$store.getters['userProfile/isBusiness']
-  },
-  userRestaurantList() {
-    return this.$store.getters['restaurants/userList']
-  }
-},
-
-created() {
-  this.$store.dispatch("restaurants/getUserRestaurants")
-}
-}
+        created() {
+            this.$store.dispatch("restaurants/getUserRestaurants")
+        }
+    }
 </script>
 
 <style scoped>
-.body {
-  /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
-  background: #f1f1f1;
-}
-.settings {
-  background-color: var(--chilli);
-  color: white;
-  margin: 5px;
-  padding: 10px;
-  border-radius: 25px;
-  transition: 0.6s;
-  font-weight: bold;
-  border: inset 2px darkred;
-  float: right;
-}
-.settings:hover {
-  box-shadow: 0 0 6px var(--charcoal);
-}
-.restc {
-  box-shadow: 0 0 15 var(--charcoal);
-  background: var(--herb);
-  width: 100%;
-  margin-left: 10px;
-  margin-bottom: 10px;;
-}
-.profilc {
-  box-shadow: 0 0 15 var(--charcoal);
-  background: var(--herb)
-}
+    .body {
+        /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
+        background: var(--whitesmoke);
+    }
 
-.profilo {
-  font-size: 1.6em;
-  color: var(--charcoal)
-}
+    .profimag {
 
-.regbtn2 {
-  padding: 10px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: left;
-  justify-content: letf;
-}
+        margin: 10px;
+        border-radius: 15px 50px;
+        box-shadow: 0 0 2px black;
+    }
 
-.password_btn {
-  background-color: var(--chilli);
-  color: white;
-  border: inset var(--chilli) 2px !important;
-  padding: 16px 20px;
-  margin: 4px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.8;
-  transition: 0.5s;
-  border-radius: 10px;
-}
+    .profilctool {
+        background: var(--ming) !important;
+    }
 
-.password_btn:hover {
-  opacity: 1;
-  box-shadow: 0 0 10px grey;
-}
 
-.addrest {
-  background-color: var(--chilli);
-  color: white;
-  padding: 15px;
-  border-radius: 25px;
-  transition: 0.6s;
-  margin-left: 10px;
-  font-weight: bold;
-  border: inset 2px darkred;
-}
+    .restc {
+    //box-shadow: 0 14 px 28 px rgba(0, 0, 0, 0.25), 0 10 px 10 px rgba(0, 0, 0, 0.22);
+        background: white;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+        color: #1a1a1a;
+    }
 
-.addrest:hover {
-  box-shadow: 0 0 6px var(--charcoal);
+    .restitle {
+        text-transform: capitalize;
+    }
+
+    .imgrest {
+        right: 0;
+        top: 0;
+        margin: 10px;
+        position: absolute;
+    }
+
+    .description {
+        color: #1a1a1a !important;
+        overflow: hidden;
+        height: 150px!important;
+
+    }
+
+    .divider {
+        width: 100%;
+        background: var(--ming);
+        height: 2px;
+
+    }
+
+    .gestrest {
+        background: var(--ming);
+        padding: 10px;
+        border-radius: 25px;
+        transition: ease-in-out 0.3s;
+        margin-right: 10px;
+    }
+
+    .butgest {
+        text-transform: capitalize;
+        color: white;
+        font-weight: bold;
+        transition: ease-in-out 0.3s;
+    }
+
+    .gestrest:hover {
+        transform: scale(1.1);
+    }
+    .gestrest:hover > .wrench {
+        transform: rotate(45deg);
+    }
+.wrench {
+    transition: ease-in-out 0.3s;
 }
 </style>

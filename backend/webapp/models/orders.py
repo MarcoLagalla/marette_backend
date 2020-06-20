@@ -28,8 +28,8 @@ class Order(models.Model):
 
     status = models.CharField(max_length=255, choices=ORDER_STATUS)
 
-    user = models.ForeignKey(Customer, related_name="carts", on_delete=models.DO_NOTHING)
-    restaurant = models.ForeignKey(Restaurant, related_name="shop", on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(Customer, related_name="carts", on_delete=models.SET_NULL, null=True)
+    restaurant = models.ForeignKey(Restaurant, related_name="shop", on_delete=models.SET_NULL, null=True)
 
     items = models.ManyToManyField(Product, blank=True)
     menus_items = models.ManyToManyField(Menu, blank=True)
@@ -93,6 +93,16 @@ class Order(models.Model):
     def is_valid(self):
         return self.valid
 
+    def get_user(self):
+        if not self.user:
+            return 'Utente cancellato'
+        return self.user
+
+    def get_restaurant(self):
+        if not self.restaurant:
+            return 'Ristorante cancellato'
+        return self.restaurant
+
 
 def generate_order_code(id):
     digits = 10
@@ -103,7 +113,7 @@ def generate_order_code(id):
 
 def validate_transitions(old, new):
     try:
-        old_index = ORDER_STATUS.index((old,old))
+        old_index = ORDER_STATUS.index((old, old))
     except ValueError:
         old_index = -1
 

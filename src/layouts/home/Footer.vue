@@ -1,37 +1,58 @@
 <template>
-  <v-footer id="home-footer" color="#3c3c3c" dark min-height="72">
-    <v-container>
-      <v-row>
-        <v-col cols="12" md="6">
-          <div class="d-flex flex-wrap justify-md-start justify-center justify-md-none">
-            <template v-for="(s, i) in social">
-              <a :key="s" class="white--text pa-1 pa-md-0" href="#" v-text="s" />
-              <v-responsive v-if="i < social.length - 1" :key="`divider-${s}`" class="mx-4 shrink hidden-sm-and-down" max-height="24">
-                <v-divider vertical />
-              </v-responsive>
-            </template>
-          </div>
-        </v-col>
-        <v-col class="text-center text-md-right" cols="12" md="6">
-          Copyright &copy; 2020 Marette
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-footer>
+
+    <div class="body">
+      <v-theme-provider dark>
+        <div id="info-alt">
+          <v-responsive class="mx-auto" max-width="1400">
+            <v-container fluid>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <base-info />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <base-info-card title="Contatti" />
+                  <base-business-contact dense />
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-responsive>
+        </div>
+      </v-theme-provider>
+      <footer>
+        <cookie-law theme="dark-lime" buttonText="Accetta">
+            <div slot="message">
+              <p>
+                Questo sito usa i biscotti come Hänsel e Gretel per seguirti.<br>
+                Non ti devi preoccupare, qui non ci sono le streghe.
+              </p>
+            </div>
+        </cookie-law>
+      </footer>
+    </div>
+
 </template>
 <script>
+  import CookieLaw from 'vue-cookie-law'
+
 export default {
   name: 'HomeFooter',
+  components: { CookieLaw },
   data: () => ({
-    social: [
-      'Facebook',
-      'Instagram',
-      'Linkedin',
-    ],
+
   }),
 }
 </script>
-  <style lang="sass">
-    #home-footer a
-      text-decoration: none
+  <style scoped>
+    #home-footer a {
+      text-decoration: none;
+    }
+    .footer {
+      background: var(--charcoal);
+    }
+    a {
+      text-decoration: none;
+    }
+    .body {
+      background: var(--charcoal) !important;
+    }
       </style>

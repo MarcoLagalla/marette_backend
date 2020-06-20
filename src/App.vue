@@ -6,11 +6,11 @@
 
 <script>
   export default {
-    name: 'App',
+    name: 'Marette',
     metaInfo: {
-      title: 'App',
-      titleTemplate: '%s | Daedal Multi-Purpose Theme',
-      htmlAttrs: { lang: 'en' },
+      title: 'Marette',
+      titleTemplate: '%s | Marette',
+      htmlAttrs: { lang: 'it' },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -20,15 +20,18 @@
 </script>
 
 <style >
-
+@import './styles/commons.css';
 :root {
-  --terracotta: #945d60;
-  --herb: #626e60;
-  --chilli: #af473c;
-  --charcoal: #3c3c3c;
+  --ghostwhite: #FBFFFE;
+  --ming: #AF473C;
+  --darkslate: #384D48;
+  --charcoal: #272D2D;
+  --whitesmoke: #F5F5F5;
+  --lightgrey: #d0d0dd ;
+  --emerald: #00916E;
 }
 html {
-  
+
 	scroll-behavior: smooth;
 }
 </style>

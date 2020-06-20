@@ -1,7 +1,9 @@
 <template>
   <div class="body" id="MENU">
+  <div class="body2" >
     <v-row>
       <v-col>
+        <base-rest-h1>Menu</base-rest-h1>
         <base-cat-tabs :menu="menu" :admin="admin"/>
       </v-col>
     </v-row>
@@ -15,12 +17,15 @@
 
 </v-row>
 </div>
+  </div>
 </template>
 
 <script>
 
+import BaseRestH1 from "../../components/base/RestH1";
 export default {
   name: "restmenu",
+  components: {BaseRestH1},
   props: {
       admin: {
         type: Boolean,
@@ -44,10 +49,14 @@ export default {
 <style scoped>
 
 .body {
-  margin: 0!important;
-  background:firebrick;
-}
 
+  background: var(--whitesmoke);
+
+}
+.body2 {
+  width: 90%;
+  margin: auto;
+}
 
 
 </style>

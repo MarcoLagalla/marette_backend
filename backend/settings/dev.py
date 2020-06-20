@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
     'rest_framework',
-    'backend.message',
+    'corsheaders',
+    'backend.orders',
     'django_extensions',
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',
@@ -49,10 +50,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_resized',
     'django_cleanup',
+    'storages',
 ]
+
 
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
+],
         },
     },
 ]
@@ -101,24 +105,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -171,15 +157,6 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'IT'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'marette.dev@gmail.com'  # config('EM_ACCOUNT')
-EMAIL_HOST_PASSWORD = 'marette123'  # config('EM_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
 ADMIN_REORDER = (
     # Keep original label and models
     'sites',
@@ -187,7 +164,7 @@ ADMIN_REORDER = (
     # Reorder app models authtoken.models import Token
     {'app': 'auth', 'models': ('auth.User', 'auth.Group', 'authtoken.Token'),},
     {'app': 'account', 'models': ('account.Customer', 'account.Business')},
-    {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant',)},
+    {'app': 'webapp', 'label': 'Marette', 'models': ('webapp.Restaurant','webapp.Category',)},
     {'app': 'webapp', 'label': 'Restaurant',
      'models': ('webapp.Product',
                 'webapp.ProductDiscount',
@@ -195,7 +172,8 @@ ADMIN_REORDER = (
                 'webapp.ProductTag',
                 'webapp.Menu',
                 'webapp.MenuEntry',
-                'webapp.Picture',)},
+                'webapp.Picture',
+                'webapp.CustomerVote',)},
     {'app': 'webapp', 'label': 'RestaurantComponents',
      'models': ('webapp.RestaurantComponents',
                 'webapp.HomeComponent',
@@ -203,8 +181,25 @@ ADMIN_REORDER = (
                 'webapp.EventiComponent',
                 'webapp.GalleriaComponent',
                 'webapp.VetrinaComponent',
-                'webapp.ContattaciComponent',)},
-    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order',)}
+                'webapp.ContattaciComponent',
+                'webapp.OrarioApertura',
+                'webapp.GiornoApertura',
+                'webapp.FasciaOraria')},
+    {'app': 'webapp', 'label': 'MarketPlace', 'models': ('webapp.Order', 'orders.OrderNotification',)},
 )
 
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
+
+AWS_SES_ACCESS_KEY_ID = 'AKIAQNN5ZBLSYTGMMBVR'
+AWS_SES_SECRET_ACCESS_KEY = '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'
+
+AWS_SES_REGION = 'eu-central-1'
+
+EMAIL_RESET_PASSWORD_BASE_URL = 'http://localhost:8080/resetpass'
+EMAIL_ACTIVATE_ACCOUNT_BASE_URL = 'http://localhost:8080/activate'
