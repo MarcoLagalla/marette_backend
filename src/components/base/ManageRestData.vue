@@ -210,6 +210,11 @@
     height: 200px!important;
     margin: auto;
   }
+@media screen and (max-width: 600px) {
+  .piccnt {
+    margin-bottom: 50px;
+  }
+}
   .restdatafields {
     border: 1px solid lightgray;
     border-radius: 15px;
