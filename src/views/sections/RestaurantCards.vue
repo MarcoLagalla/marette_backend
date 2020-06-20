@@ -2,7 +2,7 @@
 
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
-
+        <base-search-bar></base-search-bar>
         <base-section id="">
             <div class="title-center">
                 <h1>Ristoranti</h1>
@@ -90,10 +90,11 @@
 <script>
     import {mapActions} from "vuex";
     import axios from 'axios'
+    import BaseSearchBar from "../../components/base/Searchbar";
 
     export default {
         name: 'RestaurantCards',
-
+        components: {BaseSearchBar},
         data: () => ({
             loading: false,
             city: '',
