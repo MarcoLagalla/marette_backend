@@ -224,7 +224,8 @@ class UpdateProduct(APIView):
                                     product.image = image
 
                                 product.save()
-                                return Response(status=status.HTTP_200_OK)
+                                ret_data = ReadProductSerializer(instance=product)
+                                return Response(ret_data.data, status=status.HTTP_200_OK)
                             else:
                                 return Response(serializer.errors,
                                                 status=status.HTTP_400_BAD_REQUEST)
