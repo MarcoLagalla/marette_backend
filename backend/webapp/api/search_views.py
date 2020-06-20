@@ -101,11 +101,11 @@ class SearchRestaurantByQueryAPIView(APIView):
         aperto_ora = []
         aperto_oggi = []
 
-        valid_params = ['page_size', 'page_number', 'query', 'city', 'restaurant_category', 'aperto_ora', 'aperto_oggi']
-        for param in request.GET:
-            if param not in valid_params:
-                return Response({'error': f'Filtro {param} non valido.'},
-                                status=status.HTTP_400_BAD_REQUEST)
+        # valid_params = ['page_size', 'page_number', 'query', 'city', 'restaurant_category', 'aperto_ora', 'aperto_oggi']
+        # for param in request.GET:
+        #     if param not in valid_params:
+        #         return Response({'error': f'Filtro {param} non valido.'},
+        #                         status=status.HTTP_400_BAD_REQUEST)
 
         try:
             queried_name = request.GET.get('query', None)
