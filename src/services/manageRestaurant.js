@@ -20,6 +20,22 @@ export default {
             })
     },
 
+    searchRestaurantList(payload) {
+        return api.get('v1/webapp/restaurant/queryset', {
+          params: {
+            page_number: payload.page_number,
+            page_size: payload.page_size,
+            query: payload.query,
+            city: payload.city,
+            restaurant_category: payload.restaurant_category,
+            aperto_ora: payload.aperto_ora,
+          }
+        })
+            .then(response => {
+                return response
+            })
+    },
+
     getRestaurantData(payload) {
         return api.get('v1/webapp/restaurant/' + payload)
             .then(response => {

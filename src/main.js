@@ -54,10 +54,17 @@ const newPictureInput = Vue.component('PictureInput').extend({
         }
         return
       }
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+
       let headers = new Headers()
+      headers.append('Origin', 'https://marette.ovh')
       headers.append('Accept', 'image/*')
       headers.append('Access-Control-Allow-Origin', 'https://marette.ovh/')
-      fetch(source, {
+      headers.append('Access-Control-Allow-Credentials', 'true')
+      headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+      headers.append('Access-Control-Allow-Headers', 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With')
+      headers.append('Host', 'https://marette.ovh')
+      fetch(proxyUrl + source, {
         method: 'GET',
         mode: 'cors',
         headers: headers
