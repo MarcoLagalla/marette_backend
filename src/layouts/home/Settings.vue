@@ -6,8 +6,7 @@
     color="#ffffff8D"
     dark
     flat
-    style="position: fixed; top: 164px; right: -35px;"
-    width="100"
+    style="position: fixed; top: 25%; right: 0px; padding: 10px; border-right: 0; border-bottom-right-radius: 0; border-top-right-radius: 0;"
     >
     <v-icon
     class="proficon"
