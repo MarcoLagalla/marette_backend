@@ -56,7 +56,7 @@
           @change="onChanged"
           @remove="onRemoved"
           :removable="true"
-          :prefill="avatar"
+          :prefill="avatar()"
           :width="200"
           :height="200"
           size="3"
@@ -145,6 +145,9 @@
       stringIndirizzo() {
         return this.user.Indirizzo + ', ' + this.user.N_civ + '; ' + this.user.Citta + '; ' + this.user.Cap
       },
+      avatar() {
+          return this.$store.getters['userProfile/avatar']
+      },
     },
     computed: {
       user() {
@@ -155,9 +158,6 @@
       },
       butText() {
         return this.editing? 'Visualizza dati' : 'Modifica dati'
-      },
-      avatar() {
-          return this.$store.getters['userProfile/user_private'].avatar
       },
     }
   }

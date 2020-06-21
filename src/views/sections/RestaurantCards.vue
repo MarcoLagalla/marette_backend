@@ -2,45 +2,86 @@
 
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
-
+        <base-search-bar></base-search-bar>
         <base-section id="">
             <div class="title-center">
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
-                <span class="subt"> Ecco la nostra scelta di ristoranti</span></div>
-                <v-slider class="slider" height="60" label="Ristoranti per pagina:" min="1" max="40" v-model="page_size" thumb-label="always" @end="changePageSize($event)"></v-slider>
-            <div>
+                <span class="subt"> Ecco la nostra scelta di ristoranti</span>
+                <div class="divider"></div>
 
-                <v-row>
-                    <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
-                        <router-link :to="restaurant.url">
-                            <div v-bind="restaurant" >
-                                <div>
-                                    <div class="example-2 card">
-                                        <div class="wrapper" :style="image(restaurant.image)" >
-                                            <div class="header">
-                                                <div class="date">
-                                                    <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
+                <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+
+                <v-expand-transition>
+                    <div v-show="showAdvancedQuery">
+                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                        <v-text-field :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-btn @click="getLocation()" :loading="loadingGeo" text>Localizza
+                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                        </v-btn>
+                        <v-combobox
+                            :items="restDataCat"
+                            item-text="category_name"
+                            item-value="id"
+                            v-model='restaurant_category'
+                            id="restaurant_category"
+                            name="restaurant_category"
+                            label="Categoria"
+                        ></v-combobox>
+                        <v-slider
+                            height="60"
+                            label="Ristoranti per pagina:"
+                            min="1"
+                            max="40"
+                            v-model="restaurantListData.page_size"
+                            thumb-label="always"
+                            @change="changePageSize($event)"
+                        ></v-slider>
+                    </div>
+                </v-expand-transition>
+                <v-btn text @click="search()">Cerca</v-btn>
+            </div>
+
+            <v-skeleton-loader
+              :loading="loading"
+              transition-group="scale-transition"
+              type="table-thead@4"
+            >
+                <div>
+                    <v-row>
+                        <v-col v-for="(restaurant, i) in restaurantListData.results" :key="i" cols="12" sm="6" md="4" lg="3">
+                            <router-link :to="restaurant.url">
+                                <div v-bind="restaurant" >
+                                    <div>
+                                        <div class="example-2 card">
+                                            <div class="wrapper" :style="image(restaurant.image)" >
+                                                <div class="header">
+                                                    <div class="date">
+                                                        <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
+                                                    </div>
+                                                    <ul class="menu-content">
+                                                            <li><a class="fas fa-heart"><span>18</span></a></li>
+                                                    </ul>
                                                 </div>
-                                                <ul class="menu-content">
-                                                        <li><a class="fas fa-heart"><span>18</span></a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="data">
-                                                <div class="content">
-                                                    <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
-                                                    <p class="text">{{restaurant.activity_description}}</p>
-                                                    <a href="#" class="button">Entra nel negozio</a>
+                                                <div class="data">
+                                                    <div class="content">
+                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <p class="text">{{restaurant.activity_description}}</p>
+                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </router-link>
-                    </v-col>
-                </v-row>
-            </div>
+                            </router-link>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-skeleton-loader>
             <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
         </base-section>
     </div>
@@ -48,12 +89,20 @@
 
 <script>
     import {mapActions} from "vuex";
+    import axios from 'axios'
+    import BaseSearchBar from "../../components/base/Searchbar";
 
     export default {
         name: 'RestaurantCards',
-
+        components: {BaseSearchBar},
         data: () => ({
-            page_size: 10,
+            loading: false,
+            city: '',
+            aperto_ora: false,
+            loadingGeo: false,
+            query: '',
+            restaurant_category: '',
+            showAdvancedQuery: false
         }),
         computed: {
             restaurantListData() {
@@ -62,12 +111,16 @@
             restData() {
                 return this.$store.getters['restaurantData/restData']
             },
-            pageNumber() {
-                return parseInt(this.restaurantListData.page_number, 10)
+            pageNumber: {
+                get() {return parseInt(this.restaurantListData.page_number, 10);},
+                set(value) { this.restaurantListData.page_number =  value}
             },
+            restDataCat() {
+                return this.$store.getters['restaurantData/restCategories']
+            }
         },
         methods:{
-            ...mapActions('restaurants', ['getRestaurants']),
+            ...mapActions('restaurants', ['getRestaurants', 'searchRestaurants']),
             categoryString (restaurant_category){
                 var categories = ''
                 restaurant_category.forEach((cat)=>{
@@ -79,22 +132,97 @@
                 return {backgroundImage: "url(" + imgUrl + ") "}
             },
             nextPage() {
-                if(this.restaurantListData.next)
-                    this.getRestaurants({page_number: this.restaurantListData.next, page_size: this.page_size}) //TODO: aggiungere loading per tutte queste richieste
+                if(this.restaurantListData.next) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.next,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
             },
             previousPage() {
-                if(this.restaurantListData.previous)
-                    this.getRestaurants({page_number: this.restaurantListData.previous, page_size: this.page_size})
+                if(this.restaurantListData.previous) {
+                    this.loading = true
+                    this.getRestaurants({
+                        page_number: this.restaurantListData.previous,
+                        page_size: this.restaurantListData.page_size
+                    })
+                    .then(this.loading = false)
+                }
             },
             goToPage(page) {
-                this.getRestaurants({page_number: page, page_size: this.page_size})
+                this.loading = true
+                this.getRestaurants({
+                    page_number: page,
+                    page_size: this.restaurantListData.page_size
+                })
+                .then(this.loading = false)
             },
             changePageSize(page_size) {
-                this.getRestaurants({page_number: this.restaurantListData.page_number, page_size: page_size})
+                this.loading = true
+                this.getRestaurants({
+                    page_number: this.restaurantListData.page_number,
+                    page_size: page_size
+                })
+                .then(this.loading = false)
             },
+            search(){
+                this.loading = true
+                var payload = {
+                    page_number: this.restaurantListData.page_number,
+                    page_size: this.restaurantListData.page_size,
+                    query: this.query,
+                    city: this.city,
+                    restaurant_category: this.restaurant_category.category_name,
+                }
+                if(this.aperto_ora)
+                    payload.aperto_ora = 1
+
+                this.searchRestaurants(payload)
+                .then(this.loading = false)
+                .catch((error)=>{
+                    console.log(error)
+                })
+            },
+            getLocation() {
+                this.loadingGeo = true
+                var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
+                }
+                else {
+                    console.log("Geolocation is not supported by this browser.")
+                    this.loadingGeo = false
+                }
+            },
+            getCity (coordinates) {
+                axios
+                  .get('https://api.opencagedata.com/geocode/v1/json', {
+                      params: {
+                          key: '9f6a7dc1ef664052825c045470a06937',
+                          language: 'it',
+                          q: coordinates.coords.latitude + ',' + coordinates.coords.longitude
+                      }
+                  })
+                  .then((response) => {
+                      this.city = response.data.results[0].components.county
+                      this.loadingGeo = false
+                  }).catch((error)=>{
+                      console.log('error')
+                      console.log(error)
+                      this.loadingGeo = false
+                  })
+            },
+            error(error){
+                console.log('error')
+                console.log(error)
+                this.loadingGeo = false
+            }
         },
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
+            this.$store.dispatch("restaurantData/getRestCategories")
         },
     }
 </script>
