@@ -73,6 +73,10 @@
   <style scoped>
       #home-app-bar {
           width: 100%;
+          background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(250, 250, 250, 0.9));
+          border-bottom: 1px solid rgba(241,241,241,0.2);
+          border-bottom-width: thin;
+          z-index: 999;
       }
   a {
     text-decoration: none;
