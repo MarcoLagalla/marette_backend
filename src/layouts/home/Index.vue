@@ -1,5 +1,5 @@
 <template>
-<v-app>
+<v-app class="main">
   <home-app-bar />
   <home-view />
   <home-settings v-if="(this.isLogged)" />
@@ -24,3 +24,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+    .main {
+        width: 100%;
+        height: 100%;
+        max-width: 100%!important;
+    }
+</style>
