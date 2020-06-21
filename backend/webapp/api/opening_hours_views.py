@@ -136,7 +136,8 @@ class DeleteFasciaOraria(APIView):
     permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
-    def post(self, request, id, f_id):
+    def post(self, request, id, d_id, f_id):
+
         try:
             restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
@@ -148,9 +149,13 @@ class DeleteFasciaOraria(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if token == request.user.auth_token.key:
+            try:
+                giorno = GiornoApertura.objects.filter(restaurant=restaurant).get(id=d_id)
+            except GiornoApertura.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             try:
-                fascia = FasciaOraria.objects.filter(restaurant=restaurant).get(id=f_id)
+                fascia = giorno.fasce.get(id=f_id)
             except FasciaOraria.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
