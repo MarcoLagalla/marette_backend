@@ -37,17 +37,12 @@ class FasciaOrariaSerializer(serializers.ModelSerializer):
         return fascia
 
 
-class GiornoAperturaSerializer(serializers.ModelSerializer):
-
+class WriteGiornoAperturaSerializer(serializers.ModelSerializer):
     fasce = FasciaOrariaSerializer(many=True, read_only=True)
-    day = serializers.SerializerMethodField()
 
     class Meta:
         model = GiornoApertura
         fields = ('id', 'restaurant', 'day', 'fasce', )
-
-    def get_day(self, instance):
-        return instance.get_day_display()
 
     def save(self, **kwargs):
 
@@ -62,6 +57,20 @@ class GiornoAperturaSerializer(serializers.ModelSerializer):
         giorno.save()
 
         return giorno
+
+
+class GiornoAperturaSerializer(serializers.ModelSerializer):
+
+    fasce = FasciaOrariaSerializer(many=True, read_only=True)
+    day = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GiornoApertura
+        fields = ('id', 'restaurant', 'day', 'fasce', )
+
+    def get_day(self, instance):
+        return instance.get_day_display()
+
 
 
 class OpeningSerializer(serializers.ModelSerializer):
