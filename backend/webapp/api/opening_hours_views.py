@@ -68,8 +68,14 @@ class CreateOpeningDay(APIView):
 
 
         if token == request.user.auth_token.key:
+            giorni = {'Lunedi': 1, 'Martedi': 2, 'Mercoledi': 3, 'Giovedi': 4, 'Venerdi': 5, 'Sabato': 6, 'Domenica': 7}
+            data = request.data
+            try:
+                data['day'] = giorni[data['day']]
+            except KeyError:
+                data['day'] = 0
 
-            serializer = GiornoAperturaSerializer(data=request.data)
+            serializer = WriteGiornoAperturaSerializer(data=data)
             if serializer.is_valid():
 
                 try:
