@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar id="home-app-bar" app color="var(--ghostwhite)" height="80">
+    <v-app-bar id="home-app-bar" color="var(--ghostwhite)" height="80">
       <router-link to="/">
         <base-img v-if="$vuetify.breakpoint.mdAndUp" :src="require('@/assets/logo_small.png')" contain max-width="80" />
         <base-img v-if="$vuetify.breakpoint.smAndDown" :src="require('@/assets/logo_mobile.png')" contain max-height="50" max-width="150" />
@@ -30,7 +30,7 @@
         <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer" />
       </v-app-bar>
       <home-drawer v-model="drawer" :items="activeComponents" />
-    </div>
+  </div>
   </template>
   <script>
   import {
@@ -71,6 +71,9 @@
   }
   </script>
   <style scoped>
+      #home-app-bar {
+          width: 100%;
+      }
   a {
     text-decoration: none;
     scroll-behavior: smooth;
