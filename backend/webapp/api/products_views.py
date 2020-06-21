@@ -193,6 +193,7 @@ class UpdateProduct(APIView):
 
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
+                                print(data)
                                 if 'tags' in data:
                                     product.tags.clear()
                                     for t in data['tags']:

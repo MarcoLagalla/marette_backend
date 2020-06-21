@@ -66,7 +66,6 @@ class CreateOpeningDay(APIView):
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-
         if token == request.user.auth_token.key:
             giorni = {'Lunedi': 1, 'Martedi': 2, 'Mercoledi': 3, 'Giovedi': 4, 'Venerdi': 5, 'Sabato': 6, 'Domenica': 7}
             data = request.data
