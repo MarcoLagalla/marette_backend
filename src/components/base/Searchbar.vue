@@ -143,7 +143,7 @@
         border-radius: calc(var(--i)*50%);
         transform: translate(var(--pos, -0.40625em)) scalex(calc(var(--j)*0.125 + var(--i)));
         box-shadow: inset 0 0 0 calc(var(--j)*0.8125em) currentcolor;
-        transition-property: border-radius, transform, box-shadow;
+        transition: border-radius, transform, box-shadow;
         transition-timing-function: cubic-bezier(calc(var(--j)*.42), 0, calc(1 - var(--i)*.42), 1), cubic-bezier(calc(var(--i)*.42), 0, calc(1 - var(--j)*.42), 1);
     }
 

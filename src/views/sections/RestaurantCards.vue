@@ -5,7 +5,7 @@
         <v-row>
             <v-col cols="12" :md="showAdvancedQuery? '4':'6' ">
                 <div class="searchbarcontainer">
-                    <v-autocomplete :items="autocomplete.names" @keydown.enter="search()" no-data-text="Cerca per caratteristiche" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-autocomplete>
+                    <v-autocomplete :items="autocomplete.names" @keydown.enter="search()" no-data-text="Cerca per caratteristiche" rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled label="Cerca un ristorante" v-model="query"></v-autocomplete>
                     <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                         <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                     </v-btn>
@@ -323,7 +323,8 @@
 
     h1 {
         color: var(--darkslate);
-        font-size: 2em;
+        font-size: 3em;
+        font-weight: 400!important;
     }
 
     h2 {
@@ -405,15 +406,20 @@
         z-index: 1;
     }
     .card .author {
-        font-size: 12px;
+        font-size: 16px;
         text-transform: capitalize;
-        text-shadow: 0 0 1px black;
+
     }
     .card .title {
         margin-top: 10px;
         margin-bottom: 5px;
-        font-weight: 300;
-        font-size: 1.6rem!important;
+        font-weight: 400;
+        font-size: 2rem!important;
+        text-shadow:
+                0.07em 0 darkslategrey,
+                0 0.07em darkslategrey,
+                -0.07em 0 darkslategrey,
+                0 -0.07em darkslategrey;
     }
     .card .text {
         height: 70px;
