@@ -39,7 +39,7 @@
             </v-col>
             <v-col cols="12" md="4">
                 <div class="searchbarcontainer">
-                <v-text-field @keydown.enter="search()" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-autocomplete :items="autocomplete.names" @keydown.enter="search()" no-data-text="Cerca per caratteristiche" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-autocomplete>
                 <v-btn class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                     <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                 </v-btn>
