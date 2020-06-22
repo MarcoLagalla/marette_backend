@@ -243,7 +243,7 @@ class AutoComplete(APIView):
         cities_list = []
         for val in values:
             cities_list.append(val[0])
-            
+
         data = {'cities': cities_list}
 
         names = restaurants.values('activity_name').order_by('activity_name').values_list('activity_name')
