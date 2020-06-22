@@ -248,7 +248,7 @@ class AutoComplete(APIView):
         values = restaurants.values('city').distinct().order_by('city').values_list('city')
         cities_list = []
         for val in values:
-            cities_list.append(val[0])
+            cities_list.append(str(val[0]).capitalize())
 
         data = {'cities': cities_list}
 
