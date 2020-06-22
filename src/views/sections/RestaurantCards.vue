@@ -37,7 +37,7 @@
             </v-col>
             <v-col cols="12" md="4">
                 <div class="searchbarcontainer">
-                <v-text-field rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-text-field @keydown.enter="search()" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-text-field>
                 <v-btn class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                     <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                 </v-btn>
@@ -45,7 +45,7 @@
                 </div>
             </v-col>
         </v-row>
-        <v-alert type="error" icon="far fa-frown">
+        <v-alert :value="error" type="error" dismissible icon="far fa-frown">
             La tua ricerca non ti ha condotto a nulla di utile
         </v-alert>
         <div class="containerrestcards">
@@ -53,7 +53,6 @@
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span>
-
             </div>
 
             <v-skeleton-loader
@@ -112,7 +111,8 @@
             loadingGeo: false,
             query: '',
             restaurant_category: '',
-            showAdvancedQuery: false
+            showAdvancedQuery: false,
+            error: false,
         }),
         computed: {
             restaurantListData() {
@@ -143,56 +143,62 @@
             },
             nextPage() {
                 if(this.restaurantListData.next) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.next,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             previousPage() {
                 if(this.restaurantListData.previous) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.previous,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             goToPage(page) {
-                this.loading = true
-                this.getRestaurants({
+                var payload = {
                     page_number: page,
                     page_size: this.restaurantListData.page_size
-                })
-                .then(this.loading = false)
+                }
+                this.submit(payload)
             },
             changePageSize(page_size) {
-                this.loading = true
-                this.getRestaurants({
+                var payload = {
                     page_number: this.restaurantListData.page_number,
                     page_size: page_size
-                })
-                .then(this.loading = false)
+                }
+                this.submit(payload)
             },
             search(){
-                this.loading = true
                 var payload = {
                     page_number: this.restaurantListData.page_number,
                     page_size: this.restaurantListData.page_size,
-                    query: this.query,
-                    city: this.city,
-                    restaurant_category: this.restaurant_category.category_name,
                 }
+                this.submit(payload)
+            },
+            submit(payload) {
+                this.loading = true
+
+                payload.query= this.query
+                payload.city= this.city
+                payload.restaurant_category= this.restaurant_category.category_name
+
                 if(this.aperto_ora)
                     payload.aperto_ora = 1
 
                 this.searchRestaurants(payload)
-                .then(this.loading = false)
+                .then(()=> {
+                    this.loading = false
+                    this.error = false
+                })
                 .catch((error)=>{
                     console.log(error)
+                    this.error = true
+                    this.loading = false
                 })
             },
             getLocation() {
