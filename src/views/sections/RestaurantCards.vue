@@ -5,7 +5,16 @@
         <v-row>
             <v-col cols="12" :md="showAdvancedQuery? '4':'6' ">
                 <div class="searchbarcontainer">
-                    <v-autocomplete :items="autocomplete.names" @keydown.enter="search()" no-data-text="Cerca per caratteristiche" rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled label="Cerca un ristorante" v-model="query"></v-autocomplete>
+                    <v-combobox
+                        :items="autocomplete.names"
+                        @keydown.enter="search()"
+                        @click:append-outer="search"
+                        hint="Cerca ristorante per caratteristiche"
+                        rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
+                        label="Cerca un ristorante"
+                        v-model="query"
+                        @update:search-input="query = $event"
+                    ></v-combobox>
                     <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                         <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                     </v-btn>
