@@ -243,11 +243,19 @@ class AutoComplete(APIView):
 
     def get(self, request):
 
-        restaurants = Restaurant.objects.all().values('city').distinct().order_by('city')
+        restaurants = Restaurant.objects.all()
 
-        values = restaurants.values_list('city')
+        values = restaurants.values('city').distinct().order_by('city').values_list('city')
         cities_list = []
         for val in values:
             cities_list.append(val[0])
+            
         data = {'cities': cities_list}
+
+        names = restaurants.values('activity_name').order_by('activity_name').values_list('activity_name')
+        names_list = []
+        for val in names:
+            names_list.append(val[0])
+
+        data.update({'names': names_list})
         return Response(data, status=status.HTTP_200_OK)
