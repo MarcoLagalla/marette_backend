@@ -12,13 +12,15 @@ public/static/*
 !**/migrations/__init__.py
 
 
-**/src/**
-!**/src
-!**/src/
+src/**
+src
+src/
 
-**/public/**
-!**/public
-!**/public/
+public/**
+public
+public/
+
+
 
 
 src-copy
