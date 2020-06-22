@@ -6,7 +6,7 @@
             <v-col cols="12" md="4">
                 <div class="advquery" v-if="showAdvancedQuery">
                     <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
-                    <v-text-field solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                    <v-text-field @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
                     <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
                         <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
                     </v-btn>
@@ -23,6 +23,7 @@
                         id="restaurant_category"
                         name="restaurant_category"
                         label="Categoria"
+                        @keydown.enter="search()"
                 ></v-combobox>
                 <v-slider
                         height="60"
@@ -31,7 +32,6 @@
                         max="40"
                         v-model="restaurantListData.page_size"
                         thumb-label="always"
-                        @change="changePageSize($event)"
                 ></v-slider>
                 </div>
             </v-col>
@@ -73,7 +73,7 @@
                                                         <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
                                                     </div>
                                                     <ul class="menu-content">
-                                                            <li><a class="fas fa-heart"><span>18</span></a></li>
+                                                            <!--li><a class="fas fa-heart"><span>18</span></a></li-->
                                                     </ul>
                                                 </div>
                                                 <div class="data">
@@ -166,13 +166,6 @@
                 }
                 this.submit(payload)
             },
-            changePageSize(page_size) {
-                var payload = {
-                    page_number: this.restaurantListData.page_number,
-                    page_size: page_size
-                }
-                this.submit(payload)
-            },
             search(){
                 var payload = {
                     page_number: this.restaurantListData.page_number,
@@ -205,7 +198,7 @@
                 this.loadingGeo = true
                 var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
+                    navigator.geolocation.getCurrentPosition(this.getCity,this.locError,options);
                 }
                 else {
                     console.log("Geolocation is not supported by this browser.")
@@ -230,7 +223,7 @@
                       this.loadingGeo = false
                   })
             },
-            error(error){
+            locError(error){
                 console.log('error')
                 console.log(error)
                 this.loadingGeo = false
