@@ -11,21 +11,20 @@
             </v-col>
         </v-row>
         <template v-if="admin">
-<div class="buttonscontainer">
-            <div class="buttons">
-                <v-row>
-
-                    <v-col cols="6">
-                <button name="delete" class="managebtn" @click="deleteImage()">
-                    <i class="fas fa-times"></i>
-                </button>
-                    </v-col>
-                    <v-col cols="6">
-                <base-add-home-image :imageUrl="imageURL" @edited="submitImage($event)"></base-add-home-image>
-                    </v-col>
-                </v-row>
+            <div class="buttonscontainer">
+                <div class="buttons">
+                    <v-row>
+                        <v-col cols="6">
+                            <button name="delete" class="managebtn" @click="deleteImage()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </v-col>
+                        <v-col cols="6">
+                            <base-add-home-image :imageUrl="imageURL" @edited="submitImage($event)"></base-add-home-image>
+                        </v-col>
+                    </v-row>
+                </div>
             </div>
-</div>
         </template>
     </div>
 </template>
