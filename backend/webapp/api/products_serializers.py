@@ -58,6 +58,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
     show_image = serializers.BooleanField(required=False, default=True)
     available = serializers.BooleanField(required=False, default=True)
+    category = serializers.CharField(required=False)
 
     class Meta:
         model = Product

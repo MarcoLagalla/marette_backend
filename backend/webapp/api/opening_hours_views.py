@@ -66,10 +66,15 @@ class CreateOpeningDay(APIView):
         except Token.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-
         if token == request.user.auth_token.key:
+            giorni = {'Lunedi': 1, 'Martedi': 2, 'Mercoledi': 3, 'Giovedi': 4, 'Venerdi': 5, 'Sabato': 6, 'Domenica': 7}
+            data = request.data
+            try:
+                data['day'] = giorni[data['day']]
+            except KeyError:
+                data['day'] = 0
 
-            serializer = GiornoAperturaSerializer(data=request.data)
+            serializer = WriteGiornoAperturaSerializer(data=data)
             if serializer.is_valid():
 
                 try:
@@ -131,7 +136,8 @@ class DeleteFasciaOraria(APIView):
     permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     @transaction.atomic()
-    def post(self, request, id, f_id):
+    def post(self, request, id, d_id, f_id):
+
         try:
             restaurant = Restaurant.objects.all().get(id=id)
         except Restaurant.DoesNotExist:
@@ -143,9 +149,13 @@ class DeleteFasciaOraria(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if token == request.user.auth_token.key:
+            try:
+                giorno = GiornoApertura.objects.filter(restaurant=restaurant).get(id=d_id)
+            except GiornoApertura.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             try:
-                fascia = FasciaOraria.objects.filter(restaurant=restaurant).get(id=f_id)
+                fascia = giorno.fasce.get(id=f_id)
             except FasciaOraria.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 

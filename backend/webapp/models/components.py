@@ -17,9 +17,8 @@ def randomString(stringLength=8):
 
 
 def home_component(instance, filename):
-    name, ext = filename.split('.')
-    file_path = 'components/home/{restaurant_id}/{rand}/{name}{ext}'.format(
-         restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=ext)
+    file_path = 'components/home/{restaurant_id}/{rand}/{filename}'.format(
+         restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
     return file_path
 
 
