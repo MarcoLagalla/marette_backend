@@ -78,7 +78,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
             tags_data = None
 
         try:
-            discount_data = self.validated_data.pop('discounts')
+            discount_data = self.validated_data.get('discounts', None)
         except KeyError:
             discount_data = None
 
