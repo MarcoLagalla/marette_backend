@@ -273,11 +273,13 @@
         position: fixed;
         right: 0;
         bottom: 0;
-        padding: 10px;
-        border-radius: 25px;
+        padding: 20px;
+        box-shadow: 0 0 8px grey;
+        border-radius: 50px;
         border: 4px inset var(--darkslate);
-        margin: 10px;
+        margin: 50px;
         font-weight: bold;
+        font-size: 30px;
         z-index: 200;
         color: white;
         background: var(--darkslate);

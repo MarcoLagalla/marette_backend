@@ -10,7 +10,7 @@
             Modifica descrizione <v-icon small> fas fa-pencil-alt</v-icon>
         </v-btn>
         <button class="infoicon" v-if="!admin" @click="$refs.orarimodal.open()">
-            <i class="fas fa-info-circle"> </i> <span v-if="$vuetify.breakpoint.mdAndUp">Orari di apertura</span>
+            <i class="far fa-calendar-alt"> </i> <span v-if="$vuetify.breakpoint.mdAndUp">Orari di apertura</span>
         </button>
         <base-add-time-table v-if="admin"></base-add-time-table>
 
