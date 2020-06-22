@@ -6,10 +6,12 @@
             <v-col cols="12" md="4">
                 <div class="advquery" v-if="showAdvancedQuery">
                     <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
-                    <v-text-field @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
-                    <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
-                        <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
-                    </v-btn>
+                    <v-row>
+                        <v-text-field @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
+                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                        </v-btn>
+                    </v-row>
                 </div>
             </v-col>
             <v-col cols="12" md="4">
