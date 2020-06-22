@@ -271,8 +271,9 @@ class Product(models.Model):
     def get_price_with_discount(self):
         new_price = float(self.get_all_discounts())
         if new_price < 0:
-            new_price = "0.00"
-        return str(new_price)
+            return "0.00"
+        return "{:.2f}".format(new_price)
+
 
     def get_original_price(self):
         return self.price
