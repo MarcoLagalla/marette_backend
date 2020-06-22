@@ -9,7 +9,8 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from ..models.models import Restaurant, FasciaOraria, GiornoApertura, OrarioApertura
-from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
+    serializers
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
 from .serializers import ListRestaurantSerializer
@@ -234,3 +235,15 @@ class SearchRestaurantByQueryAPIView(APIView):
         else:
             return Response({'error': ["Nessun Ristorante trovato."]},
                             status.HTTP_404_NOT_FOUND)
+
+
+class AutoComplete(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+
+    def get(self, request):
+
+        restaurants = Restaurant.objects.all().values('city').distinct().order_by('city')
+
+        data = {'cities': list(restaurants.values_list('city'))}
+        return Response(data, status=status.HTTP_200_OK)
