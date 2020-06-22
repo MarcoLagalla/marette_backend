@@ -125,7 +125,7 @@
 
               <v-btn color="var(--ming)" :disabled="selected_discounts.length === 0" @click="add_discount_to_product(selected_discounts, modal_product, 1)" > Aggiungi Sconto al prodotto</v-btn>
               <br><br><br>
-
+                {{discounts_list}}
               <p>Aggiungi nuovo sconto alla lista</p>
               <br>
               <v-row>
