@@ -70,13 +70,11 @@ class AddDiscounts(APIView):
                 # verifico che sia proprietario del ristorante
                 if restaurant.owner.user == request.user:
                     # è il proprietario, può aggiungere un discount
-
                     serializer = ProductDiscountSerializer(data=request.data)
                     if serializer.is_valid():
                         discount = serializer.save(restaurant)
                         ret_data = ProductDiscountSerializer(instance=discount)
-                        return Response(ret_data.data, serializer.validated_data,
-                                        status=status.HTTP_201_CREATED)
+                        return Response(ret_data.data, status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors,
                                         status=status.HTTP_400_BAD_REQUEST)
