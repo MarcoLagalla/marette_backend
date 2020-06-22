@@ -18,6 +18,8 @@ from ...utils import NavigationLinks
 import datetime
 from django.utils.timezone import utc
 from backend.webapp.declarations import DAYS
+from django.db.models import Q
+from functools import reduce
 
 
 class SearchRestaurantAPIView(APIView):
@@ -175,14 +177,18 @@ class SearchRestaurantByQueryAPIView(APIView):
             pass  #TODO add this part !
 
         if queried_name:
-            name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
+            queried_name_list = queried_name.split(' ')
+            name_query = Restaurant.objects.filter(reduce(lambda x, y: x | y, [Q(activity_name__icontains=word) for word
+                                                                               in queried_name_list])).order_by('-id')
             description_query = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
-            city_query = Restaurant.objects.filter(city__iexact=queried_name).order_by('-id')
-            queryset.append(name_query | description_query | city_query)
 
-        if queried_city:
-            city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
-            queryset.append(city_query)
+            if queried_city:
+                queryset.append(name_query | description_query)
+                city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
+                queryset.append(city_query)
+            else:
+                city_query = Restaurant.objects.filter(city__icontains=queried_name).order_by('-id')
+                queryset.append(name_query | description_query | city_query)
 
         if queried_category:
             category_query = Restaurant.objects.filter(restaurant_category__category_name__iexact=queried_category).order_by('-id')
