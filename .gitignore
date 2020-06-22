@@ -16,11 +16,7 @@ src/**
 src
 src/
 
-public/**
-public
-public/
-
-
+public/media/*
 
 
 src-copy
