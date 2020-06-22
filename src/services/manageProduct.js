@@ -26,7 +26,7 @@ export default {
               'content-type': 'multipart/form-data'
             }
         };
-        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/add', payload['data'], config)
+        return api.post('v1/webapp/restaurant/' + payload['id'] + '/products/' + payload['p_id'] + '/update', payload['data'], config)
             .then(response => {
                 return response
             })
