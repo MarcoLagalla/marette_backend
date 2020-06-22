@@ -193,7 +193,7 @@ class UpdateProduct(APIView):
 
                             serializer = WriteProductSerializer(data=data)
                             if serializer.is_valid():
-                                if 'tags' in data:
+                                if 'tags' in data.keys():
                                     product.tags.clear()
                                     for t in data['tags']:
                                         for d in data['discounts']:
@@ -204,7 +204,7 @@ class UpdateProduct(APIView):
                                             except ProductTag.DoesNotExist:
                                                 pass
                                     del data['tags']
-                                if 'discounts' in data:
+                                if 'discounts' in data.keys():
                                     product.discounts.clear()
                                     for d in data['discounts']:
                                         try:

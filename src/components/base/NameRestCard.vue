@@ -1,7 +1,7 @@
 <template>
     <div class="infocard">
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color">{{text}}</v-snackbar>
-        <h1>{{name}}</h1>
+        <div class="namecontainer"><h1>{{name}}</h1></div>
         <div class="divider"></div>
         <v-textarea auto-grow class="descript" :rounded="!admin"
                     :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin'
@@ -10,7 +10,7 @@
             Modifica descrizione <v-icon small> fas fa-pencil-alt</v-icon>
         </v-btn>
         <button class="infoicon" v-if="!admin" @click="$refs.orarimodal.open()">
-            <i class="fas fa-info-circle"> </i> <span v-if="$vuetify.breakpoint.mdAndUp">Orari di apertura</span>
+            <i class="far fa-calendar-alt"> </i> <span v-if="$vuetify.breakpoint.mdAndUp">Orari di apertura</span>
         </button>
         <base-add-time-table v-if="admin"></base-add-time-table>
 
@@ -96,6 +96,9 @@
     }
 </script>
 <style scoped>
+    .namecontainer {
+        width: 80%;
+    }
     .divider {
         width: 100px;
         background: var(--ming);

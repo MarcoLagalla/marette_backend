@@ -2,47 +2,57 @@
 
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
-        <base-search-bar></base-search-bar>
-        <base-section id="">
+        <v-row>
+            <v-col cols="12" md="4">
+                <div class="advquery" v-if="showAdvancedQuery">
+                    <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                    <v-text-field solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                    <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
+                        <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
+                    </v-btn>
+                </div>
+            </v-col>
+            <v-col cols="12" md="4">
+                <div class="advquery" v-if="showAdvancedQuery">
+                <v-combobox
+                        solo filled dense background-color="#E0E0E0" rounded
+                        :items="restDataCat"
+                        item-text="category_name"
+                        item-value="id"
+                        v-model='restaurant_category'
+                        id="restaurant_category"
+                        name="restaurant_category"
+                        label="Categoria"
+                ></v-combobox>
+                <v-slider
+                        height="60"
+                        label="Ristoranti per pagina:"
+                        min="1"
+                        max="40"
+                        v-model="restaurantListData.page_size"
+                        thumb-label="always"
+                        @change="changePageSize($event)"
+                ></v-slider>
+                </div>
+            </v-col>
+            <v-col cols="12" md="4">
+                <div class="searchbarcontainer">
+                <v-text-field @keydown.enter="search()" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-text-field>
+                <v-btn class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+                <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
+                </div>
+            </v-col>
+        </v-row>
+        <v-alert :value="error" type="error" dismissible icon="far fa-frown">
+            La tua ricerca non ti ha condotto a nulla di utile
+        </v-alert>
+        <div class="containerrestcards">
             <div class="title-center">
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span>
-                <div class="divider"></div>
-
-                <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
-                <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
-                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                </v-btn>
-
-                <v-expand-transition>
-                    <div v-show="showAdvancedQuery">
-                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
-                        <v-text-field :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
-                        <v-btn @click="getLocation()" :loading="loadingGeo" text>Localizza
-                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
-                        </v-btn>
-                        <v-combobox
-                            :items="restDataCat"
-                            item-text="category_name"
-                            item-value="id"
-                            v-model='restaurant_category'
-                            id="restaurant_category"
-                            name="restaurant_category"
-                            label="Categoria"
-                        ></v-combobox>
-                        <v-slider
-                            height="60"
-                            label="Ristoranti per pagina:"
-                            min="1"
-                            max="40"
-                            v-model="restaurantListData.page_size"
-                            thumb-label="always"
-                            @change="changePageSize($event)"
-                        ></v-slider>
-                    </div>
-                </v-expand-transition>
-                <v-btn text @click="search()">Cerca</v-btn>
             </div>
 
             <v-skeleton-loader
@@ -83,18 +93,17 @@
                 </div>
             </v-skeleton-loader>
             <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
-        </base-section>
+        </div>
     </div>
 </template>
 
 <script>
     import {mapActions} from "vuex";
     import axios from 'axios'
-    import BaseSearchBar from "../../components/base/Searchbar";
 
     export default {
         name: 'RestaurantCards',
-        components: {BaseSearchBar},
+
         data: () => ({
             loading: false,
             city: '',
@@ -102,7 +111,8 @@
             loadingGeo: false,
             query: '',
             restaurant_category: '',
-            showAdvancedQuery: false
+            showAdvancedQuery: false,
+            error: false,
         }),
         computed: {
             restaurantListData() {
@@ -133,56 +143,62 @@
             },
             nextPage() {
                 if(this.restaurantListData.next) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.next,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             previousPage() {
                 if(this.restaurantListData.previous) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.previous,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             goToPage(page) {
-                this.loading = true
-                this.getRestaurants({
+                var payload = {
                     page_number: page,
                     page_size: this.restaurantListData.page_size
-                })
-                .then(this.loading = false)
+                }
+                this.submit(payload)
             },
             changePageSize(page_size) {
-                this.loading = true
-                this.getRestaurants({
+                var payload = {
                     page_number: this.restaurantListData.page_number,
                     page_size: page_size
-                })
-                .then(this.loading = false)
+                }
+                this.submit(payload)
             },
             search(){
-                this.loading = true
                 var payload = {
                     page_number: this.restaurantListData.page_number,
                     page_size: this.restaurantListData.page_size,
-                    query: this.query,
-                    city: this.city,
-                    restaurant_category: this.restaurant_category.category_name,
                 }
+                this.submit(payload)
+            },
+            submit(payload) {
+                this.loading = true
+
+                payload.query= this.query
+                payload.city= this.city
+                payload.restaurant_category= this.restaurant_category.category_name
+
                 if(this.aperto_ora)
                     payload.aperto_ora = 1
 
                 this.searchRestaurants(payload)
-                .then(this.loading = false)
+                .then(()=> {
+                    this.loading = false
+                    this.error = false
+                })
                 .catch((error)=>{
                     console.log(error)
+                    this.error = true
+                    this.loading = false
                 })
             },
             getLocation() {
@@ -236,7 +252,17 @@
         /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
         background: var(--whitesmoke);
     }
+    .advquery{
+        padding: 20px;
+    }
+    .searchbarcontainer {
 
+        padding: 20px;
+
+    }
+    @media screen and (max-width: 992px) {
+
+    }
     .divider {
         width: 50px;
         background: var(--ming);
@@ -309,7 +335,9 @@
         overflow: hidden!important;
         height: 50px;
     }
-
+    .containerrestcards {
+        margin-top: 0;
+    }
 
 
     .card {

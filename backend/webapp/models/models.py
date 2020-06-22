@@ -269,7 +269,7 @@ class Product(models.Model):
             return price
 
     def get_price_with_discount(self):
-        new_price = self.get_all_discounts()
+        new_price = int(self.get_all_discounts())
         if new_price < 0:
             new_price = "0.00"
         return str(new_price)
@@ -384,14 +384,6 @@ class FasciaOraria(models.Model):
 
     class Meta:
         unique_together = (('restaurant', 'giorno', 'start', 'end'), )
-
-    def clean(self, *args, **kwargs):
-        start = datetime.strptime(self.start, '%H:%M')
-        stop = datetime.strptime(self.end, '%H:%M')
-        dt = stop - start
-        if dt.days < 0:
-            raise serializers.ValidationError({'error': "Orario di fine turno antecedente a quello di inizio."})
-        super(FasciaOraria, self).clean()
 
     def __str__(self):
         return "{0} - {1}".format(self.start, self.end)
