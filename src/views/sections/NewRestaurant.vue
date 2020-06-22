@@ -1,16 +1,16 @@
 <template>
     <div v-if="hasPermission" class="background">
         <v-container>
-            <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="show = !show">Aggiungi Ristorante
+            <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="clickedNewRestBtn()">Aggiungi Ristorante
                 <v-icon :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
-            <button v-if="$vuetify.breakpoint.smAndDown" class="shownrmob" @click="show = !show">
+            <button v-if="$vuetify.breakpoint.smAndDown" class="shownrmob" @click="clickedNewRestBtn()">
                 <v-icon x-large :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
             <v-row dense>
                 <v-col cols="12">
                     <v-expand-transition>
-                        <div v-show="show">
+                        <div v-show="show" id="newRest">
                             <v-card>
                                 <v-toolbar flat class="profilctool" dark>
                                     <v-toolbar-title>
@@ -240,6 +240,20 @@
 
             onRemoved() {
                 this.image = '';
+            },
+
+            clickedNewRestBtn() {
+                this.show = !this.show
+                console.log(this.show)
+                if (this.show) {
+                    window.setTimeout(() => {
+                        document.getElementById('newRest').scrollIntoView(false)
+                        document.getElementById('newRest').focus({preventScroll: true});
+                    }, 200);
+                }
+
+
+
             },
         },
         computed: {
