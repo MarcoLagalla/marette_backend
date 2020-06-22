@@ -35,7 +35,22 @@
 
       -->
       <sweet-modal ref="modal"><br>
-          <sweet-modal-tab title="Modifica/Info Prodotto" id="tab2" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;">
+          <sweet-modal-tab title="Info" id="info_prodotto" icon="&lt;i class=&quot;fas fa-info&quot;&gt;&lt;i&gt;">
+              <v-row>
+                <v-col cols="6">
+                    <v-img  size="3" :src="modal_product.image"></v-img>
+                </v-col>
+                <v-col cols="6">
+                    <p>Nome : {{modal_product.name}}</p>
+                    <p>Descrizione : {{modal_product.description}}</p>
+                    <p>Prezzo : <span :class="showSlash?'discount_true':'price_text'" v-text="modal_product.price"></span> <v-icon class="eur" small>fas fa-euro-sign</v-icon></p>
+                    <p>Prezzo Scontato : <span  v-if="showSlash" class="price_text" v-text="modal_product.final_price"></span> <v-icon class="eur" small>fas fa-euro-sign</v-icon></p>
+
+                </v-col>
+              </v-row>
+          </sweet-modal-tab>
+          <sweet-modal-tab v-if="admin" title="Modifica Prodotto" id="modifica_prodotto" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;">
+          <form @submit.prevent="update_Product">
             <v-row>
                 <v-col cols="6">
               <picture-input
@@ -51,22 +66,42 @@
                         :changeOnClick="false"
                         accept="image/jpeg, image/png, image/gif"
                         buttonClass="ui button primary"
-                        :customStrings="{
-                        upload: '<h1>Carica immagine</h1>',
-                        drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
+                          :customStrings="{
+                            upload: '<h1>Carica immagine</h1>',
+                            drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+                            change: 'Cambia foto',
+                          }">
                 </picture-input>
                 </v-col>
                 <v-col cols="6">
-              <v-text-field light class="field"  outlined label="Nome" :disabled="!editing"  v-model='modal_product.name'></v-text-field>
-              <v-text-field light class="field"  outlined label="Prezzo" :disabled="!editing"  v-model='modal_product.price'></v-text-field>
-              <v-text-field light class="field"  outlined label="Perw" :disabled="!editing"  v-model='modal_product.final_price'></v-text-field>
-              <v-textarea light class="field"  outlined label="Descrizione" :disabled="!editing"  v-model='modal_product.description'></v-textarea>
+              <v-text-field light class="field"  outlined label="Nome" :disabled="!admin"  v-model='modal_product.name'></v-text-field>
+              <v-text-field light class="field"  outlined label="Prezzo" :disabled="!admin"  v-model='modal_product.price'></v-text-field>
+              <v-textarea light class="field"  outlined label="Descrizione" :disabled="!admin"  v-model='modal_product.description'></v-textarea>
+                <multiselect
+                      v-model="modal_product.tags"
+                      track-by="id"
+                      label="name"
+                      placeholder="Seleziona un Tag"
+                      tag-placholder="Aggiungi questo come nuovo Tag"
+                      selectLabel="Clicca per selezionare"
+                      deselectLabel="Clicca per Rimuovere"
+                      selectedLabel="Selezionato"
+                      :block-keys="['Tab', 'Enter']"
+                      :options="tags"
+                      :searchable="false"
+                      :internal-search="false"
+                      :multiple="true"
+                      :taggable="true"
+                      @tag="addTag">
+              </multiselect>
                 </v-col>
                 </v-row>
               {{modal_product}}
+              <button v-if="admin"  type="submit" class="save">Salva cambiamenti <i class="far fa-save fa-1x"></i></button>
+          </form>
           </sweet-modal-tab>
 
-          <sweet-modal-tab  title="Aggiungi Sconto" id="sconta_prodotto" icon="&lt;i class=&quot;fas fa-percent&quot;&gt;&lt;i&gt;">
+          <sweet-modal-tab v-if="admin" title="Aggiungi Sconto" id="sconta_prodotto" icon="&lt;i class=&quot;fas fa-percent&quot;&gt;&lt;i&gt;">
                 <label>Aggiungi sconto/i</label>
               <multiselect
                       v-model="selected_discounts"
@@ -169,6 +204,7 @@ export default {
           value:[],
           modal_product:{},
           text: '',
+          showSlash: false,
           toggleSnackbar: false,
           showPicture: false,
       }
@@ -177,8 +213,12 @@ export default {
 
     computed:{
 
-          discounts_list() {
+        discounts_list() {
                 return this.$store.getters['restaurantData/discounts']
+            },
+
+        tags() {
+                return this.$store.getters['restaurantData/tags']
             },
         },
 
@@ -193,17 +233,19 @@ export default {
       ...mapActions('restaurantData', ['removeProduct']),
       ...mapActions('restaurantData', ['addNewDiscount']),
       ...mapActions('restaurantData', ['addDiscountToProduct']),
+      ...mapActions('restaurantData', ['updateProduct']),
 
-      add_discount_to_list: function (event) {
-        let data = {
-            "title": this.discount_name,
-            "type": this.discount_type,
-            "value": this.discount_price,
-        };
-        this.addNewDiscount(data);
-        this.discount_price = this.discount_type = this.discount_name = '';
-        event.target.reset();
-      },
+
+        add_discount_to_list: function (event) {
+            let data = {
+                "title": this.discount_name,
+                "type": this.discount_type,
+                "value": this.discount_price,
+            };
+            this.addNewDiscount(data);
+            this.discount_price = this.discount_type = this.discount_name = '';
+            event.target.reset();
+        },
 
         /*
         add discount to product viene utilizzato per eliminare o aggiungere sconti a un determinato prodotto, se entra nell'if
@@ -212,126 +254,163 @@ export default {
         gli sconti da aggiungere
          */
 
-      add_discount_to_product: function (selected_discounts, prod, choice) {
-          let discountsId = [];
+        add_discount_to_product: function (selected_discounts, prod, choice) {
+              let discountsId = [];
 
-          if (choice===0){
+              if (choice===0){
 
-              let arrayLength = prod.discounts.length;
-              for(let i=0; i< arrayLength; i++){
-                  if(prod.discounts[i]===selected_discounts){
+                  let arrayLength = prod.discounts.length;
+                  for(let i=0; i< arrayLength; i++){
+                      if(prod.discounts[i]===selected_discounts){
 
-                    prod.discounts.splice(i,1);
-                    selected_discounts= prod.discounts;
+                        prod.discounts.splice(i,1);
+                        selected_discounts= prod.discounts;
+                      }
                   }
+
               }
-
-          }
-          let arrayLength = selected_discounts.length;
-          for (let i = 0; i < arrayLength; i++) {
-              discountsId.push(selected_discounts[i].id)
-          }
-
-          let x = this.products.indexOf(prod);
-
-          let p_id= this.products[x].id;
-
-          let discounts = {
-              'discounts': discountsId,
-          };
-
-          let data = {
-              discounts,
-              'id':p_id,
-          };
-          this.$refs.modal.close()
-          this.addDiscountToProduct(data).then(resp=> {
-              // si esegue solo se sto aggiungendo prodotti e li aggiunge subito a vista controllando che non siano doppioni
-              if (choice===1){
+              let arrayLength = selected_discounts.length;
               for (let i = 0; i < arrayLength; i++) {
-                  if (prod.discounts[i]!==selected_discounts[i]) {
-                      prod.discounts.push(selected_discounts[i]);
+                  discountsId.push(selected_discounts[i].id)
+              }
+
+              let x = this.products.indexOf(prod);
+
+              let p_id= this.products[x].id;
+
+              let discounts = {
+                  'discounts': discountsId,
+              };
+
+              let data = {
+                  discounts,
+                  'id':p_id,
+              };
+              this.$refs.modal.close();
+              this.addDiscountToProduct(data).then(resp=> {
+                  // si esegue solo se sto aggiungendo prodotti e li aggiunge subito a vista controllando che non siano doppioni
+                  if (choice===1){
+                  for (let i = 0; i < arrayLength; i++) {
+                      if (prod.discounts[i]!==selected_discounts[i]) {
+                          prod.discounts.push(selected_discounts[i]);
+                      }
                   }
-              }
-              this.text=resp.message;
-              prod.final_price= resp.final_price;
-              }
-              else {
-              this.text='Sconto eliminato'
-              }
-              this.toggleSnackbar=true ;
+                  this.text=resp.message;
+                  prod.final_price= resp.final_price;
+                  }
+                  else {
+                  this.text='Sconto eliminato'
+                  }
+                  this.toggleSnackbar=true ;
 
-          })
+              })
 
-              .catch(error => {
-                  alert(error.error)
-              });
-
-
-      },
-
-      del_Product: function(prod){
-        let x = this.products.indexOf(prod);
-        let prod_id = this.products[x].id;
-        this.removeProduct(
-          prod_id
-        ).then(resp => {
-
-            this.products.splice(this.products.indexOf(prod), 1);
-            this.text=resp.message;
-            this.toggleSnackbar=true ;
+                  .catch(error => {
+                      alert(error.error)
+                  });
 
 
-        })
+        },
 
-        .catch(error => {
+        del_Product: function(prod){
+            let x = this.products.indexOf(prod);
+            let prod_id = this.products[x].id;
+            this.removeProduct(
+              prod_id
+            ).then(resp => {
 
-          alert(error.error)
-        });
+                this.products.splice(this.products.indexOf(prod), 1);
+                this.text=resp.message;
+                this.toggleSnackbar=true ;
 
 
-      },
+            })
+
+            .catch(error => {
+
+              alert(error.error)
+            });
+        },
+
+        update_Product: function () {
+            let tagsID= [];
+            let arrayLength = this.modal_product.tags.length;
+            console.log(arrayLength);
+            console.log(this.modal_product);
+            // bisogna fare sto casino perchè devo mandare solo gli ID
+            for (let i = 0; i < arrayLength; i++) {
+                tagsID.push(this.modal_product.tags[i].id)
+            }
 
 
-      toggleCardModal(prod) {
-          if(this.admin===true) {
-              this.modal_product = prod;
-              this.selected_discounts = prod.discounts;
-              this.showPicture = true;
-              this.$refs.modal.open()
+            this.$refs.modal.close()
+            const data = {
+                "name": this.modal_product.name,
+                "description": this.modal_product.description,
+                "category": this.modal_product.category,
+                "price": this.modal_product.price,
+                "tags": tagsID,
+            };
+            const formData = new FormData();
+            formData.append('image', this.modal_product.image);
+            formData.append('data', JSON.stringify(data));
+            let payload = {
+                'up_prod': formData,
+                'p_id': this.modal_product.id
+            };
+            this.updateProduct(payload)
+        },
+
+
+        toggleCardModal(prod) {
+                  this.modal_product = prod;
+                  this.selected_discounts = prod.discounts;
+                  this.showPicture = true;
+                  this.checkDiscounts();
+                  this.$refs.modal.open();
+        },
+
+        toggleShowDiscounts() {
+            this.showDiscounts = !this.showDiscounts;
+            if (this.showAddDiscount === true){
+              this.showAddDiscount = false;
+            }
+        },
+
+        addTag (newTag) {
+          const tag = {
+            name: newTag,
+            code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
           }
-      },
+          this.value.push(tag)
+        },
 
-      toggleShowDiscounts() {
-        this.showDiscounts = !this.showDiscounts;
-        if (this.showAddDiscount === true){
-          this.showAddDiscount = false;
-        }
-      },
+        customLabel (option) {
+              if(option.type==='Fisso') {
+                  return `${option.title} - Sconto di ${option.value} €`
+              }else{
+                  return `${option.title} - Sconto del ${option.value} %`
+              }
+        },
 
-    addTag (newTag) {
-      const tag = {
-        name: newTag,
-        code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
-      }
-      this.value.push(tag)
-    },
+        onChanged() {
+            console.log("New picture loaded");
+            if (this.$refs.productImage.file) {
+                this.modal_product.image = this.$refs.productImage.file;
+            } else {
+                console.log("Old browser. No support for Filereader API");
+            }
+        },
 
-    customLabel (option) {
-          if(option.type==='Fisso') {
-              return `${option.title} - Sconto di ${option.value} €`
-          }else{
-              return `${option.title} - Sconto del ${option.value} %`
-          }
-    },
-    onChanged() {
-        console.log("New picture loaded");
-        if (this.$refs.productImage.file) {
-            this.image = this.$refs.productImage.file;
-        } else {
-            console.log("Old browser. No support for Filereader API");
-        }
-    },
+        checkDiscounts() {
+            let arrayLength = this.modal_product.discounts.length;
+            if (arrayLength>0) {
+                this.showSlash = true;
+            }
+            else{
+                this.showSlash = false;
+            }
+        },
 
     },
 };
@@ -354,45 +433,31 @@ h1 {
   background: var(--whitesmoke);
 }
 
-.quant {
-  padding: 5px;
-  display: flex;
-  align-items: center;
-}
-.description {
-  padding: 15px;
-}
-.managebutton {
-  transition: 0.3s ease-in-out;
-  background: var(--ming)!important;
-  display: block;
-  margin-top: 5px;
-  color:white;
-}
-.managebutton:hover {
-  scale: 1.1;
+.price_text{
+    width: 30%;
+    text-decoration: none;
+    justify-content: center;
 }
 
-.product {
-    transition: ease-in-out 0.4s;
-    background: var(--ghostwhite);
-    width: 365.5px;
-    height: 110px;
-    margin: 6.5px;
-    padding: 5px;
-    position: relative;
+.discount_true{
+    width: 30%;
+    text-decoration: line-through;
+    justify-content: center;
 
 }
 
-.product:hover {
-    box-shadow: 0 2px 10px #828282;
-    cursor: pointer;
 
-}
-
-.form_in_modal{
-    width: 50%;
-}
-
+  .save {
+    padding: 10px;
+    background: var(--ming);
+    border-radius: 25px;
+    margin: 10px auto;
+    color: white;
+    transition: 0.4s;
+    font-weight: bold;
+  }
+  .save:hover {
+    transform: scale(1.05);
+  }
 
 </style>
