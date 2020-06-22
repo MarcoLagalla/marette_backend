@@ -182,4 +182,11 @@ export default {
                 return response
             })
     },
+
+    getAutocomplete() {
+        return api.get('v1/webapp/restaurant/autocomplete')
+            .then(response => {
+                return response
+            })
+    },
 }
