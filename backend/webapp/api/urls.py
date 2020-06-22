@@ -4,7 +4,7 @@ from .opening_hours_views import CreateOpening, CreateOpeningDay, CreateFasciaOr
     DeleteOpeningDay, DeleteOpening, ShowTimeTable
 from .views import ListRestaurantsAPIView, CreateRestaurantAPIView, ShowRestaurantAPIView, UpdateRestaurantAPIView, \
     VoteRestaurantAPIView, RestaurantCategoryAPIView, DeleteRestaurantAPIView
-from .search_views import SearchRestaurantAPIView, SearchRestaurantByQueryAPIView
+from .search_views import SearchRestaurantAPIView, SearchRestaurantByQueryAPIView, AutoComplete
 from .products_views import AddProduct, ListProducts, DeleteProduct, UpdateProduct, ProductDetails, ListProductTags
 from .discounts_views import *
 from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu, MenuEntryAdd, MenuEntryDetail, \
@@ -78,5 +78,7 @@ urlpatterns = [
     path('restaurant/<int:id>/update', UpdateRestaurantAPIView.as_view(), name='update_restaurant'),
     path('restaurant/<int:id>/delete', DeleteRestaurantAPIView.as_view(), name='delete_restaurant'),
     path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
+
+    path('restaurant/autocomplete', AutoComplete.as_view(), name='suggest_autocomplete')
 
 ]

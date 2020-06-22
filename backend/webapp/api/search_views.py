@@ -9,7 +9,8 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from ..models.models import Restaurant, FasciaOraria, GiornoApertura, OrarioApertura
-from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer
+from .serializers import ListRestaurantSerializer, CreateRestaurantSerializer, RestaurantComponentsSerializer, \
+    serializers
 from rest_framework.utils.urls import remove_query_param, replace_query_param
 from django.core.paginator import Paginator
 from .serializers import ListRestaurantSerializer
@@ -18,6 +19,8 @@ from ...utils import NavigationLinks
 import datetime
 from django.utils.timezone import utc
 from backend.webapp.declarations import DAYS
+from django.db.models import Q
+from functools import reduce
 
 
 class SearchRestaurantAPIView(APIView):
@@ -175,14 +178,18 @@ class SearchRestaurantByQueryAPIView(APIView):
             pass  #TODO add this part !
 
         if queried_name:
-            name_query = Restaurant.objects.filter(activity_name__icontains=queried_name).order_by('-id')
+            queried_name_list = queried_name.split(' ')
+            name_query = Restaurant.objects.filter(reduce(lambda x, y: x | y, [Q(activity_name__icontains=word) for word
+                                                                               in queried_name_list])).order_by('-id')
             description_query = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
-            city_query = Restaurant.objects.filter(city__iexact=queried_name).order_by('-id')
-            queryset.append(name_query | description_query | city_query)
 
-        if queried_city:
-            city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
-            queryset.append(city_query)
+            if queried_city:
+                queryset.append(name_query | description_query)
+                city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
+                queryset.append(city_query)
+            else:
+                city_query = Restaurant.objects.filter(city__icontains=queried_name).order_by('-id')
+                queryset.append(name_query | description_query | city_query)
 
         if queried_category:
             category_query = Restaurant.objects.filter(restaurant_category__category_name__iexact=queried_category).order_by('-id')
@@ -228,3 +235,27 @@ class SearchRestaurantByQueryAPIView(APIView):
         else:
             return Response({'error': ["Nessun Ristorante trovato."]},
                             status.HTTP_404_NOT_FOUND)
+
+
+class AutoComplete(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+
+    def get(self, request):
+
+        restaurants = Restaurant.objects.all()
+
+        values = restaurants.values('city').distinct().order_by('city').values_list('city')
+        cities_list = []
+        for val in values:
+            cities_list.append(val[0])
+
+        data = {'cities': cities_list}
+
+        names = restaurants.values('activity_name').order_by('activity_name').values_list('activity_name')
+        names_list = []
+        for val in names:
+            names_list.append(val[0])
+
+        data.update({'names': names_list})
+        return Response(data, status=status.HTTP_200_OK)
