@@ -12,6 +12,20 @@
     opacity: 0.9;
     transform: scale(1.1);
 }
+.managebutton4 {
+    padding: 10px 20px;
+    color: var(--whitesmoke)!important;
+    font-weight: bold!important;
+    border-radius: 20px;
+    background: var(--ming);
+    border: transparent!important;
+    opacity: 1;
+    transition: 0.3s cubic-bezier(.75,.4,.83,.67);
+width: 100%}
+.managebutton4:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
 .managebuttoninv {
     padding: 10px;
     color: var(--lightgrey)!important;
