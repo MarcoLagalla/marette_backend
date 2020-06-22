@@ -1,7 +1,7 @@
 <template>
     <div class="infocard">
         <v-snackbar top v-model="snackbar" :timeout="timeout" :color="color">{{text}}</v-snackbar>
-        <h1>{{name}}</h1>
+        <div class="namecontainer"><h1>{{name}}</h1></div>
         <div class="divider"></div>
         <v-textarea auto-grow class="descript" :rounded="!admin"
                     :placeholder='admin? "Inserisci una introduzione al locale" : ""' dark :readonly='!admin'
@@ -96,6 +96,9 @@
     }
 </script>
 <style scoped>
+    .namecontainer {
+        width: 80%;
+    }
     .divider {
         width: 100px;
         background: var(--ming);
