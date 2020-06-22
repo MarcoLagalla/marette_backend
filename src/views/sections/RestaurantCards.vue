@@ -7,7 +7,7 @@
                 <div class="advquery" v-if="showAdvancedQuery">
                     <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
                     <v-row>
-                        <v-text-field @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-autocomplete :items="autocomplete.cities" @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-autocomplete>
                         <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
                             <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
                         </v-btn>
@@ -129,6 +129,9 @@
             },
             restDataCat() {
                 return this.$store.getters['restaurantData/restCategories']
+            },
+            autocomplete() {
+                return this.$store.getters['restaurants/autocomplete']
             }
         },
         methods:{
@@ -234,6 +237,7 @@
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
             this.$store.dispatch("restaurantData/getRestCategories")
+            this.$store.dispatch("restaurants/getAutocomplete")
         },
     }
 </script>
