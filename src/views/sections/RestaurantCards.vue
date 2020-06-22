@@ -18,7 +18,16 @@
             <v-col cols="12" md="4">
                 <div class="advquery" v-if="showAdvancedQuery">
                     <v-row>
-                        <v-autocomplete :items="autocomplete.cities" @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-autocomplete>
+                        <v-autocomplete
+                            :items="autocomplete.cities"
+                            @keydown.enter="search()"
+                            solo filled rounded background-color="#E0E0E0" dense
+                            :loading="loadingGeo"
+                            label="Città"
+                            :placeholder="city"
+                            v-model="city"
+                            no-data-text="Nessun ristorante ancora presente in questa città"
+                        ></v-autocomplete>
                         <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
                             <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
                         </v-btn>
