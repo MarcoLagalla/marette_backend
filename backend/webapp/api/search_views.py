@@ -182,13 +182,15 @@ class SearchRestaurantByQueryAPIView(APIView):
                                                                                in queried_name_list])).order_by('-id')
             description_query = Restaurant.objects.filter(activity_description__icontains=queried_name).order_by('-id')
 
-            if queried_city:
-                queryset.append(name_query | description_query)
-                city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
-                queryset.append(city_query)
-            else:
+            if not queried_city:
                 city_query = Restaurant.objects.filter(city__icontains=queried_name).order_by('-id')
                 queryset.append(name_query | description_query | city_query)
+            else:
+                queryset.append(name_query | description_query)
+
+        if queried_city:
+            city_query = Restaurant.objects.filter(city__iexact=queried_city).order_by('-id')
+            queryset.append(city_query)
 
         if queried_category:
             category_query = Restaurant.objects.filter(restaurant_category__category_name__iexact=queried_category).order_by('-id')
