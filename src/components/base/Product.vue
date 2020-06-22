@@ -14,7 +14,6 @@
                 color="var(--ming)" >
             <i class="fas fa-times"></i>
         </v-btn>
-
         <div class="product" @click="$emit('open_card')">
             <v-avatar class="imag" size="100" tile>
                 <v-img :src="product.image"></v-img>
@@ -48,7 +47,7 @@
                 </v-row>
             </div>
         </div>
-
+        <!-- Potrebbe essere un loop infinito il for dei discount, se ci sono tantissimi sconti, bisogna decidere se controllare la cosa o meno -->
         <div v-if="product.discounts.length>0">
             <v-chip  v-for="(discount, i) in product.discounts"  :key="i" class="discount_banner" @click:close="$emit('delete_prod_discount', discount)" label :close="close_discount" x-small color="var(--ming)" text-color="white">{{check_type(discount)}}</v-chip>
         </div>
