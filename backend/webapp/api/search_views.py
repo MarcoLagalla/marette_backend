@@ -239,5 +239,9 @@ class AutoComplete(APIView):
 
         restaurants = Restaurant.objects.all().values('city').distinct().order_by('city')
 
-        data = {'cities': list(restaurants.values_list('city'))}
+        values = restaurants.values_list('city')
+        cities_list = []
+        for val in values:
+            cities_list.append(val[0])
+        data = {'cities': cities_list}
         return Response(data, status=status.HTTP_200_OK)
