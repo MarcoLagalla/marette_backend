@@ -79,6 +79,6 @@ urlpatterns = [
     path('restaurant/<int:id>/delete', DeleteRestaurantAPIView.as_view(), name='delete_restaurant'),
     path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
 
-    path('restaurant/autocomplet', AutoComplete.as_view(), name='suggest_autocomplete')
+    path('restaurant/autocomplete', AutoComplete.as_view(), name='suggest_autocomplete')
 
 ]
