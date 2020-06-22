@@ -63,7 +63,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('name', 'description', 'category', 'price', 'iva',
-                  'tags', 'discounts', 'image', 'show_image','available')
+                  'tags', 'discounts', 'image', 'show_image', 'available')
 
     def get_image_url(self, instance):
         request = self.context.get('request')
@@ -78,7 +78,7 @@ class WriteProductSerializer(serializers.ModelSerializer):
             tags_data = None
 
         try:
-            discount_data = self.validated_data.pop('discounts')
+            discount_data = self.validated_data.get('discounts', None)
         except KeyError:
             discount_data = None
 

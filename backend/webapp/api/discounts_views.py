@@ -73,8 +73,9 @@ class AddDiscounts(APIView):
 
                     serializer = ProductDiscountSerializer(data=request.data)
                     if serializer.is_valid():
-                        d = serializer.save(restaurant)
-                        return Response(serializer.validated_data,
+                        discount = serializer.save(restaurant)
+                        ret_data = ProductDiscountSerializer(instance=discount)
+                        return Response(ret_data.data, serializer.validated_data,
                                         status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors,
