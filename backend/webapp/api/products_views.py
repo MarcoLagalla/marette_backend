@@ -195,25 +195,14 @@ class UpdateProduct(APIView):
                             if serializer.is_valid():
                                 if 'tags' in data.keys():
                                     product.tags.clear()
-                                    for t in data['tags']:
-                                        for d in data['discounts']:
-                                            try:
-                                                tag = ProductTag.objects.all().get(id=d)
-                                                if tag:
-                                                    product.tags.add(d)
-                                            except ProductTag.DoesNotExist:
-                                                pass
-                                    del data['tags']
-                                if 'discounts' in data.keys():
-                                    product.discounts.clear()
-                                    for d in data['discounts']:
+                                    for tag in data['tags']:
                                         try:
-                                            entry = ProductDiscount.objects.all().filter(restaurant=restaurant).get(id=d)
-                                            if entry:
-                                                product.discounts.add(d)
-                                        except ProductDiscount.DoesNotExist:
+                                            tag = ProductTag.objects.all().get(id=tag)
+                                            if tag:
+                                                product.tags.add(tag)
+                                        except ProductTag.DoesNotExist:
                                             pass
-                                    del data['discounts']
+                                    del data['tags']
 
                                 for key in data:
                                     setattr(product, key, data[key])
