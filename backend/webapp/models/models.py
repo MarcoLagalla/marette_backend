@@ -27,18 +27,24 @@ def randomString(stringLength=8):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def gallery_component(instance, filename):
-    file_path = 'components/gallery/{rand}/{filename}'.format(
-          rand=randomString(10), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'components/gallery/{rand}/{name}.{ext}'.format(
+          rand=randomString(10), name=name, ext=extension)
     return file_path
 
 def products_image(instance, filename):
-    file_path = 'products/{restaurant_id}/{rand}/{filename}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=extension)
     return file_path
 
 def products_image_thumb(instance, filename):
-    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{filename}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=extension)
     return file_path
 
 
