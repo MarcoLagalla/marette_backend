@@ -3,69 +3,87 @@
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
         <v-row>
-            <v-col cols="12" :md="showAdvancedQuery? '4':'6' ">
+            <v-col cols="12" md="6">
                 <div class="searchbarcontainer">
-                    <v-combobox
-                        :items="autocomplete.names"
-                        @keydown.enter="search()"
-                        @click:append-outer="search"
-                        hint="Cerca ristorante per caratteristiche"
-                        rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
-                        label="Cerca un ristorante"
-                        v-model="query"
-                        @update:search-input="query = $event"
-                    ></v-combobox>
-                    <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
-                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                    </v-btn>
-                    <v-btn v-if="showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca semplice
-                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                    </v-btn>
-                    <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
-                </div>
-            </v-col>
-            <v-col cols="12" md="4">
-                <div class="advquery" v-if="showAdvancedQuery">
+                    <v-row class="px-5">
+                        <v-combobox
+                                :items="autocomplete.names"
+                                @keydown.enter="search()"
+                                @click:append-outer="search"
+                                hint="Cerca ristorante per caratteristiche"
+                                rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
+                                label="Cerca un ristorante"
+                                v-model="query"
+                                @update:search-input="query = $event"
+                        ></v-combobox>
+                    </v-row>
                     <v-row>
-                        <v-autocomplete
-                            :items="autocomplete.cities"
-                            @keydown.enter="search()"
-                            solo filled rounded background-color="#E0E0E0" dense
-                            :loading="loadingGeo"
-                            label="Città"
-                            :placeholder="city"
-                            v-model="city"
-                            no-data-text="Nessun ristorante ancora presente in questa città"
-                        ></v-autocomplete>
-                        <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
-                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
-                        </v-btn>
-                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
+                        <div class="advquery" v-if="showAdvancedQuery">
+                            <v-row>
+                                <v-col cols="12" md="6" class="mt-3">
+                                    <v-autocomplete
+                                            :items="autocomplete.cities"
+                                            @keydown.enter="search()"
+                                            solo filled rounded background-color="#E0E0E0" dense
+                                            :loading="loadingGeo"
+                                            label="Città"
+                                            :placeholder="city"
+                                            v-model="city"
+                                            no-data-text="Nessun ristorante ancora presente in questa città"
+                                            @click:append-outer="getLocation()"
+                                            append-outer-icon="mdi-crosshairs-gps"
+                                            append-icon=""
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-row >
+                                        <v-col cols="12" md="6">
+                                            <v-combobox
+                                                    solo filled dense background-color="#E0E0E0" rounded
+                                                    :items="restDataCat"
+                                                    item-text="category_name"
+                                                    item-value="id"
+                                                    v-model='restaurant_category'
+                                                    id="restaurant_category"
+                                                    name="restaurant_category"
+                                                    label="Categoria"
+                                                    @keydown.enter="search()"
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="12" md="6" >
+                                            <v-switch v-model="aperto_ora" label="Aperto ora"></v-switch>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                        </div>
                     </v-row>
                 </div>
             </v-col>
-            <v-col cols="12" md="4">
-                <div class="advquery" v-if="showAdvancedQuery">
-                <v-combobox
-                        solo filled dense background-color="#E0E0E0" rounded
-                        :items="restDataCat"
-                        item-text="category_name"
-                        item-value="id"
-                        v-model='restaurant_category'
-                        id="restaurant_category"
-                        name="restaurant_category"
-                        label="Categoria"
-                        @keydown.enter="search()"
-                ></v-combobox>
+        </v-row>
+        <v-col cols="12" md="6">
+            <div class="ml-7" v-if="showAdvancedQuery">
                 <v-slider
                         height="60"
+                        step="5"
                         label="Ristoranti per pagina:"
-                        min="1"
+                        min="10"
                         max="40"
                         v-model="restaurantListData.page_size"
                         thumb-label="always"
                 ></v-slider>
-                </div>
+            </div>
+        </v-col>
+
+        <v-row>
+            <v-col cols="12" md="6">
+                <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+                <v-btn v-if="showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca semplice
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+                <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
             </v-col>
         </v-row>
         <v-alert :value="error" type="error" dismissible icon="far fa-frown">
@@ -101,9 +119,9 @@
                                                 </div>
                                                 <div class="data">
                                                     <div class="content">
-                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <h1 class="title"><a>{{restaurant.activity_name}}</a></h1>
                                                         <p class="text">{{restaurant.activity_description}}</p>
-                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                        <a class="button">Entra nel negozio</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -214,8 +232,7 @@
                     this.loading = false
                     this.error = false
                 })
-                .catch((error)=>{
-                    console.log(error)
+                .catch(()=>{
                     this.error = true
                     this.loading = false
                 })
