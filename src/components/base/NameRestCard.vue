@@ -102,7 +102,7 @@
         font-weight: bolder;
     }
     .chiuso {
-        color: darkred;
+        color: indianred;
         font-weight: bolder;
     }
     .namecontainer {
