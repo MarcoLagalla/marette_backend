@@ -1,5 +1,6 @@
 <template>
 <div class="tabella">
+    <v-row v-if="openingDays.length === 0">Nessun orario di apertura inserito</v-row>
     <v-row v-for="(day, i) in openingDays" :key="i" class="rowhover" >
         <v-col cols="6" sm="6">
             <span class="giorno">{{day.day}}</span>

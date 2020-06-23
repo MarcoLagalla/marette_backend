@@ -3,14 +3,44 @@
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
         <v-row>
+            <v-col cols="12" :md="showAdvancedQuery? '4':'6' ">
+                <div class="searchbarcontainer">
+                    <v-combobox
+                        :items="autocomplete.names"
+                        @keydown.enter="search()"
+                        @click:append-outer="search"
+                        hint="Cerca ristorante per caratteristiche"
+                        rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
+                        label="Cerca un ristorante"
+                        v-model="query"
+                        @update:search-input="query = $event"
+                    ></v-combobox>
+                    <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                    </v-btn>
+                    <v-btn v-if="showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca semplice
+                        <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                    </v-btn>
+                    <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
+                </div>
+            </v-col>
             <v-col cols="12" md="4">
                 <div class="advquery" v-if="showAdvancedQuery">
-                    <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
                     <v-row>
-                        <v-text-field @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
+                        <v-autocomplete
+                            :items="autocomplete.cities"
+                            @keydown.enter="search()"
+                            solo filled rounded background-color="#E0E0E0" dense
+                            :loading="loadingGeo"
+                            label="Città"
+                            :placeholder="city"
+                            v-model="city"
+                            no-data-text="Nessun ristorante ancora presente in questa città"
+                        ></v-autocomplete>
                         <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
                             <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
                         </v-btn>
+                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
                     </v-row>
                 </div>
             </v-col>
@@ -35,15 +65,6 @@
                         v-model="restaurantListData.page_size"
                         thumb-label="always"
                 ></v-slider>
-                </div>
-            </v-col>
-            <v-col cols="12" md="4">
-                <div class="searchbarcontainer">
-                <v-text-field @keydown.enter="search()" rounded clearable background-color="#E0E0E0" dense append-icon="fas fa-search" solo filled label="Cerca un ristorante" v-model="query"></v-text-field>
-                <v-btn class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
-                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                </v-btn>
-                <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
                 </div>
             </v-col>
         </v-row>
@@ -129,6 +150,9 @@
             },
             restDataCat() {
                 return this.$store.getters['restaurantData/restCategories']
+            },
+            autocomplete() {
+                return this.$store.getters['restaurants/autocomplete']
             }
         },
         methods:{
@@ -234,6 +258,7 @@
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
             this.$store.dispatch("restaurantData/getRestCategories")
+            this.$store.dispatch("restaurants/getAutocomplete")
         },
     }
 </script>
@@ -316,7 +341,8 @@
 
     h1 {
         color: var(--darkslate);
-        font-size: 2em;
+        font-size: 3em;
+        font-weight: 400!important;
     }
 
     h2 {
@@ -398,15 +424,20 @@
         z-index: 1;
     }
     .card .author {
-        font-size: 12px;
+        font-size: 16px;
         text-transform: capitalize;
-        text-shadow: 0 0 1px black;
+
     }
     .card .title {
         margin-top: 10px;
         margin-bottom: 5px;
-        font-weight: 300;
-        font-size: 1.6rem!important;
+        font-weight: 400;
+        font-size: 2rem!important;
+        text-shadow:
+                0.07em 0 darkslategrey,
+                0 0.07em darkslategrey,
+                -0.07em 0 darkslategrey,
+                0 -0.07em darkslategrey;
     }
     .card .text {
         height: 70px;

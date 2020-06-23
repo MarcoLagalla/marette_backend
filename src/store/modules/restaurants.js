@@ -6,13 +6,15 @@ const state = {
     errors: [],
     id_restaurant: '',
     list: [],
-    userList: []
+    userList: [],
+    autocomplete: {},
 }
 
 const getters = {
     restaurantList: state => state.list,
     errors: state => state.errors,
-    userList: state => state.userList
+    userList: state => state.userList,
+    autocomplete: state => state.autocomplete,
 
 }
 
@@ -116,9 +118,24 @@ const actions = {
         })
     },
 
+    getAutocomplete: ({commit}) =>{
+         return new Promise((resolve, reject) => {
+             manageRestaurant.getAutocomplete()
+                 .then(respRes => {
+                    commit('REST_AUTOCOMPLETE', respRes.data)
+                 })
+         })
+    },
+
+
 }
 
 const mutations = {
+
+    REST_AUTOCOMPLETE: (state, autocomplete) => {
+        state.autocomplete = autocomplete
+    },
+
     REST_USR_LIST_REQUEST: (state) => {
         state.userList = []
     },
