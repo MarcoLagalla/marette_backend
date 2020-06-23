@@ -207,7 +207,7 @@ class UpdateProduct(APIView):
                                     del data['tags']
 
                                 try:
-                                    data['price'] = decimal.Decimal(data['price'])
+                                    data['price'] = decimal.Decimal(data['price'].replace(',', '.'))
                                 except KeyError:
                                     pass
 
