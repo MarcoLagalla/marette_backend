@@ -54,6 +54,7 @@ export default {
 <style scoped>
   .drawer {
     background: linear-gradient(darkgrey,grey)!important;
+    z-index: 999!important;
   }
 .btn-6 {
   width: 100%;
