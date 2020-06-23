@@ -18,14 +18,14 @@
                               name="name"
                               required
                 ></v-text-field>
-                <v-text-field outlined
+                <v-textarea outlined
                               v-model="description"
                               type="text"
                               label=" Inserire descrizione"
                               id="description"
                               name="description"
                               required
-                ></v-text-field>
+                ></v-textarea>
                 <v-text-field outlined
                               v-model="price"
                               type="number"
