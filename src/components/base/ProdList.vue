@@ -44,13 +44,14 @@
                     <p>Nome : {{modal_product.name}}</p>
                     <p>Descrizione : {{modal_product.description}}</p>
                     <p>Prezzo : <span :class="showSlash?'discount_true':'price_text'" v-text="modal_product.price"></span> <v-icon class="eur" small>fas fa-euro-sign</v-icon></p>
-                    <p>Prezzo Scontato : <span  v-if="showSlash" class="price_text" v-text="modal_product.final_price"></span> <v-icon class="eur" small>fas fa-euro-sign</v-icon></p>
+                    <p v-if="showSlash" >Prezzo Scontato : <span class="price_text" v-text="modal_product.final_price"></span> <v-icon class="eur" small>fas fa-euro-sign</v-icon></p>
 
                 </v-col>
               </v-row>
           </sweet-modal-tab>
+
           <sweet-modal-tab v-if="admin" title="Modifica Prodotto" id="modifica_prodotto" icon="&lt;i class=&quot;fas fa-edit&quot;&gt;&lt;i&gt;">
-          <form @submit.prevent="update_Product">
+              <form @submit.prevent="update_Product">
             <v-row>
                 <v-col cols="6">
               <picture-input
@@ -74,9 +75,9 @@
                 </picture-input>
                 </v-col>
                 <v-col cols="6">
-              <v-text-field light class="field"  outlined label="Nome" :disabled="!admin"  v-model='modal_product.name'></v-text-field>
-              <v-text-field light class="field"  outlined label="Prezzo" :disabled="!admin"  v-model='modal_product.price'></v-text-field>
-              <v-textarea light class="field"  outlined label="Descrizione" :disabled="!admin"  v-model='modal_product.description'></v-textarea>
+              <v-text-field light class="field" type="text" outlined label="Nome" :disabled="!admin"  v-model='modal_product.name'></v-text-field>
+              <v-text-field light class="field" type="number" outlined label="Prezzo" :disabled="!admin"  v-model='modal_product.price'></v-text-field>
+              <v-textarea light class="field" type="text" outlined label="Descrizione" :disabled="!admin"  v-model='modal_product.description'></v-textarea>
                 <multiselect
                       v-model="modal_product.tags"
                       track-by="id"
@@ -202,6 +203,7 @@ export default {
           value:[],
           modal_product:{},
           text: '',
+          image: '',
           showSlash: false,
           toggleSnackbar: false,
           showPicture: false,
@@ -333,15 +335,13 @@ export default {
         update_Product: function () {
             let tagsID= [];
             let arrayLength = this.modal_product.tags.length;
-            console.log(arrayLength);
-            console.log(this.modal_product);
             // bisogna fare sto casino perchè devo mandare solo gli ID
             for (let i = 0; i < arrayLength; i++) {
                 tagsID.push(this.modal_product.tags[i].id)
             }
 
 
-            this.$refs.modal.close()
+            this.$refs.modal.close();
             const data = {
                 "name": this.modal_product.name,
                 "description": this.modal_product.description,
@@ -350,7 +350,9 @@ export default {
                 "tags": tagsID,
             };
             const formData = new FormData();
-            formData.append('image', this.modal_product.image);
+            if(this.image){
+            formData.append('image', this.image);
+            }
             formData.append('data', JSON.stringify(data));
             let payload = {
                 'up_prod': formData,
@@ -362,10 +364,10 @@ export default {
 
         toggleCardModal(prod) {
                   this.modal_product = prod;
-                  this.selected_discounts = prod.discounts;
                   this.showPicture = true;
+                  this.selected_discounts = prod.discounts;
                   this.checkDiscounts();
-                  this.$refs.modal.open();
+                  this.$refs.modal.open('modifica_prodotto');
         },
 
         toggleShowDiscounts() {
@@ -394,7 +396,7 @@ export default {
         onChanged() {
             console.log("New picture loaded");
             if (this.$refs.productImage.file) {
-                this.modal_product.image = this.$refs.productImage.file;
+                this.image = this.$refs.productImage.file;
             } else {
                 console.log("Old browser. No support for Filereader API");
             }
