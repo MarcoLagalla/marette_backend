@@ -25,7 +25,8 @@
                 :
             </li>
             <li class="infos" >
-                {{ opened }} <span v-if="opened_now === false && opens_at !== false">- {{ opens_at }} </span>
+               <span class="aperto" v-if="opened_now"> {{ opened }} </span>
+                <span v-if="opened_now === false && opens_at !== false">- {{ opens_at }} </span>
             </li>
         </ul>
     </div>
@@ -96,6 +97,10 @@
     }
 </script>
 <style scoped>
+    .aperto {
+        color: lawngreen;
+        font-weight: bolder;
+    }
     .namecontainer {
         width: 80%;
     }
