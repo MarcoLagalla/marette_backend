@@ -597,8 +597,9 @@ const mutations = {
     REST_REMOVE_PROD_ERROR: () => {
     },
 
-    REST_UPDATE_PROD_SUCCESS: (state, product) => {
-        state.productList[product.category].push(product)
+    REST_UPDATE_PROD_SUCCESS: (state, prod) => {
+        this.products.splice(this.products.indexOf(prod), 1);
+        state.productList[prod.category].push(prod)
     },
 
     REST_UPDATE_PROD_ERROR: () => {
