@@ -2,10 +2,11 @@
 
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
-        <v-row>
+        <div class="searchbarcontainer">
+        <v-row class="my-2 py-0">
             <v-col cols="12" md="6">
-                <div class="searchbarcontainer">
-                    <v-row class="px-5">
+
+                    <v-row class="py-0" style="padding: 20px;">
                         <v-combobox
                                 :items="autocomplete.names"
                                 @keydown.enter="search()"
@@ -17,7 +18,7 @@
                                 @update:search-input="query = $event"
                         ></v-combobox>
                     </v-row>
-                    <v-row>
+                    <v-row class="py-0">
                         <div class="advquery" v-if="showAdvancedQuery">
                             <v-row>
                                 <v-col cols="12" md="6" class="mt-3">
@@ -50,7 +51,7 @@
                                                     @keydown.enter="search()"
                                             ></v-combobox>
                                         </v-col>
-                                        <v-col cols="12" md="6" >
+                                        <v-col cols="12" md="6" style="padding: 0px 15px;">
                                             <v-switch v-model="aperto_ora" label="Aperto ora"></v-switch>
                                         </v-col>
                                     </v-row>
@@ -58,25 +59,24 @@
                             </v-row>
                         </div>
                     </v-row>
-                </div>
             </v-col>
         </v-row>
-        <v-col cols="12" md="6">
-            <div class="ml-7" v-if="showAdvancedQuery">
-                <v-slider
-                        height="60"
-                        step="5"
-                        label="Ristoranti per pagina:"
-                        min="10"
-                        max="40"
-                        v-model="restaurantListData.page_size"
-                        thumb-label="always"
-                ></v-slider>
-            </div>
-        </v-col>
-
-        <v-row>
-            <v-col cols="12" md="6">
+            <v-row class="my-0 py-0">
+                    <v-col class="my-0 py-0" cols="12" md="6">
+                        <div class="ml-4 p-0" v-if="showAdvancedQuery">
+                            <v-slider
+                                    height="60"
+                                    step="5"
+                                    label="Ristoranti per pagina:"
+                                    min="10"
+                                    max="40"
+                                    v-model="restaurantListData.page_size"
+                                    thumb-label="always"
+                            ></v-slider>
+                        </div>
+                    </v-col>
+            </v-row>
+            <v-row>
                 <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                     <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                 </v-btn>
@@ -84,8 +84,8 @@
                     <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                 </v-btn>
                 <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
-            </v-col>
         </v-row>
+        </div>
         <v-alert :value="error" type="error" dismissible icon="far fa-frown">
             La tua ricerca non ti ha condotto a nulla di utile
         </v-alert>
@@ -290,7 +290,7 @@
         background: var(--whitesmoke);
     }
     .advquery{
-        padding: 20px;
+        padding: 0px 20px;
     }
     .searchbarcontainer {
 
