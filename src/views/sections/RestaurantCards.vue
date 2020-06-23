@@ -21,7 +21,7 @@
                     <v-row class="py-0">
                         <div class="advquery" v-if="showAdvancedQuery">
                             <v-row>
-                                <v-col cols="12" md="6" class="mt-3">
+                                <v-col cols="12" md="5" class="mt-3">
                                     <v-autocomplete
                                             :items="autocomplete.cities"
                                             @keydown.enter="search()"
@@ -36,7 +36,7 @@
                                             append-icon=""
                                     ></v-autocomplete>
                                 </v-col>
-                                <v-col cols="12" md="6">
+                                <v-col cols="12" md="7">
                                     <v-row >
                                         <v-col cols="12" md="6">
                                             <v-combobox
