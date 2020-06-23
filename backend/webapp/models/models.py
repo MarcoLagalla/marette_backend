@@ -387,7 +387,7 @@ class FasciaOraria(models.Model):
         unique_together = (('restaurant', 'giorno', 'start', 'end'), )
 
     def __str__(self):
-        return "{0} - {1}".format(self.start, self.end)
+        return "[{0}] {1} - {2}".format(self.restaurant, self.start, self.end)
 
 
 class GiornoApertura(models.Model):
