@@ -244,8 +244,6 @@ const actions = {
     updateProduct: ({commit}, product_update) => {
         return new Promise((resolve, reject) => {
 
-            console.log(product_update.up_prod);
-            console.log(product_update.id);
             let payload = {};
             payload['id'] = state.ID;
             payload['data'] = product_update.up_prod;
@@ -598,8 +596,8 @@ const mutations = {
     },
 
     REST_UPDATE_PROD_SUCCESS: (state, prod) => {
-        this.products.splice(this.products.indexOf(prod), 1);
-        state.productList[prod.category].push(prod)
+        state.productList[prod.category].splice(state.productList[prod.category].product, 1);
+        state.productList[prod.category].push(prod);
     },
 
     REST_UPDATE_PROD_ERROR: () => {
