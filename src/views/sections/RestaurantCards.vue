@@ -119,9 +119,9 @@
                                                 </div>
                                                 <div class="data">
                                                     <div class="content">
-                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <h1 class="title"><a>{{restaurant.activity_name}}</a></h1>
                                                         <p class="text">{{restaurant.activity_description}}</p>
-                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                        <a class="button">Entra nel negozio</a>
                                                     </div>
                                                 </div>
                                             </div>
