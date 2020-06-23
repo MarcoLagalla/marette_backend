@@ -2,18 +2,18 @@
     <div>
 
         <div class="product" @click="toggleCardModal">
-
             <i class="fas fa-plus fa-5x"></i>
-
         </div>
 
     <sweet-modal ref="modal_add">
-        <div class="addprod">
-            <v-form @submit.prevent="submitProduct">
+        <p style="color: grey; font-size: 1.2em; font-weight: bold;">Aggiungi prodotto</p>
+        <v-form @submit.prevent="submitProduct">
+        <v-row>
+            <v-col cols="6" class="columnStyle">
                 <v-text-field outlined
                               v-model="name"
                               type="text"
-                              label=" Inserire nome prodotto"
+                              label=" Inserire nome prodotto *"
                               id="name"
                               name="name"
                               required
@@ -21,7 +21,7 @@
                 <v-textarea outlined
                               v-model="description"
                               type="text"
-                              label=" Inserire descrizione"
+                              label=" Inserire descrizione *"
                               id="description"
                               name="description"
                               required
@@ -29,13 +29,33 @@
                 <v-text-field outlined
                               v-model="price"
                               type="number"
-                              label=" Inserire prezzo"
+                              label=" Inserire prezzo *"
                               id="price"
                               name="price"
                               required
                 ></v-text-field>
-
-
+            </v-col>
+            <v-col cols="6" class="columnStyle">
+                <picture-input
+                        :key="resetImage"
+                        v-if="showPicture"
+                        ref="productImage"
+                        @change="onChanged"
+                        :width="250"
+                        :height="250"
+                        :zIndex="0"
+                        size="5"
+                        :crop="true"
+                        :changeOnClick="false"
+                        accept="image/jpeg, image/png, image/gif"
+                        buttonClass="ui button primary"
+                          :customStrings="{
+                            upload: '<h1>Carica immagine</h1>',
+                            drag: 'Trascina qui la un immagine di profilo o clicca per selezionarla',
+                            change: 'Cambia foto',
+                          }">
+                </picture-input>
+                <br>
                 <multiselect
                       v-model="selectedTags"
                       track-by="id"
@@ -52,32 +72,16 @@
                       :multiple="true"
                       :taggable="true"
                       @tag="addTag">
-
               </multiselect>
-              <br><br>
-                <picture-input
-                        :key="resetImage"
-                        v-if="showPicture"
-                        ref="productImage"
-                        @change="onChanged"
-                        :width="300"
-                        :height="300"
-                        :zIndex="0"
-                        size="5"
-                        :crop="true"
-                        :changeOnClick="false"
-                        accept="image/jpeg, image/png, image/gif"
-                        buttonClass="ui button primary"
-                        :customStrings="{
-        upload: '<h1>Carica immagine</h1>',
-        drag: 'Trascina qui la tua immagine o clicca per selezionarla'}">
-                </picture-input>
-                <br><br>
-                <button type="submit" class="managebutton">Aggiungi Prodotto</button>
-            </v-form>
-            <br><br>
-
-        </div>
+            </v-col>
+            </v-row>
+            <v-row >
+                <v-col cols="12">
+                <p style="font-style: italic; font-size: 0.8em;">* Campo Obbligatorio</p>
+                <button class="addbutton" :disabled=" name==='' || description==='' || price===''" type="submit" >Aggiungi Prodotto</button>
+                </v-col>
+            </v-row>
+        </v-form>
     </sweet-modal>
     <!--v-snackbar
       v-model="toggleSnackbar"
@@ -199,6 +203,7 @@
 
 
 
+
         },
 
 
@@ -210,69 +215,12 @@
         text-shadow: 0 0 1px grey;
         transition: 0.4s ease-in-out;
     }
-    .addprod {
-        margin: auto;
-        width: 50%;
-        padding: 20px;
-    }
-    picture-input {
-        z-index: 0!important;
-    }
-    .imag {
-        border-radius: 10px;
-        box-shadow: 0 0 2px black;
-    }
 
     h1 {
         color: white;
         margin-bottom: 10px;
         margin-left: 10px;
     }
-
-    .eur {
-        padding-left: 5px;
-        padding-right: 10px;
-    }
-
-    .title {
-        font-size: 1.3em !important;
-        position: absolute;
-        top: 0;
-        left: 100px;
-        padding: 8px;
-        text-transform: capitalize;
-        font-weight: normal !important;
-    }
-
-    .description {
-        position: absolute;
-        color: darkslategrey;
-        letter-spacing: 2px;
-        font-size: 0.9em;
-        top: 35px;
-        left: 100px;
-        padding: 10px;
-        width: 50%;
-        height: 50px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-
-    .quant {
-        position: absolute;
-        top: 30px;
-        right: 0px;
-        padding: 10px;
-    }
-
-    .delete_button {
-        z-index: 2;
-        top:15px;
-        left:335px;
-    }
-
-
 
     .product {
         transition: ease-in-out 0.4s;
@@ -293,11 +241,24 @@
         transform: scale(1.1);
     }
 
-    .pos2 {
-        position: absolute;
-        bottom: 0;
+  .addbutton {
+    padding: 10px;
+    background: var(--ming);
+    border-radius: 25px;
+    margin: 10px auto;
+    color: white;
+    transition: 0.4s;
+    font-weight: bold;
+  }
+  .addbutton:hover {
+    transform: scale(1.05);
+  }
 
-        width: 50%;
-        left: 50%;
-    }
+  .addbutton:disabled {
+    background: grey;
+  }
+
+  .columnStyle{
+      padding: 10px;
+  }
 </style>
