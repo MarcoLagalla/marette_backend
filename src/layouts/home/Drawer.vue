@@ -1,5 +1,5 @@
 <template>
-<v-navigation-drawer right class="drawer" fixed height="100%" overlay-color="secondary" overlay-opacity=".8" temporary v-bind="$attrs" v-on="$listeners">
+<v-navigation-drawer v-if="$vuetify.breakpoint.smAndDown" right class="drawer" fixed height="100%" overlay-color="secondary" overlay-opacity=".8" temporary v-bind="$attrs" v-on="$listeners">
   <v-list color="transparent" shaped>
     <v-list-item v-if="(!isLogged)" color="primary">
       <base-form-ra />
