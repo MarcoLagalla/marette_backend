@@ -5,7 +5,16 @@
         <v-row>
             <v-col cols="12" :md="showAdvancedQuery? '4':'6' ">
                 <div class="searchbarcontainer">
-                    <v-autocomplete :items="autocomplete.names" @keydown.enter="search()" no-data-text="Cerca per caratteristiche" rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled label="Cerca un ristorante" v-model="query"></v-autocomplete>
+                    <v-combobox
+                        :items="autocomplete.names"
+                        @keydown.enter="search()"
+                        @click:append-outer="search"
+                        hint="Cerca ristorante per caratteristiche"
+                        rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
+                        label="Cerca un ristorante"
+                        v-model="query"
+                        @update:search-input="query = $event"
+                    ></v-combobox>
                     <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
                         <v-icon right class="mdi mdi-card-search-outline"></v-icon>
                     </v-btn>
@@ -18,7 +27,16 @@
             <v-col cols="12" md="4">
                 <div class="advquery" v-if="showAdvancedQuery">
                     <v-row>
-                        <v-autocomplete :items="autocomplete.cities" @keydown.enter="search()"  solo filled rounded background-color="#E0E0E0" dense :loading="loadingGeo" label="Città" v-model="city"></v-autocomplete>
+                        <v-autocomplete
+                            :items="autocomplete.cities"
+                            @keydown.enter="search()"
+                            solo filled rounded background-color="#E0E0E0" dense
+                            :loading="loadingGeo"
+                            label="Città"
+                            :placeholder="city"
+                            v-model="city"
+                            no-data-text="Nessun ristorante ancora presente in questa città"
+                        ></v-autocomplete>
                         <v-btn class="managebutton" @click="getLocation()" :loading="loadingGeo" text>Localizza
                             <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
                         </v-btn>
