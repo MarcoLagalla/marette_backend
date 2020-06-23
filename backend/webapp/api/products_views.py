@@ -1,3 +1,5 @@
+import decimal
+
 from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -203,6 +205,11 @@ class UpdateProduct(APIView):
                                         except ProductTag.DoesNotExist:
                                             pass
                                     del data['tags']
+
+                                try:
+                                    data['price'] = decimal.Decimal(data['price'])
+                                except KeyError:
+                                    pass
 
                                 for key in data:
                                     setattr(product, key, data[key])
