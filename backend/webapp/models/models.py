@@ -280,7 +280,6 @@ class Product(models.Model):
             return "0.00"
         return "{:.2f}".format(new_price)
 
-
     def get_original_price(self):
         return self.price
 
