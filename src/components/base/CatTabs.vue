@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="basil" >
-    <v-tabs v-model="tab" color="basil" grow >
+    <v-tabs v-model="tab" color="basil" grow show-arrows>
       <v-tab v-for="category in categories" :key="category" class="tabcat">
         {{ category }}
       </v-tab>
