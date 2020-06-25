@@ -1,16 +1,16 @@
 <template>
     <div v-if="hasPermission" class="background">
         <v-container>
-            <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="show = !show">Aggiungi Ristorante
+            <button v-if="$vuetify.breakpoint.mdAndUp" class="shownr" @click="clickedNewRestBtn()">Aggiungi Ristorante
                 <v-icon :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
-            <button v-if="$vuetify.breakpoint.smAndDown" class="shownrmob" @click="show = !show">
+            <button v-if="$vuetify.breakpoint.smAndDown" class="shownrmob" @click="clickedNewRestBtn()">
                 <v-icon x-large :class="[ show ? 'rotated' : 'normal']">fas fa-plus</v-icon>
             </button>
             <v-row dense>
                 <v-col cols="12">
                     <v-expand-transition>
-                        <div v-show="show">
+                        <div v-show="show" id="newRest">
                             <v-card>
                                 <v-toolbar flat class="profilctool" dark>
                                     <v-toolbar-title>
@@ -241,6 +241,20 @@
             onRemoved() {
                 this.image = '';
             },
+
+            clickedNewRestBtn() {
+                this.show = !this.show
+                console.log(this.show)
+                if (this.show) {
+                    window.setTimeout(() => {
+                        document.getElementById('newRest').scrollIntoView(false)
+                        document.getElementById('newRest').focus({preventScroll: true});
+                    }, 200);
+                }
+
+
+
+            },
         },
         computed: {
             errors() {
@@ -273,11 +287,13 @@
         position: fixed;
         right: 0;
         bottom: 0;
-        padding: 10px;
-        border-radius: 25px;
+        padding: 20px;
+        box-shadow: 0 0 8px grey;
+        border-radius: 50px;
         border: 4px inset var(--darkslate);
-        margin: 10px;
+        margin: 50px;
         font-weight: bold;
+        font-size: 30px;
         z-index: 200;
         color: white;
         background: var(--darkslate);

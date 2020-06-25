@@ -2,47 +2,98 @@
 
     <div class="body">
         <!-- p>{{this.$route.query.code}}</p -->
-        <base-search-bar></base-search-bar>
-        <base-section id="">
+        <div class="searchbarcontainer">
+        <v-row class="my-2 py-0">
+            <v-col cols="12" md="6">
+
+                    <v-row class="py-0" style="padding: 20px;">
+                        <v-combobox
+                                :items="autocomplete.names"
+                                @keydown.enter="search()"
+                                @click:append-outer="search"
+                                hint="Cerca ristorante per caratteristiche"
+                                rounded clearable background-color="#E0E0E0" dense append-outer-icon="fas fa-search" append-icon="" solo filled
+                                label="Cerca un ristorante"
+                                v-model="query"
+                                @update:search-input="query = $event"
+                        ></v-combobox>
+                    </v-row>
+                    <v-row class="py-0">
+                        <div class="advquery" v-if="showAdvancedQuery">
+                            <v-row>
+                                <v-col cols="12" md="5" class="mt-3">
+                                    <v-autocomplete
+                                            :items="autocomplete.cities"
+                                            @keydown.enter="search()"
+                                            solo filled rounded background-color="#E0E0E0" dense
+                                            :loading="loadingGeo"
+                                            label="Città"
+                                            :placeholder="city"
+                                            v-model="city"
+                                            no-data-text="Nessun ristorante ancora presente in questa città"
+                                            @click:append-outer="getLocation()"
+                                            append-outer-icon="mdi-crosshairs-gps"
+                                            append-icon=""
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" md="7">
+                                    <v-row >
+                                        <v-col cols="12" md="6">
+                                            <v-combobox
+                                                    solo filled dense background-color="#E0E0E0" rounded
+                                                    :items="restDataCat"
+                                                    item-text="category_name"
+                                                    item-value="id"
+                                                    v-model='restaurant_category'
+                                                    id="restaurant_category"
+                                                    name="restaurant_category"
+                                                    label="Categoria"
+                                                    @keydown.enter="search()"
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="12" md="6" style="padding: 0px 15px;">
+                                            <v-switch v-model="aperto_ora" label="Aperto ora"></v-switch>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-row>
+            </v-col>
+        </v-row>
+            <v-row class="my-0 py-0">
+                    <v-col class="my-0 py-0" cols="12" md="6">
+                        <div class="ml-4 p-0" v-if="showAdvancedQuery">
+                            <v-slider
+                                    height="60"
+                                    step="5"
+                                    label="Ristoranti per pagina:"
+                                    min="10"
+                                    max="40"
+                                    v-model="restaurantListData.page_size"
+                                    thumb-label="always"
+                            ></v-slider>
+                        </div>
+                    </v-col>
+            </v-row>
+            <v-row>
+                <v-btn v-if="!showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+                <v-btn v-if="showAdvancedQuery" class="managebutton" @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca semplice
+                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
+                </v-btn>
+                <v-btn class="managebutton" text @click="search()">Cerca</v-btn>
+        </v-row>
+        </div>
+        <v-alert :value="error" type="error" dismissible icon="far fa-frown">
+            La tua ricerca non ti ha condotto a nulla di utile
+        </v-alert>
+        <div class="containerrestcards">
             <div class="title-center">
                 <h1>Ristoranti</h1>
                 <div class="divider"></div>
                 <span class="subt"> Ecco la nostra scelta di ristoranti</span>
-                <div class="divider"></div>
-
-                <v-text-field label="Cerca un ristorante" v-model="query"></v-text-field>
-                <v-btn @click="showAdvancedQuery = !showAdvancedQuery" text>Ricerca avanzata
-                    <v-icon right class="mdi mdi-card-search-outline"></v-icon>
-                </v-btn>
-
-                <v-expand-transition>
-                    <div v-show="showAdvancedQuery">
-                        <v-switch v-model="aperto_ora" label="Aperto in questo momento"></v-switch>
-                        <v-text-field :loading="loadingGeo" label="Città" v-model="city"></v-text-field>
-                        <v-btn @click="getLocation()" :loading="loadingGeo" text>Localizza
-                            <v-icon right class="mdi mdi-crosshairs-gps"></v-icon>
-                        </v-btn>
-                        <v-combobox
-                            :items="restDataCat"
-                            item-text="category_name"
-                            item-value="id"
-                            v-model='restaurant_category'
-                            id="restaurant_category"
-                            name="restaurant_category"
-                            label="Categoria"
-                        ></v-combobox>
-                        <v-slider
-                            height="60"
-                            label="Ristoranti per pagina:"
-                            min="1"
-                            max="40"
-                            v-model="restaurantListData.page_size"
-                            thumb-label="always"
-                            @change="changePageSize($event)"
-                        ></v-slider>
-                    </div>
-                </v-expand-transition>
-                <v-btn text @click="search()">Cerca</v-btn>
             </div>
 
             <v-skeleton-loader
@@ -63,14 +114,14 @@
                                                         <span class="author">{{categoryString(restaurant.restaurant_category)}}</span>
                                                     </div>
                                                     <ul class="menu-content">
-                                                            <li><a class="fas fa-heart"><span>18</span></a></li>
+                                                            <!--li><a class="fas fa-heart"><span>18</span></a></li-->
                                                     </ul>
                                                 </div>
                                                 <div class="data">
                                                     <div class="content">
-                                                        <h1 class="title"><a href="#">{{restaurant.activity_name}}</a></h1>
+                                                        <h1 class="title"><a>{{restaurant.activity_name}}</a></h1>
                                                         <p class="text">{{restaurant.activity_description}}</p>
-                                                        <a href="#" class="button">Entra nel negozio</a>
+                                                        <a class="button">Entra nel negozio</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,18 +134,17 @@
                 </div>
             </v-skeleton-loader>
             <v-pagination v-model="pageNumber" total-visible="5" :length="restaurantListData.last" @next="nextPage" @previous="previousPage" @input="goToPage($event)"></v-pagination>
-        </base-section>
+        </div>
     </div>
 </template>
 
 <script>
     import {mapActions} from "vuex";
     import axios from 'axios'
-    import BaseSearchBar from "../../components/base/Searchbar";
 
     export default {
         name: 'RestaurantCards',
-        components: {BaseSearchBar},
+
         data: () => ({
             loading: false,
             city: '',
@@ -102,7 +152,8 @@
             loadingGeo: false,
             query: '',
             restaurant_category: '',
-            showAdvancedQuery: false
+            showAdvancedQuery: false,
+            error: false,
         }),
         computed: {
             restaurantListData() {
@@ -117,6 +168,9 @@
             },
             restDataCat() {
                 return this.$store.getters['restaurantData/restCategories']
+            },
+            autocomplete() {
+                return this.$store.getters['restaurants/autocomplete']
             }
         },
         methods:{
@@ -133,63 +187,61 @@
             },
             nextPage() {
                 if(this.restaurantListData.next) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.next,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             previousPage() {
                 if(this.restaurantListData.previous) {
-                    this.loading = true
-                    this.getRestaurants({
+                    var payload = {
                         page_number: this.restaurantListData.previous,
                         page_size: this.restaurantListData.page_size
-                    })
-                    .then(this.loading = false)
+                    }
+                    this.submit(payload)
                 }
             },
             goToPage(page) {
-                this.loading = true
-                this.getRestaurants({
+                var payload = {
                     page_number: page,
                     page_size: this.restaurantListData.page_size
-                })
-                .then(this.loading = false)
-            },
-            changePageSize(page_size) {
-                this.loading = true
-                this.getRestaurants({
-                    page_number: this.restaurantListData.page_number,
-                    page_size: page_size
-                })
-                .then(this.loading = false)
+                }
+                this.submit(payload)
             },
             search(){
-                this.loading = true
                 var payload = {
                     page_number: this.restaurantListData.page_number,
                     page_size: this.restaurantListData.page_size,
-                    query: this.query,
-                    city: this.city,
-                    restaurant_category: this.restaurant_category.category_name,
                 }
+                this.submit(payload)
+            },
+            submit(payload) {
+                this.loading = true
+
+                payload.query= this.query
+                payload.city= this.city
+                payload.restaurant_category= this.restaurant_category.category_name
+
                 if(this.aperto_ora)
                     payload.aperto_ora = 1
 
                 this.searchRestaurants(payload)
-                .then(this.loading = false)
-                .catch((error)=>{
-                    console.log(error)
+                .then(()=> {
+                    this.loading = false
+                    this.error = false
+                })
+                .catch(()=>{
+                    this.error = true
+                    this.loading = false
                 })
             },
             getLocation() {
                 this.loadingGeo = true
                 var options = { enableHighAccuracy: true, maximumAge: 100, timeout: 10000 };
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(this.getCity,this.error,options);
+                    navigator.geolocation.getCurrentPosition(this.getCity,this.locError,options);
                 }
                 else {
                     console.log("Geolocation is not supported by this browser.")
@@ -214,7 +266,7 @@
                       this.loadingGeo = false
                   })
             },
-            error(error){
+            locError(error){
                 console.log('error')
                 console.log(error)
                 this.loadingGeo = false
@@ -223,6 +275,7 @@
         created() {
             this.$store.dispatch("restaurants/getRestaurants", {})
             this.$store.dispatch("restaurantData/getRestCategories")
+            this.$store.dispatch("restaurants/getAutocomplete")
         },
     }
 </script>
@@ -236,7 +289,17 @@
         /*background: linear-gradient(to bottom, #aaffa9, #11ffbd)!important;*/
         background: var(--whitesmoke);
     }
+    .advquery{
+        padding: 0px 20px;
+    }
+    .searchbarcontainer {
 
+        padding: 20px;
+
+    }
+    @media screen and (max-width: 992px) {
+
+    }
     .divider {
         width: 50px;
         background: var(--ming);
@@ -295,7 +358,8 @@
 
     h1 {
         color: var(--darkslate);
-        font-size: 2em;
+        font-size: 3em;
+        font-weight: 400!important;
     }
 
     h2 {
@@ -309,7 +373,9 @@
         overflow: hidden!important;
         height: 50px;
     }
-
+    .containerrestcards {
+        margin-top: 0;
+    }
 
 
     .card {
@@ -375,15 +441,20 @@
         z-index: 1;
     }
     .card .author {
-        font-size: 12px;
+        font-size: 16px;
         text-transform: capitalize;
-        text-shadow: 0 0 1px black;
+
     }
     .card .title {
         margin-top: 10px;
         margin-bottom: 5px;
-        font-weight: 300;
-        font-size: 1.6rem!important;
+        font-weight: 400;
+        font-size: 2rem!important;
+        text-shadow:
+                0.07em 0 darkslategrey,
+                0 0.07em darkslategrey,
+                -0.07em 0 darkslategrey,
+                0 -0.07em darkslategrey;
     }
     .card .text {
         height: 70px;

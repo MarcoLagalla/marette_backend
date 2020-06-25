@@ -27,18 +27,24 @@ def randomString(stringLength=8):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 def gallery_component(instance, filename):
-    file_path = 'components/gallery/{rand}/{filename}'.format(
-          rand=randomString(10), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'components/gallery/{rand}/{name}.{ext}'.format(
+          rand=randomString(10), name=name, ext=extension)
     return file_path
 
 def products_image(instance, filename):
-    file_path = 'products/{restaurant_id}/{rand}/{filename}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'products/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=extension)
     return file_path
 
 def products_image_thumb(instance, filename):
-    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{filename}'.format(
-          restaurant_id=instance.restaurant.id, rand=randomString(5), filename=filename)
+    name, extension = os.path.splitext(filename)
+    extension = extension.lower()
+    file_path = 'products/thumbnails/{restaurant_id}/{rand}/{name}.{ext}'.format(
+          restaurant_id=instance.restaurant.id, rand=randomString(5), name=name, ext=extension)
     return file_path
 
 
@@ -94,7 +100,7 @@ class Restaurant(models.Model):
     def is_open(self, giorno=0):
         if giorno == 0:
             try:
-                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=str(today()))
                 fasce = giorno.fasce
                 if fasce:
                     for fascia in fasce.all():
@@ -102,7 +108,7 @@ class Restaurant(models.Model):
                         if int(fascia.start[:2]) <= int(this_hour) <= int(fascia.end[:2]):
                             # aperto
                             return True
-            except GiornoApertura.DoesNotExist:
+            except GiornoApertura.DoesNotExist as err:
                 pass
             return False
         else:
@@ -121,7 +127,7 @@ class Restaurant(models.Model):
     def opens_at(self):
         if not self.is_open():
             try:
-                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=today())
+                giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(day__iexact=str(today()))
                 fasce = giorno.fasce.all().order_by('start')
                 if fasce:
                     for fascia in fasce:
@@ -129,24 +135,25 @@ class Restaurant(models.Model):
                         if int(fascia.start[:2]) >= int(this_hour):
                             # apre a quest'ora
                             return "Apre alle " + fascia.start
-            except GiornoApertura.DoesNotExist:
+            except GiornoApertura.DoesNotExist as err:
+                    print(err)
                     # oggi nessuna fascia di apertura
-                    days = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
-
+                    days_name = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
+                    days = ['1', '2', '3', '4', '5', '6', '7']
                     today_ = today()
 
-                    before_ = days[:days.index(today_)]
-                    next_ = days[days.index(today_) + 1:]
+                    before_ = days[:days.index(str(today_))]
+                    next_ = days[days.index(str(today_)) + 1:]
                     next_days = next_ + before_
 
                     for day in next_days:
                         if self.is_open(day):
                             giorno = GiornoApertura.objects.all().filter(restaurant_id=self.id).get(
-                                day__iexact=day)
+                                day__iexact=str(day))
                             fasce = giorno.fasce.all().order_by('start')
                             if fasce:
                                 fascia = fasce.first()
-                                return "Apre " + day + " alle " + fascia.start
+                                return "Apre " + days_name[days.index(str(day))] + " alle " + fascia.start
 
                     return False
         else:
@@ -269,10 +276,10 @@ class Product(models.Model):
             return price
 
     def get_price_with_discount(self):
-        new_price = int(self.get_all_discounts())
+        new_price = float(self.get_all_discounts())
         if new_price < 0:
-            new_price = "0.00"
-        return str(new_price)
+            return "0.00"
+        return "{:.2f}".format(new_price)
 
     def get_original_price(self):
         return self.price
@@ -386,7 +393,7 @@ class FasciaOraria(models.Model):
         unique_together = (('restaurant', 'giorno', 'start', 'end'), )
 
     def __str__(self):
-        return "{0} - {1}".format(self.start, self.end)
+        return "[{0}] {1} - {2}".format(self.restaurant, self.start, self.end)
 
 
 class GiornoApertura(models.Model):
@@ -432,4 +439,4 @@ def today():
     date = datetime.today()
     day_name = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
     day = datetime.strptime(date.strftime('%d %m %Y'), '%d %m %Y').weekday()
-    return day_name[day]
+    return day + 1

@@ -241,6 +241,25 @@ const actions = {
         })
     },
 
+    updateProduct: ({commit}, product_update) => {
+        return new Promise((resolve, reject) => {
+
+            let payload = {};
+            payload['id'] = state.ID;
+            payload['data'] = product_update.up_prod;
+            payload['p_id'] = product_update.p_id;
+            manageProduct.updateProduct(payload)
+            .then(resp => {
+                commit('REST_UPDATE_PROD_SUCCESS', resp.data);
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('REST_UPDATE_PROD_ERROR');
+                reject(err)
+            })
+        })
+    },
+
     removeProduct: ({commit}, product_id) => {
         return new Promise((resolve, reject) => {
             let payload = {id: state.ID, p_id: product_id};
@@ -575,6 +594,15 @@ const mutations = {
 
     REST_REMOVE_PROD_ERROR: () => {
     },
+
+    REST_UPDATE_PROD_SUCCESS: (state, prod) => {
+        state.productList[prod.category].splice(state.productList[prod.category].product, 1);
+        state.productList[prod.category].push(prod);
+    },
+
+    REST_UPDATE_PROD_ERROR: () => {
+    },
+
 
 
     REST_RMV_COMPONENT: (state, componentName) => {
