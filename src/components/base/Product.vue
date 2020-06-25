@@ -66,7 +66,6 @@
         name: "Product",
 
 
-
         data () {
           return {
            show: false,
@@ -76,7 +75,7 @@
 
          }
         },
-
+        // di tutti questi props attualmente utilizziamo solamente delete e close_discount
         props:{
           product: {
             type: Object,

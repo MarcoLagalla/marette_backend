@@ -11,19 +11,7 @@ const state = {
     discounts:[],
     menus: [],
     restCategories: [],
-    FOOD_CATEGORY_CHOICES : [
-        'Altro',
-        'Antipasto',
-        'Contorno',
-        'Dessert',
-        'Caffetteria',
-        'Panetteria',
-        'Panini e Piadine',
-        'Pizza',
-        'Primo',
-        'Secondo',
-        'Snack'
-    ],
+
 
     DISCOUNT_TYPE_CHOICES : [
         'Fisso',
@@ -33,7 +21,6 @@ const state = {
 }
 
 const getters = {
-    food_category_choice: state => state.food_category_choice,
     productList: state => state.productList,
     restCategories: state => state.restCategories,
     components: state => state.restData.components,

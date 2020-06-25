@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-  <h2 class="background"><span><slot /></span></h2>
+  <h2 class="background"><span><slot/></span></h2>
   <div class="divider"></div>
   </div>
 </template>
@@ -8,7 +8,6 @@
 <script>
 export default {
   name: 'BaseRestH1',
-
 
   props: {
 
