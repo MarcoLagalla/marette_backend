@@ -275,9 +275,38 @@ class BusinessRegistrationTestCase(APITestCase):
         token, created = Token.objects.get_or_create(user=user)
         self.assertEqual(response.data['token'], str(token))
 
+    def test_business_user_profile(self):
+        user = User.objects.get(username='mikeB')
+        token, created = Token.objects.get_or_create(user=user)
+
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.get(reverse('account:profile', kwargs={'id': user.id}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['first_name'], "MikeB")
+        self.assertEqual(response.data['last_name'], "TysonB")
+        self.assertEqual(response.data['phone'], "+393458926930")
+        self.assertEqual(response.data['email'], "testB@test.app")
+        self.assertEqual(response.data['cf'], "FRNGTN08R44L219V")
+        self.assertEqual(response.data['type'], "business")
 
     def test_can_update_fields_business_user(self):
-        pass
+        user = User.objects.get(username='mikeB')
+        token, created = Token.objects.get_or_create(user=user)
 
-    def test_business_user_profile(self):
-        pass
+        datastr = '{\n\t"first_name": "MikeB1", \n\t"last_name": "TysonB1", \n\t"phone": "3456765799", ' \
+                  '\n\t"birth_date": "1999-09-09", \n\t"city": "torino", \n\t"address": "porto vecchio", ' \
+                  '\n\t"n_civ": "4", \n\t"cap": "27122"}'
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': datastr})
+
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.post(reverse('account:business_update_profile', kwargs={'id': user.id}), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['first_name'], "MikeB1")
+        self.assertEqual(response.data['last_name'], "TysonB1")
+        self.assertEqual(response.data['phone'], "+393456765799")
+        self.assertEqual(response.data['birth_date'], "1999-09-09")
+        self.assertEqual(response.data['address'], "porto vecchio")
+        self.assertEqual(response.data['city'], "torino")
+        self.assertEqual(response.data['n_civ'], "4")
+        self.assertEqual(response.data['cap'], 27122)
