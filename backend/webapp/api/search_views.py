@@ -202,6 +202,7 @@ class SearchRestaurantByQueryAPIView(APIView):
             results_query = queryset[0]
             for query in queryset:
                 results_query = results_query & query
+
         else:
             results_query = Restaurant.objects.all().order_by('-id')
 

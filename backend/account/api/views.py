@@ -367,7 +367,6 @@ class UserProfileAPIView(APIView):
 
 
 class UpdateCostumerUserProfile(APIView):
-
     permission_classes = [IsAuthenticated, IsCustomer]
     @transaction.atomic()
     def post(self, request, id):
