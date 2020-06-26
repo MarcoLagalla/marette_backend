@@ -111,12 +111,10 @@ class MyAdmin(ModelAdmin):
                 'user',
                 'restaurant',
                 'date_created',
-                ('code', 'status'),
                 ('total', 'discount'),
                 ('imposable', 'iva'),
                 'items',
                 'menus_items',
-                'valid',
             )}),
     )
     # readonly_fields = ('user', 'restaurant', 'date_created', 'code', 'discount', 'total', 'imposable', 'iva', )
