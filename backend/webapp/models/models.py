@@ -136,7 +136,6 @@ class Restaurant(models.Model):
                             # apre a quest'ora
                             return "Apre alle " + fascia.start
             except GiornoApertura.DoesNotExist as err:
-                    print(err)
                     # oggi nessuna fascia di apertura
                     days_name = ['Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato', 'Domenica']
                     days = ['1', '2', '3', '4', '5', '6', '7']
