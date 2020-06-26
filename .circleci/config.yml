@@ -3,7 +3,10 @@ version: 2.1
 jobs:
 
   test-backend:
-
+    filters:
+      branches:
+        only:
+          - deploy
     docker:
       - image: circleci/python:3.8
     working_directory: ~/marette_backend
@@ -44,8 +47,4 @@ workflows:
     # Run the welcome/run job in its own container
       jobs:
         - test-backend
-        
-general:
-  branches:
-    only:
-     - deploy  # list of branches to build     
+         
