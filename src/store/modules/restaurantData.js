@@ -228,6 +228,28 @@ const actions = {
         })
     },
 
+
+    addOrderToRestaurant: ({commit}, data) => {
+        return new Promise((resolve, reject) => {
+            console.log(state.restData);
+            let payload = {
+                'user': state.ID,
+                'restaurant': state.restData.id,
+                'items': data.items,
+                'menus_items': data.menus_items,
+            };
+            manageProduct.submitOrderToRestaurant(payload)
+            .then(resp => {
+                commit('ADD_ORDER_SUCCESS', resp.data);
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('ADD_ORDER_ERROR');
+                reject(err)
+            })
+        })
+    },
+
     updateProduct: ({commit}, product_update) => {
         return new Promise((resolve, reject) => {
 
@@ -663,6 +685,15 @@ const mutations = {
     },
 
     ADD_DISCOUNT_TO_PRODUCT_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+    ADD_ORDER_SUCCESS: (state) => {
+        state.status = 'success'
+    },
+
+    ADD_ORDER_ERROR: (state, error) => {
         state.status = 'error'
         state.error = error
     },
