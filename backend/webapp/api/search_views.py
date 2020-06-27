@@ -202,6 +202,7 @@ class SearchRestaurantByQueryAPIView(APIView):
             results_query = queryset[0]
             for query in queryset:
                 results_query = results_query & query
+
         else:
             results_query = Restaurant.objects.all().order_by('-id')
 
@@ -211,7 +212,7 @@ class SearchRestaurantByQueryAPIView(APIView):
             page_size = request.GET.get('page_size', 10)
 
             try:
-                paginator = Paginator(results_query.distinct(), page_size)
+                paginator = Paginator(results_query.distinct().order_by('-id'), page_size)
                 page = paginator.page(page_number)
             except django.core.paginator.EmptyPage:
                 page_number = 1

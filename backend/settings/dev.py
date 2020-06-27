@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'backend.orders',
     'django_extensions',
     'backend.webapp.apps.WebappConfig',
     'backend.account.apps.AccountConfig',

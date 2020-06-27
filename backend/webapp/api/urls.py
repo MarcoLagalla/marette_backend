@@ -10,6 +10,8 @@ from .discounts_views import *
 from .menu_views import ListMenus, AddMenu, DetailsMenu, EditMenu, DeleteMenu, MenuEntryAdd, MenuEntryDetail, \
     MenuEntryEdit, MenuEntryDelete
 from .components_views import *
+from .orders_view import CreateOrder, OrderDetail
+
 app_name = 'webapp'
 
 urlpatterns = [
@@ -79,6 +81,8 @@ urlpatterns = [
     path('restaurant/<int:id>/delete', DeleteRestaurantAPIView.as_view(), name='delete_restaurant'),
     path('restaurant/<int:id>/vote', VoteRestaurantAPIView.as_view(), name='vote_restaurant'),
 
-    path('restaurant/autocomplete', AutoComplete.as_view(), name='suggest_autocomplete')
+    path('restaurant/autocomplete', AutoComplete.as_view(), name='suggest_autocomplete'),
 
+    path('order/new', CreateOrder.as_view(), name='create_order'),
+    path('order/<int:id>/show', OrderDetail.as_view(), name='show_order'),
 ]
