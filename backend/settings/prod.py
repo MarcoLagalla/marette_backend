@@ -1,8 +1,22 @@
 """ Production Settings """
-
+import json
 import os
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
+
 from .dev import *
+
+
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+
+def get_secret(setting, secrets=secrets):
+    """Get secret setting or fail with ImproperlyConfigured"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        raise ImproperlyConfigured("Set the {} setting".format(setting))
 
 ############
 # DATABASE #
@@ -10,10 +24,10 @@ from .dev import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'marette_db',
-        'USER': 'marette',
-        'PASSWORD': 'marette_password_123',
-        'HOST': 'database-1.cpqhgl4stgrh.eu-central-1.rds.amazonaws.com',
+        'NAME': get_secret('DB_NAME'),
+        'USER': get_secret('DB_USER'),
+        'PASSWORD': get_secret('DB_PWD'),
+        'HOST': get_secret('DB_HOST'),
         'PORT': '5432',
     }
 }
@@ -57,9 +71,8 @@ CSRF_COOKIE_SECURE = True
 SITE_ID = 1
 
 
-
-AWS_ACCESS_KEY_ID = 'AKIAZ7OA7BXB55ZK23VI'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = get_secret('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = get_secret('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'marette-static-bucket'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
@@ -77,8 +90,8 @@ DEFAULT_FILE_STORAGE = 'backend.settings.storage_backends.MediaStorage'
 
 EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
 
-AWS_SES_ACCESS_KEY_ID = 'AKIAZ7OA7BXBSEFB25SG'
-AWS_SES_SECRET_ACCESS_KEY = 'BJmEZAAG+0womEVj9xoqO5J3ODZetRCY1IW+cvrL0YAe'
+AWS_SES_ACCESS_KEY_ID = get_secret('AWS_SES_ACCESS_KEY_ID')
+AWS_SES_SECRET_ACCESS_KEY = get_secret('AWS_SES_SECRET_ACCESS_KEY')
 
 AWS_SES_REGION = 'eu-central-1'
 
