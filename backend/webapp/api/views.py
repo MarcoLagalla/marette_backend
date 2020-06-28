@@ -96,8 +96,6 @@ class CreateRestaurantAPIView(APIView):
                 data['image'] = restaurant.get_image()
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
-                print("2 serializer error")
-                print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         data['response'] = isinstance(user, Business)
         return Response(data, status=status.HTTP_403_FORBIDDEN)
