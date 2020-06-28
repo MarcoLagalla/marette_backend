@@ -65,7 +65,7 @@ class ListRestaurantsAPIView(ListAPIView):
 
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
+    permission_classes = [IsAuthenticated, IsBusiness ] #, BusinessActivated]     #HERE
 
     # only authenticated business users can create a new restaurant
     @transaction.atomic()
@@ -85,7 +85,7 @@ class CreateRestaurantAPIView(APIView):
             input_data.update({'image': image})
         except Exception as err:
             pass
-
+        print(user)
         if user:
             serializer = CreateRestaurantSerializer(data=input_data, context={'business_user': user})
             if serializer.is_valid():
@@ -96,6 +96,8 @@ class CreateRestaurantAPIView(APIView):
                 data['image'] = restaurant.get_image()
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
+                print("2 serializer error")
+                print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         data['response'] = isinstance(user, Business)
         return Response(data, status=status.HTTP_403_FORBIDDEN)
