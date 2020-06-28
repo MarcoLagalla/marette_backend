@@ -168,6 +168,11 @@ class CustomerTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 
+    def test_customer_can_no_activate_email_with_invalid_auth_token(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user.id,
+                                                                    'token': 'ac336d95555308b0c6d39cd33177560c32459fdb'}))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_can_update_user_password(self):
         pass
         # user = User.objects.get(username='mike')

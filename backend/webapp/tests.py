@@ -11,6 +11,7 @@ from ..account.models import Customer, Business
 from django.contrib.auth.hashers import make_password
 from .models.models import Restaurant, Category
 from django.test import Client
+from ..account.tokens import account_activation_token
 
 
 class RestaurantTestCase(APITestCase):
@@ -19,18 +20,21 @@ class RestaurantTestCase(APITestCase):
         self.superuser = User.objects.create_superuser(username='admin', email='admin@gmail.com', password='1234')
 
         #base customer
-        base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app',
+        self.base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app',
                                         password=make_password('12345'))
         cust_user_data = {"birth_date": "1994-04-20", "phone": "3458926930"}
-        base_customer = Customer.objects.create(user=base_user, **cust_user_data)
+        self.base_customer = Customer.objects.create(user=self.base_user, **cust_user_data)
+        self.base_customer_token = Token.objects.create(user=self.base_user)
 
         #base_business
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
+        base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
+
         buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
                           "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
-        self.base_business = Business.objects.create(user=self.base_user_b, **buss_user_data)
-        self.base_business.email_activated = True
+        self.base_business = Business.objects.create(user=self.base_user_b,
+                                                     activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
        # print(self.base_business_token)
 
@@ -46,56 +50,52 @@ class RestaurantTestCase(APITestCase):
         base_restaurant.restaurant_category.set([1, 2])
         base_restaurant.set_url()
 
+
         self.datastr = '{\n\t"activity_name": "Pizzeria Ancora", \n\t"activity_description": "Tutto buonissimo", ' \
                        '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765789", ' \
                        '\n\t"city": "pavia", \n\t"address": "marconi nuova", \n\t"n_civ": "25", \n\t"cap": "27100", ' \
-                       '\n\t"restaurant_category": ""}'
+                       '\n\t"restaurant_category": "[1]"}'
 
+    def test_business_can_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
+                                                                             'token': str(
+                                                                                 self.base_business.activation_token)}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 
     def test_business_can_create_restaurant(self):  # 200 o 201
+        # Need to activate the email first
+        self.test_business_can_activate_email()
 
-        print(self.base_business.email_activated)
-
-        # # resend acytivation email
-        # self.client.login(username='mikeB', password='12345')
-       # self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
-        # response = self.client.post(reverse('account:resend_token', kwargs={'id': self.base_user_b.id}))
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # print("ACT: ", self.base_business.activation_token)
-
+        # Register the restaurants
         self.client.force_login(self.base_user_b)
+        # self.client.login(username='mikeB', password='12345')
 
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'data': self.datastr})
 
-        #self.client.login(username='mikeB', password='12345')
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
-        # # session = self.client.session
-        # # session['documents_to_share_ids'] = [1]
-        # # session.save()
-        #
-        # # session = self.client.session
-        # # session.update({
-        # #     "expire_date": '2010-12-05',
-        # #     "session_key": 'my_session_key',
-        # # })
-        # # session.save()
-        #
         response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_no_email_activated_business_can_create_restaurant(self):   #404
+        # NOT activate the email !!!
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': self.datastr})
+        response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_no_business_can_create_restaurant(self):   #404
-        pass
-    #     user = User.objects.get(username='mike')
-    #     token, created = Token.objects.get_or_create(user=user)
-    #
-    #     query_dict = QueryDict('', mutable=True)
-    #     query_dict.update({'data': self.datastr})
-    #
-    #     self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
-    #     response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        user = User.objects.get(username='mike')
+        token, created = Token.objects.get_or_create(user=user)
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': self.datastr})
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_customer_token))
+        response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_can_list_restaurant(self):
         response = self.client.get(reverse('webapp:list_restaurants'))

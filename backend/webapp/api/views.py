@@ -65,7 +65,7 @@ class ListRestaurantsAPIView(ListAPIView):
 
 class CreateRestaurantAPIView(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsBusiness ] #, BusinessActivated]     #HERE
+    permission_classes = [IsAuthenticated, IsBusiness, BusinessActivated]
 
     # only authenticated business users can create a new restaurant
     @transaction.atomic()
@@ -85,7 +85,7 @@ class CreateRestaurantAPIView(APIView):
             input_data.update({'image': image})
         except Exception as err:
             pass
-        print(user)
+
         if user:
             serializer = CreateRestaurantSerializer(data=input_data, context={'business_user': user})
             if serializer.is_valid():
