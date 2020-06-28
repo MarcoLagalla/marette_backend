@@ -12,24 +12,30 @@ from .models import Customer, Business
 from rest_framework.authtoken.models import Token
 from django.test import Client
 from django.contrib.auth.hashers import make_password
+from .tokens import account_activation_token
 
 
-class CustomerRegistrationTestCase(APITestCase):
+class CustomerTestCase(APITestCase):
 
     # @classmethod
     # def setUpTestData(cls):
     def setUp(self):
         """ Static method for the access of a base customer user need to perform tests. """
-        superuser = User.objects.create_superuser(username='admin',
+        self.superuser = User.objects.create_superuser(username='admin',
                                                        email='admin@gmail.com',
                                                        password='1234')
 
-        base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app', password=make_password('12345'))
+        self.base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app', password=make_password('12345'))
+        base_user_activation_token = account_activation_token.make_token(user=self.base_user)
+
         cust_user_data = {"birth_date": "1994-04-20", "phone": "3458926930"}
-        base_customer = Customer.objects.create(user=base_user, **cust_user_data)
+        self.base_customer = Customer.objects.create(user=self.base_user, activation_token=base_user_activation_token,
+                                                     **cust_user_data)
+        self.base_customer_token = Token.objects.create(user=self.base_user)
 
         self.datastr = '{\n\t"username": "Lucci", \n\t"email": "mail@email.it", \n\t"password": "12345", \n\t"password2": ' \
                   '"12345", \n\t"phone": "3456765789"}'
+
 
     def test_can_create_user(self):
         query_dict = QueryDict('', mutable=True)
@@ -102,9 +108,7 @@ class CustomerRegistrationTestCase(APITestCase):
         self.assertEqual(response.data['phone'][0], "Esiste già un utente con questo numero.")
 
     def test_can_logout_user(self):
-        user = User.objects.get(username='mike')
-        token, created = Token.objects.get_or_create(user=user)
-        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + str(self.base_customer_token))
         response = self.client.post(reverse('account:logout'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -112,10 +116,7 @@ class CustomerRegistrationTestCase(APITestCase):
         json_data = json.dumps({"email": 'test@test.app', "password": "12345"})
         response = self.client.post(reverse('account:login'), json_data, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = User.objects.get(username='mike')
-        token, created = Token.objects.get_or_create(user=user)
-        self.assertEqual(response.data['token'], str(token))
+        self.assertEqual(response.data['token'], str(self.base_customer_token))
 
     def test_cannot_login_user_with_wrong_credentials(self):
         json_data = json.dumps({"email": 'test@test.app', "password": "aaaaaa"})
@@ -124,25 +125,20 @@ class CustomerRegistrationTestCase(APITestCase):
         self.assertEqual(response.data['error'], ["Credenziali sbagliate."])
 
     def test_admin_list_user(self):
-        superuser = User.objects.get_or_create(username='admin')[0]
-        self.client.force_login(superuser)
+        self.client.force_login(self.superuser)
         response = self.client.get(reverse('account:list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data), 0)
 
     def test_no_admin_list_user(self):
-        base_customer = User.objects.get(username='mike')  # or  id='2'
-        self.client.force_login(base_customer)
+        self.client.force_login(self.base_user)
         response = self.client.get(reverse('account:list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.content, b'{"detail":"Non hai l\'autorizzazione per eseguire questa azione."}')
 
     def test_user_profile(self):
-        user = User.objects.get(username='mike')
-        token, created = Token.objects.get_or_create(user=user)
-
-        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
-        response = self.client.get(reverse('account:profile', kwargs={'id': user.id}))
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + str(self.base_customer_token))
+        response = self.client.get(reverse('account:profile', kwargs={'id': self.base_user.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(response.data['first_name'], "Mike")
@@ -152,21 +148,30 @@ class CustomerRegistrationTestCase(APITestCase):
         self.assertEqual(response.data['type'], "customer")
 
     def test_can_update_user(self):
-        user = User.objects.get(username='mike')
-        token, created = Token.objects.get_or_create(user=user)
-
         datastr = '{\n\t"first_name": "Mike1", \n\t"last_name": "Tyson1", \n\t"phone": "3456765700", ' \
                   '\n\t"birth_date": "1991-01-01"}'
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'data': datastr})
 
-        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
-        response = self.client.post(reverse('account:customer_update_profile', kwargs={'id': user.id}), data=query_dict)
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + str(self.base_customer_token))
+        response = self.client.post(reverse('account:customer_update_profile', kwargs={'id': self.base_user.id}), data=query_dict)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], "Mike1")
         self.assertEqual(response.data['last_name'], "Tyson1")
         self.assertEqual(response.data['phone'], "+393456765700")
         self.assertEqual(response.data['birth_date'], "1991-01-01")
+
+    def test_customer_can_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user.id,
+                                                                    'token': str(self.base_customer.activation_token)}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+
+    def test_customer_can_no_activate_email_with_invalid_auth_token(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user.id,
+                                                                    'token': 'ac336d95555308b0c6d39cd33177560c32459fdb'}))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_can_update_user_password(self):
         pass
@@ -186,18 +191,24 @@ class CustomerRegistrationTestCase(APITestCase):
         # # TODO VERIFY LOGIN WITH NEW CREDENTIALS
 
 
-class BusinessRegistrationTestCase(APITestCase):
+class BusinessTestCase(APITestCase):
 
     def setUp(self):
         self.superuser = User.objects.create_superuser(username='admin',
                                                        email='admin@gmail.com',
                                                        password='1234')
 
-        base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB', email='testB@test.app',
+        self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB', email='testB@test.app',
                                         password=make_password('12345'))
+
         buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
                             "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
-        base_business = Business.objects.create(user=base_user_b, **buss_user_data)
+
+        base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
+        self.base_business = Business.objects.create(user=self.base_user_b,
+                                                     activation_token=base_user_b_activation_token, **buss_user_data)
+        self.base_business_token = Token.objects.create(user=self.base_user_b)
+
 
         self.datastr = '{\n\t"username": "Lucci", \n\t"email": "mail@email.it", \n\t"password": "12345", \n\t"password2": ' \
                   '"12345", \n\t"phone": "3456765789", \n\t"cf": "RNEMHL94P03F062G", \n\t"first_name": "michele22", ' \
@@ -231,7 +242,6 @@ class BusinessRegistrationTestCase(APITestCase):
 
     def test_cannot_create_business_user_without_city(self):
         datastr = self.datastr.replace("pavia", "")
-    #    print(datastr)
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'data': datastr})
 
@@ -270,17 +280,11 @@ class BusinessRegistrationTestCase(APITestCase):
         json_data = json.dumps({"email": 'testB@test.app', "password": "12345"})
         response = self.client.post(reverse('account:login'), json_data, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = User.objects.get(username='mikeB')
-        token, created = Token.objects.get_or_create(user=user)
-        self.assertEqual(response.data['token'], str(token))
+        self.assertEqual(response.data['token'], str(self.base_business_token))
 
     def test_business_user_profile(self):
-        user = User.objects.get(username='mikeB')
-        token, created = Token.objects.get_or_create(user=user)
-
-        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
-        response = self.client.get(reverse('account:profile', kwargs={'id': user.id}))
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.get(reverse('account:profile', kwargs={'id': self.base_user_b.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], "MikeB")
         self.assertEqual(response.data['last_name'], "TysonB")
@@ -290,17 +294,14 @@ class BusinessRegistrationTestCase(APITestCase):
         self.assertEqual(response.data['type'], "business")
 
     def test_can_update_fields_business_user(self):
-        user = User.objects.get(username='mikeB')
-        token, created = Token.objects.get_or_create(user=user)
-
         datastr = '{\n\t"first_name": "MikeB1", \n\t"last_name": "TysonB1", \n\t"phone": "3456765799", ' \
                   '\n\t"birth_date": "1999-09-09", \n\t"city": "torino", \n\t"address": "porto vecchio", ' \
                   '\n\t"n_civ": "4", \n\t"cap": "27122"}'
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'data': datastr})
 
-        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
-        response = self.client.post(reverse('account:business_update_profile', kwargs={'id': user.id}), data=query_dict)
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('account:business_update_profile', kwargs={'id': self.base_user_b.id}), data=query_dict)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], "MikeB1")
         self.assertEqual(response.data['last_name'], "TysonB1")
@@ -310,3 +311,16 @@ class BusinessRegistrationTestCase(APITestCase):
         self.assertEqual(response.data['city'], "torino")
         self.assertEqual(response.data['n_civ'], "4")
         self.assertEqual(response.data['cap'], 27122)
+
+    def test_can_resend_token_business_user(self):
+        self.client.login(username='mikeB', password='12345')
+        response = self.client.post(reverse('account:resend_token', kwargs={'id': self.base_user_b.id}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['data'], 'Email inviata!')
+
+    def test_business_can_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
+                                                                    'token': str(self.base_business.activation_token)}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
