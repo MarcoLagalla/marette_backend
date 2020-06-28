@@ -45,7 +45,7 @@ DEBUG = True #bool(os.getenv('DJANGO_DEBUG', ''))
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', SECRET_KEY)
 
 # Set to your Domain here (eg. 'django-vue-template-demo.herokuapp.com')
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '18.156.16.255', '18.158.7.10', 'marette.ovh', 'www.marette.ovh']
+ALLOWED_HOSTS = ['*']
 
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -53,7 +53,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = True
 SITE_ID = 1
 
 
