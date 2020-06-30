@@ -36,18 +36,10 @@ class RestaurantTestCase(APITestCase):
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
-       # print(self.base_business_token)
-
-        # base_restaurant
-        # rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
-        #                   "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
-        #                   "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
 
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
-        # self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
-        # self.base_restaurant.restaurant_category.set([1, 2])
-        # self.base_restaurant.set_url()
+
 
         self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
                        '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
@@ -194,22 +186,9 @@ class RestaurantTestCase(APITestCase):
         self.assertEqual(response.data['success'], "Grazie per aver votato questo ristorante.")
 
 
-
-
-
 class RestaurantProductsTestCase(APITestCase):
 
     def setUp(self):
-        self.superuser = User.objects.create_superuser(username='admin', email='admin@gmail.com', password='1234')
-
-        #base customer
-        self.base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app',
-                                        password=make_password('12345'))
-        cust_user_data = {"birth_date": "1994-04-20", "phone": "3458926930"}
-        self.base_customer = Customer.objects.create(user=self.base_user, **cust_user_data)
-        self.base_customer_token = Token.objects.create(user=self.base_user)
-
-        #base_business
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
@@ -219,7 +198,6 @@ class RestaurantProductsTestCase(APITestCase):
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
-       # print(self.base_business_token)
 
         # base_restaurant
         rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
@@ -285,7 +263,7 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], "Prodotto eliminato correttamente")
 
-    def test_business_can_update_product(self):
+    def test_can_business_update_product(self):
         self.test_business_can_activate_email()
         self.test_business_can_add_product()
 
@@ -306,14 +284,14 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.data['description'], "Una margherita cosi non l avete mai vista")
         self.assertEqual(response.data['final_price'], "4.50")
 
-    def test_anyone_can_list_product(self):
+    def test_can_anyone_list_product(self):
         self.test_business_can_add_product()
         response = self.client.get(reverse('webapp:list_products', kwargs={'id': self.base_restaurant.pk}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['Pizza'][0]['name'], "Pizza diavola")
         self.assertEqual(response.data['Pizza'][0]['price'], "6.50")
 
-    def test_anyone_can_show_product(self):
+    def test_can_anyone_show_product(self):
         self.test_business_can_add_product()
         product = Product.objects.get(name="Pizza diavola")
         response = self.client.get(reverse('webapp:details_product', kwargs={'id': self.base_restaurant.pk,
@@ -326,16 +304,6 @@ class RestaurantProductsTestCase(APITestCase):
 class RestaurantSearchTestCase(APITestCase):
 
     def setUp(self):
-        self.superuser = User.objects.create_superuser(username='admin', email='admin@gmail.com', password='1234')
-
-        #base customer
-        self.base_user = User.objects.create(username='mike', first_name='Mike', last_name='Tyson', email='test@test.app',
-                                        password=make_password('12345'))
-        cust_user_data = {"birth_date": "1994-04-20", "phone": "3458926930"}
-        self.base_customer = Customer.objects.create(user=self.base_user, **cust_user_data)
-        self.base_customer_token = Token.objects.create(user=self.base_user)
-
-        #base_business
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
@@ -345,25 +313,16 @@ class RestaurantSearchTestCase(APITestCase):
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
-       # print(self.base_business_token)
-
-        # base_restaurant
-        # rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
-        #                   "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
-        #                   "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
 
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
-        # self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
-        # self.base_restaurant.restaurant_category.set([1, 2])
-        # self.base_restaurant.set_url()
 
         self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
                        '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
                        '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
                        '\n\t"restaurant_category": '
 
-    def test_business_can_activate_email(self):
+    def test_can_business_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
                                                                              'token': str(
                                                                                  self.base_business.activation_token)}))
@@ -374,7 +333,7 @@ class RestaurantSearchTestCase(APITestCase):
 
     def test_business_can_create_restaurant(self):
         # Need to activate the email first
-        self.test_business_can_activate_email()
+        self.test_can_business_activate_email()
 
         # Register the restaurants
         query_dict = QueryDict('', mutable=True)
@@ -384,6 +343,76 @@ class RestaurantSearchTestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
         response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_anyone_search_restaurant_by_name(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'query': 'Bella napoli'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
+        self.assertEqual(response.data['results'][0]['city'], "milano")
+
+    def test_can_anyone_search_restaurant_by_wrong_name(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'query': 'Pizzeria da gigi'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'][0], "Nessun Ristorante trovato.")
+
+
+    def test_can_anyone_search_restaurant_by_city(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'city': 'milano'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
+        self.assertEqual(response.data['results'][0]['city'], "milano")
+
+
+    def test_can_anyone_search_restaurant_by_name_and_city(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'query': 'Bella napoli', 'city': 'milano'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
+        self.assertEqual(response.data['results'][0]['city'], "milano")
+
+    def test_can_anyone_search_restaurant_by_category(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'restaurant_category': 'pizzeria'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
+        self.assertEqual(response.data['results'][0]['city'], "milano")
+
+    def test_can_anyone_search_restaurant_by_name_and_city_and_category(self):
+        self.test_business_can_create_restaurant()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'query': 'Bella napoli', 'city': 'milano', 'restaurant_category': 'pizzeria'})
+
+        response = self.client.get(reverse('webapp:search_restaurant_query'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
+        self.assertEqual(response.data['results'][0]['city'], "milano")
+
+
+
 
 
 
