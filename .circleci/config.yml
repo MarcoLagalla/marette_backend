@@ -54,7 +54,7 @@ workflows:
         - aws-code-deploy/deploy:
             application-name: marette-deploy
             bundle-bucket: marette-deploy
-            bundle-key: latest
+            bundle-key: v2
             deployment-group: main-deploy-group
-            service-role-arn: arn:aws:iam::685988842947:role/Deployer
+            service-role-arn: arn:aws:iam::685988842947:role/CodeDeployServiceRole
          
