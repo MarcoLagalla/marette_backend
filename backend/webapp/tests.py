@@ -229,8 +229,8 @@ class RestaurantProductsTestCase(APITestCase):
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
 
-        ProductTag.objects.create(name="Vegano", description="Cibo vegano, no carne")
-        ProductTag.objects.create(name="Gluten Free", description="Senza glutine")
+        # ProductTag.objects.create(name="Vegano", description="Cibo vegano, no carne")
+        # ProductTag.objects.create(name="Gluten Free", description="Senza glutine")
 
         self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
         self.base_restaurant.restaurant_category.set([1, 2])
