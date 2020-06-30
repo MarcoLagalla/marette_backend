@@ -56,5 +56,5 @@ workflows:
             bundle-bucket: marette-deploy
             bundle-key: latest
             deployment-group: main-deploy-group
-            service-role-arn: arn:aws:iam::685988842947:role/Deployer
+            service-role-arn: arn:aws:iam::685988842947:role/CodeDeployServiceRole
          
