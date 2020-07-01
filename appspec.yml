@@ -7,4 +7,4 @@ hooks:
    BeforeInstall:
      - location: scripts/unzipBundle.sh
        timeout: 300
-       runas: root
+       runas: marette
