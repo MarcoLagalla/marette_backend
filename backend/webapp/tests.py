@@ -604,32 +604,36 @@ class RestaurantMenuEntryTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_can_business_update_menu_entry(self):
-        self.test_business_can_add_menu()
-
-        query_dict = QueryDict('', mutable=True)
-        query_dict.update({"name": "Menu della domenica", "price": "15.0", "iva": "22", "description": "Daily menu"})
+        self.test_business_can_add_menu_entry()
 
         menu = Menu.objects.get(name="Menu del giorno")
+        product = Product.objects.get(name="Pizza diavola")
+        menuentry = MenuEntry.objects.get(name="Menu del giorno")
+
+        data = '{\n\t"name": "Menu del weekend", \n\t"num_products": "2"'
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"name": "Menu del weekend", "num_products": "2"})
 
         self.client.force_login(self.base_user_b)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
-        response = self.client.post(reverse('webapp:edit_menu', kwargs={'id': self.base_restaurant.pk,
-                                                                             'm_id': menu.pk}), data=query_dict)
+        response = self.client.post(reverse('webapp:edit_menuentry', kwargs={'id': self.base_restaurant.pk,
+                                                             'm_id': menu.pk, 'me_id': menuentry.pk}), data=query_dict)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        menu = Menu.objects.get(name="Menu della domenica")
-        self.assertEqual(menu.name, "Menu della domenica")
-        self.assertEqual(str(menu.price), "15.00")
+        menuentry = MenuEntry.objects.get(name="Menu del weekend")
+        self.assertEqual(menuentry.name, "Menu del weekend")
+        self.assertEqual(str(menuentry.num_products), "2")
 
+    def test_can_anyone_show_restaurant_menu_entry(self):
+        self.test_business_can_add_menu_entry()
+        menu = Menu.objects.get(name="Menu del giorno")
+        menuentry = MenuEntry.objects.get(name="Menu del giorno")
 
-    # def test_can_anyone_show_restaurant_menu(self):
-    #     self.test_business_can_add_menu()
-    #     menu = Menu.objects.get(name="Menu del giorno")
-    #     response = self.client.get(reverse('webapp:details_menu', kwargs={'id': self.base_restaurant.pk,
-    #                                                                          'm_id': menu.pk}))
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data['name'], "Menu del giorno")
-    #     self.assertEqual(str(response.data['price']), "12.00")
+        response = self.client.get(reverse('webapp:details_menuentry', kwargs={'id': self.base_restaurant.pk,
+                                                                             'm_id': menu.pk, 'me_id': menuentry.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], "Menu del giorno")
+        self.assertEqual(str(response.data['num_products']), "5")
 
 
 class RestaurantSearchTestCase(APITestCase):
