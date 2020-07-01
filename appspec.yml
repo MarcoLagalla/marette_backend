@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
- - source: \
-    destination: /home/marette/marette_backend
+ - source: \src\
+    destination: /home/marette/marette_backend/
 hooks:
    BeforeInstall:
      - location: scripts/unzipBundle.sh
