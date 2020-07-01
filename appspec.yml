@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /*
+  - source: /
     destination: /home/marette/marette_backend/
 hooks:
   BeforeInstall:
