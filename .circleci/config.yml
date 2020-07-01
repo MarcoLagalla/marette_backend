@@ -54,7 +54,7 @@ workflows:
         - aws-code-deploy/deploy:
             application-name: marette-deploy
             bundle-bucket: marette-deploy
-            arguments: '--file-exists-behavior OVERWRITE'
+            arguments: '--file-exists-behavior "OVERWRITE"'
             bundle-key: v2
             deployment-group: main-deploy-group
             service-role-arn: arn:aws:iam::685988842947:role/CodeDeployServiceRole
