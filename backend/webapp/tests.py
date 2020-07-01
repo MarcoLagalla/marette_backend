@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 # from .api.serializers import CustomerSerializer, BusinessSerializer
 from ..account.models import Customer, Business
 from django.contrib.auth.hashers import make_password
-from .models.models import Restaurant, Category, Product
+from .models.models import Restaurant, Category, Product, ProductDiscount
 from .models.menu import Menu
 from django.test import Client
 from ..account.tokens import account_activation_token
@@ -51,7 +51,6 @@ class RestaurantTestCase(APITestCase):
 
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
-
 
         self.datastr = datastr
 
@@ -301,6 +300,125 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.data['price'], "6.50")
 
 
+class RestaurantProductDiscountsTestCase(APITestCase):
+
+    def setUp(self):
+        self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
+                                          email='testB@test.app', password=make_password('12345'))
+        base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
+        self.base_business = Business.objects.create(user=self.base_user_b,
+                                                     activation_token=base_user_b_activation_token,**buss_user_data)
+        self.base_business_token = Token.objects.create(user=self.base_user_b)
+
+        # base_restaurant
+        c1 = Category.objects.create(category_name="bar")
+        c2 = Category.objects.create(category_name="pizzeria")
+
+        # ProductTag.objects.create(name="Vegano", description="Cibo vegano, no carne")
+        # ProductTag.objects.create(name="Gluten Free", description="Senza glutine")
+
+        self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
+        self.base_restaurant.restaurant_category.set([1, 2])
+        self.base_restaurant.set_url()
+
+        self.datastr = datastr
+
+    def test_business_can_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
+                                                                             'token': str(
+                                                                                 self.base_business.activation_token)}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+
+    def test_business_can_add_product_discount_percentuale(self):
+        self.test_business_can_activate_email()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"title": "Sconti Pazzi", "type": "Percentuale", "value": "60"})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_discounts', kwargs={'id': self.base_restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['title'], "Sconti Pazzi")
+        self.assertEqual(response.data['type'], "Percentuale")
+        self.assertEqual(response.data['value'], "60.00")
+
+    def test_business_can_add_product_discount_fisso(self):
+        self.test_business_can_activate_email()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"title": "Sconto studenti 5eu", "type": "Fisso", "value": "5"})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_discounts', kwargs={'id': self.base_restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['title'], "Sconto studenti 5eu")
+        self.assertEqual(response.data['type'], "Fisso")
+        self.assertEqual(response.data['value'], "5.00")
+
+    def test_business_can_remove_product_discount_percentuale(self):
+        self.test_business_can_add_product_discount_percentuale()
+
+        productDiscount = ProductDiscount.objects.get(title="Sconti Pazzi")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:delete_discounts', kwargs={'id': self.base_restaurant.pk,
+                                                                             'd_id': productDiscount.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_business_can_remove_product_discount_fisso(self):
+        self.test_business_can_add_product_discount_fisso()
+
+        productDiscount = ProductDiscount.objects.get(title="Sconto studenti 5eu")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:delete_discounts', kwargs={'id': self.base_restaurant.pk,
+                                                                             'd_id': productDiscount.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_can_business_update_product_discount(self):
+        self.test_business_can_add_product_discount_fisso()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"title": "Sconto lavoratori 10eu", "type": "Fisso", "value": "10"})
+
+        productDiscount = ProductDiscount.objects.get(title="Sconto studenti 5eu")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:edit_discounts', kwargs={'id': self.base_restaurant.pk,
+                                                                        'd_id': productDiscount.pk}), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        productDiscount = ProductDiscount.objects.get(title="Sconto lavoratori 10eu")
+        self.assertEqual(productDiscount.title, "Sconto lavoratori 10eu")
+        self.assertEqual(productDiscount.type, "Fisso")
+        self.assertEqual(str(productDiscount.value), "10.00")
+
+    # def test_can_anyone_list_product(self):
+    #     self.test_business_can_add_product()
+    #     response = self.client.get(reverse('webapp:list_products', kwargs={'id': self.base_restaurant.pk}))
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(response.data['Pizza'][0]['name'], "Pizza diavola")
+    #     self.assertEqual(response.data['Pizza'][0]['price'], "6.50")
+    #
+    # def test_can_anyone_show_product(self):
+    #     self.test_business_can_add_product()
+    #     product = Product.objects.get(name="Pizza diavola")
+    #     response = self.client.get(reverse('webapp:details_product', kwargs={'id': self.base_restaurant.pk,
+    #                                                                          'p_id': product.pk}))
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(response.data['name'], "Pizza diavola")
+    #     self.assertEqual(response.data['price'], "6.50")
+
+
 class RestaurantMenuTestCase(APITestCase):
 
     def setUp(self):
@@ -407,8 +525,7 @@ class RestaurantSearchTestCase(APITestCase):
 
     def test_can_business_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
-                                                                             'token': str(
-                                                                                 self.base_business.activation_token)}))
+                                                                'token': str(self.base_business.activation_token)}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 
@@ -446,7 +563,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['error'][0], "Nessun Ristorante trovato.")
 
-
     def test_can_anyone_search_restaurant_by_city(self):
         self.test_business_can_create_restaurant()
 
@@ -457,7 +573,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
         self.assertEqual(response.data['results'][0]['city'], "milano")
-
 
     def test_can_anyone_search_restaurant_by_name_and_city(self):
         self.test_business_can_create_restaurant()
@@ -491,6 +606,11 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['activity_name'], "Bella napoli")
         self.assertEqual(response.data['results'][0]['city'], "milano")
+
+
+
+
+
 
 
 # class RestaurantTimeTableTestCase(APITestCase):
