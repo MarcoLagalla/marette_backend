@@ -4,6 +4,6 @@ files:
   - source: /
     destination: /home/marette/marette_backend/
 hooks:
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/unzipBundle.sh
       timeout: 300
