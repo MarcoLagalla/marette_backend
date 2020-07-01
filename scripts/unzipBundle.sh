@@ -1,10 +1,10 @@
 #!/bin/bash
-
+HOME_DIR=/home/marette
 WORKING_DIR=/home/marette/marette_backend
 
 sudo -i
 
-source $WORKING_DIR/venv/bin/activate
+source $HOMEDIR/venv/bin/activate
 cd $WORKING_DIR
 
 yarn build
