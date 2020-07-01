@@ -15,6 +15,19 @@ from django.test import Client
 from ..account.tokens import account_activation_token
 
 
+rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
+                  "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
+                  "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
+
+buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
+                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
+
+datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
+                       '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
+                       '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
+                       '\n\t"restaurant_category": '
+
+
 class RestaurantTestCase(APITestCase):
 
     def setUp(self):
@@ -32,9 +45,6 @@ class RestaurantTestCase(APITestCase):
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
-
-        buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
@@ -43,24 +53,17 @@ class RestaurantTestCase(APITestCase):
         c2 = Category.objects.create(category_name="pizzeria")
 
 
-        self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
-                       '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
-                       '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
-                       '\n\t"restaurant_category": '
+        self.datastr = datastr
 
     def test_business_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
-                                                                             'token': str(
-                                                                                 self.base_business.activation_token)}))
-
+                                                                    'token': str(self.base_business.activation_token)}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 
     def test_customer_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user.id,
-                                                                             'token': str(
-                                                                                 self.base_user_activation_token)}))
-
+                                                                'token': str(self.base_user_activation_token)}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 
@@ -69,7 +72,7 @@ class RestaurantTestCase(APITestCase):
 
         # Register the restaurants
         query_dict = QueryDict('', mutable=True)
-        query_dict.update({'data': self.datastr + str([1,2]) + '}'})
+        query_dict.update({'data': self.datastr + str([1, 2]) + '}'})
 
         self.client.force_login(self.base_user_b)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
@@ -84,7 +87,7 @@ class RestaurantTestCase(APITestCase):
         self.datastr = self.datastr.replace('\n\t"n_civ": "2",', '\n\t"n_civ": "26",')
 
         query_dict = QueryDict('', mutable=True)
-        query_dict.update({'data': self.datastr + str([1,2]) + '}'})
+        query_dict.update({'data': self.datastr + str([1, 2]) + '}'})
 
         self.client.force_login(self.base_user_b)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
@@ -99,9 +102,6 @@ class RestaurantTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_no_business_can_create_restaurant(self):
-        user = User.objects.get(username='mike')
-        token, created = Token.objects.get_or_create(user=user)
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'data': self.datastr})
 
@@ -151,7 +151,6 @@ class RestaurantTestCase(APITestCase):
         self.assertEqual(response.data[0]['category_name'], "bar")
         self.assertEqual(response.data[1]['category_name'], "pizzeria")
 
-
     def test_can_owner_delete_restaurants(self):
         self.test_business_can_create_restaurant()
 
@@ -180,7 +179,7 @@ class RestaurantTestCase(APITestCase):
 
     def test_can_customer_vote_restaurant(self):
         self.test_business_can_create_restaurant()
-        self.test_customer_can_activate_email()
+        self.test_customer_can_activate_email()        #needed if not activated he can't vote
 
         restaurant = Restaurant.objects.get(activity_name="Bella napoli")
         query_dict = QueryDict('', mutable=True)
@@ -192,6 +191,18 @@ class RestaurantTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['success'][0], "Grazie per aver votato questo ristorante.")
 
+    def test_cannot_customer_vote_restaurant_without_activated_mail(self):
+        self.test_business_can_create_restaurant()
+
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'vote': str(5)})
+
+        self.client.force_login(self.base_user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_customer_token))
+        response = self.client.post(reverse('webapp:vote_restaurant', kwargs={'id': restaurant.pk}), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class RestaurantProductsTestCase(APITestCase):
 
@@ -199,18 +210,11 @@ class RestaurantProductsTestCase(APITestCase):
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
-
-        buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
 
         # base_restaurant
-        rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
-                          "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
-
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
 
@@ -221,10 +225,7 @@ class RestaurantProductsTestCase(APITestCase):
         self.base_restaurant.restaurant_category.set([1, 2])
         self.base_restaurant.set_url()
 
-        self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
-                       '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
-                       '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
-                       '\n\t"restaurant_category": '
+        self.datastr = datastr
 
     def test_business_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
@@ -306,18 +307,11 @@ class RestaurantMenuTestCase(APITestCase):
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
-
-        buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
 
         # base_restaurant
-        rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
-                          "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
-
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
 
@@ -325,10 +319,7 @@ class RestaurantMenuTestCase(APITestCase):
         self.base_restaurant.restaurant_category.set([1, 2])
         self.base_restaurant.set_url()
 
-        self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
-                       '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
-                       '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
-                       '\n\t"restaurant_category": '
+        self.datastr = datastr
 
     def test_business_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
@@ -405,9 +396,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
                                           email='testB@test.app', password=make_password('12345'))
         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
-
-        buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
-                          "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
         self.base_business = Business.objects.create(user=self.base_user_b,
                                                      activation_token=base_user_b_activation_token,**buss_user_data)
         self.base_business_token = Token.objects.create(user=self.base_user_b)
@@ -415,10 +403,7 @@ class RestaurantSearchTestCase(APITestCase):
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
 
-        self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
-                       '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
-                       '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
-                       '\n\t"restaurant_category": '
+        self.datastr = datastr
 
     def test_can_business_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
