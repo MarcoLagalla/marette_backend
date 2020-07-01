@@ -10,7 +10,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from ..account.models import Customer, Business
 from django.contrib.auth.hashers import make_password
 from .models.models import Restaurant, Category, Product, ProductDiscount
-from .models.menu import Menu
+from .models.menu import Menu, MenuEntry
 from django.test import Client
 from ..account.tokens import account_activation_token
 
@@ -469,7 +469,6 @@ class RestaurantMenuTestCase(APITestCase):
     def test_business_can_remove_menu(self):
         self.test_business_can_add_menu()
 
-
         menu = Menu.objects.get(name="Menu del giorno")
 
         self.client.force_login(self.base_user_b)
@@ -511,6 +510,126 @@ class RestaurantMenuTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], "Menu del giorno")
         self.assertEqual(str(response.data['price']), "12.00")
+
+
+class RestaurantMenuEntryTestCase(APITestCase):
+
+    def setUp(self):
+        self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
+                                          email='testB@test.app', password=make_password('12345'))
+        base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
+        self.base_business = Business.objects.create(user=self.base_user_b,
+                                                     activation_token=base_user_b_activation_token,**buss_user_data)
+        self.base_business_token = Token.objects.create(user=self.base_user_b)
+
+        # base_restaurant
+        c1 = Category.objects.create(category_name="bar")
+        c2 = Category.objects.create(category_name="pizzeria")
+
+        self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
+        self.base_restaurant.restaurant_category.set([1, 2])
+        self.base_restaurant.set_url()
+
+        self.datastr = datastr
+
+    def test_business_can_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
+                                                                             'token': str(
+                                                                                 self.base_business.activation_token)}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+
+    def test_business_can_add_menu(self):
+        self.test_business_can_activate_email()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"name": "Menu del giorno", "price": "12.0", "iva": "22", "description": "Daily menu"})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_menu', kwargs={'id': self.base_restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], "Menu del giorno")
+        self.assertEqual(response.data['iva'], 22)
+
+    def test_business_can_add_product(self):
+        self.test_business_can_activate_email()
+
+        data = '{\n\t"name": "Pizza diavola", \n\t"description": "Diavola più diavola non si può", ' \
+               '\n\t"price": "6.50", \n\t"iva": "22", \n\t"category": "Pizza"}'
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': data})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_product', kwargs={'id': self.base_restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], "Pizza diavola")
+        self.assertEqual(response.data['final_price'], "6.50")
+
+    def test_business_can_add_menu_entry(self):
+        self.test_business_can_add_menu()
+        self.test_business_can_add_product()
+
+        menu = Menu.objects.get(name="Menu del giorno")
+        product = Product.objects.get(name="Pizza diavola")
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"name": "Menu del giorno", "num_products": 5, "products": str(product.pk)})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_menuentry', kwargs={'id': self.base_restaurant.pk,
+                                                                    'm_id': menu.pk}), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], "Menu del giorno")
+        self.assertEqual(response.data['num_products'], 5)
+        self.assertEqual(response.data['id'], product.pk)
+
+    def test_business_can_remove_menu_entry(self):
+        self.test_business_can_add_menu_entry()
+
+        menu = Menu.objects.get(name="Menu del giorno")
+        menuentry = MenuEntry.objects.get(name="Menu del giorno")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:delete_menuentry', kwargs={'id': self.base_restaurant.pk,
+                                                                             'm_id': menu.pk,
+                                                                             'me_id': menuentry.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_can_business_update_menu_entry(self):
+        self.test_business_can_add_menu()
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"name": "Menu della domenica", "price": "15.0", "iva": "22", "description": "Daily menu"})
+
+        menu = Menu.objects.get(name="Menu del giorno")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:edit_menu', kwargs={'id': self.base_restaurant.pk,
+                                                                             'm_id': menu.pk}), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        menu = Menu.objects.get(name="Menu della domenica")
+        self.assertEqual(menu.name, "Menu della domenica")
+        self.assertEqual(str(menu.price), "15.00")
+
+
+    # def test_can_anyone_show_restaurant_menu(self):
+    #     self.test_business_can_add_menu()
+    #     menu = Menu.objects.get(name="Menu del giorno")
+    #     response = self.client.get(reverse('webapp:details_menu', kwargs={'id': self.base_restaurant.pk,
+    #                                                                          'm_id': menu.pk}))
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(response.data['name'], "Menu del giorno")
+    #     self.assertEqual(str(response.data['price']), "12.00")
 
 
 class RestaurantSearchTestCase(APITestCase):
