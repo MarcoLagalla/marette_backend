@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
- - source: \src\
+  - source: /
     destination: /home/marette/marette_backend/
 hooks:
-   BeforeInstall:
-     - location: scripts/unzipBundle.sh
-       timeout: 300
-       runas: root
+  BeforeInstall:
+    - location: scripts/unzipBundle.sh
+      timeout: 300
+      runas: root
