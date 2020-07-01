@@ -314,9 +314,6 @@ class RestaurantProductDiscountsTestCase(APITestCase):
         c1 = Category.objects.create(category_name="bar")
         c2 = Category.objects.create(category_name="pizzeria")
 
-        # ProductTag.objects.create(name="Vegano", description="Cibo vegano, no carne")
-        # ProductTag.objects.create(name="Gluten Free", description="Senza glutine")
-
         self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
         self.base_restaurant.restaurant_category.set([1, 2])
         self.base_restaurant.set_url()
@@ -402,21 +399,29 @@ class RestaurantProductDiscountsTestCase(APITestCase):
         self.assertEqual(productDiscount.type, "Fisso")
         self.assertEqual(str(productDiscount.value), "10.00")
 
-    # def test_can_anyone_list_product(self):
-    #     self.test_business_can_add_product()
-    #     response = self.client.get(reverse('webapp:list_products', kwargs={'id': self.base_restaurant.pk}))
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data['Pizza'][0]['name'], "Pizza diavola")
-    #     self.assertEqual(response.data['Pizza'][0]['price'], "6.50")
-    #
-    # def test_can_anyone_show_product(self):
-    #     self.test_business_can_add_product()
-    #     product = Product.objects.get(name="Pizza diavola")
-    #     response = self.client.get(reverse('webapp:details_product', kwargs={'id': self.base_restaurant.pk,
-    #                                                                          'p_id': product.pk}))
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data['name'], "Pizza diavola")
-    #     self.assertEqual(response.data['price'], "6.50")
+    def test_can_anyone_list_product_discount(self):
+        self.test_business_can_add_product_discount_fisso()
+        self.test_business_can_add_product_discount_percentuale()
+
+        response = self.client.get(reverse('webapp:list_discounts', kwargs={'id': self.base_restaurant.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['title'], "Sconti Pazzi")
+        self.assertEqual(response.data[0]['type'], "Percentuale")
+        self.assertEqual(response.data[0]['value'], "60.00")
+
+        self.assertEqual(response.data[1]['title'], "Sconto studenti 5eu")
+        self.assertEqual(response.data[1]['type'], "Fisso")
+        self.assertEqual(response.data[1]['value'], "5.00")
+
+    def test_can_anyone_show_product_discount(self):
+        self.test_business_can_add_product_discount_fisso()
+        productDiscount = ProductDiscount.objects.get(title="Sconto studenti 5eu")
+        response = self.client.get(reverse('webapp:details_discounts', kwargs={'id': self.base_restaurant.pk,
+                                                                             'd_id': productDiscount.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], "Sconto studenti 5eu")
+        self.assertEqual(response.data['type'], "Fisso")
+        self.assertEqual(response.data['value'], "5.00")
 
 
 class RestaurantMenuTestCase(APITestCase):
