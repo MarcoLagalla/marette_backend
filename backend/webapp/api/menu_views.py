@@ -330,7 +330,7 @@ class MenuEntryEdit(APIView):
 
                                     return Response(status=status.HTTP_200_OK)
                                 else:
-                                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                                    return Response(status=status.HTTP_400_BAD_REQUEST)
 
                         except MenuEntry.DoesNotExist:
                             return Response(status=status.HTTP_404_NOT_FOUND)

@@ -225,6 +225,7 @@ class RestaurantProductsTestCase(APITestCase):
         self.base_restaurant.set_url()
 
         self.datastr = datastr
+        self.test_business_can_add_product()
 
     def test_business_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
@@ -252,8 +253,6 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.data['final_price'], "6.50")
 
     def test_business_can_remove_product(self):
-        self.test_business_can_add_product()
-
         product = Product.objects.get(name="Pizza diavola")
 
         self.client.force_login(self.base_user_b)
@@ -264,8 +263,6 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.data['message'], "Prodotto eliminato correttamente")
 
     def test_can_business_update_product(self):
-        self.test_business_can_add_product()
-
         data = '{\n\t"name": "Pizza margherita", \n\t"description": "Una margherita cosi non l avete mai vista", ' \
                '\n\t"price": "4.50", \n\t"iva": "22", \n\t"category": "Pizza"}'
 
@@ -284,14 +281,12 @@ class RestaurantProductsTestCase(APITestCase):
         self.assertEqual(response.data['final_price'], "4.50")
 
     def test_can_anyone_list_product(self):
-        self.test_business_can_add_product()
         response = self.client.get(reverse('webapp:list_products', kwargs={'id': self.base_restaurant.pk}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['Pizza'][0]['name'], "Pizza diavola")
         self.assertEqual(response.data['Pizza'][0]['price'], "6.50")
 
     def test_can_anyone_show_product(self):
-        self.test_business_can_add_product()
         product = Product.objects.get(name="Pizza diavola")
         response = self.client.get(reverse('webapp:details_product', kwargs={'id': self.base_restaurant.pk,
                                                                              'p_id': product.pk}))
@@ -610,7 +605,6 @@ class RestaurantMenuEntryTestCase(APITestCase):
         product = Product.objects.get(name="Pizza diavola")
         menuentry = MenuEntry.objects.get(name="Menu del giorno")
 
-        data = '{\n\t"name": "Menu del weekend", \n\t"num_products": "2"'
         query_dict = QueryDict('', mutable=True)
         query_dict.update({"name": "Menu del weekend", "num_products": "2"})
 
@@ -650,6 +644,7 @@ class RestaurantSearchTestCase(APITestCase):
         c2 = Category.objects.create(category_name="pizzeria")
 
         self.datastr = datastr
+        self.test_business_can_create_restaurant()
 
     def test_can_business_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
@@ -671,8 +666,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_anyone_search_restaurant_by_name(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'query': 'Bella napoli'})
 
@@ -682,8 +675,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['city'], "milano")
 
     def test_can_anyone_search_restaurant_by_wrong_name(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'query': 'Pizzeria da gigi'})
 
@@ -692,8 +683,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['error'][0], "Nessun Ristorante trovato.")
 
     def test_can_anyone_search_restaurant_by_city(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'city': 'milano'})
 
@@ -703,8 +692,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['city'], "milano")
 
     def test_can_anyone_search_restaurant_by_name_and_city(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'query': 'Bella napoli', 'city': 'milano'})
 
@@ -714,8 +701,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['city'], "milano")
 
     def test_can_anyone_search_restaurant_by_category(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'restaurant_category': 'pizzeria'})
 
@@ -725,8 +710,6 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['city'], "milano")
 
     def test_can_anyone_search_restaurant_by_name_and_city_and_category(self):
-        self.test_business_can_create_restaurant()
-
         query_dict = QueryDict('', mutable=True)
         query_dict.update({'query': 'Bella napoli', 'city': 'milano', 'restaurant_category': 'pizzeria'})
 
@@ -736,6 +719,142 @@ class RestaurantSearchTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['city'], "milano")
 
 
+class RestaurantComponentsTestCase(APITestCase):
+
+    def setUp(self):
+        self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
+                                               email='testB@test.app', password=make_password('12345'))
+        base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
+        self.base_business = Business.objects.create(user=self.base_user_b,
+                                                     activation_token=base_user_b_activation_token, **buss_user_data)
+        self.base_business_token = Token.objects.create(user=self.base_user_b)
+
+        c1 = Category.objects.create(category_name="bar")
+        c2 = Category.objects.create(category_name="pizzeria")
+
+        self.datastr = datastr
+        self.test_business_can_create_restaurant()
+
+    def test_can_business_activate_email(self):
+        response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
+                                                                             'token': str(
+                                                                                 self.base_business.activation_token)}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+
+    def test_business_can_create_restaurant(self):
+        # Need to activate the email first
+        self.test_can_business_activate_email()
+
+        # Register the restaurants
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': self.datastr + str([1, 2]) + '}'})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:register_restaurant'), data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_business_can_add_menu(self):
+       # self.test_business_can_create_restaurant()
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({"name": "Menu del giorno", "price": "12.0", "iva": "22", "description": "Daily menu"})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:add_menu', kwargs={'id': restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], "Menu del giorno")
+        self.assertEqual(response.data['iva'], 22)
+
+    def test_can_business_activate_restaurant_home_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:on_component', kwargs={'id': restaurant.pk, 'type': 'home'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['home'], "attivato")
+
+    def test_can_business_activate_restaurant_vetrina_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:on_component', kwargs={'id': restaurant.pk, 'type': 'vetrina'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['vetrina'], "attivato")
+
+    def test_can_business_activate_restaurant_menu_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:on_component', kwargs={'id': restaurant.pk, 'type': 'menu'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['menu'], "attivato")
+
+    def test_can_business_edit_restaurant_home_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        data = '{\n\t"description": "Benvenuti nel nostro ristorante"}'
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': data })
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:edit_home_component', kwargs={'id': restaurant.pk}),
+                                    data=query_dict)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], "HOME")
+        self.assertEqual(response.data['description'], "Benvenuti nel nostro ristorante")
+
+    def test_can_business_edit_restaurant_vetrina_component(self):
+        self.test_business_can_add_menu()
+
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+        menu = Menu.objects.get(name="Menu del giorno")
+
+        data = '{\n\t"menu_giorno": '
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update({'data': data +str(menu.pk) + '}'})
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:edit_vetrina_component', kwargs={'id': restaurant.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], "VETRINA")
+
+
+    def test_can_business_deactivate_restaurant_home_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:off_component', kwargs={'id': restaurant.pk, 'type': 'home'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['home'], "disattivato")
+
+    def test_can_business_deactivate_restaurant_vetrina_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:off_component', kwargs={'id': restaurant.pk, 'type': 'vetrina'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['vetrina'], "disattivato")
+
+    def test_can_business_deactivate_restaurant_menu_component(self):
+        restaurant = Restaurant.objects.get(activity_name="Bella napoli")
+
+        self.client.force_login(self.base_user_b)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
+        response = self.client.post(reverse('webapp:off_component', kwargs={'id': restaurant.pk, 'type': 'menu'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['menu'], "disattivato")
 
 
 
@@ -757,9 +876,6 @@ class RestaurantSearchTestCase(APITestCase):
 #         self.base_user_b = User.objects.create(username='mikeB', first_name='MikeB', last_name='TysonB',
 #                                           email='testB@test.app', password=make_password('12345'))
 #         base_user_b_activation_token = account_activation_token.make_token(user=self.base_user_b)
-#
-#         buss_user_data = {"birth_date": "1994-04-20", "phone": "3458926930", "cf": "FRNGTN08R44L219V",
-#                           "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100"}
 #         self.base_business = Business.objects.create(user=self.base_user_b,
 #                                                      activation_token=base_user_b_activation_token,**buss_user_data)
 #         self.base_business_token = Token.objects.create(user=self.base_user_b)
@@ -767,48 +883,43 @@ class RestaurantSearchTestCase(APITestCase):
 #        # print(self.base_business_token)
 #
 #         #base_restaurant
-#         rest_base_data = {"activity_name": "Pizzeria Ancora", "activity_description": "Tutto buonissimo",
-#                           "city": "Pavia", "address": "marconi nuova", "n_civ": "25", "cap": "27100",
-#                           "p_iva": "IT01766920761", "restaurant_number": "3456765789"}
-#
 #         c1 = Category.objects.create(category_name="bar")
 #         c2 = Category.objects.create(category_name="pizzeria")
 #         self.base_restaurant = Restaurant.objects.create(owner_id=self.base_business.pk, **rest_base_data)
 #         self.base_restaurant.restaurant_category.set([1, 2])
 #         self.base_restaurant.set_url()
 #
-#         self.datastr = '{\n\t"activity_name": "Bella napoli", \n\t"activity_description": "Tutta la pizza che vuoi", ' \
-#                        '\n\t"p_iva": "04113940409", \n\t"restaurant_number": "3456765689", ' \
-#                        '\n\t"city": "milano", \n\t"address": "marconi nuova", \n\t"n_civ": "2", \n\t"cap": "27100", ' \
-#                        '\n\t"restaurant_category": '
-#
-#     # def test_business_can_activate_email(self):
-#     #     response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
-#     #                                                                          'token': str(
-#     #                                                                              self.base_business.activation_token)}))
-#     #
-#     #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-#     #     self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+#         self.datastr = datastr
 #
 #     def test_business_can_activate_email(self):
 #         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
-#                                                                              'token': str(
-#                                                                                  self.base_business.activation_token)}))
-#
+#                                                                     'token': str(self.base_business.activation_token)}))
 #         self.assertEqual(response.status_code, status.HTTP_200_OK)
 #         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
 #
 #     def test_owner_can_add_day_to_TimeTable(self):
 #         self.test_business_can_activate_email()
 #
-#         data = '{\n\t"Lunedi": 1}'
+#         data1 = '{\n\t"day": '
+#         data2 = ', \n\t"restaurant": '
+#
 #         query_dict = QueryDict('', mutable=True)
-#         query_dict.update({'day': "('Lunedi', 'Lunedi')"})
+#         query_dict.update({'day': 1, 'restaurant': str([self.base_restaurant.pk])})
+#
+#
+#        #  query_dict.update({'day': 'Lunedi'})
+#        #  query_dict.update({'restaurant': str([self.base_restaurant.pk]) })
+#
+#         #query_dict.update({"day": "Lunedi", "restaurant": "1"})
+#        # query_dict = QueryDict({"day": "Lunedi", "restaurant": "1"})
 #
 #         self.client.force_login(self.base_user_b)
 #         self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(self.base_business_token))
-#         response = self.client.post(reverse('webapp:create_opening_day', kwargs={'id': self.base_restaurant.pk}), data=query_dict)
+#         response = self.client.post(reverse('webapp:create_opening_day', kwargs={'id': self.base_restaurant.pk}),
+#                                     data=query_dict)
 #
 #         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
-
+#       #  self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
+#
+#
+#
