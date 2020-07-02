@@ -321,6 +321,5 @@ class BusinessTestCase(APITestCase):
     def test_business_can_activate_email(self):
         response = self.client.get(reverse('account:activate_email', kwargs={'id': self.base_user_b.id,
                                                                     'token': str(self.base_business.activation_token)}))
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['activation'], 'Indirizzo email confermato, account attivo.')
