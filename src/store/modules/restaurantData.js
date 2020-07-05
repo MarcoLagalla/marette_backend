@@ -229,16 +229,16 @@ const actions = {
     },
 
 
-    addOrderToRestaurant: ({commit}, data) => {
+    addOrderToRestaurant: ({commit, rootGetters}, data) => {
         return new Promise((resolve, reject) => {
-            console.log(state.restData);
+           let user_private = rootGetters["userProfile/user_private"];
             let payload = {
-                'user': state.ID,
+                'user': user_private.id,
                 'restaurant': state.restData.id,
                 'items': data.items,
                 'menus_items': data.menus_items,
             };
-            manageProduct.submitOrderToRestaurant(payload)
+            manageRestaurant.submitOrderToRestaurant(payload)
             .then(resp => {
                 commit('ADD_ORDER_SUCCESS', resp.data);
                 resolve(resp)
