@@ -193,12 +193,12 @@ DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
-
-AWS_SES_ACCESS_KEY_ID = 'AKIAQNN5ZBLSYTGMMBVR'
-AWS_SES_SECRET_ACCESS_KEY = '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'
-
-AWS_SES_REGION = 'eu-central-1'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'marette.dev@gmail.com'
+EMAIL_HOST_PASSWORD = 'marette123'
+EMAIL_PORT = 587
 
 EMAIL_RESET_PASSWORD_BASE_URL = 'http://localhost:8080/resetpass'
 EMAIL_ACTIVATE_ACCOUNT_BASE_URL = 'http://localhost:8080/activate'
