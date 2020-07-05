@@ -12,9 +12,7 @@ public/static/*
 !**/migrations/__init__.py
 
 
-src/**
-src
-src/
+
 
 public/media/*
 

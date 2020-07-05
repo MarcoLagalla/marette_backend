@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 def send_order_email(user, order):
-    subject, from_email, to, to_user = 'Nuovo Ordine Ricevuto', '"Marette" <staff@marette.ovh>', user.user.email, order.user.user.email
+    subject, from_email, to, to_user = 'Nuovo Ordine Ricevuto', '"Marette" <marette.dev@gmail.com>', user.user.email, order.user.user.email
 
     html_content = render_to_string('order.html', {'username': user.user.username,
                                                     'order_date': order.date_created,
@@ -22,7 +22,7 @@ def send_order_email(user, order):
 
 def send_welcome_email(user, activation_token):
 
-    subject, from_email, to = 'Benvenuto', '"Marette" <staff@marette.ovh>', user.email
+    subject, from_email, to = 'Benvenuto', '"Marette" <marette.dev@gmail.com>', user.email
 
     baseUrl = settings.EMAIL_ACTIVATE_ACCOUNT_BASE_URL
 
@@ -38,7 +38,7 @@ def send_welcome_email(user, activation_token):
 
 def send_reset_email(user, token):
 
-    subject, from_email, to = 'Ripristino credenziali', '"Marette" <staff@marette.ovh>', user.email
+    subject, from_email, to = 'Ripristino credenziali', '"Marette" <marette.dev@gmail.com>', user.email
 
     baseUrl = settings.EMAIL_RESET_PASSWORD_BASE_URL
 
