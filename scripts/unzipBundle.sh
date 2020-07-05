@@ -1,19 +1,19 @@
-#!/bin/bash
+#!/bin/sh
+HOME_DIR=/home/marette
+WORKING_DIR=/home/marette/marette_backend
 
-HOME_DIR = /home/marette/
-WORKING_DIR = /home/marette/marette_backend
+sudo -i
 
-if [ -d "$WORKING_DIR" ]; then rm -Rf $WORKING_DIR; fi
-
-tar -xvf latest.zip $WORKING_DIR
-
-
-source $WORKING_DIR/venv/bin/activate
+source $HOMEDIR/venv/bin/activate
 cd $WORKING_DIR
 
+
+yarn install
 yarn build
+
+pip3 install -r requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
 
-
-
+sudo systemctl restart uwsgi.service
+sudo systemctl restart nginx
