@@ -1,4 +1,4 @@
-# Vuetify supp first commit
+# Vuetify supp first commit 
 
 
 
@@ -30,4 +30,3 @@ yarn lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-Update

@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/marette/marette_backend/
+hooks:
+  BeforeInstall:
+    - location: scripts/purge.sh
+      timeout: 300
+  AfterInstall:
+    - location: scripts/unzipBundle.sh
+      timeout: 300

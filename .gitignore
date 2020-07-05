@@ -41,3 +41,5 @@ yarn-error.log*
 *.sln
 *.sw*
 /public/media/avatars/
+
+*/secrets.json
