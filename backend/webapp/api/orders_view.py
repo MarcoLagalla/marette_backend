@@ -22,12 +22,12 @@ class CreateOrder(APIView):
             user = request.data['user']
             user = Customer.objects.all().get(id=user)
         except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'user'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             token = Token.objects.all().get(user=user.user).key
         except Token.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'token'}, status=status.HTTP_404_NOT_FOUND)
 
         if request.user.auth_token.key == token:
             serializer = OrderSerializer(data=request.data)
