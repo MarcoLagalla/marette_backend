@@ -8,6 +8,8 @@ const state = {
 
   },
 
+
+
   user_private : getUserPrivateCookie() || {
         id: '',
         is_superuser: false,
@@ -18,6 +20,10 @@ const state = {
 
   errors: [],
   status: '',
+  cart: {
+    selected_items: [],
+    selected_menus: [],
+  }
 
 
 }
@@ -32,7 +38,9 @@ const getters = {
   errors: state=> state.errors,
   user_private: state => state.user_private,
   avatar: state => state.user_private.avatar,
-  restaurants: state => state.user_private.restaurants
+  restaurants: state => state.user_private.restaurants,
+  cart: state => state.cart
+
 }
 
 const actions = {
@@ -153,6 +161,29 @@ const actions = {
       }
     })
   },
+
+  addProdCart: ({commit}, product) => {
+
+    commit('ADD_PROD_CART', product)
+  },
+
+  deleteProdCart: ({commit}, item) => {
+    commit('DEL_PROD_CART', item)
+  },
+
+  addMenuCart: ({commit}, menu) => {
+    console.log(menu)
+    commit('ADD_MENU_CART', menu)
+  },
+
+  deleteMenuCart: ({commit}, item) => {
+    commit('DEL_MENU_CART', item)
+  },
+
+  resetItemInCart: ({commit}) => {
+      commit('RESET_CART')
+  }
+
 }
 
 const mutations = {
@@ -256,6 +287,72 @@ const mutations = {
   USER_ADD_REST: (state, restId) => {
     state.user_private.restaurants.push(restId)
   },
+
+  ADD_PROD_CART: (state, prod) => {
+      let adding_prod = false;
+        if (state.cart.selected_items.length>0) {
+            let arrayLength = state.cart.selected_items.length;
+            for (let i = 0; i < arrayLength; i++) {
+                if (prod.id === state.cart.selected_items[i].product.id){
+                    state.cart.selected_items[i].quantity += 1;
+                    adding_prod = true;
+                    break;
+                }
+            }
+        }
+        if(!adding_prod) {
+            let itemInCart = {
+                'product': prod,
+                'quantity': 1,
+            };
+            state.cart.selected_items.push(itemInCart);
+        }
+  },
+
+  DEL_PROD_CART: (state, item) => {
+        state.cart.selected_items[state.cart.selected_items.indexOf(item)].quantity -= 1;
+
+        if (state.cart.selected_items[state.cart.selected_items.indexOf(item)].quantity === 0)
+              state.cart.selected_items.splice(state.cart.selected_items.indexOf(item), 1);
+  },
+
+  ADD_MENU_CART: (state, menu) => {
+        let adding_menus = false;
+        if (state.cart.selected_menus.length>0) {
+            let arrayLength = state.cart.selected_menus.length;
+            for (let i = 0; i < arrayLength; i++) {
+                if (menu.id === state.cart.selected_menus[i].menu.id){
+                    state.cart.selected_menus[i].quantity += 1;
+                    adding_menus = true;
+                    break;
+                }
+            }
+        }
+        if(!adding_menus) {
+            let itemInCart = {
+                'menu': menu,
+                'quantity': 1,
+            };
+            state.cart.selected_menus.push(itemInCart);
+        }
+  },
+
+  DEL_MENU_CART: (state, item) => {
+        state.cart.selected_menus[state.cart.selected_menus.indexOf(item)].quantity -= 1;
+
+        if (state.cart.selected_menus[state.cart.selected_menus.indexOf(item)].quantity === 0)
+              state.cart.selected_menus.splice(state.cart.selected_menus.indexOf(item), 1);
+  },
+
+  RESET_CART: (state) => {
+      state.cart = {
+          selected_items: [],
+          selected_menus: [],
+      }
+  }
+
+
+
 }
 
 export default {
