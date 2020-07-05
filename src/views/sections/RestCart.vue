@@ -40,7 +40,7 @@
 
             </div>
 
-            <div v-if="selected_items.length === 0">
+            <div v-if="selected_items.length === 0 && selected_menus.length === 0">
               <p>Il Carrello è vuoto!</p>
             </div>
             <div v-if="verified">
