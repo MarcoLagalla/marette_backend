@@ -78,7 +78,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 except Menu.DoesNotExist:
                     raise serializers.ValidationError({'error': f'Menu ' + item['menu'] + ' non trovato'})
         except KeyError:
-            menu_items = []
+            menus_items = []
 
         if len(items) == 0 and len(menus_items) == 0:
             raise serializers.ValidationError({'error': 'Impossibile creare un ordine senza prodotti'})
