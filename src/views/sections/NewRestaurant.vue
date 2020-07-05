@@ -291,9 +291,9 @@
         box-shadow: 0 0 8px grey;
         border-radius: 50px;
         border: 4px inset var(--darkslate);
-        margin: 50px;
+        margin: 40px;
         font-weight: bold;
-        font-size: 30px;
+        font-size: 20px;
         z-index: 200;
         color: white;
         background: var(--darkslate);

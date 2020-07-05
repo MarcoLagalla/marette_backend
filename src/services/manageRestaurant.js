@@ -129,7 +129,7 @@ export default {
 
 
     submitOrderToRestaurant(payload) {
-        return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/add', payload.data)
+        return api.post('v1/webapp/order/new', payload)
             .then(response => {
                 return response
             })
