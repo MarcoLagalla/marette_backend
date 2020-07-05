@@ -172,7 +172,6 @@ const actions = {
   },
 
   addMenuCart: ({commit}, menu) => {
-    console.log(menu)
     commit('ADD_MENU_CART', menu)
   },
 
