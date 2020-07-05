@@ -88,12 +88,18 @@ MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'backend.settings.storage_backends.MediaStorage'
 
-EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
-
-AWS_SES_ACCESS_KEY_ID = get_secret('AWS_SES_ACCESS_KEY_ID')
-AWS_SES_SECRET_ACCESS_KEY = get_secret('AWS_SES_SECRET_ACCESS_KEY')
-
-AWS_SES_REGION = 'eu-central-1'
+# EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
+#
+# AWS_SES_ACCESS_KEY_ID = get_secret('AWS_SES_ACCESS_KEY_ID')
+# AWS_SES_SECRET_ACCESS_KEY = get_secret('AWS_SES_SECRET_ACCESS_KEY')
+#
+# AWS_SES_REGION = 'eu-central-1'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'marette.dev@gmail.com'
+EMAIL_HOST_PASSWORD = 'marette123'
+EMAIL_PORT = 587
 
 DOMAIN = 'marette.ovh'
 EMAIL_RESET_PASSWORD_BASE_URL = f'https://{DOMAIN}/resetpass'
