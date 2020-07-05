@@ -55,14 +55,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
 
         val_errors = {}
-        try:
-            user = attrs.get('user', None)
-            try:
-                user = Customer.objects.all().get(id=user.id)
-            except Customer.DoesNotExist:
-                val_errors['user'] = "L'utente non esiste"
-        except KeyError:
-            pass
 
         rest = attrs.get('restaurant', None)
         rest = Restaurant.objects.all().get(id=rest.id)
@@ -79,8 +71,8 @@ class OrderSerializer(serializers.ModelSerializer):
             items = []
 
         try:
-            menu_items = attrs.get('menu_items', [])
-            for item in menu_items:
+            menus_items = attrs.get('menus_items', [])
+            for item in menus_items:
                 try:
                     menu = Menu.objects.all().filter(restaurant=rest).get(id=item['menu'].id)
                 except Menu.DoesNotExist:
@@ -88,7 +80,7 @@ class OrderSerializer(serializers.ModelSerializer):
         except KeyError:
             menu_items = []
 
-        if len(items) == 0 and len(menu_items) == 0:
+        if len(items) == 0 and len(menus_items) == 0:
             raise serializers.ValidationError({'error': 'Impossibile creare un ordine senza prodotti'})
 
         if len(val_errors.keys()) != 0:
