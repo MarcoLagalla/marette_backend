@@ -130,9 +130,6 @@
             }
         },
         computed: {
-            food_category_choice() {
-                return this.$store.getters['manageRestaurant/food_category_choice']
-            },
 
             tags() {
                 return this.$store.getters['restaurantData/tags']
@@ -180,12 +177,6 @@
                 this.name = this.description  = this.price  = this.selectedTags = this.image = '';
                 this.resetImage++;
                 event.target.reset();
-            },
-
-
-            toggleShowTags() {
-                this.showTags = !this.showTags;
-                console.log(this.tags)
             },
 
             toggleCardModal() {

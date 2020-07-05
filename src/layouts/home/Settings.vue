@@ -77,6 +77,9 @@ a {
   .profcard {
     z-index: 999;
     padding: 15px;
-    box-shadow: 0 0 6px black!important;
+    box-shadow: 0 0 4px black!important;
+  }
+  .profcard:hover{
+    box-shadow: 0 0 4px black!important;
   }
 </style>

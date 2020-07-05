@@ -1,6 +1,7 @@
 <template>
 
     <div >
+
         <v-btn
                 class="delete_button"
                 name="delete"
@@ -13,6 +14,19 @@
                 x-small
                 color="var(--ming)" >
             <i class="fas fa-times"></i>
+        </v-btn>
+        <v-btn
+                class="cart_button"
+                name="cart"
+                v-if="this.cart"
+                @click="$emit('add_to_cart')"
+                depressed
+                bottom
+                fab
+                dark
+                small
+                color="var(--ming)" >
+            <i class="fas fa-shopping-basket"></i>
         </v-btn>
         <div class="product" @click="$emit('open_card')">
             <v-avatar class="imag" size="100" tile>
@@ -54,6 +68,8 @@
     </div>
 
 
+
+
 </template>
 
 <script>
@@ -66,7 +82,6 @@
         name: "Product",
 
 
-
         data () {
           return {
            show: false,
@@ -76,7 +91,7 @@
 
          }
         },
-
+        // di tutti questi props attualmente utilizziamo solamente delete e close_discount
         props:{
           product: {
             type: Object,
@@ -88,7 +103,7 @@
             required: false,
             default: false
           },
-          basket: {
+          cart: {
             type: Boolean,
             required: false,
             default: false
@@ -218,6 +233,12 @@
         left:97%;
     }
 
+    .cart_button {
+        z-index: 2;
+        top:125px;
+        left:85%;
+    }
+
 
 
     .product {
@@ -227,7 +248,6 @@
         padding: 5px;
         position: relative;
         z-index: 1;
-
 
     }
 

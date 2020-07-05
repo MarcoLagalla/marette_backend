@@ -11,19 +11,7 @@ const state = {
     discounts:[],
     menus: [],
     restCategories: [],
-    FOOD_CATEGORY_CHOICES : [
-        'Altro',
-        'Antipasto',
-        'Contorno',
-        'Dessert',
-        'Caffetteria',
-        'Panetteria',
-        'Panini e Piadine',
-        'Pizza',
-        'Primo',
-        'Secondo',
-        'Snack'
-    ],
+
 
     DISCOUNT_TYPE_CHOICES : [
         'Fisso',
@@ -33,7 +21,6 @@ const state = {
 }
 
 const getters = {
-    food_category_choice: state => state.food_category_choice,
     productList: state => state.productList,
     restCategories: state => state.restCategories,
     components: state => state.restData.components,
@@ -236,6 +223,28 @@ const actions = {
             })
             .catch(err => {
                 commit('REST_ADD_PROD_ERROR');
+                reject(err)
+            })
+        })
+    },
+
+
+    addOrderToRestaurant: ({commit, rootGetters}, data) => {
+        return new Promise((resolve, reject) => {
+           let user_private = rootGetters["userProfile/user_private"];
+            let payload = {
+                'user': user_private.id,
+                'restaurant': state.restData.id,
+                'items': data.items,
+                'menus_items': data.menus_items,
+            };
+            manageRestaurant.submitOrderToRestaurant(payload)
+            .then(resp => {
+                commit('ADD_ORDER_SUCCESS', resp.data);
+                resolve(resp)
+            })
+            .catch(err => {
+                commit('ADD_ORDER_ERROR');
                 reject(err)
             })
         })
@@ -676,6 +685,15 @@ const mutations = {
     },
 
     ADD_DISCOUNT_TO_PRODUCT_ERROR: (state, error) => {
+        state.status = 'error'
+        state.error = error
+    },
+
+    ADD_ORDER_SUCCESS: (state) => {
+        state.status = 'success'
+    },
+
+    ADD_ORDER_ERROR: (state, error) => {
         state.status = 'error'
         state.error = error
     },

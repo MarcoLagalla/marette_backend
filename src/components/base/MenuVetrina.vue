@@ -20,9 +20,9 @@
                               @edit_portata="submitEditPortata($event)"></base-add-portata>
         </div>
         <div class="actions">
-            <!--v-btn v-if="!admin" @click="$emit('added')" class="addtocart">
+            <v-btn v-if="!admin" @click="add_to_cart_action(menu)" class="addtocart">
                 Aggiungi al carrello <i class="fas fa-shopping-basket"></i>
-            </v-btn-->
+            </v-btn>
             <button light name="delete" v-if="admin" @click="$emit('removed')" class="managebutton" text>
                 Elimina Menù <i class="fas fa-times"></i>
             </button>
@@ -65,6 +65,7 @@
         }),
         methods: {
             ...mapActions('restaurantData', ['addMenuEntry', 'deleteMenuEntry', 'editMenuEntry']),
+            ... mapActions('userProfile', ['addMenuCart']),
             submitPortata: function (portata) {
                 var payload = {
                     data: portata,
@@ -173,6 +174,11 @@
                     edit: false
                 }
             },
+
+            add_to_cart_action(menu){
+                this.addMenuCart(menu);
+            },
+
         }
     }
 </script>
