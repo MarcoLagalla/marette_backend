@@ -1,5 +1,5 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-
-staging_only: &staging_only
+deploy_only: &deploy_only
   filters:
     branches:
       only: deploy
@@ -52,13 +52,16 @@ workflows:
     # Run the welcome/run job in its own container
       jobs:
         - test-backend:
-            <<: *staging_only
+            <<: *deploy_only
             
         - aws-code-deploy/deploy:
-            <<: *staging_only
+            <<: *deploy_only
             application-name: marette-deploy
             bundle-bucket: marette-deploy
             bundle-key: v2
             deployment-group: main-deploy-group
             service-role-arn: arn:aws:iam::685988842947:role/CodeDeployServiceRole
+            
+            requires:
+              - test-backend
          
