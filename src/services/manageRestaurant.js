@@ -127,6 +127,16 @@ export default {
             })
     },
 
+
+    submitOrderToRestaurant(payload) {
+        return api.post('v1/webapp/order/new', payload)
+            .then(response => {
+                return response
+            })
+    },
+
+
+
     deleteGalleryImage(payload) {
         return api.post('v1/webapp/restaurant/' + payload.restId + '/components/galleria/images/' + payload.imageId + '/delete')
             .then(response => {

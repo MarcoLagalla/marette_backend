@@ -5,6 +5,7 @@
   <RestMenu v-if="activeComponents.menu.show" ></RestMenu>
   <RestGalleria v-if="activeComponents.galleria.show" ></RestGalleria>
   <RestInfo v-if="activeComponents.contattaci.show"></RestInfo>
+  <RestCart v-if="activeComponents.menu.show || activeComponents.vetrina.show"></RestCart>
 </div>
 </template>
 
@@ -22,10 +23,12 @@ import RestInfo from "../sections/RestInfo";
 import {
   mapActions
 } from "vuex";
+import RestCart from "../sections/RestCart";
 
 export default {
   name: 'restaurant',
   components: {
+    RestCart,
     RestMenu,
     RestHome,
     RestVetrina,

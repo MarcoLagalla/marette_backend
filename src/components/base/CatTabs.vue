@@ -31,14 +31,13 @@ export default {
   data() {
     return {
       tab: null,
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     }
   },
     computed:{
       categories() {
-        var cat = []
-        var men = this.menu
-        var ad = this.admin
+        var cat = [];
+        var men = this.menu;
+        var ad = this.admin;
         Object.keys(men).forEach(function(key) {
           if(men[key].length!==0 || ad){
             cat.push(key)

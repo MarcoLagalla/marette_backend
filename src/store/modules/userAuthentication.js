@@ -8,6 +8,7 @@ const state = {
   errorsL: [],
   errorsR: [],
   errorsB: [],
+
 }
 
 const getters = {
@@ -46,7 +47,7 @@ const actions = {
       commit('AUTH_REQUEST')
           sendUserAuthentication.postRegisterUser(user)
         .then(resp => {
-          const data = resp.data
+          const data = resp.data;
           setCookies(data);
           commit('AUTH_SUCCESS', data)
 

@@ -19,6 +19,7 @@ delSessionid()
 var token = getToken();
 var id = getID();
 
+
 if (token && id) { //voglio caricarli solo se li ho entrambi
   api.defaults.headers.common['Authorization'] = 'Token ' + token;
   store.dispatch("userProfile/getUserData", id);
@@ -133,3 +134,5 @@ function getCookie(cname) {
   }
   return "";
 }
+
+

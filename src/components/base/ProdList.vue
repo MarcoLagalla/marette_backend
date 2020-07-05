@@ -3,7 +3,7 @@
     <v-container>
       <v-row >
         <v-col v-for="(product, i) in products" :key="i" cols="12" md="6" lg="4" >
-          <base-product :product="product" :delete="admin" :close_discount="admin" :price="true" @open_card="toggleCardModal(product)" @delete_prod_discount="add_discount_to_product($event, product, 0)"  @removed="del_Product(product)" ></base-product>
+          <base-product :product="product" :delete="admin" :cart="!admin" :close_discount="admin" :price="true" @open_card="toggleCardModal(product)" @delete_prod_discount="add_discount_to_product($event, product, 0)" @add_to_cart="add_to_cart_action(product)"  @removed="del_Product(product)" ></base-product>
         </v-col>
           <v-col cols="12" md="6" lg="4">
               <base-add-new-product :category='category' v-if="admin" :admin="admin"></base-add-new-product>
@@ -23,6 +23,10 @@
         Chiudi
       </v-btn>
       </v-snackbar>
+
+
+
+
       <!--
         Per inserire un icona presa da fontawesome come icona della tab bisogna passar l'i tag come stringa, quindi come ho fatto
         sotto basta prendere il tag in questione e sostituire :
@@ -34,6 +38,7 @@
                   <base-product :product="product" :discounts_list="discounts_list"  :edit="admin" :discount="admin" :new_discount_add="admin" :delete="admin" :basket="!admin" :price='true' @open_card="toggleCardModal" @add_discount_to_product="add_discount_to_product(product,$event)" @removed="del_Product(product)" @new_discount="toggleAddDiscount"></base-product>
 
       -->
+
       <sweet-modal ref="modal"><br>
           <sweet-modal-tab title="Info" id="info_prodotto" icon="&lt;i class=&quot;fas fa-info&quot;&gt;&lt;i&gt;">
               <v-row>
@@ -207,6 +212,7 @@ export default {
           showSlash: false,
           toggleSnackbar: false,
           showPicture: false,
+
       }
 
   },
@@ -220,6 +226,8 @@ export default {
         tags() {
                 return this.$store.getters['restaurantData/tags']
             },
+
+
         },
 
 
@@ -230,10 +238,8 @@ export default {
 
     methods: {
 
-      ...mapActions('restaurantData', ['removeProduct']),
-      ...mapActions('restaurantData', ['addNewDiscount']),
-      ...mapActions('restaurantData', ['addDiscountToProduct']),
-      ...mapActions('restaurantData', ['updateProduct']),
+      ...mapActions('restaurantData', ['removeProduct', 'addNewDiscount', 'addDiscountToProduct', 'updateProduct']),
+      ...mapActions('userProfile', ['addProdCart']),
 
 
         add_discount_to_list: function (event) {
@@ -412,6 +418,14 @@ export default {
             }
         },
 
+        add_to_cart_action(prod){
+            this.addProdCart(prod);
+        }
+
+
+
+
+
     },
 };
 </script>
@@ -445,6 +459,7 @@ h1 {
     justify-content: center;
 
 }
+
 
 
   .save {
