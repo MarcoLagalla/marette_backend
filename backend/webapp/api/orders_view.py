@@ -30,7 +30,9 @@ class CreateOrder(APIView):
             return Response({'error': 'token'}, status=status.HTTP_404_NOT_FOUND)
 
         if request.user.auth_token.key == token:
-            serializer = OrderSerializer(data=request.data)
+            data = request.data
+            data['user'] = customer.id
+            serializer = OrderSerializer(data=data)
             if serializer.is_valid():
                 order = serializer.save()
                 send_order_email(order.restaurant.owner, order)
