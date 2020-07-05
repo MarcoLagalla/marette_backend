@@ -20,12 +20,12 @@ class CreateOrder(APIView):
     def post(self, request):
         try:
             user = request.data['user']
-            user = User.objects.all().get(id=user)
-        except User.DoesNotExist:
+            customer = Customer.objects.all().get(user_id=user)
+        except Customer.DoesNotExist:
             return Response({'error': 'user'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
-            token = Token.objects.all().get(user=user).key
+            token = Token.objects.all().get(user=customer.user).key
         except Token.DoesNotExist:
             return Response({'error': 'token'}, status=status.HTTP_404_NOT_FOUND)
 
