@@ -55,14 +55,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
 
         val_errors = {}
-        try:
-            user = attrs.get('user', None)
-            try:
-                user = Customer.objects.all().get(id=user.id)
-            except Customer.DoesNotExist:
-                val_errors['user'] = "L'utente non esiste"
-        except KeyError:
-            pass
 
         rest = attrs.get('restaurant', None)
         rest = Restaurant.objects.all().get(id=rest.id)
